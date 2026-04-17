@@ -1,0 +1,22 @@
+{
+  "model": "opus",
+  "permissions": {
+    "allow": [
+      {
+        "description": "Allow editing files in project directory",
+        "match": "C:/OBSIDIAN VAULT/REVISOR-ARQ/**",
+        "operation": "edit",
+        "permission": "allow"
+      },
+      {
+        "description": "Allow bash commands in project directory",
+        "match": "C:/OBSIDIAN VAULT/REVISOR-ARQ/**",
+        "operation": "bash",
+        "permission": "allow"
+      }
+    ]
+  },
+  "editor": {
+    "formatOnSave": true
+  }
+}
