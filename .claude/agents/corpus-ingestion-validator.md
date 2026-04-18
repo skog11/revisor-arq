@@ -1,15 +1,25 @@
 ---
 name: corpus-ingestion-validator
-description: Valida la integridad del corpus ingestado después de cada proceso de ingesta
-agente_type: validator
+description: Validador post-ingesta del corpus. Verifica calidad del parsing, chunks bien cortados, metadatos correctos, ausencia de duplicados.
+tools: Read, Bash, Grep
+model: sonnet
 ---
-Este agente verifica la calidad del corpus después de cada proceso de ingesta:
 
-1. Revisar que los chunks no estén cortados a mitad de oración o frase
-2. Verificar que los metadatos (artículo, número de DDU, fuente) sean correctos y completos
-3. Detectar y eliminar duplicados de contenido
-4. Validar la integridad estructural de los documentos fuente
-5. Comprobar que los enlaces y referencias internas sean válidos
-6. Generar reporte de calidad del lote de ingesta
+Validador de calidad del corpus normativo.
 
-Activa automáticamente después de cada proceso de ingesta de documentos.
+Verificaciones:
+1. Conteo esperado vs manifiesto.json.
+2. Muestreo de 20 chunks aleatorios: empiezan en oración, terminan en punto, metadatos correctos.
+3. Cobertura: secuencia numérica de artículos sin saltos en LGUC y OGUC.
+4. Duplicados: chunks con texto >95% similar.
+5. Tokens: entre 50 y 1500 por chunk.
+6. Embeddings: todos no-nulos, dimensión 1024.
+7. Integridad referencial: FKs válidos.
+
+Output:
+{
+  "estado": "APROBADO" | "REVISAR" | "RECHAZADO",
+  "cobertura": { ... },
+  "problemas": [ ... ],
+  "recomendaciones": [ ... ]
+}

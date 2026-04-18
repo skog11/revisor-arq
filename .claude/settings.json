@@ -1,22 +1,25 @@
 {
-  "model": "opus",
   "permissions": {
     "allow": [
-      {
-        "description": "Allow editing files in project directory",
-        "match": "C:/OBSIDIAN VAULT/REVISOR-ARQ/**",
-        "operation": "edit",
-        "permission": "allow"
-      },
-      {
-        "description": "Allow bash commands in project directory",
-        "match": "C:/OBSIDIAN VAULT/REVISOR-ARQ/**",
-        "operation": "bash",
-        "permission": "allow"
-      }
+      "Read(//**)",
+      "Write(//**)",
+      "Edit(//**)",
+      "Bash(npm:*)",
+      "Bash(npx:*)",
+      "Bash(pnpm:*)",
+      "Bash(git:*)",
+      "Bash(tsx:*)",
+      "Bash(node:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(tree:*)"
+    ],
+    "deny": [
+      "Bash(rm -rf corpus/*)",
+      "Bash(rm -rf .env*)",
+      "Bash(rm -rf .git*)",
+      "Bash(git push --force*)"
     ]
   },
-  "editor": {
-    "formatOnSave": true
-  }
+  "defaultModel": "claude-sonnet-4-6"
 }

@@ -1,4 +1,0 @@
-# README for Raw Directory
-
-This directory contains immutable source materials for the REVISOR ARQ project.
-Files in this directory are sources that are read but never modified by the system.

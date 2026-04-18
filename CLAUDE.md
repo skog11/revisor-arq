@@ -1,29 +1,40 @@
-# Proyecto REVISOR ARQ
+# REVISOR ARQ — Contexto del proyecto
 
-## Descripción
-Sistema de inteligencia artificial para consultar y sintetizar información del marco regulatorio chileno, especializado en normativa urbanística y de vivienda.
+Aplicación web que permite a arquitectos y abogados hacer consultas sobre normativa chilena de urbanismo y construcción. MVP basado en LGUC, OGUC y DDU normales.
 
-## Stack técnico exacto
-- **Frontend**: Next.js 14 + TypeScript + Tailwind CSS + shadcn/ui + Framer Motion
-- **Backend**: Supabase (PostgreSQL, Auth, Storage)
-- **IA**: Gemini 2.5 Flash (modelo de lenguaje) + Voyage (embeddings)
-- **Herramientas de desarrollo**: ESLint, Prettier, TypeScript
+## Stack
+- Next.js 14 (App Router) + TypeScript + Tailwind + shadcn/ui + Framer Motion
+- Supabase (Postgres con pgvector) para datos
+- Google Gemini 2.5 Flash (gratis) para generación
+- Voyage AI para embeddings
+- Vercel para deploy
 
-## Principios no-negociables
-(a) Toda respuesta al usuario final debe tener citas verificables de la normativa fuente.
-(b) Nunca inventar artículos, secciones o datos que no existan en el corpus.
-(c) Incluir disclaimers obligatorios cuando la información sea parcial o sujeta a interpretación.
-(d) Mantener convenciones de nombramiento: kebab-case en todos los archivos.
-(e) Interfaz de usuario completamente en español.
-(f) Commits atómicos con mensajes descriptivos en español.
+## Principios no negociables
+- Toda respuesta al usuario final DEBE incluir citas verificables (tipo norma + artículo + fragmento literal).
+- NUNCA inventar normas, artículos o parámetros.
+- Si no hay respaldo suficiente en los chunks recuperados, declarar explícitamente la falta de respaldo.
+- Disclaimer obligatorio al pie de cada respuesta.
+- Filenames: kebab-case, en español sin tildes.
+- UI en español chileno neutro.
+- Commits atómicos y mensajes en español.
 
-## Instrucciones para sesiones futuras
-Toda sesión de Claude Code debe leer este archivo primero para entender el contexto del proyecto y aplicar los principios establecidos.
+## Dos modos de respuesta
+- **Arquitecto**: parámetros aplicados, ejemplos, referencia al artículo.
+- **Abogado**: texto literal, citas íntegras, contexto normativo.
 
-## Skills a utilizar
-- `web-artifacts-builder`: Para prototipar componentes complejos antes de integrarlos
-- `brand-guidelines` y `theme-factory`: Para desarrollar el sistema de diseño visual coherente
-- `canvas-design`: Para generar assets gráficos (logo, ilustraciones, open graph)
-- `doc-coauthoring`: Para documentación técnica y legal colaborativa
-- `pdf`: Para extracción de texto del corpus normativo regulatorio
-- `slack-gif-creator`: Para crear material promocional en lanzamientos futuros
+## Subagentes disponibles
+Ver .claude/agents/. Siempre invoca legal-citation-verifier antes de mostrar respuestas al usuario. Invoca ui-design-reviewer al crear componentes. Invoca security-auditor antes de commits.
+
+## Agent teams disponibles
+- quality-gate: antes de merge a main.
+- release-gate: antes de deploy.
+- ingesta-pipeline: al cargar nuevas normas.
+
+## Skills disponibles en el proyecto
+- rag-legal-chile: reglas de respuesta legal.
+- corpus-normativo-chile: fuentes y parsers.
+- citacion-juridica-chilena: formato de citas.
+- mvp-legal-launch: checklist legal.
+
+## Instrucción para sesiones futuras
+Al iniciar cualquier sesión de Claude Code en este proyecto, lee este archivo completo antes de actuar.
