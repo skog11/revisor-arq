@@ -1,20 +1,25 @@
 /**
  * Embedder para el pipeline de ingesta.
  * Modelo: gemini-embedding-001 (outputDimensionality=1024).
- * Rate limit free tier: 100 RPM / 1500 RPD — muy superior al free tier de Voyage.
  *
- * Si en el futuro se desea migrar a voyage-law-2, solo cambiar la función
- * embedBatch() sin tocar el resto del pipeline (los vectores siguen siendo 1024 dims).
+ * Usa llamadas individuales a embedContent (no batchEmbedContents) para
+ * controlar con precisión el rate limit (100 RPM free tier).
+ * Cada texto = 1 llamada. Pausa configurable entre llamadas.
+ *
+ * Con CALL_INTERVAL_MS=700ms → ~85 RPM → siempre bajo el límite de 100 RPM.
+ * Tiempo estimado por norma:
+ *   LGUC (280 textos): ~3.3 minutos
+ *   OGUC (806 textos): ~9.4 minutos
+ *   DDU mediana (40 textos): ~28 segundos
  */
 
 const GEMINI_EMBED_URL =
-  "https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:batchEmbedContents";
+  "https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent";
 
 const OUTPUT_DIM = 1024;
-const BATCH_SIZE = 50;         // mitad del máximo para más margen de rate limit
-const MAX_RETRIES = 9;         // espera hasta 3*(2^8)=768s si necesario (rate limit agresivo)
-const RETRY_BASE_MS = 3_000;
-const BETWEEN_BATCHES_MS = 10_000; // 10s entre batches
+const CALL_INTERVAL_MS = 700;  // 700ms entre llamadas → ~85 RPM (límite: 100 RPM)
+const MAX_RETRIES = 5;
+const RETRY_BASE_MS = 5_000;   // 5s base para backoff exponencial
 
 function getApiKey(): string {
   const key =
@@ -30,10 +35,9 @@ async function sleep(ms: number) {
 }
 
 /**
- * Embeds un batch con la API de Gemini batch embeddings.
- * Retorna un array de vectores de 1024 dimensiones.
+ * Embeds un texto individual con retry exponencial.
  */
-async function embedBatch(texts: string[]): Promise<number[][]> {
+async function embedOne(text: string): Promise<number[]> {
   const key = getApiKey();
   let lastError: Error | null = null;
 
@@ -43,20 +47,18 @@ async function embedBatch(texts: string[]): Promise<number[][]> {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          requests: texts.map((text) => ({
-            model: "models/gemini-embedding-001",
-            content: { role: "user", parts: [{ text }] },
-            taskType: "RETRIEVAL_DOCUMENT",
-            outputDimensionality: OUTPUT_DIM,
-          })),
+          model: "models/gemini-embedding-001",
+          content: { role: "user", parts: [{ text }] },
+          taskType: "RETRIEVAL_DOCUMENT",
+          outputDimensionality: OUTPUT_DIM,
         }),
       });
 
       if (res.status === 429 || res.status === 503) {
         const body = await res.text();
         const waitMs = RETRY_BASE_MS * Math.pow(2, attempt);
-        console.warn(`  ⚠ Gemini ${res.status}: ${body.slice(0, 100)} — esperando ${waitMs}ms...`);
-        lastError = new Error(`${res.status}: ${body.slice(0, 100)}`);
+        process.stdout.write(`⚠${res.status} `);
+        lastError = new Error(`${res.status}: ${body.slice(0, 80)}`);
         await sleep(waitMs);
         continue;
       }
@@ -66,28 +68,25 @@ async function embedBatch(texts: string[]): Promise<number[][]> {
         throw new Error(`Gemini HTTP ${res.status}: ${body.slice(0, 200)}`);
       }
 
-      const json = (await res.json()) as {
-        embeddings: { values: number[] }[];
-      };
-
-      return json.embeddings.map((e) => e.values);
+      const json = (await res.json()) as { embedding: { values: number[] } };
+      return json.embedding.values;
     } catch (err) {
       if (err instanceof Error && err.message.startsWith("Gemini HTTP")) throw err;
       lastError = err as Error;
       if (attempt < MAX_RETRIES - 1) {
         const waitMs = RETRY_BASE_MS * Math.pow(2, attempt);
-        console.warn(`  ⚠ Error (intento ${attempt + 1}): ${lastError.message.slice(0, 80)} — ${waitMs}ms`);
+        process.stdout.write(`⚠err `);
         await sleep(waitMs);
       }
     }
   }
 
-  throw lastError ?? new Error("Error desconocido en embedBatch");
+  throw lastError ?? new Error("Error desconocido en embedOne");
 }
 
 /**
- * Embeds todos los textos en batches de BATCH_SIZE.
- * Muestra progreso en consola.
+ * Embeds todos los textos con un intervalo fijo entre llamadas.
+ * Muestra barra de progreso en consola.
  */
 export async function embedTextos(
   textos: string[],
@@ -95,28 +94,24 @@ export async function embedTextos(
 ): Promise<number[][]> {
   const total = textos.length;
   const embeddings: number[][] = new Array(total);
-  const batches = Math.ceil(total / BATCH_SIZE);
 
-  for (let b = 0; b < batches; b++) {
-    const desde = b * BATCH_SIZE;
-    const hasta = Math.min(desde + BATCH_SIZE, total);
-    const batch = textos.slice(desde, hasta);
+  const prefix = `  Embeddings${label ? " " + label : ""}`;
+  process.stdout.write(`${prefix}: [0/${total}]`);
 
-    process.stdout.write(
-      `  Embeddings${label ? " " + label : ""}: batch ${b + 1}/${batches} (${batch.length} textos)... `
-    );
+  for (let i = 0; i < total; i++) {
+    embeddings[i] = await embedOne(textos[i]);
 
-    const batchEmbeddings = await embedBatch(batch);
-    for (let i = 0; i < batchEmbeddings.length; i++) {
-      embeddings[desde + i] = batchEmbeddings[i];
+    // Actualizar progreso cada 10 textos o al final
+    if ((i + 1) % 10 === 0 || i === total - 1) {
+      process.stdout.write(`\r${prefix}: [${i + 1}/${total}]`);
     }
 
-    console.log("✓");
-
-    if (b < batches - 1) {
-      await sleep(BETWEEN_BATCHES_MS);
+    // Pausa entre llamadas (excepto la última)
+    if (i < total - 1) {
+      await sleep(CALL_INTERVAL_MS);
     }
   }
 
+  console.log(" ✓");
   return embeddings;
 }

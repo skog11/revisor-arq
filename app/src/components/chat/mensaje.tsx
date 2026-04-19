@@ -6,7 +6,7 @@ import remarkGfm from "remark-gfm";
 import { cn } from "@/lib/utils";
 import { FuentesPanel } from "./fuentes-panel";
 
-export type ModoRespuesta = "arquitecto" | "abogado";
+export type ModoRespuesta = "arquitecto" | "abogado" | "profundo";
 
 export interface Fuente {
   norma: string;
@@ -31,22 +31,20 @@ interface MensajeProps {
   mensaje: MensajeData;
 }
 
+const MODO_STYLE: Record<ModoRespuesta, { bg: string; color: string; border: string; label: string }> = {
+  arquitecto: { bg: "rgba(59,130,246,0.08)", color: "rgb(59,130,246)", border: "rgba(59,130,246,0.2)", label: "⚙ Arquitecto" },
+  abogado:    { bg: "rgba(139,92,246,0.08)", color: "rgb(139,92,246)", border: "rgba(139,92,246,0.2)", label: "⚖ Abogado" },
+  profundo:   { bg: "rgba(20,184,166,0.08)",  color: "rgb(20,184,166)",  border: "rgba(20,184,166,0.2)",  label: "🔬 Profundo" },
+};
+
 function ModoBadge({ modo }: { modo: ModoRespuesta }) {
+  const s = MODO_STYLE[modo];
   return (
     <span
       className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide"
-      style={{
-        fontFamily: "var(--font-jetbrains-mono)",
-        background: modo === "arquitecto"
-          ? "rgba(59,130,246,0.08)"
-          : "rgba(139,92,246,0.08)",
-        color: modo === "arquitecto"
-          ? "rgb(59,130,246)"
-          : "rgb(139,92,246)",
-        border: `1px solid ${modo === "arquitecto" ? "rgba(59,130,246,0.2)" : "rgba(139,92,246,0.2)"}`,
-      }}
+      style={{ fontFamily: "var(--font-jetbrains-mono)", background: s.bg, color: s.color, border: `1px solid ${s.border}` }}
     >
-      {modo === "arquitecto" ? "⚙ Arquitecto" : "⚖ Abogado"}
+      {s.label}
     </span>
   );
 }

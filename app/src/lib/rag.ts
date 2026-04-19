@@ -7,7 +7,7 @@ import { getSupabaseServiceClient } from "./supabase";
 
 // ─── Tipos ────────────────────────────────────────────────────────────────────
 
-export type ModoRespuesta = "arquitecto" | "abogado";
+export type ModoRespuesta = "arquitecto" | "abogado" | "profundo";
 
 export interface ChunkRecuperado {
   id: string;
@@ -165,10 +165,10 @@ MODO ARQUITECTO — enfoque práctico:
     );
   }
 
-  // modo abogado
-  return (
-    base +
-    `
+  if (modo === "abogado") {
+    return (
+      base +
+      `
 
 MODO ABOGADO — enfoque normativo estricto:
 - Cita el texto literal de los artículos relevantes entre comillas.
@@ -176,8 +176,94 @@ MODO ABOGADO — enfoque normativo estricto:
 - Identifica posibles vacíos, contradicciones o remisiones a otras normas.
 - Lenguaje jurídico preciso.
 - Al citar, indica la fuente exacta: norma, número de artículo y, si aplica, inciso o letra.` +
+      DISCLAIMER
+    );
+  }
+
+  // modo profundo
+  return (
+    base +
+    `
+
+MODO ANÁLISIS PROFUNDO — análisis exhaustivo multi-norma:
+Estructura tu respuesta SIEMPRE con estas secciones:
+
+## 1. Síntesis ejecutiva
+Resumen de 2-3 oraciones de la respuesta principal.
+
+## 2. Marco normativo aplicable
+Lista las normas relevantes encontradas en el contexto, con jerarquía (LGUC → OGUC → DDU).
+
+## 3. Análisis artículo por artículo
+Para cada artículo relevante encontrado en el contexto:
+- Cita textual (entre comillas) del fragmento más relevante
+- Interpretación y alcance
+- Condiciones, excepciones o requisitos
+
+## 4. Cadena de remisiones
+Identifica si algún artículo remite a otro (p.ej. "conforme al Art. X de la OGUC") y traza la cadena completa con lo que encuentres en el contexto.
+
+## 5. Aspectos no cubiertos o posibles vacíos
+Lista explícita de lo que NO está en el contexto recuperado y podría ser relevante para una consulta completa.
+
+## 6. Recomendaciones prácticas
+- Para el profesional: qué verificar antes de actuar.
+- Normas adicionales que probablemente apliquen (aunque no estén en el contexto).
+
+REGLAS ADICIONALES DEL MODO PROFUNDO:
+- Sé exhaustivo pero preciso — prefiere calidad sobre brevedad.
+- Si el contexto no cubre un aspecto importante, dilo en la sección 5.
+- Usa negritas para los artículos citados.` +
     DISCLAIMER
   );
+}
+
+// ─── Guardrails ───────────────────────────────────────────────────────────────
+
+/** Temas fuera del dominio de la app */
+const TEMAS_FUERA_DOMINIO = [
+  /impuesto|tributari|sri|sii/i,
+  /receta|cocina|aliment/i,
+  /medicina|enfermedad|tratamiento médico/i,
+  /código civil|código penal|código laboral/i,
+  /\\bsueldo\\b|\\bsalario\\b|\\bcontrato laboral\\b/i,
+];
+
+/**
+ * Detecta si la pregunta está fuera del dominio urbano-normativo.
+ * Retorna un mensaje de rechazo o null si está dentro del dominio.
+ */
+export function detectarFueraDominio(pregunta: string): string | null {
+  for (const re of TEMAS_FUERA_DOMINIO) {
+    if (re.test(pregunta)) {
+      return (
+        "Esta consulta parece estar fuera del ámbito de REVISOR ARQ, que cubre exclusivamente " +
+        "normativa chilena de urbanismo y construcción (LGUC, OGUC, DDU). " +
+        "Por favor reformula tu pregunta en ese contexto."
+      );
+    }
+  }
+  return null;
+}
+
+/**
+ * Valida que la respuesta generada cumpla los guardrails mínimos:
+ * - Tiene disclaimer
+ * - No es demasiado corta (< 50 chars)
+ */
+export function validarRespuesta(respuesta: string): { valida: boolean; motivo?: string } {
+  if (respuesta.trim().length < 50) {
+    return { valida: false, motivo: "Respuesta demasiado corta" };
+  }
+  // El disclaimer es obligatorio; si el LLM lo omitió, lo añadimos
+  const tieneDisclaimer =
+    respuesta.includes("Aviso legal") ||
+    respuesta.includes("asesoría jurídica") ||
+    respuesta.includes("profesional habilitado");
+  if (!tieneDisclaimer) {
+    return { valida: false, motivo: "Falta disclaimer legal" };
+  }
+  return { valida: true };
 }
 
 // ─── Guardar consulta ─────────────────────────────────────────────────────────

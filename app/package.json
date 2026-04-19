@@ -10,7 +10,8 @@
     "corpus:download": "tsx --env-file=.env.local scripts/download/download-all.ts",
     "corpus:verify": "tsx scripts/download/verify-corpus.ts",
     "corpus:ingest": "tsx --env-file=.env.local scripts/ingest/ingest.ts",
-    "corpus:ingest:dry": "tsx --env-file=.env.local scripts/ingest/ingest.ts --dry"
+    "corpus:ingest:dry": "tsx --env-file=.env.local scripts/ingest/ingest.ts --dry",
+    "eval": "tsx --env-file=.env.local scripts/eval/run-eval.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.0",

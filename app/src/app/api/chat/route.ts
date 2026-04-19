@@ -17,6 +17,8 @@ import {
   construirContexto,
   buildSystemPrompt,
   guardarConsulta,
+  detectarFueraDominio,
+  validarRespuesta,
   type ModoRespuesta,
 } from "@/lib/rag";
 import { streamGemini, MODEL_NAME } from "@/lib/gemini";
@@ -25,7 +27,7 @@ import { streamGemini, MODEL_NAME } from "@/lib/gemini";
 
 const ChatSchema = z.object({
   pregunta: z.string().min(5, "La pregunta es muy corta").max(2000, "Pregunta demasiado larga"),
-  modo: z.enum(["arquitecto", "abogado"]).default("arquitecto"),
+  modo: z.enum(["arquitecto", "abogado", "profundo"]).default("arquitecto"),
 });
 
 // ─── Handler ──────────────────────────────────────────────────────────────────
@@ -58,9 +60,20 @@ export async function POST(req: NextRequest) {
       }
 
       try {
-        // 1. Recuperar chunks relevantes
+        // 0. Guardrail: detectar pregunta fuera de dominio
+        const rechazoDominio = detectarFueraDominio(pregunta);
+        if (rechazoDominio) {
+          send({ type: "fuentes", data: [] });
+          send({ type: "chunk", text: rechazoDominio });
+          send({ type: "done" });
+          controller.close();
+          return;
+        }
+
+        // 1. Recuperar chunks relevantes (modo profundo = más contexto)
+        const matchCount = modo === "profundo" ? 14 : 8;
         const chunks = await recuperarChunks(pregunta, {
-          matchCount: 8,
+          matchCount,
           soloVigentes: true,
         });
 
@@ -93,7 +106,17 @@ export async function POST(req: NextRequest) {
           }
         }
 
-        // 5. Guardar consulta en background
+        // 5. Post-guardrail: añadir disclaimer si el LLM lo omitió
+        const validacion = validarRespuesta(respuestaCompleta);
+        if (!validacion.valida && validacion.motivo === "Falta disclaimer legal") {
+          const disclaimerExtra =
+            "\n\n---\n⚠️ **Aviso legal**: Esta respuesta es orientativa y no constituye asesoría jurídica profesional. " +
+            "Verifica siempre el texto vigente en BCN (www.bcn.cl) y consulta con un profesional habilitado.";
+          send({ type: "chunk", text: disclaimerExtra });
+          respuestaCompleta += disclaimerExtra;
+        }
+
+        // 6. Guardar consulta en background
         const latenciaMs = Date.now() - t0;
         guardarConsulta({
           pregunta,

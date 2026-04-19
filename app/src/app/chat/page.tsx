@@ -1,10 +1,12 @@
 "use client";
 
 import { useRef, useState, useCallback, useEffect } from "react";
-import { Send, Square, HardHat, Scale, Loader2 } from "lucide-react";
+import { Send, Square, HardHat, Scale, Loader2, Microscope } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Mensaje, type MensajeData, type ModoRespuesta, type Fuente } from "@/components/chat/mensaje";
+import { Mensaje, type MensajeData, type Fuente } from "@/components/chat/mensaje";
+
+type ModoRespuesta = "arquitecto" | "abogado" | "profundo";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -270,32 +272,34 @@ export default function ChatPage() {
           {/* Selector de modo */}
           <div className="flex items-center gap-1 mb-2">
             <span className="text-xs mr-1" style={{ color: "var(--ink-3)" }}>Modo:</span>
-            {(["arquitecto", "abogado"] as ModoRespuesta[]).map((m) => (
-              <button
-                key={m}
-                onClick={() => setModo(m)}
-                className={cn(
-                  "flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium transition-all",
-                )}
-                style={{
-                  background: modo === m
-                    ? (m === "arquitecto" ? "rgba(59,130,246,0.12)" : "rgba(139,92,246,0.12)")
-                    : "transparent",
-                  color: modo === m
-                    ? (m === "arquitecto" ? "rgb(59,130,246)" : "rgb(139,92,246)")
-                    : "var(--ink-3)",
-                  border: `1px solid ${modo === m
-                    ? (m === "arquitecto" ? "rgba(59,130,246,0.25)" : "rgba(139,92,246,0.25)")
-                    : "transparent"}`,
-                }}
-              >
-                {m === "arquitecto"
-                  ? <HardHat className="size-3" />
-                  : <Scale className="size-3" />
-                }
-                {m === "arquitecto" ? "Arquitecto" : "Abogado"}
-              </button>
-            ))}
+            {(["arquitecto", "abogado", "profundo"] as ModoRespuesta[]).map((m) => {
+              const colors: Record<ModoRespuesta, { bg: string; text: string; border: string }> = {
+                arquitecto: { bg: "rgba(59,130,246,0.12)", text: "rgb(59,130,246)", border: "rgba(59,130,246,0.25)" },
+                abogado:    { bg: "rgba(139,92,246,0.12)", text: "rgb(139,92,246)", border: "rgba(139,92,246,0.25)" },
+                profundo:   { bg: "rgba(20,184,166,0.12)",  text: "rgb(20,184,166)",  border: "rgba(20,184,166,0.25)" },
+              };
+              const labels: Record<ModoRespuesta, string> = { arquitecto: "Arquitecto", abogado: "Abogado", profundo: "Profundo" };
+              const icons: Record<ModoRespuesta, React.ReactNode> = {
+                arquitecto: <HardHat className="size-3" />,
+                abogado: <Scale className="size-3" />,
+                profundo: <Microscope className="size-3" />,
+              };
+              return (
+                <button
+                  key={m}
+                  onClick={() => setModo(m)}
+                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium transition-all"
+                  style={{
+                    background: modo === m ? colors[m].bg : "transparent",
+                    color: modo === m ? colors[m].text : "var(--ink-3)",
+                    border: `1px solid ${modo === m ? colors[m].border : "transparent"}`,
+                  }}
+                >
+                  {icons[m]}
+                  {labels[m]}
+                </button>
+              );
+            })}
           </div>
 
           {/* Textarea + botón */}
