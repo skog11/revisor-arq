@@ -33,7 +33,7 @@ async function main() {
   try {
     const { GoogleGenerativeAI } = await import("@google/generative-ai");
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-preview-05-20" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
     const result = await model.generateContent("Responde solo 'ok'.");
     const text = result.response.text();
     if (!text) throw new Error("Respuesta vacía");
@@ -47,13 +47,9 @@ async function main() {
   // ── 3. Voyage ─────────────────────────────────────────────
   process.stdout.write("Voyage...   ");
   try {
-    const VoyageAIClient = (await import("voyageai")).default;
-    const voyage = new VoyageAIClient({ apiKey: process.env.VOYAGE_API_KEY! });
-    const result = await voyage.embed({
-      input: ["texto de prueba para embedding"],
-      model: "voyage-law-2",
-    });
-    const dim = (result.data?.[0]?.embedding as number[])?.length;
+    const { embedText } = await import("../src/lib/voyage");
+    const embedding = await embedText("texto de prueba para embedding");
+    const dim = embedding.length;
     if (dim !== 1024) throw new Error(`Dimensión inesperada: ${dim}`);
     console.log(`✓ OK — dim=${dim}`);
     pass++;

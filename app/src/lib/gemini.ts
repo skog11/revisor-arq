@@ -3,7 +3,7 @@ import {
   type GenerateContentStreamResult,
 } from "@google/generative-ai";
 
-export const MODEL_NAME = "gemini-2.5-flash-preview-05-20";
+export const MODEL_NAME = "gemini-2.5-flash";
 
 function getClient() {
   const apiKey = process.env.GEMINI_API_KEY;
