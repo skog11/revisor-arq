@@ -1,21 +1,14 @@
 "use client";
 
-import { Bot, User, AlertTriangle } from "lucide-react";
+import { HardHat, Scale, Microscope, AlertTriangle } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { cn } from "@/lib/utils";
-import { FuentesPanel } from "./fuentes-panel";
+import { FuentesPanel, type Fuente } from "./fuentes-panel";
 
 export type ModoRespuesta = "arquitecto" | "abogado" | "profundo";
 
-export interface Fuente {
-  norma: string;
-  articulo: string | null;
-  norma_titulo: string;
-  jerarquia: string | null;
-  url_fuente: string;
-  similarity: number;
-}
+export type { Fuente };
 
 export interface MensajeData {
   id: string;
@@ -27,111 +20,141 @@ export interface MensajeData {
   modo?: ModoRespuesta;
 }
 
-interface MensajeProps {
-  mensaje: MensajeData;
+// ─── Configuración de modos ───────────────────────────────────────────────────
+
+interface ModoCfg {
+  Icon: LucideIcon;
+  label: string;
+  color: string;
 }
 
-const MODO_STYLE: Record<ModoRespuesta, { bg: string; color: string; border: string; label: string }> = {
-  arquitecto: { bg: "rgba(59,130,246,0.08)", color: "rgb(59,130,246)", border: "rgba(59,130,246,0.2)", label: "⚙ Arquitecto" },
-  abogado:    { bg: "rgba(139,92,246,0.08)", color: "rgb(139,92,246)", border: "rgba(139,92,246,0.2)", label: "⚖ Abogado" },
-  profundo:   { bg: "rgba(20,184,166,0.08)",  color: "rgb(20,184,166)",  border: "rgba(20,184,166,0.2)",  label: "🔬 Profundo" },
+const MODO_CFG: Record<ModoRespuesta, ModoCfg> = {
+  arquitecto: { Icon: HardHat,    label: "Arquitecto", color: "rgb(59,130,246)" },
+  abogado:    { Icon: Scale,      label: "Abogado",    color: "var(--terracotta)" },
+  profundo:   { Icon: Microscope, label: "Profundo",   color: "var(--ra-green)" },
 };
 
-function ModoBadge({ modo }: { modo: ModoRespuesta }) {
-  const s = MODO_STYLE[modo];
+// ─── Mensaje usuario ──────────────────────────────────────────────────────────
+
+function MensajeUsuario({ contenido }: { contenido: string }) {
   return (
-    <span
-      className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide"
-      style={{ fontFamily: "var(--font-jetbrains-mono)", background: s.bg, color: s.color, border: `1px solid ${s.border}` }}
-    >
-      {s.label}
-    </span>
+    <div className="flex justify-end px-5 py-2.5">
+      <div
+        className="max-w-[72%] rounded-2xl rounded-tr-sm px-4 py-2.5 text-sm leading-relaxed"
+        style={{
+          background: "var(--paper-2)",
+          border: "1px solid var(--rule)",
+          color: "var(--ink-2)",
+        }}
+      >
+        <p style={{ whiteSpace: "pre-wrap" }}>{contenido}</p>
+      </div>
+    </div>
   );
 }
 
-export function Mensaje({ mensaje }: MensajeProps) {
-  const isUser = mensaje.rol === "usuario";
+// ─── Mensaje asistente ────────────────────────────────────────────────────────
+
+function MensajeAsistente({ mensaje }: { mensaje: MensajeData }) {
+  const cfg = mensaje.modo ? MODO_CFG[mensaje.modo] : null;
+  const accentColor = cfg?.color ?? "var(--ink-4, var(--ink-3))";
 
   return (
-    <div className={cn("flex gap-3 px-4 py-3", isUser && "flex-row-reverse")}>
-      {/* Avatar */}
+    <div className="flex gap-0 px-5 py-5">
+      {/* Barra izquierda en color de modo */}
       <div
-        className={cn(
-          "shrink-0 size-7 rounded-full flex items-center justify-center mt-0.5",
-          isUser
-            ? "bg-foreground/10"
-            : "border"
+        className="w-[2px] shrink-0 rounded-full mr-5 self-stretch"
+        style={{ background: accentColor, opacity: 0.45 }}
+      />
+
+      {/* Contenido */}
+      <div className="flex-1 min-w-0">
+        {/* Header de modo */}
+        {cfg && (
+          <div className="flex items-center gap-1.5 mb-3.5">
+            <cfg.Icon className="size-3" style={{ color: accentColor }} />
+            <span
+              className="text-[9px] font-medium uppercase"
+              style={{
+                color: accentColor,
+                fontFamily: "var(--font-jetbrains-mono)",
+                letterSpacing: "0.18em",
+              }}
+            >
+              {cfg.label}
+            </span>
+          </div>
         )}
-        style={!isUser ? { background: "var(--paper-2)", borderColor: "var(--rule)" } : undefined}
-      >
-        {isUser
-          ? <User className="size-3.5" />
-          : <Bot className="size-3.5" style={{ color: "var(--ink-2)" }} />
-        }
-      </div>
 
-      {/* Burbuja */}
-      <div className={cn("flex flex-col gap-2 max-w-[85%]", isUser && "items-end")}>
-        {/* Modo badge para mensajes de asistente */}
-        {!isUser && mensaje.modo && (
-          <ModoBadge modo={mensaje.modo} />
-        )}
-
-        <div
-          className={cn(
-            "rounded-xl px-4 py-3 text-sm leading-relaxed",
-            isUser
-              ? "rounded-tr-sm"
-              : "rounded-tl-sm",
-            mensaje.error && "border border-red-500/20"
-          )}
-          style={{
-            background: isUser
-              ? "var(--paper-2)"
-              : mensaje.error
-              ? "rgba(239,68,68,0.05)"
-              : "transparent",
-            border: isUser ? "1px solid var(--rule)" : undefined,
-            color: mensaje.error ? "rgb(239,68,68)" : "var(--ink)",
-          }}
-        >
-          {mensaje.error && (
-            <div className="flex items-center gap-2 mb-2 text-red-500">
-              <AlertTriangle className="size-4" />
-              <span className="font-medium text-xs uppercase tracking-wide">Error</span>
-            </div>
-          )}
-
-          {isUser ? (
-            <p style={{ whiteSpace: "pre-wrap" }}>{mensaje.contenido}</p>
-          ) : (
-            <div className="prose prose-sm dark:prose-invert max-w-none
-              prose-headings:font-semibold prose-headings:tracking-tight
-              prose-p:leading-relaxed prose-li:leading-relaxed
-              prose-blockquote:border-l-2 prose-blockquote:pl-3 prose-blockquote:italic
-              prose-code:text-xs prose-code:bg-foreground/5 prose-code:px-1 prose-code:py-0.5 prose-code:rounded
-              prose-strong:font-semibold
-            ">
+        {/* Estado de error */}
+        {mensaje.error ? (
+          <div
+            className="flex items-start gap-2.5 rounded-lg px-3.5 py-3 text-sm"
+            style={{
+              background: "rgba(239,68,68,0.05)",
+              border: "1px solid rgba(239,68,68,0.15)",
+              color: "rgb(220,50,50)",
+            }}
+          >
+            <AlertTriangle className="size-4 shrink-0 mt-0.5" />
+            <p className="leading-relaxed">{mensaje.contenido || "Error desconocido"}</p>
+          </div>
+        ) : (
+          <>
+            {/* Markdown */}
+            <div
+              className="
+                prose prose-sm dark:prose-invert max-w-none
+                prose-headings:font-semibold prose-headings:tracking-tight
+                prose-h2:text-base prose-h2:mt-5 prose-h2:mb-2
+                prose-h3:text-[13px] prose-h3:mt-4 prose-h3:mb-1.5
+                prose-p:leading-relaxed prose-p:my-2
+                prose-li:leading-relaxed prose-li:my-0.5
+                prose-ul:my-2 prose-ol:my-2
+                prose-blockquote:border-l-2 prose-blockquote:pl-4
+                prose-blockquote:italic prose-blockquote:text-sm
+                prose-blockquote:not-italic
+                prose-code:text-[11px] prose-code:bg-foreground/5
+                prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded
+                prose-code:font-mono prose-code:before:content-none prose-code:after:content-none
+                prose-strong:font-semibold
+                prose-hr:border-foreground/10 prose-hr:my-4
+                prose-table:text-xs
+                prose-th:font-medium prose-th:py-2
+                prose-td:py-1.5
+              "
+            >
               <ReactMarkdown remarkPlugins={[remarkGfm]}>
                 {mensaje.contenido}
               </ReactMarkdown>
             </div>
-          )}
 
-          {/* Cursor parpadeante durante streaming */}
-          {mensaje.streaming && !mensaje.error && (
-            <span
-              className="inline-block w-0.5 h-4 ml-0.5 animate-pulse align-text-bottom"
-              style={{ background: "var(--ink-2)" }}
-            />
-          )}
-        </div>
+            {/* Cursor parpadeante durante streaming */}
+            {mensaje.streaming && (
+              <span
+                className="inline-block w-[2px] h-[1em] ml-0.5 animate-pulse align-text-bottom rounded-full"
+                style={{ background: accentColor, opacity: 0.8 }}
+              />
+            )}
 
-        {/* Panel de fuentes */}
-        {!isUser && mensaje.fuentes && mensaje.fuentes.length > 0 && (
-          <FuentesPanel fuentes={mensaje.fuentes} className="w-full" />
+            {/* Panel de fuentes (solo cuando terminó el streaming) */}
+            {!mensaje.streaming &&
+              mensaje.fuentes &&
+              mensaje.fuentes.length > 0 && (
+                <FuentesPanel fuentes={mensaje.fuentes} />
+              )}
+          </>
         )}
       </div>
     </div>
   );
+}
+
+// ─── Export principal ─────────────────────────────────────────────────────────
+
+export function Mensaje({ mensaje }: { mensaje: MensajeData }) {
+  if (mensaje.rol === "usuario") {
+    return <MensajeUsuario contenido={mensaje.contenido} />;
+  }
+  return <MensajeAsistente mensaje={mensaje} />;
 }
