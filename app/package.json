@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "corpus:download": "tsx --env-file=.env.local scripts/download/download-all.ts",
+    "corpus:verify": "tsx scripts/download/verify-corpus.ts",
+    "corpus:ingest": "tsx --env-file=.env.local scripts/ingest/ingest.ts",
+    "corpus:ingest:dry": "tsx --env-file=.env.local scripts/ingest/ingest.ts --dry"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.0",
@@ -37,9 +41,14 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "cheerio": "^1.2.0",
+    "dotenv": "^16.4.5",
     "eslint": "^9",
     "eslint-config-next": "15.2.1",
+    "pdf-parse": "^1.1.1",
+    "pg": "^8.20.0",
     "tailwindcss": "^4",
+    "tsx": "^4.19.3",
     "typescript": "^5"
   }
 }
