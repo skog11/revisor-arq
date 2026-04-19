@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:connection": "tsx --env-file=.env.local scripts/test-connection.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.0",
@@ -33,6 +34,8 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "dotenv": "^16.4.5",
+    "tsx": "^4.19.2",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
