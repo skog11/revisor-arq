@@ -14,6 +14,11 @@ export function getSupabaseAdmin() {
   return createClient(url, key, { auth: { persistSession: false } });
 }
 
+/** Alias para uso en server-side con service_role */
+export function getSupabaseServiceClient() {
+  return getSupabaseAdmin();
+}
+
 /** Singleton público para uso en el frontend */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let _public: any = null;
