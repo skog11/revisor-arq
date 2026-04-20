@@ -1,6 +1,7 @@
 "use client";
 
-import { HardHat, Scale, Microscope, AlertTriangle } from "lucide-react";
+import { useState } from "react";
+import { HardHat, Scale, Microscope, AlertTriangle, ThumbsUp, ThumbsDown } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -18,6 +19,74 @@ export interface MensajeData {
   streaming?: boolean;
   error?: boolean;
   modo?: ModoRespuesta;
+  consultaId?: string; // ID de la consulta guardada en Supabase para feedback
+}
+
+// ─── Feedback ─────────────────────────────────────────────────────────────────
+
+function FeedbackBar({ consultaId }: { consultaId?: string }) {
+  const [voto, setVoto] = useState<1 | -1 | null>(null);
+  const [enviando, setEnviando] = useState(false);
+
+  if (!consultaId) return null;
+
+  async function votar(thumbs: 1 | -1) {
+    if (voto !== null || enviando) return;
+    setEnviando(true);
+    try {
+      await fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ consulta_id: consultaId, thumbs }),
+      });
+      setVoto(thumbs);
+    } catch {
+      // silencioso — el feedback no es crítico
+    } finally {
+      setEnviando(false);
+    }
+  }
+
+  return (
+    <div className="flex items-center gap-1 mt-3">
+      <span
+        className="text-[10px] mr-1"
+        style={{ color: "var(--ink-4, var(--ink-3))", fontFamily: "var(--font-jetbrains-mono)" }}
+      >
+        {voto === null ? "¿Útil?" : voto === 1 ? "Gracias" : "Gracias por el feedback"}
+      </span>
+      <button
+        onClick={() => votar(1)}
+        disabled={voto !== null || enviando}
+        className="p-1 rounded transition-colors hover:bg-foreground/[0.06] disabled:cursor-default"
+        title="Respuesta útil"
+        aria-label="Marcar como útil"
+      >
+        <ThumbsUp
+          className="size-3.5"
+          style={{
+            color: voto === 1 ? "var(--ra-green)" : "var(--ink-4, var(--ink-3))",
+            fill: voto === 1 ? "var(--ra-green)" : "none",
+          }}
+        />
+      </button>
+      <button
+        onClick={() => votar(-1)}
+        disabled={voto !== null || enviando}
+        className="p-1 rounded transition-colors hover:bg-foreground/[0.06] disabled:cursor-default"
+        title="Respuesta incorrecta o insuficiente"
+        aria-label="Marcar como incorrecta"
+      >
+        <ThumbsDown
+          className="size-3.5"
+          style={{
+            color: voto === -1 ? "var(--terracotta)" : "var(--ink-4, var(--ink-3))",
+            fill: voto === -1 ? "var(--terracotta)" : "none",
+          }}
+        />
+      </button>
+    </div>
+  );
 }
 
 // ─── Configuración de modos ───────────────────────────────────────────────────
@@ -143,6 +212,11 @@ function MensajeAsistente({ mensaje }: { mensaje: MensajeData }) {
               mensaje.fuentes.length > 0 && (
                 <FuentesPanel fuentes={mensaje.fuentes} />
               )}
+
+            {/* Feedback */}
+            {!mensaje.streaming && !mensaje.error && (
+              <FeedbackBar consultaId={mensaje.consultaId} />
+            )}
           </>
         )}
       </div>
