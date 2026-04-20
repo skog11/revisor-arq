@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState, useCallback, useEffect } from "react";
-import { Send, Square, HardHat, Scale, Microscope, ChevronRight } from "lucide-react";
+import { Send, Square, HardHat, Scale, Microscope, ChevronRight, RotateCcw } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { Mensaje, type MensajeData, type Fuente } from "@/components/chat/mensaje";
 import { cn } from "@/lib/utils";
@@ -96,6 +96,11 @@ export default function ChatPage() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [mensajes]);
 
+  // Autofocus al montar
+  useEffect(() => {
+    textareaRef.current?.focus();
+  }, []);
+
   const enviar = useCallback(
     async (textoPregunta?: string) => {
       const texto = (textoPregunta ?? pregunta).trim();
@@ -149,6 +154,7 @@ export default function ChatPage() {
                 text?: string;
                 data?: Fuente[];
                 message?: string;
+                consultaId?: string;
               };
 
               if (event.type === "fuentes" && event.data) {
@@ -159,6 +165,12 @@ export default function ChatPage() {
                 setMensajes((prev) =>
                   prev.map((m) =>
                     m.id === asistId ? { ...m, contenido: m.contenido + event.text } : m
+                  )
+                );
+              } else if (event.type === "meta" && event.consultaId) {
+                setMensajes((prev) =>
+                  prev.map((m) =>
+                    m.id === asistId ? { ...m, consultaId: event.consultaId } : m
                   )
                 );
               } else if (event.type === "done") {
@@ -215,6 +227,14 @@ export default function ChatPage() {
   const modoActivo = MODO_CFG[modo];
   const isWaitingFirstChunk =
     cargando && mensajes.length > 0 && mensajes[mensajes.length - 1]?.contenido === "";
+
+  const limpiarChat = useCallback(() => {
+    abortRef.current?.abort();
+    setMensajes([]);
+    setPregunta("");
+    setCargando(false);
+    setTimeout(() => textareaRef.current?.focus(), 50);
+  }, []);
 
   return (
     <div className="flex h-[calc(100vh-64px)] flex-col">
@@ -420,29 +440,44 @@ export default function ChatPage() {
       >
         <div className="mx-auto max-w-3xl px-4 pt-3 pb-3">
 
-          {/* Selector de modo */}
-          <div className="flex items-center gap-0.5 mb-2.5">
-            {MODOS.map((key) => {
-              const cfg = MODO_CFG[key];
-              const active = modo === key;
-              return (
-                <button
-                  key={key}
-                  onClick={() => setModo(key)}
-                  className={cn(
-                    "flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium transition-all duration-150"
-                  )}
-                  style={{
-                    background: active ? cfg.bgSoft : "transparent",
-                    color: active ? cfg.color : "var(--ink-4, var(--ink-3))",
-                    border: `1px solid ${active ? cfg.border : "transparent"}`,
-                  }}
-                >
-                  <cfg.Icon className="size-3" />
-                  {cfg.label}
-                </button>
-              );
-            })}
+          {/* Barra superior: modos + nueva consulta */}
+          <div className="flex items-center justify-between mb-2.5">
+            <div className="flex items-center gap-0.5">
+              {MODOS.map((key) => {
+                const cfg = MODO_CFG[key];
+                const active = modo === key;
+                return (
+                  <button
+                    key={key}
+                    onClick={() => setModo(key)}
+                    className={cn(
+                      "flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium transition-all duration-150"
+                    )}
+                    style={{
+                      background: active ? cfg.bgSoft : "transparent",
+                      color: active ? cfg.color : "var(--ink-4, var(--ink-3))",
+                      border: `1px solid ${active ? cfg.border : "transparent"}`,
+                    }}
+                  >
+                    <cfg.Icon className="size-3" />
+                    {cfg.label}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Botón nueva consulta */}
+            {hayMensajes && (
+              <button
+                onClick={limpiarChat}
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] transition-colors hover:bg-foreground/[0.06]"
+                style={{ color: "var(--ink-4, var(--ink-3))" }}
+                title="Empezar nueva consulta"
+              >
+                <RotateCcw className="size-3" />
+                Nueva consulta
+              </button>
+            )}
           </div>
 
           {/* Caja de entrada */}

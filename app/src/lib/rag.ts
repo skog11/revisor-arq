@@ -269,6 +269,7 @@ export function validarRespuesta(respuesta: string): { valida: boolean; motivo?:
 // ─── Guardar consulta ─────────────────────────────────────────────────────────
 
 export async function guardarConsulta(opts: {
+  id?: string;           // UUID pre-generado para devolver al cliente
   pregunta: string;
   modo: ModoRespuesta;
   respuesta: string;
@@ -278,7 +279,7 @@ export async function guardarConsulta(opts: {
 }): Promise<void> {
   try {
     const sb = getSupabaseServiceClient();
-    await sb.from("consultas").insert({
+    const row: Record<string, unknown> = {
       pregunta: opts.pregunta,
       modo: opts.modo,
       respuesta: opts.respuesta,
@@ -290,7 +291,9 @@ export async function guardarConsulta(opts: {
       })),
       modelo: opts.modelo,
       latencia_ms: opts.latenciaMs,
-    });
+    };
+    if (opts.id) row.id = opts.id;
+    await sb.from("consultas").insert(row);
   } catch {
     // No crítico — no interrumpir la respuesta al usuario
   }

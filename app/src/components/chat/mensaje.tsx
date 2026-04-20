@@ -210,7 +210,10 @@ function MensajeAsistente({ mensaje }: { mensaje: MensajeData }) {
             {!mensaje.streaming &&
               mensaje.fuentes &&
               mensaje.fuentes.length > 0 && (
-                <FuentesPanel fuentes={mensaje.fuentes} />
+                <FuentesPanel
+                  fuentes={mensaje.fuentes}
+                  initialVisible={mensaje.modo === "profundo" ? 6 : 3}
+                />
               )}
 
             {/* Feedback */}

@@ -17,6 +17,7 @@ export interface Fuente {
 interface FuentesPanelProps {
   fuentes: Fuente[];
   className?: string;
+  initialVisible?: number;
 }
 
 const TIPO_COLOR: Record<string, string> = {
@@ -26,15 +27,13 @@ const TIPO_COLOR: Record<string, string> = {
   DDU_ESPECIFICA: "rgb(220,100,46)",
 };
 
-const INITIAL_VISIBLE = 3;
-
-export function FuentesPanel({ fuentes, className }: FuentesPanelProps) {
+export function FuentesPanel({ fuentes, className, initialVisible = 3 }: FuentesPanelProps) {
   const [expanded, setExpanded] = useState(false);
 
   if (!fuentes.length) return null;
 
-  const visible = expanded ? fuentes : fuentes.slice(0, INITIAL_VISIBLE);
-  const hiddenCount = fuentes.length - INITIAL_VISIBLE;
+  const visible = expanded ? fuentes : fuentes.slice(0, initialVisible);
+  const hiddenCount = fuentes.length - initialVisible;
 
   return (
     <div className={cn("mt-5", className)}>

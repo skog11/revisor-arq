@@ -7,6 +7,7 @@
  *   data: {"type":"chunk","text":"..."}   — fragmento de texto generado
  *   data: {"type":"fuentes","data":[...]} — chunks RAG usados (enviado al inicio)
  *   data: {"type":"done"}                — fin del stream
+ *   data: {"type":"meta","consultaId":"..."} — ID de consulta guardada (para feedback)
  *   data: {"type":"error","message":"..."} — error
  */
 
@@ -116,9 +117,11 @@ export async function POST(req: NextRequest) {
           respuestaCompleta += disclaimerExtra;
         }
 
-        // 6. Guardar consulta en background
+        // 6. Guardar consulta y enviar ID al cliente (para feedback)
+        const consultaId = crypto.randomUUID();
         const latenciaMs = Date.now() - t0;
         guardarConsulta({
+          id: consultaId,
           pregunta,
           modo: modo as ModoRespuesta,
           respuesta: respuestaCompleta,
@@ -127,6 +130,7 @@ export async function POST(req: NextRequest) {
           latenciaMs,
         });
 
+        send({ type: "meta", consultaId });
         send({ type: "done" });
       } catch (err) {
         const message = err instanceof Error ? err.message : "Error desconocido";
