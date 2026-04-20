@@ -1,34 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# REVISOR ARQ
 
-## Getting Started
+Asistente RAG de normativa chilena de urbanismo y construcción. Responde consultas sobre LGUC, OGUC y DDU con citas verificables de los artículos relevantes.
 
-First, run the development server:
+## Stack
+
+- **Next.js 15** (App Router) + TypeScript + Tailwind CSS + shadcn/ui
+- **Supabase** (Postgres + pgvector HNSW) para almacenamiento y búsqueda vectorial
+- **Gemini 2.5 Flash** para generación de respuestas (streaming)
+- **Gemini Embeddings** (`gemini-embedding-001`, dim 1024) para búsqueda semántica
+- **Vercel** para deploy
+
+## Variables de entorno
+
+Copia `.env.example` a `.env.local` y completa los valores:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env.example .env.local
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Necesitas:
+- `NEXT_PUBLIC_SUPABASE_URL` + `NEXT_PUBLIC_SUPABASE_ANON_KEY` + `SUPABASE_SERVICE_ROLE_KEY` — desde [Supabase Dashboard](https://supabase.com/dashboard)
+- `GEMINI_API_KEY` — desde [Google AI Studio](https://aistudio.google.com/app/apikey)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Desarrollo local
 
-## Learn More
+```bash
+npm install
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+Abre [http://localhost:3000](http://localhost:3000).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Ingesta del corpus
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+# Descargar PDFs (LGUC, OGUC, DDUs)
+npm run corpus:download
 
-## Deploy on Vercel
+# Ingestar en Supabase (requiere cuota diaria de Gemini Embeddings)
+npm run corpus:ingest
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# Dry run sin escribir a Supabase
+npm run corpus:ingest:dry
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# Reingestar una norma específica aunque no cambió
+npm run corpus:ingest -- --force --solo=LGUC_DFL-458
+```
+
+El script es idempotente: solo re-embeda normas cuyo hash de contenido cambió.
+
+## Evaluaciones
+
+```bash
+npm run eval
+```
+
+Requiere servidor local corriendo (`npm run dev`). Genera un reporte en `scripts/eval/resultados/`.
+
+## Modos de respuesta
+
+| Modo | Descripción |
+|------|-------------|
+| **Arquitecto** | Parámetros técnicos, coeficientes, ejemplos prácticos |
+| **Abogado** | Texto literal de artículos, cadena normativa, análisis de vacíos |
+| **Profundo** | Análisis exhaustivo multi-norma en 6 secciones estructuradas |
+
+## Deploy en Vercel
+
+1. Conecta el repositorio en [vercel.com](https://vercel.com/new)
+2. Configura el **Root Directory** como `app`
+3. Agrega las variables de entorno (ver `.env.example`)
+4. Deploy
+
+El `vercel.json` configura un timeout de 60s para la ruta `/api/chat` (necesario para el modo Profundo).

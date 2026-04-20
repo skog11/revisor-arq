@@ -6,8 +6,8 @@ import { motion, type Variants } from "framer-motion";
 const FEATURES = [
   {
     num: "01",
-    title: "Dos modos de respuesta",
-    desc: "Arquitecto para parámetros aplicados. Abogado para citas literales íntegras con contexto interpretativo.",
+    title: "Tres modos de respuesta",
+    desc: "Arquitecto para parámetros aplicados. Abogado para citas literales íntegras. Profundo para análisis exhaustivo multi-norma.",
   },
   {
     num: "02",
@@ -153,6 +153,20 @@ export default function HomePage() {
               style={{
                 fontFamily: "var(--font-jetbrains-mono)",
                 fontSize: 11,
+                background: "rgba(59,130,246,0.08)",
+                color: "rgb(59,130,246)",
+                border: "1px solid rgba(59,130,246,0.2)",
+                textTransform: "uppercase",
+                letterSpacing: "0.6px",
+              }}
+            >
+              Modo Arquitecto
+            </span>
+            <span
+              className="rounded-full px-3 py-1"
+              style={{
+                fontFamily: "var(--font-jetbrains-mono)",
+                fontSize: 11,
                 background: "var(--terracotta-soft)",
                 color: "var(--terracotta)",
                 border: "1px solid transparent",
@@ -160,7 +174,7 @@ export default function HomePage() {
                 letterSpacing: "0.6px",
               }}
             >
-              Modo Arquitecto
+              Modo Abogado
             </span>
             <span
               className="rounded-full px-3 py-1"
@@ -174,7 +188,7 @@ export default function HomePage() {
                 letterSpacing: "0.6px",
               }}
             >
-              Modo Abogado
+              Modo Profundo
             </span>
           </motion.div>
 
@@ -411,7 +425,7 @@ export default function HomePage() {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
           {[
             { step: "1", title: "Hacés tu consulta", desc: "Escribís en lenguaje natural, como se lo contarías a un colega." },
-            { step: "2", title: "Se busca en el corpus", desc: "Voyage AI encuentra los artículos más relevantes por similitud semántica." },
+            { step: "2", title: "Se busca en el corpus", desc: "Gemini Embeddings encuentra los artículos más relevantes por similitud semántica." },
             { step: "3", title: "Gemini redacta", desc: "Genera la respuesta usando solo los fragmentos recuperados, sin inventar." },
             { step: "4", title: "Ves las fuentes", desc: "Cada cita es verificable. Podés hacer clic para ver el artículo completo." },
           ].map((item, i) => (
