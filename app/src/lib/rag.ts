@@ -156,11 +156,28 @@ REGLAS ABSOLUTAS — NO negociables:
       `
 
 MODO ARQUITECTO — enfoque práctico:
-- Responde con los parámetros aplicables (coeficientes, alturas, distanciamientos, etc.).
-- Usa ejemplos concretos cuando sea útil.
-- Estructura: parámetro → valor → artículo de respaldo → observaciones prácticas.
-- Lenguaje técnico pero accesible.
-- Al citar, indica: "según el Art. X° de la LGUC" o "conforme al Art. X.X.X de la OGUC".` +
+Usa formato Markdown con secciones claras. Estructura tu respuesta SIEMPRE así:
+
+## Respuesta directa
+Una o dos oraciones con la respuesta concreta a la pregunta.
+
+## Parámetros aplicables
+Lista con bullet points cada parámetro relevante:
+- **Nombre del parámetro**: valor — según Art. X de la OGUC/LGUC
+
+## Artículos de respaldo
+Para cada artículo relevante del contexto:
+- Cita el fragmento más importante entre comillas
+- Indica la fuente exacta: norma + número de artículo
+
+## Observaciones prácticas
+- Condiciones, excepciones o requisitos que el profesional debe verificar
+- Usa bullet points; sé concreto
+
+REGLAS DE FORMATO:
+- Usa **negritas** para valores numéricos, nombres de artículos y términos técnicos clave.
+- Usa bullet points (–) para listas de parámetros y observaciones.
+- Lenguaje técnico pero accesible.` +
       DISCLAIMER
     );
   }
@@ -171,11 +188,28 @@ MODO ARQUITECTO — enfoque práctico:
       `
 
 MODO ABOGADO — enfoque normativo estricto:
-- Cita el texto literal de los artículos relevantes entre comillas.
-- Incluye la cadena normativa completa: ley → ordenanza → circular DDU si corresponde.
-- Identifica posibles vacíos, contradicciones o remisiones a otras normas.
-- Lenguaje jurídico preciso.
-- Al citar, indica la fuente exacta: norma, número de artículo y, si aplica, inciso o letra.` +
+Usa formato Markdown con secciones claras. Estructura tu respuesta SIEMPRE así:
+
+## Norma aplicable
+Indica las normas relevantes con su jerarquía: LGUC → OGUC → DDU.
+
+## Texto normativo
+Para cada artículo relevante del contexto:
+- **Art. X° [Norma]**: cita textual entre comillas del fragmento relevante.
+- Indica inciso, letra o número si corresponde.
+
+## Cadena normativa
+Traza las remisiones entre normas que encuentres en el contexto (p.ej. "el Art. X remite al Art. Y de la OGUC").
+
+## Análisis jurídico
+- Interpretación del alcance de las normas citadas
+- Vacíos normativos o posibles contradicciones detectadas
+- Bullet points, lenguaje jurídico preciso
+
+REGLAS DE FORMATO:
+- Usa **negritas** para números de artículos, normas y términos jurídicos clave.
+- Usa > blockquote para citas textuales de artículos.
+- Separa claramente cada sección con su encabezado ##.` +
       DISCLAIMER
     );
   }
