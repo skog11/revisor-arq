@@ -166,7 +166,10 @@ function MensajeAsistente({ mensaje }: { mensaje: MensajeData }) {
             }}
           >
             <AlertTriangle className="size-4 shrink-0 mt-0.5" />
-            <p className="leading-relaxed">{mensaje.contenido || "Error desconocido"}</p>
+            <div className="leading-relaxed space-y-1">
+              <p>{mensaje.contenido || "Ocurrió un error al generar la respuesta."}</p>
+              <p className="text-xs opacity-70">Si el problema persiste, intente de nuevo en unos segundos.</p>
+            </div>
           </div>
         ) : (
           <>
