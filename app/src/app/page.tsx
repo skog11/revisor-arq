@@ -424,10 +424,10 @@ export default function HomePage() {
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
           {[
-            { step: "1", title: "Hacés tu consulta", desc: "Escribís en lenguaje natural, como se lo contarías a un colega." },
+            { step: "1", title: "Escribe tu consulta", desc: "En lenguaje natural, como se lo contaría a un colega." },
             { step: "2", title: "Se busca en el corpus", desc: "Gemini Embeddings encuentra los artículos más relevantes por similitud semántica." },
             { step: "3", title: "Gemini redacta", desc: "Genera la respuesta usando solo los fragmentos recuperados, sin inventar." },
-            { step: "4", title: "Ves las fuentes", desc: "Cada cita es verificable. Podés hacer clic para ver el artículo completo." },
+            { step: "4", title: "Revisa las fuentes", desc: "Cada cita es verificable. Haga clic en cualquier referencia para ver el artículo completo." },
           ].map((item, i) => (
             <motion.div
               key={item.step}

@@ -59,7 +59,7 @@ export default function ContactoPage() {
                 Mensaje recibido
               </p>
               <p className="mt-1 text-sm" style={{ color: "var(--ink-3)" }}>
-                Revisaremos tu reporte y, si dejaste email, te responderemos
+                Revisaremos tu reporte y, si dejaste tu correo, te responderemos
                 a la brevedad.
               </p>
             </div>
