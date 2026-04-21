@@ -33,6 +33,12 @@ export function Footer() {
           }}
         >
           <Link
+            href="/pricing"
+            className="transition-colors hover:text-[var(--ink)]"
+          >
+            Precios
+          </Link>
+          <Link
             href="/terminos"
             className="transition-colors hover:text-[var(--ink)]"
           >
@@ -43,6 +49,12 @@ export function Footer() {
             className="transition-colors hover:text-[var(--ink)]"
           >
             Privacidad
+          </Link>
+          <Link
+            href="/contacto"
+            className="transition-colors hover:text-[var(--ink)]"
+          >
+            Contacto
           </Link>
           <span style={{ color: "var(--ink-5)" }}>
             © {new Date().getFullYear()} Revisor ARQ
