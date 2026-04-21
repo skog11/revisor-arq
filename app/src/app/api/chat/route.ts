@@ -88,6 +88,7 @@ export async function POST(req: NextRequest) {
             jerarquia: c.jerarquia,
             url_fuente: c.url_fuente,
             similarity: Math.round(c.similarity * 1000) / 1000,
+            texto: c.texto,
           })),
         });
 
