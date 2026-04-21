@@ -98,10 +98,15 @@ async function evalCaso(caso: EvalCase, baseUrl: string): Promise<ResultadoEval>
   );
 
   // Artículos citados: buscar patrones "Art. X", "artículo X", "Art X°"
+  // Captura solo el número (y opcionalmente bis/ter/quinquies/°), sin incluir texto posterior
   const articulosCitados = [
     ...new Set(
-      [...respuesta.matchAll(/art[íi]culo[s]?\s+(\d+[\w\s]*?)(?:[°º]|\.|-|$)/gi)]
-        .map((m) => m[1].trim().toLowerCase())
+      [
+        // "artículo 116°", "artículo 116 bis", "artículo 116"
+        ...respuesta.matchAll(/art[íi]culo[s]?\s+(\d+\s*(?:bis|ter|qu[aá]ter|quinquies)?)\s*[°º]?/gi),
+        // "Art. 116" (forma corta con punto)
+        ...respuesta.matchAll(/\bart\.\s*(\d+\s*(?:bis|ter|qu[aá]ter|quinquies)?)\s*[°º]?/gi),
+      ].map((m) => m[1].trim().replace(/\s+/g, " ").toLowerCase())
     ),
   ];
   const articulosEsperadosFaltantes = caso.articulosEsperados.filter(

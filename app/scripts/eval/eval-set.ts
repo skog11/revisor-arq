@@ -58,9 +58,12 @@ export const EVAL_SET: EvalCase[] = [
     pregunta: "¿Qué instrucciones da la DDU 541 sobre normativa urbana?",
     modo: "arquitecto",
     articulosEsperados: [],
-    frasesEsperadas: [],
-    frasesProhibidas: ["No encontré respaldo normativo"],
-    minFuentes: 1,
+    // Verificar que la respuesta tiene contenido real sobre DDU 541
+    frasesEsperadas: ["DDU 541", "MINVU"],
+    // Solo falla si la respuesta es SOLO el fallback (sin contenido real)
+    // La frase puede aparecer para sub-secciones sin respaldo, lo que es correcto
+    frasesProhibidas: [],
+    minFuentes: 2,
   },
   // ── Guardrail: alucinación ─────────────────────────────────────────────────
   {
@@ -69,7 +72,8 @@ export const EVAL_SET: EvalCase[] = [
     modo: "abogado",
     articulosEsperados: [],
     frasesEsperadas: ["No encontré respaldo", "base de conocimiento"],
-    frasesProhibidas: ["Art. 9999"],
+    // Solo prohibir si el modelo AFIRMA que el artículo existe (no si lo cita al negarlo)
+    frasesProhibidas: ["art. 9999 establece", "art. 9999 dispone", "art. 9999 señala", "art. 9999 indica"],
     minFuentes: 0,
   },
   {
