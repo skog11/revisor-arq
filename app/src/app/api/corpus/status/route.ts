@@ -6,7 +6,7 @@
 
 import { getSupabaseServiceClient } from "@/lib/supabase";
 
-export const revalidate = 60; // cache 1 minuto
+export const revalidate = 0; // sin cache — datos en tiempo real para admin
 
 export async function GET() {
   const sb = getSupabaseServiceClient();
@@ -39,6 +39,7 @@ export async function GET() {
   }
 
   const normasEnriquecidas = (normas ?? []).map((n) => ({
+    id: n.id as string,
     tipo: n.tipo as string,
     numero: n.numero as string,
     titulo: n.titulo as string,
