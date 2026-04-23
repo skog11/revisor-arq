@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { ModeToggle } from "@/components/mode-toggle";
 import { cn } from "@/lib/utils";
 
@@ -29,7 +30,7 @@ export function Header() {
       <div className="flex items-center justify-between px-6 py-4 sm:px-8">
         {/* Logo */}
         <div className="flex items-center gap-3">
-          <Link href="/" className="flex items-center gap-2.5 no-underline">
+          <Link href="/" className="flex items-center gap-2.5 no-underline" aria-label="REVISOR ARQ — Inicio">
             <div
               className="grid place-items-center rounded-[7px] text-xs font-semibold"
               style={{ width: 26, height: 26, background: "var(--ink)", color: "var(--paper)" }}
@@ -80,13 +81,6 @@ export function Header() {
         {/* Acciones derecha */}
         <div className="flex items-center gap-2">
           <ModeToggle />
-          <Link
-            href="/chat"
-            className="hidden rounded-full px-4 py-2 text-sm font-medium transition-all hover:-translate-y-px sm:inline-flex"
-            style={{ background: "var(--ink)", color: "var(--paper)", border: "1px solid var(--ink)" }}
-          >
-            Probar consulta
-          </Link>
           {/* Botón hamburguesa — solo mobile */}
           <button
             className="flex items-center justify-center rounded-lg p-1.5 transition-colors hover:bg-foreground/[0.06] md:hidden"
@@ -103,40 +97,37 @@ export function Header() {
       </div>
 
       {/* Menú mobile desplegable */}
-      {menuAbierto && (
-        <nav
-          className="border-t px-6 py-3 md:hidden"
-          style={{ borderColor: "var(--rule)", background: "var(--paper)" }}
-        >
-          <ul className="flex flex-col gap-1">
-            {NAV_LINKS.map((link) => (
-              <li key={link.href}>
-                <Link
-                  href={link.href}
-                  onClick={() => setMenuAbierto(false)}
-                  className={cn(
-                    "block rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
-                    "hover:bg-[var(--paper-2)]",
-                    pathname === link.href ? "text-[var(--ink)]" : "text-[var(--ink-2)]"
-                  )}
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
-            <li className="mt-2 border-t pt-2" style={{ borderColor: "var(--rule)" }}>
-              <Link
-                href="/chat"
-                onClick={() => setMenuAbierto(false)}
-                className="block rounded-lg px-3 py-2.5 text-sm font-medium text-center transition-colors"
-                style={{ background: "var(--ink)", color: "var(--paper)" }}
-              >
-                Probar consulta
-              </Link>
-            </li>
-          </ul>
-        </nav>
-      )}
+      <AnimatePresence>
+        {menuAbierto && (
+          <motion.nav
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.15 }}
+            className="border-t px-6 py-3 md:hidden"
+            aria-label="Menú de navegación"
+            style={{ borderColor: "var(--rule)", background: "var(--paper)" }}
+          >
+            <ul className="flex flex-col gap-1">
+              {NAV_LINKS.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    onClick={() => setMenuAbierto(false)}
+                    className={cn(
+                      "block rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                      "hover:bg-[var(--paper-2)]",
+                      pathname === link.href ? "text-[var(--ink)]" : "text-[var(--ink-2)]"
+                    )}
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </motion.nav>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

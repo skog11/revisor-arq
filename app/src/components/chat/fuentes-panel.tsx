@@ -22,10 +22,10 @@ interface FuentesPanelProps {
 }
 
 const TIPO_COLOR: Record<string, string> = {
-  LGUC:           "rgb(59,130,246)",
-  OGUC:           "rgb(16,185,129)",
-  DDU:            "rgb(201,138,31)",
-  DDU_ESPECIFICA: "rgb(220,100,46)",
+  LGUC:           "var(--ra-blue)",
+  OGUC:           "var(--ra-green)",
+  DDU:            "var(--ra-warn)",
+  DDU_ESPECIFICA: "var(--terracotta)",
 };
 
 // ─── Drawer de texto completo ─────────────────────────────────────────────────
@@ -59,11 +59,16 @@ function ArticuloDrawer({
       {/* Panel lateral */}
       <motion.aside
         key="drawer"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Texto del artículo"
         initial={{ x: "100%" }}
         animate={{ x: 0 }}
         exit={{ x: "100%" }}
         transition={{ type: "spring", damping: 28, stiffness: 280 }}
-        className="fixed right-0 top-0 bottom-0 z-50 flex flex-col w-full max-w-lg shadow-2xl"
+        onKeyDown={(e) => e.key === "Escape" && onClose()}
+        tabIndex={-1}
+        className="fixed right-0 top-0 bottom-0 z-50 flex flex-col w-full max-w-lg shadow-2xl outline-none"
         style={{
           background: "var(--paper)",
           borderLeft: "1px solid var(--rule)",
@@ -224,7 +229,7 @@ export function FuentesPanel({ fuentes, className, initialVisible = 3 }: Fuentes
         <div className="flex items-center gap-3 mb-2">
           <div className="h-px flex-1" style={{ background: "var(--rule)" }} />
           <span
-            className="text-[9px] uppercase tracking-[0.18em] px-1"
+            className="text-[10px] uppercase tracking-[0.18em] px-1"
             style={{
               color: "var(--ink-4, var(--ink-3))",
               fontFamily: "var(--font-jetbrains-mono)",
@@ -261,7 +266,7 @@ export function FuentesPanel({ fuentes, className, initialVisible = 3 }: Fuentes
                     onClick={() => tieneTexto ? setSelected(f) : undefined}
                     disabled={!tieneTexto}
                     className={cn(
-                      "w-full text-left flex items-center gap-3 px-3 py-2.5 transition-colors",
+                      "group w-full text-left flex items-center gap-3 px-3 py-2.5 transition-colors",
                       tieneTexto && "hover:bg-foreground/[0.04] cursor-pointer",
                       !tieneTexto && "cursor-default",
                       i < visible.length - 1 && "border-b"
@@ -326,13 +331,14 @@ export function FuentesPanel({ fuentes, className, initialVisible = 3 }: Fuentes
                         />
                       </div>
                       <span
-                        className="text-[10px] w-5 text-right tabular-nums"
+                        className="text-[10px] w-7 text-right tabular-nums"
                         style={{
                           color: "var(--ink-4, var(--ink-3))",
                           fontFamily: "var(--font-jetbrains-mono)",
                         }}
+                        aria-label={`Similitud: ${pct}%`}
                       >
-                        {pct}
+                        {pct}%
                       </span>
                     </div>
 

@@ -149,13 +149,14 @@ export default function HomePage() {
               </span>
             ))}
             <span
+              aria-hidden="true"
               className="rounded-full px-3 py-1"
               style={{
                 fontFamily: "var(--font-jetbrains-mono)",
                 fontSize: 11,
-                background: "rgba(59,130,246,0.08)",
-                color: "rgb(59,130,246)",
-                border: "1px solid rgba(59,130,246,0.2)",
+                background: "var(--ra-blue-soft)",
+                color: "var(--ra-blue)",
+                border: "1px solid color-mix(in srgb, var(--ra-blue) 30%, transparent)",
                 textTransform: "uppercase",
                 letterSpacing: "0.6px",
               }}
@@ -163,13 +164,14 @@ export default function HomePage() {
               Modo Arquitecto
             </span>
             <span
+              aria-hidden="true"
               className="rounded-full px-3 py-1"
               style={{
                 fontFamily: "var(--font-jetbrains-mono)",
                 fontSize: 11,
                 background: "var(--terracotta-soft)",
                 color: "var(--terracotta)",
-                border: "1px solid transparent",
+                border: "1px solid color-mix(in srgb, var(--terracotta) 30%, transparent)",
                 textTransform: "uppercase",
                 letterSpacing: "0.6px",
               }}
@@ -177,13 +179,14 @@ export default function HomePage() {
               Modo Abogado
             </span>
             <span
+              aria-hidden="true"
               className="rounded-full px-3 py-1"
               style={{
                 fontFamily: "var(--font-jetbrains-mono)",
                 fontSize: 11,
                 background: "var(--ra-green-soft)",
                 color: "var(--ra-green)",
-                border: "1px solid transparent",
+                border: "1px solid color-mix(in srgb, var(--ra-green) 30%, transparent)",
                 textTransform: "uppercase",
                 letterSpacing: "0.6px",
               }}
@@ -427,7 +430,7 @@ export default function HomePage() {
             { step: "1", title: "Escribe tu consulta", desc: "En lenguaje natural, como se lo contaría a un colega." },
             { step: "2", title: "Se busca en el corpus", desc: "Gemini Embeddings encuentra los artículos más relevantes por similitud semántica." },
             { step: "3", title: "Gemini redacta", desc: "Genera la respuesta usando solo los fragmentos recuperados, sin inventar." },
-            { step: "4", title: "Revisa las fuentes", desc: "Cada cita es verificable. Haga clic en cualquier referencia para ver el artículo completo." },
+            { step: "4", title: "Revisa las fuentes", desc: "Cada cita es verificable. Haz clic en cualquier referencia para ver el artículo completo." },
           ].map((item, i) => (
             <motion.div
               key={item.step}

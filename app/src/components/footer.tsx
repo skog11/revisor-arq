@@ -32,30 +32,34 @@ export function Footer() {
             letterSpacing: "1px",
           }}
         >
-          <Link
-            href="/pricing"
-            className="transition-colors hover:text-[var(--ink)]"
+          <span
+            className="opacity-40 cursor-not-allowed"
+            title="Próximamente"
+            aria-disabled="true"
           >
             Precios
-          </Link>
-          <Link
-            href="/terminos"
-            className="transition-colors hover:text-[var(--ink)]"
+          </span>
+          <span
+            className="opacity-40 cursor-not-allowed"
+            title="Próximamente"
+            aria-disabled="true"
           >
             Términos
-          </Link>
-          <Link
-            href="/privacidad"
-            className="transition-colors hover:text-[var(--ink)]"
+          </span>
+          <span
+            className="opacity-40 cursor-not-allowed"
+            title="Próximamente"
+            aria-disabled="true"
           >
             Privacidad
-          </Link>
-          <Link
-            href="/contacto"
-            className="transition-colors hover:text-[var(--ink)]"
+          </span>
+          <span
+            className="opacity-40 cursor-not-allowed"
+            title="Próximamente"
+            aria-disabled="true"
           >
             Contacto
-          </Link>
+          </span>
           <span style={{ color: "var(--ink-5)" }}>
             © {new Date().getFullYear()} Revisor ARQ
           </span>

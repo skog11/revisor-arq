@@ -98,7 +98,7 @@ interface ModoCfg {
 }
 
 const MODO_CFG: Record<ModoRespuesta, ModoCfg> = {
-  arquitecto: { Icon: HardHat,    label: "Arquitecto", color: "rgb(59,130,246)" },
+  arquitecto: { Icon: HardHat,    label: "Arquitecto", color: "var(--ra-blue)" },
   abogado:    { Icon: Scale,      label: "Abogado",    color: "var(--terracotta)" },
   profundo:   { Icon: Microscope, label: "Profundo",   color: "var(--ra-green)" },
 };
@@ -143,7 +143,7 @@ function MensajeAsistente({ mensaje }: { mensaje: MensajeData }) {
           <div className="flex items-center gap-1.5 mb-3.5">
             <cfg.Icon className="size-3" style={{ color: accentColor }} />
             <span
-              className="text-[9px] font-medium uppercase"
+              className="text-[10px] font-medium uppercase"
               style={{
                 color: accentColor,
                 fontFamily: "var(--font-jetbrains-mono)",
@@ -158,14 +158,15 @@ function MensajeAsistente({ mensaje }: { mensaje: MensajeData }) {
         {/* Estado de error */}
         {mensaje.error ? (
           <div
+            role="alert"
             className="flex items-start gap-2.5 rounded-lg px-3.5 py-3 text-sm"
             style={{
-              background: "rgba(239,68,68,0.05)",
-              border: "1px solid rgba(239,68,68,0.15)",
-              color: "rgb(220,50,50)",
+              background: "var(--terracotta-soft)",
+              border: "1px solid color-mix(in srgb, var(--terracotta) 25%, transparent)",
+              color: "var(--terracotta)",
             }}
           >
-            <AlertTriangle className="size-4 shrink-0 mt-0.5" />
+            <AlertTriangle className="size-4 shrink-0 mt-0.5" aria-hidden="true" />
             <div className="leading-relaxed space-y-1">
               <p>{mensaje.contenido || "Ocurrió un error al generar la respuesta."}</p>
               <p className="text-xs opacity-70">Si el problema persiste, intente de nuevo en unos segundos.</p>
@@ -178,19 +179,19 @@ function MensajeAsistente({ mensaje }: { mensaje: MensajeData }) {
               className="
                 prose prose-sm dark:prose-invert max-w-none
                 prose-headings:font-semibold prose-headings:tracking-tight
-                prose-h2:text-base prose-h2:mt-5 prose-h2:mb-2
-                prose-h3:text-[13px] prose-h3:mt-4 prose-h3:mb-1.5
-                prose-p:leading-relaxed prose-p:my-2
-                prose-li:leading-relaxed prose-li:my-0.5
-                prose-ul:my-2 prose-ol:my-2
+                prose-h2:text-base prose-h2:mt-7 prose-h2:mb-3
+                prose-h3:text-[13px] prose-h3:mt-5 prose-h3:mb-2
+                prose-p:leading-[1.75] prose-p:my-3
+                prose-li:leading-[1.7] prose-li:my-1
+                prose-ul:my-3 prose-ol:my-3 prose-ul:space-y-0.5 prose-ol:space-y-0.5
                 prose-blockquote:border-l-2 prose-blockquote:pl-4
                 prose-blockquote:italic prose-blockquote:text-sm
                 prose-blockquote:not-italic
                 prose-code:text-[11px] prose-code:bg-foreground/5
                 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded
                 prose-code:font-mono prose-code:before:content-none prose-code:after:content-none
-                prose-strong:font-semibold
-                prose-hr:border-foreground/10 prose-hr:my-4
+                prose-strong:font-bold prose-strong:text-foreground
+                prose-hr:border-foreground/10 prose-hr:my-6
                 prose-table:text-xs
                 prose-th:font-medium prose-th:py-2
                 prose-td:py-1.5

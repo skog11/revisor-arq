@@ -25,9 +25,9 @@ const MODO_CFG: Record<ModoRespuesta, ModoCfg> = {
     Icon: HardHat,
     label: "Arquitecto",
     descripcion: "Parámetros técnicos, coeficientes y normas aplicadas con ejemplos prácticos.",
-    color: "rgb(59,130,246)",
-    bgSoft: "rgba(59,130,246,0.07)",
-    border: "rgba(59,130,246,0.28)",
+    color: "var(--ra-blue)",
+    bgSoft: "var(--ra-blue-soft)",
+    border: "color-mix(in srgb, var(--ra-blue) 28%, transparent)",
   },
   abogado: {
     Icon: Scale,
@@ -310,7 +310,8 @@ export default function ChatPage() {
                           setModo(key);
                           setTimeout(() => textareaRef.current?.focus(), 50);
                         }}
-                        className="text-left p-4 rounded-xl transition-all duration-200 group"
+                        aria-pressed={active}
+                        className="text-left p-4 rounded-xl transition-all duration-200 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)]"
                         style={{
                           background: active ? cfg.bgSoft : "var(--paper-2)",
                           border: `1.5px solid ${active ? cfg.border : "var(--rule)"}`,
@@ -450,8 +451,10 @@ export default function ChatPage() {
                   <button
                     key={key}
                     onClick={() => setModo(key)}
+                    aria-pressed={active}
                     className={cn(
-                      "flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium transition-all duration-150"
+                      "flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium transition-all duration-150",
+                      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)]"
                     )}
                     style={{
                       background: active ? cfg.bgSoft : "transparent",
@@ -482,7 +485,7 @@ export default function ChatPage() {
 
           {/* Caja de entrada */}
           <div
-            className="flex items-end gap-2 rounded-xl px-3 py-2 transition-shadow focus-within:shadow-sm"
+            className="flex items-end gap-2 rounded-xl px-3 py-2 transition-all focus-within:ring-2 focus-within:ring-[var(--ring)] focus-within:ring-offset-0"
             style={{
               background: "var(--paper-2)",
               border: "1px solid var(--rule)",
@@ -534,8 +537,8 @@ export default function ChatPage() {
 
           {/* Disclaimer legal */}
           <p
-            className="text-center mt-1.5 text-[9.5px]"
-            style={{ color: "var(--ink-5, var(--ink-4, var(--ink-3)))" }}
+            className="text-center mt-1.5 text-[11px]"
+            style={{ color: "var(--ink-3)" }}
           >
             REVISOR ARQ no reemplaza asesoría profesional. Verifica siempre en{" "}
             <a

@@ -1,12 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { RefreshCw, Database, FileText, CheckCircle2, Clock, ExternalLink } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import {
+  RefreshCw, Database, FileText, CheckCircle2, Clock,
+  ExternalLink, Upload, Trash2, ToggleLeft, ToggleRight, Loader2,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 interface NormaStatus {
+  id: string;
   tipo: string;
   numero: string;
   titulo: string;
@@ -22,6 +26,9 @@ interface CorpusStatus {
   normas: NormaStatus[];
   timestamp: string;
 }
+
+type TipoNorma = "LGUC" | "OGUC" | "DDU" | "DDU_ESPECIFICA";
+const TIPOS: TipoNorma[] = ["LGUC", "OGUC", "DDU", "DDU_ESPECIFICA"];
 
 function TipoBadge({ tipo }: { tipo: string }) {
   const styles: Record<string, string> = {
@@ -44,10 +51,191 @@ function formatFecha(iso: string | null) {
   });
 }
 
+// ─── Upload Form ──────────────────────────────────────────────────────────────
+
+function UploadForm({ onDone }: { onDone: () => void }) {
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [tipo, setTipo] = useState<TipoNorma>("LGUC");
+  const [numero, setNumero] = useState("");
+  const [titulo, setTitulo] = useState("");
+  const [urlFuente, setUrlFuente] = useState("");
+  const [fileName, setFileName] = useState<string | null>(null);
+  const [fase, setFase] = useState<"idle" | "extrayendo" | "ingresando" | "ok" | "error">("idle");
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  const cargando = fase === "extrayendo" || fase === "ingresando";
+
+  async function subir() {
+    const file = fileRef.current?.files?.[0];
+    if (!file || !numero.trim() || !titulo.trim()) return;
+
+    setFase("extrayendo");
+    setErrorMsg(null);
+
+    // 1. Extraer texto del PDF
+    const fd = new FormData();
+    fd.append("file", file);
+    const r1 = await fetch("/api/corpus/extraer-texto", { method: "POST", body: fd });
+    if (!r1.ok) {
+      const j = await r1.json().catch(() => ({ error: "Error desconocido" }));
+      setFase("error");
+      setErrorMsg((j as { error?: string }).error ?? "Error extrayendo texto");
+      return;
+    }
+    const { texto } = (await r1.json()) as { texto: string };
+
+    // 2. Ingestar
+    setFase("ingresando");
+    const r2 = await fetch("/api/corpus/ingestar", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ tipo, numero: numero.trim(), titulo: titulo.trim(), texto, url_fuente: urlFuente.trim() }),
+    });
+    if (!r2.ok) {
+      const j = await r2.json().catch(() => ({ error: "Error desconocido" }));
+      setFase("error");
+      setErrorMsg((j as { error?: string }).error ?? "Error ingresando norma");
+      return;
+    }
+
+    setFase("ok");
+    setTimeout(() => {
+      setFase("idle");
+      setNumero("");
+      setTitulo("");
+      setUrlFuente("");
+      setFileName(null);
+      if (fileRef.current) fileRef.current.value = "";
+      onDone();
+    }, 1500);
+  }
+
+  return (
+    <div
+      className="rounded-lg border p-5 space-y-4"
+      style={{ borderColor: "var(--rule)", background: "var(--paper-2)" }}
+    >
+      <p className="text-sm font-medium" style={{ color: "var(--ink-2)" }}>
+        Subir nueva norma (PDF)
+      </p>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {/* Tipo */}
+        <div className="flex flex-col gap-1">
+          <label className="text-xs" style={{ color: "var(--ink-3)" }}>Tipo</label>
+          <select
+            value={tipo}
+            onChange={(e) => setTipo(e.target.value as TipoNorma)}
+            disabled={cargando}
+            className="rounded-md border px-2 py-1.5 text-sm bg-transparent focus:outline-none focus:ring-2 focus:ring-[var(--ring)]"
+            style={{ borderColor: "var(--rule)", color: "var(--ink)" }}
+          >
+            {TIPOS.map((t) => <option key={t} value={t}>{t.replace("_", " ")}</option>)}
+          </select>
+        </div>
+
+        {/* Número */}
+        <div className="flex flex-col gap-1">
+          <label className="text-xs" style={{ color: "var(--ink-3)" }}>Número / clave</label>
+          <input
+            type="text"
+            value={numero}
+            onChange={(e) => setNumero(e.target.value)}
+            placeholder="ej. 541, DFL-458"
+            disabled={cargando}
+            className="rounded-md border px-2 py-1.5 text-sm bg-transparent focus:outline-none focus:ring-2 focus:ring-[var(--ring)]"
+            style={{ borderColor: "var(--rule)", color: "var(--ink)" }}
+          />
+        </div>
+
+        {/* Título */}
+        <div className="flex flex-col gap-1 sm:col-span-2">
+          <label className="text-xs" style={{ color: "var(--ink-3)" }}>Título</label>
+          <input
+            type="text"
+            value={titulo}
+            onChange={(e) => setTitulo(e.target.value)}
+            placeholder="ej. Ley General de Urbanismo y Construcciones"
+            disabled={cargando}
+            className="rounded-md border px-2 py-1.5 text-sm bg-transparent focus:outline-none focus:ring-2 focus:ring-[var(--ring)]"
+            style={{ borderColor: "var(--rule)", color: "var(--ink)" }}
+          />
+        </div>
+
+        {/* URL fuente */}
+        <div className="flex flex-col gap-1 sm:col-span-2">
+          <label className="text-xs" style={{ color: "var(--ink-3)" }}>URL fuente (opcional)</label>
+          <input
+            type="url"
+            value={urlFuente}
+            onChange={(e) => setUrlFuente(e.target.value)}
+            placeholder="https://www.bcn.cl/leychile/…"
+            disabled={cargando}
+            className="rounded-md border px-2 py-1.5 text-sm bg-transparent focus:outline-none focus:ring-2 focus:ring-[var(--ring)]"
+            style={{ borderColor: "var(--rule)", color: "var(--ink)" }}
+          />
+        </div>
+      </div>
+
+      {/* Selector de archivo */}
+      <div className="flex items-center gap-3">
+        <input
+          ref={fileRef}
+          type="file"
+          accept=".pdf"
+          className="hidden"
+          onChange={(e) => setFileName(e.target.files?.[0]?.name ?? null)}
+          disabled={cargando}
+        />
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => fileRef.current?.click()}
+          disabled={cargando}
+          className="gap-2"
+        >
+          <Upload className="size-3.5" />
+          Seleccionar PDF
+        </Button>
+        {fileName && (
+          <span className="text-xs truncate max-w-[200px]" style={{ color: "var(--ink-3)" }}>
+            {fileName}
+          </span>
+        )}
+      </div>
+
+      {/* Error */}
+      {errorMsg && (
+        <p className="text-xs text-red-600 dark:text-red-400">{errorMsg}</p>
+      )}
+
+      {/* Botón subir */}
+      <Button
+        size="sm"
+        onClick={subir}
+        disabled={cargando || !fileName || !numero.trim() || !titulo.trim()}
+        className="gap-2"
+        style={fase === "ok" ? { background: "var(--ra-green)", color: "#fff" } : {}}
+      >
+        {cargando && <Loader2 className="size-3.5 animate-spin" />}
+        {fase === "extrayendo" && "Extrayendo texto…"}
+        {fase === "ingresando" && "Generando embeddings…"}
+        {fase === "ok" && "¡Ingresado!"}
+        {(fase === "idle" || fase === "error") && "Subir e ingestar"}
+      </Button>
+    </div>
+  );
+}
+
+// ─── Página principal ─────────────────────────────────────────────────────────
+
 export default function CorpusPage() {
   const [status, setStatus] = useState<CorpusStatus | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [toggling, setToggling] = useState<string | null>(null);
+  const [eliminando, setEliminando] = useState<string | null>(null);
+  const [showUpload, setShowUpload] = useState(false);
 
   async function cargar() {
     setLoading(true);
@@ -65,8 +253,60 @@ export default function CorpusPage() {
 
   useEffect(() => { cargar(); }, []);
 
-  const normasLGUC = status?.normas.filter((n) => n.tipo === "LGUC") ?? [];
-  const normasOGUC = status?.normas.filter((n) => n.tipo === "OGUC") ?? [];
+  async function toggleVigencia(norma: NormaStatus) {
+    setToggling(norma.id);
+    try {
+      const res = await fetch("/api/corpus/vigencia", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: norma.id, vigente: !norma.vigente }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      // Actualizar localmente sin re-fetch
+      setStatus((prev) =>
+        prev
+          ? {
+              ...prev,
+              normas: prev.normas.map((n) =>
+                n.id === norma.id ? { ...n, vigente: !norma.vigente } : n
+              ),
+            }
+          : prev
+      );
+    } catch {
+      // Si falla, recargar
+      await cargar();
+    } finally {
+      setToggling(null);
+    }
+  }
+
+  async function eliminar(norma: NormaStatus) {
+    if (!confirm(`¿Eliminar "${norma.titulo}" y todos sus chunks? Esta acción es irreversible.`)) return;
+    setEliminando(norma.id);
+    try {
+      const res = await fetch("/api/corpus/eliminar", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: norma.id }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      await cargar();
+    } catch {
+      await cargar();
+    } finally {
+      setEliminando(null);
+    }
+  }
+
+  const normasSorted = status
+    ? [
+        ...status.normas.filter((n) => n.tipo === "LGUC"),
+        ...status.normas.filter((n) => n.tipo === "OGUC"),
+        ...status.normas.filter((n) => n.tipo === "DDU" || n.tipo === "DDU_ESPECIFICA"),
+      ]
+    : [];
+
   const normasDDU = status?.normas.filter((n) => n.tipo === "DDU" || n.tipo === "DDU_ESPECIFICA") ?? [];
 
   return (
@@ -84,17 +324,31 @@ export default function CorpusPage() {
             Normas ingresadas en Supabase con vectores de búsqueda
           </p>
         </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={cargar}
-          disabled={loading}
-          className="gap-2"
-        >
-          <RefreshCw className={cn("size-3.5", loading && "animate-spin")} />
-          Actualizar
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowUpload((v) => !v)}
+            className="gap-2"
+          >
+            <Upload className="size-3.5" />
+            {showUpload ? "Ocultar" : "Subir norma"}
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={cargar}
+            disabled={loading}
+            className="gap-2"
+          >
+            <RefreshCw className={cn("size-3.5", loading && "animate-spin")} />
+            Actualizar
+          </Button>
+        </div>
       </div>
+
+      {/* Upload Form */}
+      {showUpload && <UploadForm onDone={cargar} />}
 
       {error && (
         <div className="rounded-lg border border-red-500/20 bg-red-500/5 p-4 text-sm text-red-600">
@@ -124,7 +378,7 @@ export default function CorpusPage() {
                 className="text-xl font-semibold"
                 style={{ fontFamily: "var(--font-jetbrains-mono)", color: "var(--ink)" }}
               >
-                {value}
+                {String(value)}
               </p>
             </div>
           ))}
@@ -140,21 +394,25 @@ export default function CorpusPage() {
           <table className="w-full text-sm">
             <thead>
               <tr style={{ background: "var(--paper-2)", borderBottom: "1px solid var(--rule)" }}>
-                {["Tipo", "Número", "Título", "Chunks", "Última ingesta"].map((h) => (
-                  <th key={h} className="text-left px-4 py-2.5 text-xs font-medium"
-                    style={{ color: "var(--ink-3)", fontFamily: "var(--font-jetbrains-mono)" }}>
+                {["Tipo", "Número", "Título", "Vigente", "Última ingesta", ""].map((h) => (
+                  <th
+                    key={h}
+                    className="text-left px-4 py-2.5 text-xs font-medium"
+                    style={{ color: "var(--ink-3)", fontFamily: "var(--font-jetbrains-mono)" }}
+                  >
                     {h}
                   </th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {[...normasLGUC, ...normasOGUC, ...normasDDU].map((n, i) => (
+              {normasSorted.map((n, i) => (
                 <tr
                   key={`${n.tipo}-${n.numero}`}
                   className="transition-colors hover:bg-foreground/[0.02]"
                   style={{
-                    borderBottom: i < status.normas.length - 1 ? "1px solid var(--rule)" : undefined,
+                    borderBottom: i < normasSorted.length - 1 ? "1px solid var(--rule)" : undefined,
+                    opacity: n.vigente ? 1 : 0.55,
                   }}
                 >
                   <td className="px-4 py-2.5">
@@ -163,15 +421,43 @@ export default function CorpusPage() {
                   <td className="px-4 py-2.5 font-mono text-xs" style={{ color: "var(--ink-2)" }}>
                     {n.numero}
                   </td>
-                  <td className="px-4 py-2.5 text-xs max-w-[260px] truncate" style={{ color: "var(--ink-2)" }}
-                    title={n.titulo}>
+                  <td
+                    className="px-4 py-2.5 text-xs max-w-[220px] truncate"
+                    style={{ color: "var(--ink-2)" }}
+                    title={n.titulo}
+                  >
                     {n.titulo}
                   </td>
-                  <td className="px-4 py-2.5 text-xs font-mono text-right" style={{ color: "var(--ink-3)" }}>
-                    {n.total_chunks ?? "—"}
+                  <td className="px-4 py-2.5">
+                    <button
+                      onClick={() => toggleVigencia(n)}
+                      disabled={toggling === n.id}
+                      className="transition-opacity hover:opacity-70 disabled:cursor-wait"
+                      title={n.vigente ? "Marcar como derogada" : "Marcar como vigente"}
+                      aria-label={n.vigente ? "Vigente — clic para derogar" : "Derogada — clic para activar"}
+                    >
+                      {toggling === n.id
+                        ? <Loader2 className="size-4 animate-spin" style={{ color: "var(--ink-3)" }} />
+                        : n.vigente
+                          ? <ToggleRight className="size-5" style={{ color: "var(--ra-green)" }} />
+                          : <ToggleLeft className="size-5" style={{ color: "var(--ink-4)" }} />}
+                    </button>
                   </td>
                   <td className="px-4 py-2.5 text-xs" style={{ color: "var(--ink-3)" }}>
                     {formatFecha(n.fecha_ingesta ?? n.fecha_actualizacion)}
+                  </td>
+                  <td className="px-4 py-2.5">
+                    <button
+                      onClick={() => eliminar(n)}
+                      disabled={eliminando === n.id}
+                      className="p-1 rounded transition-colors hover:bg-red-500/10 disabled:cursor-wait"
+                      title="Eliminar norma y chunks"
+                      aria-label="Eliminar"
+                    >
+                      {eliminando === n.id
+                        ? <Loader2 className="size-3.5 animate-spin" style={{ color: "var(--ink-3)" }} />
+                        : <Trash2 className="size-3.5" style={{ color: "var(--terracotta)" }} />}
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -180,7 +466,7 @@ export default function CorpusPage() {
         </div>
       )}
 
-      {/* Pendientes */}
+      {/* Corpus incompleto */}
       {status && normasDDU.length < 16 && (
         <div
           className="rounded-lg border p-4 text-sm space-y-2"
@@ -191,8 +477,9 @@ export default function CorpusPage() {
           </p>
           <p style={{ color: "var(--ink-3)" }}>
             La OGUC y algunas DDUs aún no están ingresadas (límite de cuota diaria de embeddings).
-            Ejecuta <code className="text-xs bg-foreground/5 px-1 rounded">npm run corpus:ingest</code> para
-            procesar las normas pendientes.
+            Ejecuta{" "}
+            <code className="text-xs bg-foreground/5 px-1 rounded">npm run corpus:ingest</code>{" "}
+            o usa el formulario de subida para procesar las normas pendientes.
           </p>
           <a
             href="https://supabase.com/dashboard"

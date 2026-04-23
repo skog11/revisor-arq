@@ -41,6 +41,7 @@
     --color-terracotta: var(--terracotta);
     --color-green:      var(--ra-green);
     --color-warn:       var(--ra-warn);
+    --color-blue:       var(--ra-blue);
 
     --radius-sm: calc(var(--radius) * 0.6);
     --radius-md: calc(var(--radius) * 0.8);
@@ -77,6 +78,8 @@
     --ra-green-soft:     rgba(46,101,83,0.10);
     --ra-warn:           #c98a1f;
     --ra-warn-soft:      rgba(201,138,31,0.12);
+    --ra-blue:           #2563eb;
+    --ra-blue-soft:      rgba(37,99,235,0.08);
 
     --shadow-1: 0 1px 2px rgba(22,19,16,0.04), 0 1px 0 rgba(22,19,16,0.04);
     --shadow-2: 0 1px 3px rgba(22,19,16,0.06), 0 8px 24px -12px rgba(22,19,16,0.18);
@@ -132,6 +135,8 @@
     --ra-green-soft:     rgba(95,166,143,0.14);
     --ra-warn:           #d4a03a;
     --ra-warn-soft:      rgba(212,160,58,0.14);
+    --ra-blue:           #60a5fa;
+    --ra-blue-soft:      rgba(96,165,250,0.12);
 
     --shadow-1: 0 1px 2px rgba(0,0,0,0.12), 0 1px 0 rgba(0,0,0,0.08);
     --shadow-2: 0 1px 3px rgba(0,0,0,0.16), 0 8px 24px -12px rgba(0,0,0,0.32);
@@ -175,5 +180,13 @@
         font-family: var(--font-inter), system-ui, sans-serif;
         font-feature-settings: "ss01", "cv11";
         -webkit-font-smoothing: antialiased;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
     }
 }
