@@ -3,6 +3,39 @@
 -- Ejecutar en: Supabase Dashboard > SQL Editor > New query
 -- ============================================================
 
+-- 0. Correcciones estructurales críticas
+-- -----------------------------------------------------------
+
+-- 0a. Convertir normas.tipo de ENUM a TEXT para permitir tipos personalizados.
+--     Si tu tabla ya usa TEXT, este paso no tiene efecto.
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_name = 'normas' AND column_name = 'tipo'
+      AND udt_name != 'text'
+  ) THEN
+    EXECUTE 'ALTER TABLE normas ALTER COLUMN tipo TYPE text USING tipo::text';
+  END IF;
+END $$;
+
+-- 0b. Constraint UNIQUE en (tipo, numero): necesario para que el upsert
+--     de /api/corpus/ingestar funcione correctamente con onConflict.
+CREATE UNIQUE INDEX IF NOT EXISTS normas_tipo_numero_unique
+  ON normas (tipo, numero);
+
+-- 0c. También agregar constraint formal para que Supabase lo reconozca en el upsert
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint
+    WHERE conname = 'normas_tipo_numero_key' AND conrelid = 'normas'::regclass
+  ) THEN
+    ALTER TABLE normas ADD CONSTRAINT normas_tipo_numero_key UNIQUE USING INDEX normas_tipo_numero_unique;
+  END IF;
+END $$;
+
+
 -- 1. Nuevas columnas en tabla normas
 -- -----------------------------------------------------------
 
@@ -131,7 +164,10 @@ $$;
 -- ============================================================
 -- INSTRUCCIONES POST-MIGRACIÓN:
 -- 1. Ejecuta este script en Supabase Dashboard > SQL Editor
--- 2. Verifica con: SELECT id, tipo, dominio, jerarquia_norm FROM normas LIMIT 5;
+-- 2. Verifica con:
+--    SELECT id, tipo, dominio, jerarquia_norm, organo_emisor FROM normas LIMIT 5;
+--    SELECT indexname FROM pg_indexes WHERE tablename = 'normas';
+--    -- debe aparecer: normas_tipo_numero_unique
 -- 3. Vuelve a la app — el panel de Gestión de normativa mostrará
 --    los nuevos campos editables por norma
 -- ============================================================

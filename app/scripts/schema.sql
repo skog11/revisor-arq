@@ -20,9 +20,11 @@ CREATE TYPE tipo_norma AS ENUM (
 );
 
 -- 3. Tabla normas
+-- NOTA: tipo es TEXT (no ENUM) para permitir tipos personalizados.
+-- Se mantiene el tipo tipo_norma para compatibilidad pero se recomienda TEXT en producción.
 CREATE TABLE IF NOT EXISTS normas (
   id                  uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-  tipo                tipo_norma NOT NULL,
+  tipo                text NOT NULL,               -- texto libre: LGUC, OGUC, DDU, NCH, etc.
   numero              text NOT NULL,
   titulo              text NOT NULL,
   fecha_publicacion   date,
@@ -31,8 +33,17 @@ CREATE TABLE IF NOT EXISTS normas (
   hash_contenido      text,
   texto_completo      text,
   vigente             boolean NOT NULL DEFAULT true,
+  -- Fase 5: metadatos expandidos
+  dominio             text,
+  subdominio          text,
+  organo_emisor       text,
+  jerarquia_norm      text CHECK (jerarquia_norm IN ('ley', 'reglamento', 'instruccion', 'resolucion', 'norma_tecnica', 'otro')),
+  etapas_proyecto     text[] NOT NULL DEFAULT '{}',
+  dependencias        text[] NOT NULL DEFAULT '{}',
+  alcance             text CHECK (alcance IN ('nacional', 'regional', 'comunal', 'sectorial')),
   created_at          timestamptz NOT NULL DEFAULT now(),
-  updated_at          timestamptz NOT NULL DEFAULT now()
+  updated_at          timestamptz NOT NULL DEFAULT now(),
+  UNIQUE (tipo, numero)   -- necesario para upsert onConflict: "tipo,numero"
 );
 
 -- 4. Tabla articulos
