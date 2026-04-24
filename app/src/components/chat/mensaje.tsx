@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { HardHat, Scale, Microscope, AlertTriangle, ThumbsUp, ThumbsDown } from "lucide-react";
+import { HardHat, Scale, Microscope, AlertTriangle, ThumbsUp, ThumbsDown, FileDown } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { FuentesPanel, type Fuente } from "./fuentes-panel";
+import { ModalExportarPDF } from "./modal-exportar-pdf";
 import type { CruceDetectado } from "@/lib/rag";
 
 export type ModoRespuesta = "arquitecto" | "abogado" | "profundo";
@@ -17,6 +18,7 @@ export interface MensajeData {
   id: string;
   rol: "usuario" | "asistente";
   contenido: string;
+  pregunta?: string;           // pregunta del usuario que originó esta respuesta
   fuentes?: Fuente[];
   cruces?: CruceDetectado[];   // dominios regulatorios cruzados detectados
   streaming?: boolean;
@@ -218,6 +220,7 @@ function CrucesAlert({ cruces }: { cruces: CruceDetectado[] }) {
 // ─── Mensaje asistente ────────────────────────────────────────────────────────
 
 function MensajeAsistente({ mensaje }: { mensaje: MensajeData }) {
+  const [modalPDFAbierto, setModalPDFAbierto] = useState(false);
   const cfg = mensaje.modo ? MODO_CFG[mensaje.modo] : null;
   const accentColor = cfg?.color ?? "var(--ink-4, var(--ink-3))";
 
@@ -318,13 +321,56 @@ function MensajeAsistente({ mensaje }: { mensaje: MensajeData }) {
                 />
               )}
 
-            {/* Feedback */}
+            {/* Feedback + Exportar PDF */}
             {!mensaje.streaming && !mensaje.error && (
-              <FeedbackBar consultaId={mensaje.consultaId} />
+              <div className="flex items-center justify-between mt-3">
+                <FeedbackBar consultaId={mensaje.consultaId} />
+                {/* Botón PDF — solo cuando hay contenido suficiente */}
+                {mensaje.contenido.length > 100 && (
+                  <button
+                    onClick={() => setModalPDFAbierto(true)}
+                    className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] transition-colors hover:bg-foreground/[0.06]"
+                    style={{
+                      color: "var(--ink-4, var(--ink-3))",
+                      fontFamily: "var(--font-jetbrains-mono)",
+                      border: "1px solid var(--rule)",
+                    }}
+                    title="Exportar como informe PDF"
+                  >
+                    <FileDown className="size-3" />
+                    PDF
+                  </button>
+                )}
+              </div>
             )}
           </>
         )}
       </div>
+
+      {/* Modal PDF */}
+      {modalPDFAbierto && (
+        <ModalExportarPDF
+          datos={{
+            pregunta: mensaje.pregunta ?? "",
+            modo: mensaje.modo ?? "arquitecto",
+            modoLabel: cfg?.label ?? "Arquitecto",
+            contenido: mensaje.contenido,
+            fuentes: mensaje.fuentes?.map((f) => ({
+              norma: f.norma,
+              articulo: f.articulo,
+              norma_titulo: f.norma_titulo,
+              url_fuente: f.url_fuente,
+            })),
+            cruces: mensaje.cruces,
+            fecha: new Date().toLocaleDateString("es-CL", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            }),
+          }}
+          onCerrar={() => setModalPDFAbierto(false)}
+        />
+      )}
     </div>
   );
 }

@@ -112,7 +112,7 @@ export default function ChatPage() {
       setMensajes((prev) => [
         ...prev,
         { id: userId, rol: "usuario", contenido: texto },
-        { id: asistId, rol: "asistente", contenido: "", streaming: true, modo },
+        { id: asistId, rol: "asistente", contenido: "", streaming: true, modo, pregunta: texto },
       ]);
       setPregunta("");
       if (textareaRef.current) textareaRef.current.style.height = "auto";
