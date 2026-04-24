@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import {
   RefreshCw, Database, FileText, CheckCircle2, Clock,
-  ExternalLink, Upload, Trash2, ToggleLeft, ToggleRight, Loader2, X,
+  Upload, Trash2, ToggleLeft, ToggleRight, Loader2, X,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -405,8 +405,6 @@ export default function CorpusPage() {
       ]
     : [];
 
-  const normasDDU = status?.normas.filter((n) => n.tipo === "DDU" || n.tipo === "DDU_ESPECIFICA") ?? [];
-
   return (
     <>
       {/* Modal confirmación eliminación */}
@@ -470,8 +468,8 @@ export default function CorpusPage() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {[
               { label: "Total chunks", value: status.totalChunks.toLocaleString("es-CL"), icon: Database },
-              { label: "Normas activas", value: status.totalNormas, icon: FileText },
-              { label: "DDUs cargadas", value: normasDDU.length, icon: CheckCircle2 },
+              { label: "Total normas", value: status.totalNormas, icon: FileText },
+              { label: "Normas vigentes", value: status.normas.filter((n) => n.vigente).length, icon: CheckCircle2 },
               { label: "Actualización", value: formatFecha(status.timestamp), icon: Clock },
             ].map(({ label, value, icon: Icon }) => (
               <div
@@ -602,33 +600,6 @@ export default function CorpusPage() {
           </div>
         )}
 
-        {/* Corpus incompleto */}
-        {status && normasDDU.length < 16 && (
-          <div
-            className="rounded-lg border p-4 text-sm space-y-2"
-            style={{ borderColor: "var(--rule)", background: "var(--paper-2)" }}
-          >
-            <p className="font-medium" style={{ color: "var(--ink-2)" }}>
-              ⚠ Corpus incompleto
-            </p>
-            <p style={{ color: "var(--ink-3)" }}>
-              La OGUC y algunas DDUs aún no están ingresadas (límite de cuota diaria de embeddings).
-              Ejecuta{" "}
-              <code className="text-xs bg-foreground/5 px-1 rounded">npm run corpus:ingest</code>{" "}
-              o usa el formulario de subida para procesar las normas pendientes.
-            </p>
-            <a
-              href="https://supabase.com/dashboard"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-xs underline underline-offset-2"
-              style={{ color: "var(--ink-3)" }}
-            >
-              Ver en Supabase Dashboard
-              <ExternalLink className="size-3" />
-            </a>
-          </div>
-        )}
 
         {loading && !status && (
           <div className="flex items-center justify-center py-16">
