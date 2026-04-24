@@ -6,16 +6,19 @@ import type { LucideIcon } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { FuentesPanel, type Fuente } from "./fuentes-panel";
+import type { CruceDetectado } from "@/lib/rag";
 
 export type ModoRespuesta = "arquitecto" | "abogado" | "profundo";
 
 export type { Fuente };
+export type { CruceDetectado };
 
 export interface MensajeData {
   id: string;
   rol: "usuario" | "asistente";
   contenido: string;
   fuentes?: Fuente[];
+  cruces?: CruceDetectado[];   // dominios regulatorios cruzados detectados
   streaming?: boolean;
   error?: boolean;
   modo?: ModoRespuesta;
@@ -122,6 +125,96 @@ function MensajeUsuario({ contenido }: { contenido: string }) {
   );
 }
 
+// ─── Chips de cruce regulatorio ──────────────────────────────────────────────
+
+function CrucesAlert({ cruces }: { cruces: CruceDetectado[] }) {
+  const [expandido, setExpandido] = useState(false);
+
+  if (!cruces.length) return null;
+
+  return (
+    <div
+      className="mb-4 rounded-lg overflow-hidden"
+      style={{
+        border: "1px solid color-mix(in srgb, var(--ra-warn, #c98a1f) 35%, transparent)",
+        background: "var(--ra-warn-soft, rgba(201,138,31,0.07))",
+      }}
+    >
+      {/* Fila de chips siempre visible */}
+      <button
+        onClick={() => setExpandido((v) => !v)}
+        className="w-full flex items-center gap-2 px-3 py-2 text-left"
+        aria-expanded={expandido}
+      >
+        <span className="text-[10px]" aria-hidden>⚠️</span>
+        <span
+          className="text-[10px] font-medium uppercase tracking-wider flex-1"
+          style={{
+            fontFamily: "var(--font-jetbrains-mono)",
+            color: "var(--ra-warn, #c98a1f)",
+          }}
+        >
+          Cruce(s) regulatorio(s) detectado(s)
+        </span>
+        <div className="flex items-center gap-1.5 flex-wrap">
+          {cruces.map((c) => (
+            <span
+              key={c.area}
+              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium"
+              style={{
+                background: "color-mix(in srgb, var(--ra-warn, #c98a1f) 15%, transparent)",
+                color: "var(--ra-warn, #c98a1f)",
+                fontFamily: "var(--font-jetbrains-mono)",
+              }}
+            >
+              <span aria-hidden>{c.emoji}</span>
+              {c.area}
+            </span>
+          ))}
+        </div>
+        <span
+          className="text-[10px] ml-1 transition-transform duration-200 shrink-0"
+          style={{
+            color: "var(--ink-4, var(--ink-3))",
+            display: "inline-block",
+            transform: expandido ? "rotate(180deg)" : "rotate(0deg)",
+          }}
+          aria-hidden
+        >
+          ▾
+        </span>
+      </button>
+
+      {/* Detalle expandible */}
+      {expandido && (
+        <div
+          className="px-3 pb-3 space-y-2 border-t"
+          style={{ borderColor: "color-mix(in srgb, var(--ra-warn, #c98a1f) 20%, transparent)" }}
+        >
+          {cruces.map((c) => (
+            <div key={c.area} className="pt-2">
+              <p
+                className="text-[11px] font-medium mb-0.5"
+                style={{ color: "var(--ink-2)" }}
+              >
+                {c.emoji} {c.area}
+              </p>
+              <p className="text-[11px]" style={{ color: "var(--ink-3)" }}>
+                <span style={{ color: "var(--ink-3)" }}>Organismo: </span>
+                <span style={{ color: "var(--ink-2)" }}>{c.organismo}</span>
+              </p>
+              <p className="text-[11px]" style={{ color: "var(--ink-3)" }}>
+                <span>Marco probable: </span>
+                <span style={{ color: "var(--ink-2)" }}>{c.norma_probable}</span>
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Mensaje asistente ────────────────────────────────────────────────────────
 
 function MensajeAsistente({ mensaje }: { mensaje: MensajeData }) {
@@ -174,6 +267,11 @@ function MensajeAsistente({ mensaje }: { mensaje: MensajeData }) {
           </div>
         ) : (
           <>
+            {/* Alertas de cruce regulatorio */}
+            {mensaje.cruces && mensaje.cruces.length > 0 && (
+              <CrucesAlert cruces={mensaje.cruces} />
+            )}
+
             {/* Markdown */}
             <div
               className="

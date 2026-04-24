@@ -19,6 +19,7 @@ import {
   buildSystemPrompt,
   guardarConsulta,
   detectarFueraDominio,
+  detectarCruces,
   validarRespuesta,
   type ModoRespuesta,
 } from "@/lib/rag";
@@ -65,20 +66,25 @@ export async function POST(req: NextRequest) {
         const rechazoDominio = detectarFueraDominio(pregunta);
         if (rechazoDominio) {
           send({ type: "fuentes", data: [] });
+          send({ type: "cruces", data: [] });
           send({ type: "chunk", text: rechazoDominio });
           send({ type: "done" });
           controller.close();
           return;
         }
 
-        // 1. Recuperar chunks relevantes (modo profundo = más contexto)
+        // 1. Detectar cruces regulatorios (sincrónico, antes del embedding)
+        const cruces = detectarCruces(pregunta);
+        send({ type: "cruces", data: cruces });
+
+        // 2. Recuperar chunks relevantes (modo profundo = más contexto)
         const matchCount = modo === "profundo" ? 14 : 8;
         const chunks = await recuperarChunks(pregunta, {
           matchCount,
           soloVigentes: true,
         });
 
-        // 2. Enviar fuentes al cliente (antes de generar)
+        // 3. Enviar fuentes al cliente (antes de generar)
         send({
           type: "fuentes",
           data: chunks.map((c) => ({
@@ -92,11 +98,11 @@ export async function POST(req: NextRequest) {
           })),
         });
 
-        // 3. Construir contexto y sistema
+        // 4. Construir contexto y sistema (con cruces inyectados)
         const { textoContexto } = construirContexto(chunks);
-        const systemPrompt = buildSystemPrompt(modo as ModoRespuesta, textoContexto);
+        const systemPrompt = buildSystemPrompt(modo as ModoRespuesta, textoContexto, cruces);
 
-        // 4. Streaming Gemini
+        // 5. Streaming Gemini
         const geminiStream = await streamGemini(systemPrompt, pregunta);
         let respuestaCompleta = "";
 
@@ -108,7 +114,7 @@ export async function POST(req: NextRequest) {
           }
         }
 
-        // 5. Post-guardrail: añadir disclaimer si el LLM lo omitió
+        // 6. Post-guardrail: añadir disclaimer si el LLM lo omitió
         const validacion = validarRespuesta(respuestaCompleta);
         if (!validacion.valida && validacion.motivo === "Falta disclaimer legal") {
           const disclaimerExtra =
@@ -118,7 +124,7 @@ export async function POST(req: NextRequest) {
           respuestaCompleta += disclaimerExtra;
         }
 
-        // 6. Guardar consulta y enviar ID al cliente (para feedback)
+        // 7. Guardar consulta y enviar ID al cliente (para feedback)
         const consultaId = crypto.randomUUID();
         const latenciaMs = Date.now() - t0;
         guardarConsulta({

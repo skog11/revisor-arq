@@ -9,6 +9,14 @@ import { getSupabaseServiceClient } from "./supabase";
 
 export type ModoRespuesta = "arquitecto" | "abogado" | "profundo";
 
+export interface CruceDetectado {
+  area: string;           // ej. "Medioambiente"
+  emoji: string;          // ej. "🌿"
+  organismo: string;      // ej. "SEA / SEREMI del Medio Ambiente"
+  norma_probable: string; // ej. "Ley N°19.300, DS 40/2012"
+  gatillante: string;     // texto que activó el cruce
+}
+
 export interface ChunkRecuperado {
   id: string;
   texto: string;
@@ -137,7 +145,25 @@ const DISCLAIMER = `
 ---
 ⚠️ **Aviso legal**: Esta respuesta es orientativa y no constituye asesoría jurídica profesional. Verifica siempre el texto vigente en BCN (www.bcn.cl) y consulta con un profesional habilitado antes de tomar decisiones.`;
 
-export function buildSystemPrompt(modo: ModoRespuesta, contexto: string): string {
+export function buildSystemPrompt(
+  modo: ModoRespuesta,
+  contexto: string,
+  cruces: CruceDetectado[] = []
+): string {
+  // Bloque de cruces detectados (se inyecta en el prompt si hay alguno)
+  const crucesBloque =
+    cruces.length > 0
+      ? `\nDOMINIOS NORMATIVOS ADICIONALES DETECTADOS EN LA CONSULTA:
+El análisis de la pregunta identificó que los siguientes dominios regulatorios, distintos al urbanismo base, podrían ser relevantes:
+${cruces
+  .map(
+    (c) =>
+      `- ${c.emoji} **${c.area}** (gatillante: "${c.gatillante}") → Organismo: ${c.organismo} | Marco probable: ${c.norma_probable}`
+  )
+  .join("\n")}
+Considera estos dominios en tu respuesta. Si el contexto RAG no los cubre, señálalos SIEMPRE en la sección de Alertas de cruce como materias que requieren verificación adicional con el organismo competente.`
+      : "";
+
   const base = `Eres REVISOR ARQ, un asistente especializado en análisis normativo para proyectos en Chile.
 Tu base de conocimiento incluye principalmente normativa urbanística y de construcción (LGUC, OGUC, Circulares DDU del MINVU), pero debes estar atento a cruces con otras áreas regulatorias cuando la consulta lo requiera: medioambiente, salud, patrimonio, infraestructura, permisos sectoriales u otras materias que puedan incidir en un proyecto.
 
@@ -147,7 +173,7 @@ IDIOMA Y REGISTRO:
 - Nunca uses "vos", "podés", "hacés" ni ninguna forma verbal rioplatense.
 - Vocabulario técnico-legal propio del derecho chileno: "permiso de edificación", "recepción definitiva", "DOM", "SEREMI MINVU", "resolución de calificación ambiental", "autorización sanitaria", etc.
 - Tono profesional y directo, sin adornos retóricos.
-
+${crucesBloque}
 NORMATIVA RECUPERADA DE LA BASE DE CONOCIMIENTO:
 ${contexto}
 
@@ -322,6 +348,148 @@ REGLAS ADICIONALES DEL MODO PROFUNDO:
 - Usa **negritas** para artículos, organismos y términos clave.` +
     DISCLAIMER
   );
+}
+
+// ─── Motor de cruces regulatorios ────────────────────────────────────────────
+
+/**
+ * Definición de dominios normativos que pueden cruzarse con urbanismo/construcción.
+ * Cada entrada incluye patrones de keywords y metadatos para mostrar al usuario.
+ */
+const DOMINIOS_CRUCE: Array<{
+  area: string;
+  emoji: string;
+  organismo: string;
+  norma_probable: string;
+  patrones: RegExp[];
+}> = [
+  {
+    area: "Medioambiente",
+    emoji: "🌿",
+    organismo: "SEA / SEREMI del Medio Ambiente",
+    norma_probable: "Ley N°19.300 (LGBMA), DS 40/2012",
+    patrones: [
+      /impacto ambiental|evaluaci[oó]n ambiental|rca\b|sea\b|conama/i,
+      /\bhumedal|zona de amortiguaci[oó]n|flora.*nativa|fauna.*protegida/i,
+      /contaminaci[oó]n del suelo|pasivo ambiental|remediaci[oó]n/i,
+      /declaraci[oó]n de impacto|estudio de impacto/i,
+    ],
+  },
+  {
+    area: "Patrimonio",
+    emoji: "🏛️",
+    organismo: "Consejo de Monumentos Nacionales (CMN)",
+    norma_probable: "Ley N°17.288 de Monumentos Nacionales",
+    patrones: [
+      /monument[oa] nacional|zona t[íi]pica|bien nacional protegido/i,
+      /\bcmn\b|consejo de monumentos/i,
+      /patrimon[io]+|edificio hist[oó]rico|inmueble de conservaci[oó]n/i,
+      /zona de conservaci[oó]n hist[oó]rica/i,
+    ],
+  },
+  {
+    area: "Salud",
+    emoji: "⚕️",
+    organismo: "SEREMI de Salud / MINSAL",
+    norma_probable: "Código Sanitario, DS 594/1999, DS 78/2009",
+    patrones: [
+      /sanitari[oa]|seremi.*salud|autorización sanitaria/i,
+      /residuo(s)? (peligros|tóxic|hospitalari)/i,
+      /efluente(s)?|aguas servidas|planta de tratamiento/i,
+      /ruido(s)? moles(to|tia)|contaminaci[oó]n ac[uú]stica/i,
+      /higiene.*ambient|salud.*ambient/i,
+    ],
+  },
+  {
+    area: "Infraestructura vial",
+    emoji: "🛣️",
+    organismo: "MOP / SERVIU / Municipalidad",
+    norma_probable: "DFL MOP N°850/1997, Ley de Caminos",
+    patrones: [
+      /camino p[uú]blico|faja vial|derecho de v[ií]a/i,
+      /\bmop\b|direcci[oó]n de vialidad/i,
+      /autopista|carretera|ruta nacional/i,
+      /acceso vial|ingreso vehicular.*ruta/i,
+    ],
+  },
+  {
+    area: "Aguas",
+    emoji: "💧",
+    organismo: "DGA (Dirección General de Aguas)",
+    norma_probable: "Código de Aguas (DFL N°1.122/1981)",
+    patrones: [
+      /\bdga\b|direcci[oó]n general de aguas/i,
+      /derechos de agua|aprovechamiento de aguas/i,
+      /cauce|ribera|[aá]lv[ae]o|lecho del r[ií]o/i,
+      /inundaci[oó]n|zona de inundaci[oó]n|cota de inundaci[oó]n/i,
+      /napa fre[aá]tica|aguas subterr[aá]neas/i,
+    ],
+  },
+  {
+    area: "Electricidad y telecomunicaciones",
+    emoji: "⚡",
+    organismo: "SEC / CNE / Subsecretaría de Telecomunicaciones",
+    norma_probable: "DFL N°4/2006 (Ley Eléctrica General), Ley N°18.168",
+    patrones: [
+      /\bsec\b|superintendencia de electricidad/i,
+      /tendido el[eé]ctrico|l[ií]nea de alta tensi[oó]n|subestaci[oó]n/i,
+      /antena(s)?.*telecomunicacion|torre.*celular|radiobase/i,
+      /energia solar|paneles fotovolt|generaci[oó]n distribuida/i,
+    ],
+  },
+  {
+    area: "Defensa Nacional",
+    emoji: "🛡️",
+    organismo: "Ministerio de Defensa / DGAC / Armada",
+    norma_probable: "DFL N°221/1978, Ley N°16.752",
+    patrones: [
+      /zona de seguridad nacional|zona de frontera/i,
+      /\bdgac\b|aeron[aá]utica civil|servidumbre aeron[aá]utica/i,
+      /cono de aproximaci[oó]n|altura m[aá]xima.*aeropuerto/i,
+      /\barmada\b.*zona|borde costero.*defensa/i,
+    ],
+  },
+  {
+    area: "Bienes Nacionales",
+    emoji: "🏔️",
+    organismo: "Ministerio de Bienes Nacionales / CONAF",
+    norma_probable: "DL N°1.939/1977, Ley N°18.362",
+    patrones: [
+      /bien nacional de uso p[uú]blico|bienes fiscales/i,
+      /\bconaf\b|parque nacional|reserva nacional/i,
+      /concesi[oó]n marit[íi]ma|borde costero|playa.*acceso/i,
+      /glaciar|campo de hielo/i,
+    ],
+  },
+];
+
+/**
+ * Detecta dominios normativos adicionales que la consulta podría activar,
+ * más allá del urbanismo/construcción base (LGUC, OGUC, DDU).
+ *
+ * Ejecución sincrónica y rápida (regex sobre texto); no requiere LLM.
+ */
+export function detectarCruces(pregunta: string): CruceDetectado[] {
+  const cruces: CruceDetectado[] = [];
+  const texto = pregunta.toLowerCase();
+
+  for (const dominio of DOMINIOS_CRUCE) {
+    for (const patron of dominio.patrones) {
+      const match = texto.match(patron);
+      if (match) {
+        cruces.push({
+          area: dominio.area,
+          emoji: dominio.emoji,
+          organismo: dominio.organismo,
+          norma_probable: dominio.norma_probable,
+          gatillante: match[0],
+        });
+        break; // un cruce por dominio es suficiente
+      }
+    }
+  }
+
+  return cruces;
 }
 
 // ─── Guardrails ───────────────────────────────────────────────────────────────

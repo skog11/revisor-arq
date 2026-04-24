@@ -3,7 +3,7 @@
 import { useRef, useState, useCallback, useEffect } from "react";
 import { Send, Square, HardHat, Scale, Microscope, ChevronRight, RotateCcw } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import { Mensaje, type MensajeData, type Fuente } from "@/components/chat/mensaje";
+import { Mensaje, type MensajeData, type Fuente, type CruceDetectado } from "@/components/chat/mensaje";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -152,14 +152,24 @@ export default function ChatPage() {
               const event = JSON.parse(json) as {
                 type: string;
                 text?: string;
-                data?: Fuente[];
+                data?: Fuente[] | CruceDetectado[];
                 message?: string;
                 consultaId?: string;
               };
 
-              if (event.type === "fuentes" && event.data) {
+              if (event.type === "cruces" && event.data) {
                 setMensajes((prev) =>
-                  prev.map((m) => (m.id === asistId ? { ...m, fuentes: event.data } : m))
+                  prev.map((m) =>
+                    m.id === asistId
+                      ? { ...m, cruces: event.data as CruceDetectado[] }
+                      : m
+                  )
+                );
+              } else if (event.type === "fuentes" && event.data) {
+                setMensajes((prev) =>
+                  prev.map((m) =>
+                    m.id === asistId ? { ...m, fuentes: event.data as Fuente[] } : m
+                  )
                 );
               } else if (event.type === "chunk" && event.text) {
                 setMensajes((prev) =>
