@@ -25,9 +25,14 @@ export interface ChunkRecuperado {
   norma_numero: string;
   norma_titulo: string;
   articulo: string | null;
-  jerarquia: string | null;
+  jerarquia: string | null;           // jerarquía a nivel de chunk (metadatos)
   url_fuente: string;
   fecha_vigencia_desde: string | null;
+  // Fase 5: metadatos expandidos de la norma
+  norma_dominio: string | null;
+  norma_organo_emisor: string | null;
+  norma_jerarquia_norm: string | null;
+  norma_etapas_proyecto: string[];
 }
 
 export interface ContextoRAG {
@@ -100,6 +105,11 @@ export async function recuperarChunks(
     jerarquia: (r.metadatos as Record<string, unknown>)?.jerarquia as string | null,
     url_fuente: r.fuente as string,
     fecha_vigencia_desde: r.fecha_vigencia_desde as string | null,
+    // Fase 5: metadatos expandidos (presentes solo tras migración)
+    norma_dominio: (r.norma_dominio as string | null) ?? null,
+    norma_organo_emisor: (r.norma_organo_emisor as string | null) ?? null,
+    norma_jerarquia_norm: (r.norma_jerarquia_norm as string | null) ?? null,
+    norma_etapas_proyecto: (r.norma_etapas_proyecto as string[] | null) ?? [],
   }));
 }
 
@@ -124,9 +134,16 @@ export function construirContexto(chunks: ChunkRecuperado[]): ContextoRAG {
     const vigLabel = c.fecha_vigencia_desde
       ? ` [vigente desde ${c.fecha_vigencia_desde}]`
       : "";
+    // Fase 5: metadatos expandidos
+    const dominioLabel = c.norma_dominio ? ` | Dominio: ${c.norma_dominio}` : "";
+    const emisorLabel = c.norma_organo_emisor ? ` | Emisor: ${c.norma_organo_emisor}` : "";
+    const jerarqNormLabel = c.norma_jerarquia_norm ? ` | Jerarquía: ${c.norma_jerarquia_norm}` : "";
+    const etapasLabel = c.norma_etapas_proyecto?.length
+      ? ` | Etapas: ${c.norma_etapas_proyecto.join(", ")}`
+      : "";
 
     return [
-      `--- FUENTE [${i + 1}]: ${normaLabel}${artLabel}${jerarqLabel}${vigLabel} ---`,
+      `--- FUENTE [${i + 1}]: ${normaLabel}${artLabel}${jerarqLabel}${vigLabel}${dominioLabel}${emisorLabel}${jerarqNormLabel}${etapasLabel} ---`,
       c.texto,
       "---",
     ].join("\n");

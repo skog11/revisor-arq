@@ -65,6 +65,14 @@ export async function POST(req: NextRequest) {
     titulo?: string;
     texto?: string;
     url_fuente?: string;
+    // Fase 5: metadatos expandidos (todos opcionales)
+    dominio?: string;
+    subdominio?: string;
+    organo_emisor?: string;
+    jerarquia_norm?: string;
+    etapas_proyecto?: string[];
+    dependencias?: string[];
+    alcance?: string;
   };
   try {
     body = await req.json();
@@ -72,20 +80,40 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: "Body JSON inválido" }, { status: 400 });
   }
 
-  const { tipo, numero, titulo, texto, url_fuente = "" } = body;
+  const {
+    tipo, numero, titulo, texto,
+    url_fuente = "",
+    dominio, subdominio, organo_emisor,
+    jerarquia_norm, etapas_proyecto, dependencias, alcance,
+  } = body;
+
   if (!tipo || !numero || !titulo || !texto) {
     return Response.json({ error: "Se requieren tipo, numero, titulo y texto" }, { status: 400 });
   }
 
   const sb = getSupabaseServiceClient();
 
+  // Construir payload de norma (excluye undefined para no sobreescribir con null)
+  const normaPayload: Record<string, unknown> = {
+    tipo,
+    numero,
+    titulo,
+    vigente: true,
+    fecha_actualizacion: new Date().toISOString(),
+  };
+  if (url_fuente)          normaPayload.url_fuente       = url_fuente;
+  if (dominio)             normaPayload.dominio           = dominio;
+  if (subdominio)          normaPayload.subdominio        = subdominio;
+  if (organo_emisor)       normaPayload.organo_emisor     = organo_emisor;
+  if (jerarquia_norm)      normaPayload.jerarquia_norm    = jerarquia_norm;
+  if (etapas_proyecto)     normaPayload.etapas_proyecto   = etapas_proyecto;
+  if (dependencias)        normaPayload.dependencias      = dependencias;
+  if (alcance)             normaPayload.alcance           = alcance;
+
   // 1. Upsert norma
   const { data: normaRows, error: normaErr } = await sb
     .from("normas")
-    .upsert(
-      { tipo, numero, titulo, vigente: true, fecha_actualizacion: new Date().toISOString() },
-      { onConflict: "tipo,numero", ignoreDuplicates: false }
-    )
+    .upsert(normaPayload, { onConflict: "tipo,numero", ignoreDuplicates: false })
     .select("id");
 
   if (normaErr || !normaRows?.length) {

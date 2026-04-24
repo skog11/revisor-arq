@@ -18,6 +18,13 @@ interface NormaStatus {
   fecha_ingesta: string | null;
   fecha_actualizacion: string | null;
   vigente: boolean;
+  // Fase 5: metadatos expandidos
+  dominio?: string | null;
+  subdominio?: string | null;
+  organo_emisor?: string | null;
+  jerarquia_norm?: string | null;
+  etapas_proyecto?: string[];
+  alcance?: string | null;
 }
 
 interface CorpusStatus {
@@ -115,6 +122,13 @@ function ModalConfirmar({
 
 // ─── Upload Form ──────────────────────────────────────────────────────────────
 
+const DOMINIOS_OPCIONES = [
+  "urbanismo", "medioambiente", "salud", "patrimonio",
+  "infraestructura", "energia", "aguas", "defensa", "bienes_nacionales", "otro",
+];
+const JERARQUIA_OPCIONES = ["ley", "reglamento", "instruccion", "resolucion", "norma_tecnica", "otro"];
+const ETAPAS_OPCIONES   = ["diseño", "anteproyecto", "permiso", "obra", "recepcion", "regularizacion"];
+
 function UploadForm({ onDone }: { onDone: () => void }) {
   const fileRef = useRef<HTMLInputElement>(null);
   const [tipo, setTipo] = useState("");
@@ -124,8 +138,19 @@ function UploadForm({ onDone }: { onDone: () => void }) {
   const [fileName, setFileName] = useState<string | null>(null);
   const [fase, setFase] = useState<"idle" | "extrayendo" | "ingresando" | "ok" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  // Metadatos avanzados
+  const [mostrarMeta, setMostrarMeta] = useState(false);
+  const [dominio, setDominio] = useState("urbanismo");
+  const [organoEmisor, setOrganoEmisor] = useState("");
+  const [jerarquiaNorm, setJerarquiaNorm] = useState("reglamento");
+  const [etapas, setEtapas] = useState<string[]>([]);
+  const [alcance, setAlcance] = useState("nacional");
 
   const cargando = fase === "extrayendo" || fase === "ingresando";
+
+  function toggleEtapa(e: string) {
+    setEtapas((prev) => prev.includes(e) ? prev.filter((x) => x !== e) : [...prev, e]);
+  }
 
   async function subir() {
     const file = fileRef.current?.files?.[0];
@@ -161,6 +186,11 @@ function UploadForm({ onDone }: { onDone: () => void }) {
           titulo: titulo.trim(),
           texto,
           url_fuente: urlFuente.trim(),
+          dominio,
+          organo_emisor: organoEmisor.trim() || undefined,
+          jerarquia_norm: jerarquiaNorm,
+          etapas_proyecto: etapas,
+          alcance,
         }),
       });
       if (!r2.ok) {
@@ -176,11 +206,10 @@ function UploadForm({ onDone }: { onDone: () => void }) {
     setFase("ok");
     setTimeout(() => {
       setFase("idle");
-      setTipo("");
-      setNumero("");
-      setTitulo("");
-      setUrlFuente("");
-      setFileName(null);
+      setTipo(""); setNumero(""); setTitulo("");
+      setUrlFuente(""); setFileName(null);
+      setDominio("urbanismo"); setOrganoEmisor("");
+      setJerarquiaNorm("reglamento"); setEtapas([]); setAlcance("nacional");
       if (fileRef.current) fileRef.current.value = "";
       onDone();
     }, 1500);
@@ -188,6 +217,7 @@ function UploadForm({ onDone }: { onDone: () => void }) {
 
   const inputCls = "rounded-md border px-3 py-2 text-sm bg-transparent focus:outline-none focus:ring-2 focus:ring-[var(--ring)] w-full";
   const inputStyle = { borderColor: "var(--rule)", color: "var(--ink)" };
+  const selectCls = inputCls;
 
   return (
     <div
@@ -202,83 +232,131 @@ function UploadForm({ onDone }: { onDone: () => void }) {
         {/* Tipo */}
         <div className="flex flex-col gap-1.5">
           <label className="text-xs" style={{ color: "var(--ink-3)" }}>Tipo</label>
-          <input
-            type="text"
-            value={tipo}
-            onChange={(e) => setTipo(e.target.value.toUpperCase())}
-            placeholder="ej. LGUC, OGUC, DDU…"
-            disabled={cargando}
-            className={inputCls}
-            style={inputStyle}
-          />
+          <input type="text" value={tipo} onChange={(e) => setTipo(e.target.value.toUpperCase())}
+            placeholder="ej. LGUC, OGUC, DDU…" disabled={cargando} className={inputCls} style={inputStyle} />
         </div>
 
         {/* Número */}
         <div className="flex flex-col gap-1.5">
           <label className="text-xs" style={{ color: "var(--ink-3)" }}>Número / clave</label>
-          <input
-            type="text"
-            value={numero}
-            onChange={(e) => setNumero(e.target.value)}
-            placeholder="ej. 541, DFL-458"
-            disabled={cargando}
-            className={inputCls}
-            style={inputStyle}
-          />
+          <input type="text" value={numero} onChange={(e) => setNumero(e.target.value)}
+            placeholder="ej. 541, DFL-458" disabled={cargando} className={inputCls} style={inputStyle} />
         </div>
 
         {/* Título */}
         <div className="flex flex-col gap-1.5 sm:col-span-2">
           <label className="text-xs" style={{ color: "var(--ink-3)" }}>Título</label>
-          <input
-            type="text"
-            value={titulo}
-            onChange={(e) => setTitulo(e.target.value)}
+          <input type="text" value={titulo} onChange={(e) => setTitulo(e.target.value)}
             placeholder="ej. Ley General de Urbanismo y Construcciones"
-            disabled={cargando}
-            className={inputCls}
-            style={inputStyle}
-          />
+            disabled={cargando} className={inputCls} style={inputStyle} />
         </div>
 
         {/* URL fuente */}
         <div className="flex flex-col gap-1.5 sm:col-span-2">
-          <label className="text-xs" style={{ color: "var(--ink-3)" }}>URL fuente <span style={{ color: "var(--ink-4)" }}>(opcional)</span></label>
-          <input
-            type="url"
-            value={urlFuente}
-            onChange={(e) => setUrlFuente(e.target.value)}
+          <label className="text-xs" style={{ color: "var(--ink-3)" }}>
+            URL fuente <span style={{ color: "var(--ink-4)" }}>(opcional)</span>
+          </label>
+          <input type="url" value={urlFuente} onChange={(e) => setUrlFuente(e.target.value)}
             placeholder="https://www.bcn.cl/leychile/…"
-            disabled={cargando}
-            className={inputCls}
-            style={inputStyle}
-          />
+            disabled={cargando} className={inputCls} style={inputStyle} />
         </div>
+      </div>
+
+      {/* ── Metadatos avanzados (colapsable) ── */}
+      <div>
+        <button
+          type="button"
+          onClick={() => setMostrarMeta((v) => !v)}
+          className="flex items-center gap-1.5 text-xs transition-opacity hover:opacity-70"
+          style={{ color: "var(--ink-3)", fontFamily: "var(--font-jetbrains-mono)" }}
+        >
+          <span style={{ display: "inline-block", transform: mostrarMeta ? "rotate(90deg)" : "none", transition: "transform 0.15s" }}>▶</span>
+          Metadatos avanzados
+        </button>
+
+        {mostrarMeta && (
+          <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3 pt-3 border-t" style={{ borderColor: "var(--rule)" }}>
+            {/* Dominio */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs" style={{ color: "var(--ink-3)" }}>Dominio regulatorio</label>
+              <select value={dominio} onChange={(e) => setDominio(e.target.value)} disabled={cargando}
+                className={selectCls} style={inputStyle}>
+                {DOMINIOS_OPCIONES.map((d) => (
+                  <option key={d} value={d}>{d}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Jerarquía */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs" style={{ color: "var(--ink-3)" }}>Jerarquía normativa</label>
+              <select value={jerarquiaNorm} onChange={(e) => setJerarquiaNorm(e.target.value)} disabled={cargando}
+                className={selectCls} style={inputStyle}>
+                {JERARQUIA_OPCIONES.map((j) => (
+                  <option key={j} value={j}>{j}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Órgano emisor */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs" style={{ color: "var(--ink-3)" }}>
+                Órgano emisor <span style={{ color: "var(--ink-4)" }}>(opcional)</span>
+              </label>
+              <input type="text" value={organoEmisor} onChange={(e) => setOrganoEmisor(e.target.value)}
+                placeholder="ej. MINVU, CMN, DGA…" disabled={cargando} className={inputCls} style={inputStyle} />
+            </div>
+
+            {/* Alcance */}
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs" style={{ color: "var(--ink-3)" }}>Alcance territorial</label>
+              <select value={alcance} onChange={(e) => setAlcance(e.target.value)} disabled={cargando}
+                className={selectCls} style={inputStyle}>
+                {["nacional", "regional", "comunal", "sectorial"].map((a) => (
+                  <option key={a} value={a}>{a}</option>
+                ))}
+              </select>
+            </div>
+
+            {/* Etapas del proyecto */}
+            <div className="flex flex-col gap-1.5 sm:col-span-2">
+              <label className="text-xs" style={{ color: "var(--ink-3)" }}>
+                Etapas del proyecto donde aplica
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {ETAPAS_OPCIONES.map((e) => (
+                  <button
+                    key={e} type="button"
+                    onClick={() => toggleEtapa(e)}
+                    disabled={cargando}
+                    className="px-2.5 py-1 rounded-full text-[11px] transition-all border"
+                    style={{
+                      background: etapas.includes(e) ? "color-mix(in srgb, var(--terracotta) 12%, transparent)" : "var(--paper)",
+                      borderColor: etapas.includes(e) ? "rgba(198,74,44,0.4)" : "var(--rule)",
+                      color: etapas.includes(e) ? "var(--terracotta)" : "var(--ink-3)",
+                      fontFamily: "var(--font-jetbrains-mono)",
+                    }}
+                  >
+                    {e}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Selector archivo */}
       <div className="flex items-center gap-3 flex-wrap">
-        <input
-          ref={fileRef}
-          type="file"
-          accept=".pdf"
-          className="hidden"
-          onChange={(e) => setFileName(e.target.files?.[0]?.name ?? null)}
-          disabled={cargando}
-        />
-        <Button
-          variant="outline" size="sm"
-          onClick={() => fileRef.current?.click()}
-          disabled={cargando}
-          className="gap-2 shrink-0"
-        >
+        <input ref={fileRef} type="file" accept=".pdf" className="hidden"
+          onChange={(e) => setFileName(e.target.files?.[0]?.name ?? null)} disabled={cargando} />
+        <Button variant="outline" size="sm" onClick={() => fileRef.current?.click()}
+          disabled={cargando} className="gap-2 shrink-0">
           <Upload className="size-3.5" />
           Seleccionar PDF
         </Button>
         {fileName && (
-          <span className="text-xs truncate min-w-0" style={{ color: "var(--ink-3)" }}>
-            {fileName}
-          </span>
+          <span className="text-xs truncate min-w-0" style={{ color: "var(--ink-3)" }}>{fileName}</span>
         )}
       </div>
 
@@ -287,8 +365,7 @@ function UploadForm({ onDone }: { onDone: () => void }) {
       )}
 
       <Button
-        size="sm"
-        onClick={subir}
+        size="sm" onClick={subir}
         disabled={cargando || !fileName || !tipo.trim() || !numero.trim() || !titulo.trim()}
         className="gap-2 w-full sm:w-auto"
         style={fase === "ok" ? { background: "var(--ra-green)", color: "#fff", border: "none" } : {}}
@@ -378,6 +455,30 @@ function NormaCard({
       <p className="text-xs leading-snug" style={{ color: "var(--ink-2)" }}>
         {norma.titulo}
       </p>
+
+      {/* Metadatos fase 5 */}
+      {(norma.dominio || norma.jerarquia_norm || norma.organo_emisor) && (
+        <div className="flex flex-wrap gap-1.5">
+          {norma.dominio && (
+            <span className="text-[9px] px-1.5 py-0.5 rounded-full border"
+              style={{ color: "var(--ink-4)", borderColor: "var(--rule)", fontFamily: "var(--font-jetbrains-mono)", background: "var(--paper)" }}>
+              {norma.dominio}
+            </span>
+          )}
+          {norma.jerarquia_norm && (
+            <span className="text-[9px] px-1.5 py-0.5 rounded-full border"
+              style={{ color: "var(--ink-4)", borderColor: "var(--rule)", fontFamily: "var(--font-jetbrains-mono)", background: "var(--paper)" }}>
+              {norma.jerarquia_norm}
+            </span>
+          )}
+          {norma.organo_emisor && (
+            <span className="text-[9px] px-1.5 py-0.5 rounded-full border"
+              style={{ color: "var(--ink-4)", borderColor: "var(--rule)", fontFamily: "var(--font-jetbrains-mono)", background: "var(--paper)" }}>
+              {norma.organo_emisor}
+            </span>
+          )}
+        </div>
+      )}
 
       {/* Fecha */}
       <p
@@ -580,6 +681,7 @@ export default function CorpusPage() {
                       { label: "Tipo" },
                       { label: "Número" },
                       { label: "Título" },
+                      { label: "Dominio" },
                       { label: "Vigente", title: "Activa en búsquedas" },
                       { label: "Última ingesta" },
                       { label: "" },
@@ -610,11 +712,29 @@ export default function CorpusPage() {
                         {n.numero}
                       </td>
                       <td
-                        className="px-4 py-2.5 text-xs max-w-[220px] truncate"
+                        className="px-4 py-2.5 text-xs max-w-[200px] truncate"
                         style={{ color: "var(--ink-2)" }}
                         title={n.titulo}
                       >
                         {n.titulo}
+                      </td>
+
+                      {/* Dominio + jerarquía */}
+                      <td className="px-4 py-2.5">
+                        <div className="flex flex-col gap-0.5">
+                          {n.dominio && (
+                            <span className="text-[9px] px-1.5 py-0.5 rounded-full border w-fit"
+                              style={{ color: "var(--ink-3)", borderColor: "var(--rule)", fontFamily: "var(--font-jetbrains-mono)", background: "var(--paper)" }}>
+                              {n.dominio}
+                            </span>
+                          )}
+                          {n.jerarquia_norm && (
+                            <span className="text-[9px]"
+                              style={{ color: "var(--ink-4)", fontFamily: "var(--font-jetbrains-mono)" }}>
+                              {n.jerarquia_norm}
+                            </span>
+                          )}
+                        </div>
                       </td>
 
                       {/* Toggle */}
