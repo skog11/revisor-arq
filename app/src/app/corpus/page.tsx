@@ -27,19 +27,17 @@ interface CorpusStatus {
   timestamp: string;
 }
 
-type TipoNorma = "LGUC" | "OGUC" | "DDU" | "DDU_ESPECIFICA";
-const TIPOS: TipoNorma[] = ["LGUC", "OGUC", "DDU", "DDU_ESPECIFICA"];
-
 function TipoBadge({ tipo }: { tipo: string }) {
   const styles: Record<string, string> = {
-    LGUC: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20",
-    OGUC: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
-    DDU: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
+    LGUC:           "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20",
+    OGUC:           "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
+    DDU:            "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20",
     DDU_ESPECIFICA: "bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20",
   };
+  const fallback = "bg-foreground/5 text-foreground/60 border-foreground/10";
   return (
-    <Badge variant="outline" className={cn("text-[10px] font-mono px-1.5", styles[tipo] ?? "")}>
-      {tipo.replace("_", " ")}
+    <Badge variant="outline" className={cn("text-[10px] font-mono px-1.5", styles[tipo] ?? fallback)}>
+      {tipo.replaceAll("_", " ")}
     </Badge>
   );
 }
@@ -133,7 +131,7 @@ function ModalConfirmar({
 
 function UploadForm({ onDone }: { onDone: () => void }) {
   const fileRef = useRef<HTMLInputElement>(null);
-  const [tipo, setTipo] = useState<TipoNorma>("LGUC");
+  const [tipo, setTipo] = useState("");
   const [numero, setNumero] = useState("");
   const [titulo, setTitulo] = useState("");
   const [urlFuente, setUrlFuente] = useState("");
@@ -145,7 +143,7 @@ function UploadForm({ onDone }: { onDone: () => void }) {
 
   async function subir() {
     const file = fileRef.current?.files?.[0];
-    if (!file || !numero.trim() || !titulo.trim()) return;
+    if (!file || !tipo.trim() || !numero.trim() || !titulo.trim()) return;
 
     setFase("extrayendo");
     setErrorMsg(null);
@@ -218,15 +216,15 @@ function UploadForm({ onDone }: { onDone: () => void }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div className="flex flex-col gap-1">
           <label className="text-xs" style={{ color: "var(--ink-3)" }}>Tipo</label>
-          <select
+          <input
+            type="text"
             value={tipo}
-            onChange={(e) => setTipo(e.target.value as TipoNorma)}
+            onChange={(e) => setTipo(e.target.value.toUpperCase())}
+            placeholder="ej. LGUC, OGUC, DDU, RES, DS…"
             disabled={cargando}
             className={inputClass}
             style={inputStyle}
-          >
-            {TIPOS.map((t) => <option key={t} value={t}>{t.replace("_", " ")}</option>)}
-          </select>
+          />
         </div>
 
         <div className="flex flex-col gap-1">
@@ -302,7 +300,7 @@ function UploadForm({ onDone }: { onDone: () => void }) {
       <Button
         size="sm"
         onClick={subir}
-        disabled={cargando || !fileName || !numero.trim() || !titulo.trim()}
+        disabled={cargando || !fileName || !tipo.trim() || !numero.trim() || !titulo.trim()}
         className="gap-2"
         style={fase === "ok" ? { background: "var(--ra-green)", color: "#fff", border: "none" } : {}}
       >
@@ -398,11 +396,9 @@ export default function CorpusPage() {
   }
 
   const normasSorted = status
-    ? [
-        ...status.normas.filter((n) => n.tipo === "LGUC"),
-        ...status.normas.filter((n) => n.tipo === "OGUC"),
-        ...status.normas.filter((n) => n.tipo === "DDU" || n.tipo === "DDU_ESPECIFICA"),
-      ]
+    ? [...status.normas].sort((a, b) =>
+        a.tipo.localeCompare(b.tipo) || a.numero.localeCompare(b.numero)
+      )
     : [];
 
   return (
