@@ -108,7 +108,7 @@ export default function PricingPage() {
           }}
         >
           ¿Tienes preguntas sobre pricing futuro o quieres reportar un error en
-          el corpus?{" "}
+          la normativa?{" "}
           <Link
             href="/contacto"
             className="underline underline-offset-2 hover:opacity-70 transition-opacity"

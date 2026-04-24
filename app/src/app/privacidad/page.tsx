@@ -112,7 +112,7 @@ export default function PrivacidadPage() {
       <Seccion titulo="3. Finalidad del tratamiento">
         <p>Los datos de uso se utilizan únicamente para:</p>
         <ul className="list-disc pl-5 space-y-1">
-          <li>Mejorar la calidad de las respuestas y el corpus normativo.</li>
+          <li>Mejorar la calidad de las respuestas y la base normativa.</li>
           <li>Detectar errores y problemas técnicos.</li>
           <li>Calcular métricas de uso agregadas y anónimas.</li>
         </ul>

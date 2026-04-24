@@ -131,22 +131,22 @@ export default function TerminosPage() {
         </p>
       </Seccion>
 
-      <Seccion titulo="5. Exactitud y actualización del corpus">
+      <Seccion titulo="5. Exactitud y actualización de la normativa">
         <p>
-          REVISOR ARQ opera sobre una base de conocimiento (corpus) que incluye versiones
+          REVISOR ARQ opera sobre una base de conocimiento normativa que incluye versiones
           de la LGUC, OGUC y determinadas Circulares DDU disponibles a la fecha indicada
           en la sección{" "}
           <Link
-            href="/corpus"
+            href="/normativa"
             className="underline underline-offset-2 hover:opacity-70 transition-opacity"
             style={{ color: "var(--terracotta)" }}
           >
-            Estado del corpus
+            Gestión de normativa
           </Link>
           .
         </p>
         <p>
-          No se garantiza que el corpus esté permanentemente actualizado. El usuario es
+          No se garantiza que la base normativa esté permanentemente actualizada. El usuario es
           responsable de verificar la vigencia de toda norma citada.
         </p>
       </Seccion>
@@ -159,7 +159,7 @@ export default function TerminosPage() {
         <ul className="list-disc pl-5 space-y-1">
           <li>Fines ilegales o contrarios a la legislación chilena.</li>
           <li>Generación masiva automatizada de consultas.</li>
-          <li>Reproducción sistemática del corpus normativo con fines comerciales.</li>
+          <li>Reproducción sistemática de la base normativa con fines comerciales.</li>
         </ul>
       </Seccion>
 
@@ -184,7 +184,7 @@ export default function TerminosPage() {
         style={{ borderColor: "var(--rule)", color: "var(--ink-3)" }}
       >
         <p>
-          ¿Encontraste un error en el corpus o tienes dudas?{" "}
+          ¿Encontraste un error en la normativa o tienes dudas?{" "}
           <a
             href="mailto:contacto@revisorarq.cl"
             className="underline underline-offset-2 hover:opacity-70 transition-opacity"

@@ -43,7 +43,7 @@ export default function ContactoPage() {
             Contacto
           </h1>
           <p className="mt-2 text-sm" style={{ color: "var(--ink-3)" }}>
-            Reporta errores en el corpus normativo, sugiere mejoras o pregunta
+            Reporta errores en la base normativa, sugiere mejoras o pregunta
             sobre el proyecto.
           </p>
         </div>

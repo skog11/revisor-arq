@@ -12,11 +12,11 @@ const FEATURES = [
   {
     num: "02",
     title: "Cita cada artículo",
-    desc: "Cada afirmación tiene respaldo literal en el corpus. Si no hay respaldo suficiente, lo dice explícitamente.",
+    desc: "Cada afirmación tiene respaldo literal en la normativa. Si no hay respaldo suficiente, lo dice explícitamente.",
   },
   {
     num: "03",
-    title: "Corpus verificable",
+    title: "Normativa verificable",
     desc: "LGUC + OGUC + DDU ingestadas y actualizadas. Puedes ver exactamente qué normas están cargadas.",
   },
 ];
@@ -428,7 +428,7 @@ export default function HomePage() {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
           {[
             { step: "1", title: "Escribe tu consulta", desc: "En lenguaje natural, como se lo contaría a un colega." },
-            { step: "2", title: "Se busca en el corpus", desc: "Gemini Embeddings encuentra los artículos más relevantes por similitud semántica." },
+            { step: "2", title: "Se busca en la normativa", desc: "Gemini Embeddings encuentra los artículos más relevantes por similitud semántica." },
             { step: "3", title: "Gemini redacta", desc: "Genera la respuesta usando solo los fragmentos recuperados, sin inventar." },
             { step: "4", title: "Revisa las fuentes", desc: "Cada cita es verificable. Haz clic en cualquier referencia para ver el artículo completo." },
           ].map((item, i) => (

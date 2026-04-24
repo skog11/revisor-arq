@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 const NAV_LINKS = [
   { href: "/chat", label: "Consulta" },
   { href: "/#como-funciona", label: "Cómo funciona" },
-  { href: "/corpus", label: "Corpus" },
+  { href: "/normativa", label: "Normativa" },
 ];
 
 export function Header() {
