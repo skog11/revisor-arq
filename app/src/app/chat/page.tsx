@@ -24,7 +24,7 @@ const MODO_CFG: Record<ModoRespuesta, ModoCfg> = {
   arquitecto: {
     Icon: HardHat,
     label: "Arquitecto",
-    descripcion: "Parámetros técnicos, coeficientes y normas aplicadas con ejemplos prácticos.",
+    descripcion: "Factibilidad, impacto en diseño, datos faltantes y próximos pasos del proyecto.",
     color: "var(--ra-blue)",
     bgSoft: "var(--ra-blue-soft)",
     border: "color-mix(in srgb, var(--ra-blue) 28%, transparent)",
@@ -32,7 +32,7 @@ const MODO_CFG: Record<ModoRespuesta, ModoCfg> = {
   abogado: {
     Icon: Scale,
     label: "Abogado",
-    descripcion: "Texto literal con citas íntegras, cadena normativa completa y análisis de vacíos.",
+    descripcion: "Conclusión jurídica, fundamento normativo, jerarquía de fuentes y riesgos interpretativos.",
     color: "var(--terracotta)",
     bgSoft: "var(--terracotta-soft)",
     border: "rgba(198,74,44,0.28)",
@@ -40,7 +40,7 @@ const MODO_CFG: Record<ModoRespuesta, ModoCfg> = {
   profundo: {
     Icon: Microscope,
     label: "Profundo",
-    descripcion: "Análisis exhaustivo multi-norma con remisiones cruzadas y recomendaciones.",
+    descripcion: "Análisis multidisciplinario con cruces regulatorios, matriz de permisos y hoja de ruta.",
     color: "var(--ra-green)",
     bgSoft: "var(--ra-green-soft)",
     border: "rgba(46,101,83,0.28)",
@@ -53,22 +53,22 @@ const MODOS: ModoRespuesta[] = ["arquitecto", "abogado", "profundo"];
 
 const SUGERENCIAS: Record<ModoRespuesta, string[]> = {
   arquitecto: [
-    "¿Cuál es la altura máxima de edificación en zona residencial?",
-    "¿Qué coeficientes de constructibilidad aplica el Art. 2.7.1 de la OGUC?",
-    "¿Qué establece el Art. 116 de la LGUC sobre permisos de edificación?",
-    "¿Cuántos estacionamientos exige la OGUC para uso residencial?",
+    "¿Es factible construir un edificio de 5 pisos en zona residencial según la OGUC?",
+    "¿Qué parámetros de constructibilidad y densidad aplica el Art. 2.7.1 de la OGUC?",
+    "¿Qué permisos se requieren para subdividir un predio urbano?",
+    "¿Qué datos necesito para calcular la altura máxima permitida en zona mixta?",
   ],
   abogado: [
-    "¿Cuál es el texto literal del Art. 116 de la LGUC?",
-    "¿Qué dispone el Art. 2.1.25 de la OGUC sobre densidades?",
-    "¿Cómo define la LGUC el concepto de loteo?",
-    "¿Cuáles son los requisitos del Art. 1.4.1 de la OGUC para apertura de vías?",
+    "¿Cuál es el texto literal del Art. 116 de la LGUC sobre permisos de edificación?",
+    "¿Qué jerarquía normativa existe entre la LGUC, la OGUC y las circulares DDU?",
+    "¿Existen tensiones interpretativas en el régimen de regularización de obras?",
+    "¿Cómo define la LGUC el concepto de obra nueva y qué normas concordantes aplican?",
   ],
   profundo: [
-    "Analiza el régimen completo de subdivisión predial en la LGUC y la OGUC.",
-    "¿Cómo interactúan las normas de rasante de la OGUC con las DDU recientes?",
-    "¿Qué cadena normativa regula la recepción de obras en Chile?",
-    "Analiza las exigencias de accesibilidad universal en edificios de uso público.",
+    "Analiza el régimen completo de subdivisión predial con cruces entre LGUC, OGUC y DDU.",
+    "¿Cómo interactúan las normas de rasante con los planos reguladores comunales?",
+    "¿Qué cadena de permisos requiere una obra de ampliación en zona de conservación?",
+    "Analiza las exigencias de accesibilidad universal: normas aplicables, permisos y hoja de ruta.",
   ],
 };
 
