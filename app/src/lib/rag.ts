@@ -48,28 +48,8 @@ export interface ContextoRAG {
  * de lo contrario la similitud coseno no tiene ningún significado.
  */
 async function embedQuery(texto: string): Promise<number[]> {
-  const key = process.env.VOYAGE_API_KEY;
-  if (!key) throw new Error("Falta VOYAGE_API_KEY");
-
-  const res = await fetch("https://api.voyageai.com/v1/embeddings", {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${key}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: "voyage-law-2",
-      input: [texto],
-    }),
-  });
-
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Error embedding query (Voyage): ${res.status} ${body.slice(0, 200)}`);
-  }
-
-  const json = (await res.json()) as { data: { embedding: number[] }[] };
-  return json.data[0].embedding;
+  const { embedText } = await import("./voyage");
+  return embedText(texto);
 }
 
 // ─── Retrieval ────────────────────────────────────────────────────────────────
