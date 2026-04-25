@@ -241,7 +241,7 @@ export function ModalExportarPDF({ datos, onCerrar }: Props) {
 
             {expandido && (
               <div className="px-4 pb-4 pt-3 space-y-4" style={{ background: "var(--paper)" }}>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 min-[380px]:grid-cols-2 gap-3">
                   <Campo
                     label="RUT profesional"
                     opcional
@@ -266,7 +266,7 @@ export function ModalExportarPDF({ datos, onCerrar }: Props) {
                   onChange={setDireccion}
                   placeholder="Av. Providencia 1234, dpto. 5A"
                 />
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 min-[380px]:grid-cols-2 gap-3">
                   <Campo
                     label="Rol / Predio"
                     opcional

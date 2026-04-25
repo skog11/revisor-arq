@@ -724,14 +724,23 @@ export async function generarPDF(datos: DatosPDF, config: ConfigPDF): Promise<vo
   y += 4;
 
   // — Respuesta —
-  seccion("RESPUESTA");
+  seccion(config.tipo === "ejecutivo" ? "PUNTOS CLAVE" : "RESPUESTA");
 
   const contenidoLimpio = datos.contenido
     .replace(/---\s*⚠️[\s\S]*$/, "")
     .replace(/⚠️\s*\*\*Aviso legal\*\*[\s\S]*$/, "")
     .trim();
 
-  y = renderBloques(doc, parsearMarkdown(contenidoLimpio), y);
+  // Ejecutivo: solo listas y párrafos cortos (máx. 8 bloques)
+  // Técnico: contenido completo
+  const todosBloques = parsearMarkdown(contenidoLimpio);
+  const bloquesParaRender = config.tipo === "ejecutivo"
+    ? todosBloques
+        .filter((b) => b.tipo === "lista" || b.tipo === "p" || b.tipo === "h3")
+        .slice(0, 8)
+    : todosBloques;
+
+  y = renderBloques(doc, bloquesParaRender, y);
 
   // — Tabla de normativa (modo técnico) —
   if (config.tipo === "tecnico" && datos.fuentes?.length) {

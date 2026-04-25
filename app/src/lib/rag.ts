@@ -42,31 +42,34 @@ export interface ContextoRAG {
 
 // ─── Embedding de query ───────────────────────────────────────────────────────
 
+/**
+ * Embedding de queries usando Voyage AI voyage-law-2 (mismo modelo que la ingesta).
+ * CRÍTICO: debe coincidir con el modelo usado al embeber documentos,
+ * de lo contrario la similitud coseno no tiene ningún significado.
+ */
 async function embedQuery(texto: string): Promise<number[]> {
-  const key = process.env.GEMINI_API_KEY;
-  if (!key) throw new Error("Falta GEMINI_API_KEY");
+  const key = process.env.VOYAGE_API_KEY;
+  if (!key) throw new Error("Falta VOYAGE_API_KEY");
 
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent?key=${key}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "models/gemini-embedding-001",
-        content: { role: "user", parts: [{ text: texto }] },
-        taskType: "RETRIEVAL_QUERY",
-        outputDimensionality: 1024,
-      }),
-    }
-  );
+  const res = await fetch("https://api.voyageai.com/v1/embeddings", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${key}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: "voyage-law-2",
+      input: [texto],
+    }),
+  });
 
   if (!res.ok) {
     const body = await res.text();
-    throw new Error(`Error embedding query: ${res.status} ${body.slice(0, 200)}`);
+    throw new Error(`Error embedding query (Voyage): ${res.status} ${body.slice(0, 200)}`);
   }
 
-  const json = (await res.json()) as { embedding: { values: number[] } };
-  return json.embedding.values;
+  const json = (await res.json()) as { data: { embedding: number[] }[] };
+  return json.data[0].embedding;
 }
 
 // ─── Retrieval ────────────────────────────────────────────────────────────────
