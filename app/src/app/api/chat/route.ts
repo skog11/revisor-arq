@@ -24,6 +24,7 @@ import {
   type ModoRespuesta,
 } from "@/lib/rag";
 import { streamGemini, MODEL_NAME } from "@/lib/gemini";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 
 // ─── Validación ───────────────────────────────────────────────────────────────
 
@@ -36,6 +37,23 @@ const ChatSchema = z.object({
 
 export async function POST(req: NextRequest) {
   const t0 = Date.now();
+
+  // Rate limiting: 20 consultas por hora por IP
+  const ip = getClientIp(req);
+  const rl = checkRateLimit(ip, 20, 3_600_000);
+  if (!rl.success) {
+    const minutos = Math.ceil(rl.resetMs / 60_000);
+    return Response.json(
+      { error: `Límite de consultas alcanzado. Intenta en ${minutos} minuto${minutos !== 1 ? "s" : ""}.` },
+      {
+        status: 429,
+        headers: {
+          "Retry-After": String(Math.ceil(rl.resetMs / 1000)),
+          "X-RateLimit-Remaining": "0",
+        },
+      }
+    );
+  }
 
   // Parse body
   let body: unknown;
