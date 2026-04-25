@@ -2,9 +2,9 @@
  * Generador de reportes PDF para REVISOR ARQ.
  * Usa jsPDF con renderizado puramente tipográfico (sin html2canvas).
  *
- * Soporta dos plantillas:
- *   - ejecutivo: resumen conciso, menos detalle técnico
- *   - tecnico:   incluye fuentes, cruces y metadatos completos
+ * Plantillas:
+ *   - ejecutivo: portada + síntesis + consulta + respuesta resumida + aviso
+ *   - tecnico:   ídem + tabla normativa + fuentes + cruces + metadatos completos
  */
 
 import { jsPDF } from "jspdf";
@@ -16,6 +16,14 @@ export interface ConfigPDF {
   tipo: "ejecutivo" | "tecnico";
   nombreProyecto?: string;
   profesional?: string;
+  // Nuevos campos
+  numeroInforme?: string;
+  rut?: string;
+  registro?: string;
+  direccion?: string;
+  rol?: string;
+  comuna?: string;
+  dom?: string;
 }
 
 export interface FuentePDF {
@@ -27,84 +35,109 @@ export interface FuentePDF {
 
 export interface DatosPDF {
   pregunta: string;
-  modo: string;          // "arquitecto" | "abogado" | "profundo"
-  modoLabel: string;     // "Arquitecto" | "Abogado" | "Profundo"
-  contenido: string;     // markdown de la respuesta
+  modo: string;
+  modoLabel: string;
+  contenido: string;
   fuentes?: FuentePDF[];
   cruces?: CruceDetectado[];
-  fecha: string;         // ej. "24 de abril de 2026"
+  fecha: string;
 }
 
-// ─── Constantes ───────────────────────────────────────────────────────────────
+// ─── Paleta ───────────────────────────────────────────────────────────────────
 
-const MARGIN = 18;          // mm izquierda/derecha
-const PAGE_W = 210;         // A4 mm
-const CONTENT_W = PAGE_W - MARGIN * 2;
-const LINE_H = 6;           // altura de línea base
-const SMALL = 8;            // tamaño fuente pequeño
-const BODY = 9.5;           // tamaño fuente cuerpo
-const H3 = 10.5;            // subtítulos
-const H2 = 12;              // encabezados de sección
 const TERRACOTTA: [number, number, number] = [163, 63, 39];
+const TERRACOTTA_LIGHT: [number, number, number] = [242, 232, 227];
 const INK: [number, number, number] = [28, 26, 23];
 const INK2: [number, number, number] = [72, 68, 60];
 const INK3: [number, number, number] = [130, 124, 112];
 const WARN: [number, number, number] = [180, 120, 28];
 const RULE: [number, number, number] = [220, 216, 208];
 const PAPER2: [number, number, number] = [248, 246, 242];
+const SUCCESS: [number, number, number] = [34, 110, 65];
+const INFO: [number, number, number] = [38, 82, 160];
+
+// Colores por tipo de norma (para tabla)
+const TIPO_COLOR: Record<string, [number, number, number]> = {
+  LGUC:  [38, 82, 160],
+  OGUC:  [34, 110, 65],
+  DDU:   [163, 63, 39],
+  LEY:   [38, 82, 160],
+  DFL:   [38, 82, 160],
+  DS:    [100, 50, 140],
+  NCH:   [60, 100, 120],
+  PRC:   [140, 90, 20],
+};
+
+// ─── Layout ───────────────────────────────────────────────────────────────────
+
+const MARGIN = 18;
+const PAGE_W = 210;
+const PAGE_H = 297;
+const CONTENT_W = PAGE_W - MARGIN * 2;
+const LINE_H = 6;
+const SMALL = 8;
+const BODY = 9.5;
+const H3 = 10.5;
+const H2 = 12;
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-/**
- * Elimina marcadores markdown y devuelve texto limpio para jsPDF.
- * No es un parser completo; cubre los patrones que genera el LLM.
- */
 function stripMarkdown(text: string): string {
   return text
-    .replace(/\*\*(.+?)\*\*/g, "$1")       // **bold**
-    .replace(/\*(.+?)\*/g, "$1")            // *italic*
-    .replace(/`([^`]+)`/g, "$1")            // `code`
-    .replace(/~~(.+?)~~/g, "$1")            // ~~strike~~
-    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1") // [link](url)
-    .replace(/^#{1,6}\s+/gm, "")           // headings
-    .replace(/^>\s+/gm, "")                // blockquotes
-    .replace(/^\s*[-*+]\s+/gm, "• ")       // listas
-    .replace(/^\s*\d+\.\s+/gm, "")         // listas numeradas
-    .replace(/\|/g, "  ")                  // tablas: separadores
-    .replace(/^[-:| ]+$/gm, "")            // tablas: línea separadora
+    .replace(/\*\*(.+?)\*\*/g, "$1")
+    .replace(/\*(.+?)\*/g, "$1")
+    .replace(/`([^`]+)`/g, "$1")
+    .replace(/~~(.+?)~~/g, "$1")
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/^#{1,6}\s+/gm, "")
+    .replace(/^>\s+/gm, "")
+    .replace(/^\s*[-*+]\s+/gm, "• ")
+    .replace(/^\s*\d+\.\s+/gm, "")
+    .replace(/\|/g, "  ")
+    .replace(/^[-:| ]+$/gm, "")
     .replace(/\n{3,}/g, "\n\n")
     .trim();
 }
 
-/** Divide texto en líneas que caben en maxWidth mm con el font activo. */
-function wrapText(doc: jsPDF, text: string, maxWidth: number): string[] {
-  return doc.splitTextToSize(text, maxWidth) as string[];
+function wrap(doc: jsPDF, text: string, maxW: number): string[] {
+  return doc.splitTextToSize(text, maxW) as string[];
 }
 
-/** Dibuja una línea horizontal fina. */
-function hRule(doc: jsPDF, y: number, color: [number, number, number] = RULE) {
+function hRule(doc: jsPDF, y: number, color: [number, number, number] = RULE, w = 0.25) {
   doc.setDrawColor(...color);
-  doc.setLineWidth(0.25);
+  doc.setLineWidth(w);
   doc.line(MARGIN, y, PAGE_W - MARGIN, y);
 }
 
-/** Retorna nueva posición Y; añade nueva página si no hay espacio. */
-function checkPage(doc: jsPDF, y: number, needed: number, addFooter: () => void): number {
-  const maxY = 297 - 20; // A4 height - bottom margin
-  if (y + needed > maxY) {
-    addFooter();
+function checkPage(doc: jsPDF, y: number, needed: number): number {
+  if (y + needed > PAGE_H - 22) {
     doc.addPage();
-    return 20; // top margin nueva página
+    return 22;
   }
   return y;
 }
 
-// ─── Parseo de markdown → bloques ─────────────────────────────────────────────
+/** Extrae el tipo de norma del string (ej: "OGUC Art. 2.1.1" → "OGUC") */
+function tipoFromNorma(norma: string): string {
+  const m = norma.match(/^(LGUC|OGUC|DDU|LEY|DFL|DS|NCH|PRC)/i);
+  return m ? m[1].toUpperCase() : "NORMA";
+}
+
+function jerarquiaFromTipo(tipo: string): string {
+  const map: Record<string, string> = {
+    LGUC: "Ley", LEY: "Ley", DFL: "Ley",
+    OGUC: "Reglamento", DS: "Decreto",
+    DDU: "Instrucción", NCH: "Norma Técnica", PRC: "Plan Regulador",
+  };
+  return map[tipo] ?? "Norma";
+}
+
+// ─── Parser de Markdown → Bloques ─────────────────────────────────────────────
 
 type Bloque =
   | { tipo: "h2"; texto: string }
   | { tipo: "h3"; texto: string }
-  | { tipo: "p"; texto: string }
+  | { tipo: "p"; texto: string; bold?: boolean }
   | { tipo: "lista"; items: string[] }
   | { tipo: "blockquote"; texto: string }
   | { tipo: "tabla"; filas: string[][] }
@@ -118,28 +151,18 @@ function parsearMarkdown(md: string): Bloque[] {
   while (i < lineas.length) {
     const linea = lineas[i];
 
-    // H2
     if (/^##\s+/.test(linea)) {
       bloques.push({ tipo: "h2", texto: linea.replace(/^##\s+/, "").trim() });
-      i++;
-      continue;
+      i++; continue;
     }
-
-    // H3
     if (/^###\s+/.test(linea)) {
       bloques.push({ tipo: "h3", texto: linea.replace(/^###\s+/, "").trim() });
-      i++;
-      continue;
+      i++; continue;
     }
-
-    // HR
     if (/^---+\s*$/.test(linea.trim())) {
       bloques.push({ tipo: "hr" });
-      i++;
-      continue;
+      i++; continue;
     }
-
-    // Blockquote
     if (/^>\s+/.test(linea)) {
       const textos: string[] = [];
       while (i < lineas.length && /^>\s+/.test(lineas[i])) {
@@ -149,34 +172,20 @@ function parsearMarkdown(md: string): Bloque[] {
       bloques.push({ tipo: "blockquote", texto: textos.join(" ") });
       continue;
     }
-
-    // Lista
     if (/^\s*[-*+]\s+/.test(linea) || /^\s*\d+\.\s+/.test(linea)) {
       const items: string[] = [];
-      while (
-        i < lineas.length &&
-        (/^\s*[-*+]\s+/.test(lineas[i]) || /^\s*\d+\.\s+/.test(lineas[i]))
-      ) {
-        items.push(
-          lineas[i]
-            .replace(/^\s*[-*+]\s+/, "")
-            .replace(/^\s*\d+\.\s+/, "")
-            .trim()
-        );
+      while (i < lineas.length && (/^\s*[-*+]\s+/.test(lineas[i]) || /^\s*\d+\.\s+/.test(lineas[i]))) {
+        items.push(lineas[i].replace(/^\s*[-*+]\s+/, "").replace(/^\s*\d+\.\s+/, "").trim());
         i++;
       }
       bloques.push({ tipo: "lista", items });
       continue;
     }
-
-    // Tabla markdown
     if (/^\|/.test(linea)) {
       const filas: string[][] = [];
       while (i < lineas.length && /^\|/.test(lineas[i])) {
-        // Saltar líneas separadoras (|---|---|)
         if (/^\|[-:| ]+\|/.test(lineas[i])) { i++; continue; }
-        const celdas = lineas[i]
-          .split("|")
+        const celdas = lineas[i].split("|")
           .filter((_, idx, arr) => idx > 0 && idx < arr.length - 1)
           .map((c) => stripMarkdown(c.trim()));
         filas.push(celdas);
@@ -185,134 +194,259 @@ function parsearMarkdown(md: string): Bloque[] {
       if (filas.length) bloques.push({ tipo: "tabla", filas });
       continue;
     }
-
-    // Párrafo (acumula líneas no vacías)
     if (linea.trim()) {
       const parrafos: string[] = [];
-      while (i < lineas.length && lineas[i].trim() && !/^[#>|-]/.test(lineas[i]) && !/^\s*[-*+]\s+/.test(lineas[i])) {
+      while (i < lineas.length && lineas[i].trim() && !/^[#>|]/.test(lineas[i]) && !/^\s*[-*+]\s+/.test(lineas[i])) {
         parrafos.push(lineas[i].trim());
         i++;
       }
       bloques.push({ tipo: "p", texto: parrafos.join(" ") });
       continue;
     }
-
     i++;
   }
-
   return bloques;
 }
 
-// ─── Función principal ────────────────────────────────────────────────────────
-
-export async function generarPDF(datos: DatosPDF, config: ConfigPDF): Promise<void> {
-  const doc = new jsPDF({ unit: "mm", format: "a4", orientation: "portrait" });
-  let y = 0;
-
-  const tipoLabel = config.tipo === "ejecutivo" ? "Informe Ejecutivo" : "Informe Técnico";
-
-  // ── Footer helper ─────────────────────────────────────────────────────────
-  function dibujarFooter() {
-    const pageCount = (doc as unknown as { internal: { getNumberOfPages: () => number } }).internal.getNumberOfPages();
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(7);
-    doc.setTextColor(...INK3);
-    doc.text(
-      `REVISOR ARQ · revisor-arq.vercel.app · Pág. ${pageCount}`,
-      PAGE_W / 2,
-      290,
-      { align: "center" }
-    );
-    doc.text(
-      "Esta respuesta es orientativa. No constituye asesoría jurídica profesional.",
-      PAGE_W / 2,
-      293.5,
-      { align: "center" }
-    );
+/** Extrae el primer párrafo sustancial como síntesis */
+function extraerSintesis(contenido: string): string {
+  const bloques = parsearMarkdown(contenido);
+  for (const b of bloques) {
+    if (b.tipo === "p" && b.texto.length > 80) {
+      const limpio = stripMarkdown(b.texto);
+      return limpio.length > 400 ? limpio.slice(0, 397) + "…" : limpio;
+    }
   }
+  return "";
+}
 
-  function check(needed: number) {
-    y = checkPage(doc, y, needed, dibujarFooter);
-  }
+// ─── Portada ──────────────────────────────────────────────────────────────────
 
-  // ── PORTADA / HEADER ──────────────────────────────────────────────────────
+function dibujarPortada(doc: jsPDF, datos: DatosPDF, config: ConfigPDF) {
+  const tipoLabel = config.tipo === "ejecutivo" ? "INFORME EJECUTIVO" : "INFORME TÉCNICO";
+  const nInforme = config.numeroInforme ?? `INF-${new Date().getFullYear()}-001`;
 
-  // Barra superior terracotta
+  // — Bloque superior terracotta (0–60mm) —
   doc.setFillColor(...TERRACOTTA);
-  doc.rect(0, 0, PAGE_W, 28, "F");
+  doc.rect(0, 0, PAGE_W, 62, "F");
 
-  // Nombre app
-  doc.setFont("times", "bold");
-  doc.setFontSize(20);
-  doc.setTextColor(255, 255, 255);
-  doc.text("REVISOR ARQ", MARGIN, 12);
+  // Línea decorativa más oscura bajo el bloque
+  doc.setFillColor(130, 45, 25);
+  doc.rect(0, 60, PAGE_W, 2, "F");
 
-  // Tipo de informe
+  // Logo placeholder — esquina superior derecha
+  const logoX = PAGE_W - MARGIN - 28;
+  const logoY = 8;
+  doc.setDrawColor(255, 200, 185);
+  doc.setLineWidth(0.4);
+  doc.roundedRect(logoX, logoY, 28, 18, 2, 2, "D");
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(9);
-  doc.setTextColor(255, 220, 200);
-  doc.text(tipoLabel.toUpperCase() + " · CONSULTA NORMATIVA", MARGIN, 19);
+  doc.setFontSize(6);
+  doc.setTextColor(255, 200, 185);
+  doc.text("LOGO OFICINA", logoX + 14, logoY + 10, { align: "center" });
 
-  // Fecha alineada a la derecha
+  // Nombre de la app
+  doc.setFont("times", "bold");
+  doc.setFontSize(26);
+  doc.setTextColor(255, 255, 255);
+  doc.text("REVISOR ARQ", MARGIN, 20);
+
+  // Subtítulo app
+  doc.setFont("helvetica", "normal");
   doc.setFontSize(8);
-  doc.text(datos.fecha, PAGE_W - MARGIN, 19, { align: "right" });
+  doc.setTextColor(255, 210, 195);
+  doc.text("Consulta Normativa Chilena · LGUC · OGUC · DDU", MARGIN, 27);
 
-  y = 36;
+  // Tipo de informe y número
+  doc.setFillColor(130, 45, 25);
+  doc.roundedRect(MARGIN, 34, 80, 10, 1.5, 1.5, "F");
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(9);
+  doc.setTextColor(255, 255, 255);
+  doc.text(tipoLabel + " DE NORMATIVA", MARGIN + 4, 40.5);
 
-  // ── CAJA DE METADATOS ─────────────────────────────────────────────────────
+  // Número de informe
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(8);
+  doc.setTextColor(255, 230, 215);
+  doc.text(nInforme, PAGE_W - MARGIN, 40.5, { align: "right" });
 
+  // Fecha
+  doc.setFontSize(7.5);
+  doc.setTextColor(255, 210, 195);
+  doc.text(datos.fecha, PAGE_W - MARGIN, 47, { align: "right" });
+
+  // — Nombre del Proyecto (centro de página) —
+  let yP = 78;
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(7);
+  doc.setTextColor(...TERRACOTTA);
+  doc.text("PROYECTO", MARGIN, yP);
+
+  yP += 6;
+  const nombreProy = config.nombreProyecto || "—";
+  doc.setFont("times", "bold");
+  const fsProy = nombreProy.length > 50 ? 18 : nombreProy.length > 30 ? 20 : 24;
+  doc.setFontSize(fsProy);
+  doc.setTextColor(...INK);
+  const proyLines = wrap(doc, nombreProy, CONTENT_W);
+  for (const line of proyLines) {
+    doc.text(line, MARGIN, yP);
+    yP += fsProy * 0.45;
+  }
+
+  // Modo consulta badge
+  yP += 6;
+  const modoW = 38;
+  doc.setFillColor(...TERRACOTTA_LIGHT);
+  doc.roundedRect(MARGIN, yP, modoW, 7, 1.5, 1.5, "F");
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(7.5);
+  doc.setTextColor(...TERRACOTTA);
+  doc.text(`Modo ${datos.modoLabel}`, MARGIN + modoW / 2, yP + 4.5, { align: "center" });
+
+  // — Grid de metadatos (banda inferior) —
+  const bandY = 175;
   doc.setFillColor(...PAPER2);
   doc.setDrawColor(...RULE);
   doc.setLineWidth(0.3);
-  doc.roundedRect(MARGIN, y, CONTENT_W, 20, 2, 2, "FD");
+  doc.rect(0, bandY, PAGE_W, 68, "FD");
 
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(SMALL);
+  // Fila 1: PROFESIONAL | RUT / REGISTRO | FECHA
+  const gridY1 = bandY + 10;
+  const cols3 = [MARGIN, MARGIN + 60, MARGIN + 120];
+
+  [["PROFESIONAL", config.profesional || "—"],
+   ["RUT", config.rut || "—"],
+   ["N° INFORME", nInforme]].forEach(([label, val], ci) => {
+    const cx = cols3[ci];
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(SMALL - 1);
+    doc.setTextColor(...INK3);
+    doc.text(label, cx, gridY1);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(BODY);
+    doc.setTextColor(...INK2);
+    const v = wrap(doc, val, 52)[0] ?? val;
+    doc.text(v, cx, gridY1 + 6);
+  });
+
+  // Fila 2: DIRECCIÓN | ROL | COMUNA
+  const gridY2 = bandY + 28;
+  [["DIRECCIÓN DEL PROYECTO", config.direccion || "—"],
+   ["ROL / PREDIO", config.rol || "—"],
+   ["COMUNA", config.comuna || "—"]].forEach(([label, val], ci) => {
+    const cx = cols3[ci];
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(SMALL - 1);
+    doc.setTextColor(...INK3);
+    doc.text(label, cx, gridY2);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(BODY);
+    doc.setTextColor(...INK2);
+    const v = wrap(doc, val, 52)[0] ?? val;
+    doc.text(v, cx, gridY2 + 6);
+  });
+
+  // Fila 3: DOM | REGISTRO
+  const gridY3 = bandY + 46;
+  [["DIRECCIÓN DE OBRAS MUNICIPALES (DOM)", config.dom || "—"],
+   ["N° REGISTRO PROFESIONAL", config.registro || "—"]].forEach(([label, val], ci) => {
+    const cx = cols3[ci === 0 ? 0 : 1];
+    const maxW = ci === 0 ? 90 : 52;
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(SMALL - 1);
+    doc.setTextColor(...INK3);
+    doc.text(label, cx, gridY3);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(BODY);
+    doc.setTextColor(...INK2);
+    const v = wrap(doc, val, maxW)[0] ?? val;
+    doc.text(v, cx, gridY3 + 6);
+  });
+
+  // — Footer de portada —
+  doc.setFillColor(...TERRACOTTA);
+  doc.rect(0, PAGE_H - 14, PAGE_W, 14, "F");
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(7);
+  doc.setTextColor(255, 200, 185);
+  doc.text("REVISOR ARQ · revisor-arq.vercel.app", PAGE_W / 2, PAGE_H - 7, { align: "center" });
+  doc.setTextColor(255, 175, 155);
+  doc.text("Las respuestas son orientativas y no constituyen asesoría jurídica profesional.", PAGE_W / 2, PAGE_H - 3.5, { align: "center" });
+}
+
+// ─── Footer de páginas de contenido ──────────────────────────────────────────
+
+function dibujarFooter(doc: jsPDF, pagina: number, total: number, nInforme: string) {
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(7);
   doc.setTextColor(...INK3);
+  doc.text(`REVISOR ARQ · revisor-arq.vercel.app · ${nInforme}`, MARGIN, PAGE_H - 7);
+  doc.text(`Pág. ${pagina} de ${total}`, PAGE_W - MARGIN, PAGE_H - 7, { align: "right" });
+  doc.setFontSize(6.5);
+  doc.setTextColor(180, 175, 165);
+  doc.text("Documento de carácter informativo. No constituye asesoría jurídica profesional.", PAGE_W / 2, PAGE_H - 3.5, { align: "center" });
+  // Línea fina sobre footer
+  doc.setDrawColor(...RULE);
+  doc.setLineWidth(0.2);
+  doc.line(MARGIN, PAGE_H - 10, PAGE_W - MARGIN, PAGE_H - 10);
+}
 
-  const col1 = MARGIN + 4;
-  const col2 = MARGIN + 60;
-  const col3 = MARGIN + 120;
-  const metaY = y + 6;
+// ─── Sección: Síntesis ────────────────────────────────────────────────────────
 
-  doc.text("MODO", col1, metaY);
-  doc.text("PROYECTO", col2, metaY);
-  doc.text("PROFESIONAL", col3, metaY);
+function dibujarSintesis(doc: jsPDF, sintesis: string, y: number): number {
+  if (!sintesis) return y;
 
-  doc.setFont("helvetica", "normal");
-  doc.setTextColor(...INK2);
-  doc.setFontSize(BODY);
+  const lines = wrap(doc, sintesis, CONTENT_W - 12);
+  const boxH = lines.length * (LINE_H - 0.5) + 14;
 
-  doc.text(datos.modoLabel, col1, metaY + 6);
-  doc.text(config.nombreProyecto || "—", col2, metaY + 6);
-  doc.text(config.profesional || "—", col3, metaY + 6);
+  y = checkPage(doc, y, boxH + 6);
 
-  y += 28;
+  // Caja destacada
+  doc.setFillColor(...TERRACOTTA_LIGHT);
+  doc.setDrawColor(...TERRACOTTA);
+  doc.setLineWidth(0.4);
+  doc.roundedRect(MARGIN, y, CONTENT_W, boxH, 2, 2, "FD");
 
-  // ── SECCIÓN: CONSULTA ─────────────────────────────────────────────────────
+  // Barra izquierda
+  doc.setFillColor(...TERRACOTTA);
+  doc.roundedRect(MARGIN, y, 3, boxH, 1.5, 1.5, "F");
 
-  hRule(doc, y);
-  y += 5;
-
+  // Label "SÍNTESIS"
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(SMALL);
+  doc.setFontSize(SMALL - 0.5);
   doc.setTextColor(...TERRACOTTA);
-  doc.text("CONSULTA", MARGIN, y);
-  y += 5;
+  doc.text("SÍNTESIS", MARGIN + 7, y + 6);
 
-  doc.setFont("helvetica", "normal");
+  // Texto
+  doc.setFont("helvetica", "italic");
   doc.setFontSize(BODY);
   doc.setTextColor(...INK2);
-  const preguntaLines = wrapText(doc, datos.pregunta, CONTENT_W);
-  for (const line of preguntaLines) {
-    check(LINE_H);
-    doc.text(line, MARGIN, y);
-    y += LINE_H;
+  let ty = y + 12;
+  for (const line of lines) {
+    doc.text(line, MARGIN + 7, ty);
+    ty += LINE_H - 0.5;
   }
 
-  y += 4;
+  return y + boxH + 8;
+}
 
-  // ── SECCIÓN: RESPUESTA ────────────────────────────────────────────────────
+// ─── Sección: Tabla de Normativa Aplicable ────────────────────────────────────
+
+function dibujarTablaNormativa(doc: jsPDF, fuentes: FuentePDF[], y: number): number {
+  if (!fuentes.length) return y;
+
+  // Deduplicar por norma+articulo
+  const vistas = new Set<string>();
+  const unicas = fuentes.filter((f) => {
+    const key = f.norma + (f.articulo ?? "");
+    if (vistas.has(key)) return false;
+    vistas.add(key);
+    return true;
+  });
+
+  y = checkPage(doc, y, 20);
 
   hRule(doc, y);
   y += 5;
@@ -320,36 +454,103 @@ export async function generarPDF(datos: DatosPDF, config: ConfigPDF): Promise<vo
   doc.setFont("helvetica", "bold");
   doc.setFontSize(SMALL);
   doc.setTextColor(...TERRACOTTA);
-  doc.text("RESPUESTA", MARGIN, y);
-  y += 6;
+  doc.text("NORMATIVA APLICABLE", MARGIN, y);
+  y += 7;
 
-  // Limpiar disclaimer del final antes de renderizar (se pone en footer)
-  // Usamos [\s\S]* en lugar del flag /s para compatibilidad con ES2017
-  const contenidoLimpio = datos.contenido
-    .replace(/---\s*⚠️[\s\S]*$/, "")
-    .replace(/⚠️\s*\*\*Aviso legal\*\*[\s\S]*$/, "")
-    .trim();
+  // Encabezado de tabla
+  const colW = [28, 22, 90, 28];  // Norma | Tipo | Título | Jerarquía
+  const headers = ["NORMA", "TIPO", "TÍTULO", "JERARQUÍA"];
+  const totalW = CONTENT_W;
 
-  const bloques = parsearMarkdown(contenidoLimpio);
+  doc.setFillColor(...PAPER2);
+  doc.setDrawColor(...RULE);
+  doc.setLineWidth(0.2);
+  doc.rect(MARGIN, y - 4.5, totalW, 8, "FD");
+
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(SMALL - 0.5);
+  doc.setTextColor(...INK);
+  let cx = MARGIN + 2;
+  headers.forEach((h, i) => {
+    doc.text(h, cx, y);
+    cx += colW[i];
+  });
+  y += 5;
+  hRule(doc, y, RULE, 0.2);
+  y += 3;
+
+  // Filas
+  for (let fi = 0; fi < unicas.length; fi++) {
+    const f = unicas[fi];
+    const tipo = tipoFromNorma(f.norma);
+    const color = TIPO_COLOR[tipo] ?? INK2;
+    const jerarquia = jerarquiaFromTipo(tipo);
+
+    y = checkPage(doc, y, LINE_H + 4);
+
+    if (fi % 2 === 1) {
+      doc.setFillColor(252, 251, 249);
+      doc.rect(MARGIN, y - 4, totalW, LINE_H + 2, "F");
+    }
+
+    cx = MARGIN + 2;
+
+    // Norma (con color de tipo)
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(SMALL - 0.5);
+    doc.setTextColor(...color);
+    const normaShort = f.articulo ? `${tipo} ${f.articulo}` : wrap(doc, f.norma, colW[0] - 4)[0];
+    doc.text(normaShort, cx, y);
+    cx += colW[0];
+
+    // Badge tipo
+    doc.setFillColor(...color);
+    doc.roundedRect(cx, y - 3.5, colW[1] - 4, 5, 1, 1, "F");
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(6.5);
+    doc.setTextColor(255, 255, 255);
+    doc.text(tipo, cx + (colW[1] - 4) / 2 - 2, y - 0.5);
+    cx += colW[1];
+
+    // Título
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(SMALL - 0.5);
+    doc.setTextColor(...INK2);
+    const tituloShort = wrap(doc, f.norma_titulo, colW[2] - 4)[0] ?? f.norma_titulo;
+    doc.text(tituloShort, cx, y);
+    cx += colW[2];
+
+    // Jerarquía
+    doc.setTextColor(...INK3);
+    doc.text(jerarquia, cx, y);
+
+    hRule(doc, y + LINE_H / 2 + 1, [238, 234, 228], 0.15);
+    y += LINE_H + 2;
+  }
+
+  return y + 4;
+}
+
+// ─── Render de bloques de contenido ──────────────────────────────────────────
+
+function renderBloques(doc: jsPDF, bloques: Bloque[], yIn: number): number {
+  let y = yIn;
 
   for (const bloque of bloques) {
     switch (bloque.tipo) {
+
       case "h2": {
-        check(10);
+        y = checkPage(doc, y, 12);
         y += 2;
-        // Fondo sutil bajo encabezado
         doc.setFillColor(...PAPER2);
-        doc.rect(MARGIN, y - 4, CONTENT_W, 8, "F");
-        // Barra izquierda terracotta
+        doc.rect(MARGIN, y - 4, CONTENT_W, 9, "F");
         doc.setFillColor(...TERRACOTTA);
-        doc.rect(MARGIN, y - 4, 2, 8, "F");
+        doc.rect(MARGIN, y - 4, 2.5, 9, "F");
         doc.setFont("helvetica", "bold");
         doc.setFontSize(H2);
         doc.setTextColor(...INK);
-        const textoH2 = stripMarkdown(bloque.texto);
-        const h2Lines = wrapText(doc, textoH2, CONTENT_W - 6);
-        for (const l of h2Lines) {
-          doc.text(l, MARGIN + 5, y);
+        for (const l of wrap(doc, stripMarkdown(bloque.texto), CONTENT_W - 8)) {
+          doc.text(l, MARGIN + 6, y);
           y += LINE_H + 1;
         }
         y += 2;
@@ -357,21 +558,20 @@ export async function generarPDF(datos: DatosPDF, config: ConfigPDF): Promise<vo
       }
 
       case "h3": {
-        check(8);
+        y = checkPage(doc, y, 9);
         y += 1;
         doc.setFont("helvetica", "bold");
         doc.setFontSize(H3);
         doc.setTextColor(...INK2);
-        const textoH3 = stripMarkdown(bloque.texto);
-        doc.text(textoH3, MARGIN, y);
+        doc.text(stripMarkdown(bloque.texto), MARGIN, y);
         y += LINE_H + 1;
         break;
       }
 
       case "p": {
-        const lines = wrapText(doc, stripMarkdown(bloque.texto), CONTENT_W);
+        const lines = wrap(doc, stripMarkdown(bloque.texto), CONTENT_W);
         for (const line of lines) {
-          check(LINE_H);
+          y = checkPage(doc, y, LINE_H);
           doc.setFont("helvetica", "normal");
           doc.setFontSize(BODY);
           doc.setTextColor(...INK2);
@@ -384,15 +584,15 @@ export async function generarPDF(datos: DatosPDF, config: ConfigPDF): Promise<vo
 
       case "lista": {
         for (const item of bloque.items) {
-          const itemLines = wrapText(doc, stripMarkdown(item), CONTENT_W - 8);
+          const itemLines = wrap(doc, stripMarkdown(item), CONTENT_W - 8);
           for (let li = 0; li < itemLines.length; li++) {
-            check(LINE_H);
+            y = checkPage(doc, y, LINE_H);
             doc.setFont("helvetica", "normal");
             doc.setFontSize(BODY);
             doc.setTextColor(...INK2);
             if (li === 0) {
               doc.setFillColor(...TERRACOTTA);
-              doc.circle(MARGIN + 2.2, y - 1.5, 0.8, "F");
+              doc.circle(MARGIN + 2.2, y - 1.5, 0.9, "F");
               doc.text(itemLines[li], MARGIN + 6, y);
             } else {
               doc.text(itemLines[li], MARGIN + 6, y);
@@ -405,21 +605,35 @@ export async function generarPDF(datos: DatosPDF, config: ConfigPDF): Promise<vo
       }
 
       case "blockquote": {
-        const bqLines = wrapText(doc, stripMarkdown(bloque.texto), CONTENT_W - 10);
-        const bqH = bqLines.length * LINE_H + 4;
-        check(bqH);
-        doc.setFillColor(245, 243, 238);
-        doc.rect(MARGIN, y - 3, CONTENT_W, bqH, "F");
-        doc.setFillColor(...TERRACOTTA);
-        doc.rect(MARGIN, y - 3, 2, bqH, "F");
+        // Cita literal destacada
+        const bqLines = wrap(doc, stripMarkdown(bloque.texto), CONTENT_W - 12);
+        const bqH = bqLines.length * LINE_H + 10;
+        y = checkPage(doc, y, bqH);
+
+        doc.setFillColor(244, 240, 233);
+        doc.setDrawColor(200, 190, 170);
+        doc.setLineWidth(0.2);
+        doc.roundedRect(MARGIN, y - 3, CONTENT_W, bqH, 1.5, 1.5, "FD");
+
+        // Barra izquierda dorada (cita legal)
+        doc.setFillColor(160, 120, 50);
+        doc.rect(MARGIN, y - 3, 3, bqH, "F");
+
+        // Comilla decorativa
+        doc.setFont("times", "bold");
+        doc.setFontSize(22);
+        doc.setTextColor(180, 160, 120);
+        doc.text("\u201C", MARGIN + 5, y + 4);
+
         doc.setFont("helvetica", "italic");
         doc.setFontSize(BODY);
         doc.setTextColor(...INK2);
+        let bqY = y + 3;
         for (const l of bqLines) {
-          doc.text(l, MARGIN + 5, y);
-          y += LINE_H;
+          doc.text(l, MARGIN + 12, bqY);
+          bqY += LINE_H;
         }
-        y += 4;
+        y += bqH + 4;
         break;
       }
 
@@ -427,13 +641,10 @@ export async function generarPDF(datos: DatosPDF, config: ConfigPDF): Promise<vo
         if (!bloque.filas.length) break;
         const cols = bloque.filas[0].length;
         const colW = CONTENT_W / cols;
-
         for (let fi = 0; fi < bloque.filas.length; fi++) {
           const fila = bloque.filas[fi];
-          check(LINE_H + 2);
-
+          y = checkPage(doc, y, LINE_H + 2);
           if (fi === 0) {
-            // Header de tabla
             doc.setFillColor(...PAPER2);
             doc.rect(MARGIN, y - 4, CONTENT_W, LINE_H + 2, "F");
             doc.setFont("helvetica", "bold");
@@ -448,14 +659,10 @@ export async function generarPDF(datos: DatosPDF, config: ConfigPDF): Promise<vo
             doc.setFontSize(SMALL);
             doc.setTextColor(...INK2);
           }
-
           fila.forEach((celda, ci) => {
-            const cx = MARGIN + ci * colW + 2;
-            const celdaLines = wrapText(doc, celda, colW - 4);
-            doc.text(celdaLines[0] ?? "", cx, y);
+            doc.text(wrap(doc, celda, colW - 4)[0] ?? "", MARGIN + ci * colW + 2, y);
           });
-
-          hRule(doc, y + LINE_H / 2, [235, 231, 224]);
+          hRule(doc, y + LINE_H / 2, [235, 231, 224], 0.15);
           y += LINE_H + 2;
         }
         y += 3;
@@ -463,7 +670,7 @@ export async function generarPDF(datos: DatosPDF, config: ConfigPDF): Promise<vo
       }
 
       case "hr": {
-        check(6);
+        y = checkPage(doc, y, 6);
         y += 2;
         hRule(doc, y);
         y += 4;
@@ -472,25 +679,78 @@ export async function generarPDF(datos: DatosPDF, config: ConfigPDF): Promise<vo
     }
   }
 
-  // ── SECCIÓN: FUENTES (solo modo técnico) ──────────────────────────────────
+  return y;
+}
 
-  if (config.tipo === "tecnico" && datos.fuentes?.length) {
-    y += 2;
-    check(12);
+// ─── Función principal ────────────────────────────────────────────────────────
+
+export async function generarPDF(datos: DatosPDF, config: ConfigPDF): Promise<void> {
+  const doc = new jsPDF({ unit: "mm", format: "a4", orientation: "portrait" });
+  const nInforme = config.numeroInforme ?? `INF-${new Date().getFullYear()}-001`;
+
+  // ── Página 1: Portada ─────────────────────────────────────────────────────
+  dibujarPortada(doc, datos, config);
+
+  // ── Páginas de contenido ──────────────────────────────────────────────────
+  doc.addPage();
+  let y = 22;
+
+  // Cabecera de sección reutilizable
+  function seccion(label: string) {
+    y = checkPage(doc, y, 12);
     hRule(doc, y);
     y += 5;
-
     doc.setFont("helvetica", "bold");
     doc.setFontSize(SMALL);
     doc.setTextColor(...TERRACOTTA);
-    doc.text("FUENTES NORMATIVAS CONSULTADAS", MARGIN, y);
+    doc.text(label, MARGIN, y);
     y += 6;
+  }
+
+  // — Síntesis —
+  const sintesis = extraerSintesis(datos.contenido);
+  y = dibujarSintesis(doc, sintesis, y);
+
+  // — Consulta —
+  seccion("CONSULTA");
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(BODY);
+  doc.setTextColor(...INK2);
+  for (const line of wrap(doc, datos.pregunta, CONTENT_W)) {
+    y = checkPage(doc, y, LINE_H);
+    doc.text(line, MARGIN, y);
+    y += LINE_H;
+  }
+  y += 4;
+
+  // — Respuesta —
+  seccion("RESPUESTA");
+
+  const contenidoLimpio = datos.contenido
+    .replace(/---\s*⚠️[\s\S]*$/, "")
+    .replace(/⚠️\s*\*\*Aviso legal\*\*[\s\S]*$/, "")
+    .trim();
+
+  y = renderBloques(doc, parsearMarkdown(contenidoLimpio), y);
+
+  // — Tabla de normativa (modo técnico) —
+  if (config.tipo === "tecnico" && datos.fuentes?.length) {
+    y += 4;
+    y = dibujarTablaNormativa(doc, datos.fuentes, y);
+  }
+
+  // — Fuentes normativas (modo técnico) —
+  if (config.tipo === "tecnico" && datos.fuentes?.length) {
+    y += 2;
+    y = checkPage(doc, y, 12);
+    seccion("FUENTES NORMATIVAS CONSULTADAS");
 
     for (const fuente of datos.fuentes) {
-      check(LINE_H + 2);
+      y = checkPage(doc, y, LINE_H + 4);
       const normaLabel = fuente.articulo
-        ? `${fuente.norma} – Art. ${fuente.articulo}`
+        ? `${fuente.norma} — Art. ${fuente.articulo}`
         : fuente.norma;
+
       doc.setFont("helvetica", "bold");
       doc.setFontSize(SMALL);
       doc.setTextColor(...INK2);
@@ -498,80 +758,76 @@ export async function generarPDF(datos: DatosPDF, config: ConfigPDF): Promise<vo
 
       doc.setFont("helvetica", "normal");
       doc.setTextColor(...INK3);
-      const tituloLines = wrapText(doc, fuente.norma_titulo, CONTENT_W - 8);
       y += LINE_H - 1;
-      doc.text(tituloLines[0] ?? "", MARGIN + 4, y);
+      doc.text(wrap(doc, fuente.norma_titulo, CONTENT_W - 8)[0] ?? "", MARGIN + 4, y);
       y += LINE_H + 1;
     }
   }
 
-  // ── SECCIÓN: CRUCES REGULATORIOS (solo modo técnico) ──────────────────────
-
+  // — Cruces regulatorios (modo técnico) —
   if (config.tipo === "tecnico" && datos.cruces?.length) {
     y += 2;
-    check(14);
-    hRule(doc, y, WARN);
+    y = checkPage(doc, y, 14);
+    hRule(doc, y, WARN, 0.3);
     y += 5;
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(SMALL);
     doc.setTextColor(...WARN);
-    doc.text("⚠  DOMINIOS REGULATORIOS ADICIONALES DETECTADOS", MARGIN, y);
+    doc.text("DOMINIOS REGULATORIOS ADICIONALES DETECTADOS", MARGIN, y);
     y += 6;
 
     for (const cruce of datos.cruces) {
-      check(LINE_H * 3 + 4);
-
+      y = checkPage(doc, y, LINE_H * 3 + 6);
       doc.setFillColor(255, 249, 235);
       doc.setDrawColor(...WARN);
       doc.setLineWidth(0.2);
       doc.roundedRect(MARGIN, y - 3, CONTENT_W, LINE_H * 3, 1.5, 1.5, "FD");
-
       doc.setFont("helvetica", "bold");
       doc.setFontSize(SMALL);
       doc.setTextColor(...INK);
       doc.text(`${cruce.emoji}  ${cruce.area}`, MARGIN + 3, y + 2);
-
       doc.setFont("helvetica", "normal");
       doc.setTextColor(...INK2);
       doc.text(`Organismo: ${cruce.organismo}`, MARGIN + 3, y + LINE_H + 1);
       doc.text(`Marco probable: ${cruce.norma_probable}`, MARGIN + 3, y + LINE_H * 2);
-
-      y += LINE_H * 3 + 4;
+      y += LINE_H * 3 + 5;
     }
   }
 
-  // ── AVISO LEGAL FINAL ─────────────────────────────────────────────────────
-
+  // — Aviso legal —
   y += 4;
-  check(14);
+  y = checkPage(doc, y, 16);
   hRule(doc, y);
   y += 5;
 
   doc.setFont("helvetica", "italic");
-  doc.setFontSize(SMALL);
+  doc.setFontSize(SMALL - 0.5);
   doc.setTextColor(...INK3);
-  const avisoLines = wrapText(
+  const aviso = wrap(
     doc,
-    "Aviso legal: Las respuestas generadas por REVISOR ARQ son de carácter exclusivamente informativo y no constituyen asesoría jurídica, técnica ni profesional. Verifique siempre la norma vigente en BCN (www.bcn.cl) y consulte con un profesional habilitado antes de tomar decisiones.",
+    "Aviso legal: Las respuestas generadas por REVISOR ARQ son de carácter exclusivamente informativo y no constituyen asesoría jurídica, técnica ni profesional. Verifique siempre la norma vigente en la Biblioteca del Congreso Nacional (www.bcn.cl) y consulte con un profesional habilitado antes de tomar decisiones.",
     CONTENT_W
   );
-  for (const l of avisoLines) {
-    check(LINE_H);
+  for (const l of aviso) {
+    y = checkPage(doc, y, LINE_H);
     doc.text(l, MARGIN, y);
     y += LINE_H - 0.5;
   }
 
-  // Footer última página
-  dibujarFooter();
+  // — Footers en todas las páginas de contenido (con X de Y) —
+  const totalPages = (doc as unknown as { internal: { getNumberOfPages: () => number } }).internal.getNumberOfPages();
+  const contentPages = totalPages - 1; // la portada no tiene footer de contenido
+  for (let p = 2; p <= totalPages; p++) {
+    doc.setPage(p);
+    dibujarFooter(doc, p - 1, contentPages, nInforme);
+  }
 
-  // ── Generar nombre de archivo y guardar ────────────────────────────────────
-
+  // — Guardar —
   const fechaSlug = new Date().toISOString().slice(0, 10);
   const proyectoSlug = config.nombreProyecto
     ? "-" + config.nombreProyecto.toLowerCase().replace(/[^a-z0-9]/g, "-").slice(0, 20)
     : "";
-  const filename = `revisor-arq-${config.tipo}${proyectoSlug}-${fechaSlug}.pdf`;
-
+  const filename = `${nInforme}${proyectoSlug}-${fechaSlug}.pdf`;
   doc.save(filename);
 }
