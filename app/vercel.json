@@ -2,6 +2,12 @@
   "functions": {
     "src/app/api/chat/route.ts": {
       "maxDuration": 60
+    },
+    "src/app/api/corpus/ingestar/route.ts": {
+      "maxDuration": 120
+    },
+    "src/app/api/corpus/extraer-texto/route.ts": {
+      "maxDuration": 30
     }
   }
 }
