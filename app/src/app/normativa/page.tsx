@@ -68,16 +68,28 @@ function ModalConfirmar({
   onCancelar: () => void;
   cargando: boolean;
 }) {
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    dialogRef.current?.focus();
+  }, []);
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0" style={{ background: "rgba(0,0,0,0.45)" }} onClick={onCancelar} />
       <div
-        className="relative z-10 w-full max-w-md rounded-xl p-6 space-y-4 shadow-2xl"
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-confirmar-titulo"
+        tabIndex={-1}
+        onKeyDown={(e) => e.key === "Escape" && !cargando && onCancelar()}
+        className="relative z-10 w-full max-w-md rounded-xl p-6 space-y-4 shadow-2xl outline-none"
         style={{ background: "var(--card)", border: "1px solid var(--rule)" }}
       >
         <div className="flex items-start justify-between gap-3">
           <div className="space-y-1">
-            <p className="font-semibold text-sm" style={{ color: "var(--ink)" }}>
+            <p id="modal-confirmar-titulo" className="font-semibold text-sm" style={{ color: "var(--ink)" }}>
               ¿Eliminar esta norma de la base normativa?
             </p>
             <p className="text-xs" style={{ color: "var(--ink-3)" }}>
