@@ -7,7 +7,7 @@ export const metadata = {
 };
 
 const FEATURES = [
-  "Consultas ilimitadas sobre LGUC, OGUC y DDU",
+  "Hasta 20 consultas por hora (plan beta)",
   "Tres modos de respuesta: Arquitecto, Abogado y Profundo",
   "Citas verificables con referencias a artículos",
   "Fuentes enlazadas directamente a la BCN",

@@ -1,5 +1,12 @@
 import Link from "next/link";
 
+const LINKS = [
+  { href: "/pricing",   label: "Precios" },
+  { href: "/terminos",  label: "Términos" },
+  { href: "/privacidad",label: "Privacidad" },
+  { href: "/contacto",  label: "Contacto" },
+];
+
 export function Footer() {
   return (
     <footer
@@ -24,7 +31,7 @@ export function Footer() {
 
         {/* Links */}
         <nav
-          className="flex shrink-0 items-center gap-4 text-xs"
+          className="flex shrink-0 flex-wrap items-center gap-4 text-xs"
           style={{
             fontFamily: "var(--font-jetbrains-mono)",
             color: "var(--ink-4)",
@@ -32,34 +39,15 @@ export function Footer() {
             letterSpacing: "1px",
           }}
         >
-          <span
-            className="opacity-40 cursor-not-allowed"
-            title="Próximamente"
-            aria-disabled="true"
-          >
-            Precios
-          </span>
-          <span
-            className="opacity-40 cursor-not-allowed"
-            title="Próximamente"
-            aria-disabled="true"
-          >
-            Términos
-          </span>
-          <span
-            className="opacity-40 cursor-not-allowed"
-            title="Próximamente"
-            aria-disabled="true"
-          >
-            Privacidad
-          </span>
-          <span
-            className="opacity-40 cursor-not-allowed"
-            title="Próximamente"
-            aria-disabled="true"
-          >
-            Contacto
-          </span>
+          {LINKS.map(({ href, label }) => (
+            <Link
+              key={href}
+              href={href}
+              className="transition-colors hover:text-[var(--ink-2)]"
+            >
+              {label}
+            </Link>
+          ))}
           <span style={{ color: "var(--ink-5)" }}>
             © {new Date().getFullYear()} Revisor ARQ
           </span>
