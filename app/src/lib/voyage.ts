@@ -5,37 +5,63 @@ const MAX_RETRIES = 3;
 
 const VOYAGE_API_URL = "https://api.voyageai.com/v1/embeddings";
 
+/**
+ * input_type mejora la calidad de embeddings en voyage-law-2:
+ * - "query": para búsquedas semánticas (consultas del usuario)
+ * - "document": para indexar documentos (ingesta de normativa)
+ * null = comportamiento por defecto (compatible con ambos usos)
+ */
+export type VoyageInputType = "query" | "document" | null;
+
 function getApiKey() {
   const key = process.env.VOYAGE_API_KEY;
   if (!key) throw new Error("Falta VOYAGE_API_KEY");
   return key;
 }
 
-export async function embedText(text: string): Promise<number[]> {
-  const result = await embedBatch([text]);
+/**
+ * Embebe un solo texto. Pasar inputType="query" para consultas de usuario.
+ */
+export async function embedText(
+  text: string,
+  inputType: VoyageInputType = null
+): Promise<number[]> {
+  const result = await embedBatch([text], inputType);
   return result[0];
 }
 
-export async function embedBatch(texts: string[]): Promise<number[][]> {
+/**
+ * Embebe un lote de textos. Pasar inputType="document" para ingesta.
+ */
+export async function embedBatch(
+  texts: string[],
+  inputType: VoyageInputType = null
+): Promise<number[][]> {
   const allEmbeddings: number[][] = [];
 
   for (let i = 0; i < texts.length; i += BATCH_SIZE) {
     const batch = texts.slice(i, i + BATCH_SIZE);
-    const embeddings = await withRetry(() => fetchEmbeddings(batch));
+    const embeddings = await withRetry(() => fetchEmbeddings(batch, inputType));
     allEmbeddings.push(...embeddings);
   }
 
   return allEmbeddings;
 }
 
-async function fetchEmbeddings(texts: string[]): Promise<number[][]> {
+async function fetchEmbeddings(
+  texts: string[],
+  inputType: VoyageInputType = null
+): Promise<number[][]> {
+  const body: Record<string, unknown> = { input: texts, model: VOYAGE_MODEL };
+  if (inputType) body.input_type = inputType;
+
   const res = await fetch(VOYAGE_API_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${getApiKey()}`,
     },
-    body: JSON.stringify({ input: texts, model: VOYAGE_MODEL }),
+    body: JSON.stringify(body),
   });
 
   if (!res.ok) {
