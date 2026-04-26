@@ -62,6 +62,7 @@ async function fetchEmbeddings(
       Authorization: `Bearer ${getApiKey()}`,
     },
     body: JSON.stringify(body),
+    signal: AbortSignal.timeout(15_000), // 15s máximo para embedding
   });
 
   if (!res.ok) {

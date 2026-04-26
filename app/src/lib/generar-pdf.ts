@@ -531,6 +531,74 @@ function dibujarTablaNormativa(doc: jsPDF, fuentes: FuentePDF[], y: number): num
   return y + 4;
 }
 
+// ─── Helpers para negritas inline ────────────────────────────────────────────
+
+interface TextSeg { texto: string; bold: boolean }
+
+/**
+ * Divide un string en segmentos normal/bold según marcadores **...**
+ */
+function splitBold(text: string): TextSeg[] {
+  const segs: TextSeg[] = [];
+  const re = /\*\*(.+?)\*\*/g;
+  let last = 0;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(text)) !== null) {
+    if (m.index > last) segs.push({ texto: text.slice(last, m.index), bold: false });
+    segs.push({ texto: m[1], bold: true });
+    last = m.index + m[0].length;
+  }
+  if (last < text.length) segs.push({ texto: text.slice(last), bold: false });
+  return segs.length ? segs : [{ texto: text, bold: false }];
+}
+
+/**
+ * Renderiza una línea con segmentos bold/normal, posicionando cada tramo
+ * a continuación del anterior mediante getTextWidth.
+ */
+function renderLineaConBold(
+  doc: jsPDF,
+  line: string,
+  segs: TextSeg[],
+  x: number,
+  y: number,
+  fontSize: number,
+  color: [number, number, number]
+) {
+  doc.setFontSize(fontSize);
+  doc.setTextColor(...color);
+  let cx = x;
+  let remaining = line;
+
+  for (const seg of segs) {
+    if (!remaining) break;
+    const idx = remaining.indexOf(seg.texto.substring(0, Math.min(seg.texto.length, 20)));
+    if (idx < 0) {
+      // segmento no encontrado en la línea — renderizar resto como normal
+      doc.setFont("helvetica", "normal");
+      doc.text(remaining, cx, y);
+      remaining = "";
+      break;
+    }
+    if (idx > 0) {
+      doc.setFont("helvetica", "normal");
+      const antes = remaining.slice(0, idx);
+      doc.text(antes, cx, y);
+      cx += doc.getTextWidth(antes);
+    }
+    const len = Math.min(seg.texto.length, remaining.length - idx);
+    const chunk = remaining.slice(idx, idx + len);
+    doc.setFont("helvetica", seg.bold ? "bold" : "normal");
+    doc.text(chunk, cx, y);
+    cx += doc.getTextWidth(chunk);
+    remaining = remaining.slice(idx + len);
+  }
+  if (remaining) {
+    doc.setFont("helvetica", "normal");
+    doc.text(remaining, cx, y);
+  }
+}
+
 // ─── Render de bloques de contenido ──────────────────────────────────────────
 
 function renderBloques(doc: jsPDF, bloques: Bloque[], yIn: number): number {
@@ -569,13 +637,21 @@ function renderBloques(doc: jsPDF, bloques: Bloque[], yIn: number): number {
       }
 
       case "p": {
-        const lines = wrap(doc, stripMarkdown(bloque.texto), CONTENT_W);
+        const segmentos = splitBold(bloque.texto);
+        const hasBold = segmentos.some((s) => s.bold);
+        const plano = segmentos.map((s) => s.texto).join("");
+        const lines = wrap(doc, plano, CONTENT_W);
+
         for (const line of lines) {
           y = checkPage(doc, y, LINE_H);
-          doc.setFont("helvetica", "normal");
-          doc.setFontSize(BODY);
-          doc.setTextColor(...INK2);
-          doc.text(line, MARGIN, y);
+          if (hasBold) {
+            renderLineaConBold(doc, line, segmentos, MARGIN, y, BODY, INK2);
+          } else {
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(BODY);
+            doc.setTextColor(...INK2);
+            doc.text(line, MARGIN, y);
+          }
           y += LINE_H;
         }
         y += 2;

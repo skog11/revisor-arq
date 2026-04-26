@@ -9,6 +9,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 
 const BodySchema = z.object({
   key: z.string().min(1),
@@ -16,6 +17,16 @@ const BodySchema = z.object({
 });
 
 export async function POST(req: NextRequest) {
+  // Límite estricto: 5 intentos por 15 minutos por IP
+  const ip = getClientIp(req);
+  const rl = checkRateLimit(`admin_login:${ip}`, 5, 15 * 60 * 1000);
+  if (!rl.success) {
+    return NextResponse.json(
+      { error: "Demasiados intentos. Espere unos minutos e intente de nuevo." },
+      { status: 429 }
+    );
+  }
+
   let raw: unknown;
   try {
     raw = await req.json();

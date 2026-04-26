@@ -503,7 +503,7 @@ const TEMAS_FUERA_DOMINIO = [
   /receta|cocina|aliment/i,
   /medicina|enfermedad|tratamiento médico/i,
   /código civil|código penal|código laboral/i,
-  /\\bsueldo\\b|\\bsalario\\b|\\bcontrato laboral\\b/i,
+  /\bsueldo\b|\bsalario\b|\bcontrato laboral\b/i,
 ];
 
 /**
