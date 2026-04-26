@@ -81,9 +81,11 @@ export function ModalExportarPDF({ datos, onCerrar }: Props) {
   const [dom,           setDom]           = useState("");
   const [expandido,     setExpandido]     = useState(false);
   const [generando,     setGenerando]     = useState(false);
+  const [errorPdf,      setErrorPdf]      = useState<string | null>(null);
 
   async function handleGenerar() {
     setGenerando(true);
+    setErrorPdf(null);
     try {
       const { generarPDF } = await import("@/lib/generar-pdf");
       await generarPDF(datos, {
@@ -100,7 +102,7 @@ export function ModalExportarPDF({ datos, onCerrar }: Props) {
       });
       onCerrar();
     } catch (err) {
-      console.error("Error generando PDF:", err);
+      setErrorPdf((err as Error).message ?? "No se pudo generar el PDF. Intenta de nuevo.");
     } finally {
       setGenerando(false);
     }
@@ -312,6 +314,13 @@ export function ModalExportarPDF({ datos, onCerrar }: Props) {
             {tipo === "tecnico" ? " (detalle completo)" : " (resumen ejecutivo)"}
           </div>
         </div>
+
+        {/* Error */}
+        {errorPdf && (
+          <p className="px-6 pb-3 text-xs" style={{ color: "var(--terracotta)" }}>
+            {errorPdf}
+          </p>
+        )}
 
         {/* Footer */}
         <div
