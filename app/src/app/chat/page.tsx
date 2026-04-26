@@ -79,17 +79,92 @@ function resizeTextarea(el: HTMLTextAreaElement) {
   el.style.height = Math.min(el.scrollHeight, 192) + "px";
 }
 
+// ─── Helpers localStorage ─────────────────────────────────────────────────────
+
+const STORAGE_KEY = "ra_chat_history";
+const STORAGE_RATE_KEY = "ra_rate_window";
+const MAX_STORED_MENSAJES = 40; // Limitar para no exceder el espacio de localStorage
+const RATE_LIMIT_MAX = 20;
+const RATE_WINDOW_MS = 3_600_000; // 1 hora
+
+/** Cuenta consultas enviadas en la ventana de 1 hora (lado cliente, orientativo) */
+function getRemainingClient(): number {
+  try {
+    const raw = localStorage.getItem(STORAGE_RATE_KEY);
+    const timestamps: number[] = raw ? JSON.parse(raw) : [];
+    const now = Date.now();
+    const recientes = timestamps.filter((t) => now - t < RATE_WINDOW_MS);
+    return Math.max(0, RATE_LIMIT_MAX - recientes.length);
+  } catch {
+    return RATE_LIMIT_MAX;
+  }
+}
+
+function registrarConsulta() {
+  try {
+    const raw = localStorage.getItem(STORAGE_RATE_KEY);
+    const timestamps: number[] = raw ? JSON.parse(raw) : [];
+    const now = Date.now();
+    const recientes = timestamps.filter((t) => now - t < RATE_WINDOW_MS);
+    recientes.push(now);
+    localStorage.setItem(STORAGE_RATE_KEY, JSON.stringify(recientes));
+  } catch { /* ignorar */ }
+}
+
+/** Serializa mensajes para guardar (descarta el texto completo de fuentes para ahorrar espacio) */
+function serializarMensajes(mensajes: MensajeData[]): MensajeData[] {
+  return mensajes.slice(-MAX_STORED_MENSAJES).map((m) => ({
+    ...m,
+    streaming: false,
+    fuentes: m.fuentes?.map((f) => ({ ...f, texto: undefined })),
+  }));
+}
+
+function guardarEnStorage(mensajes: MensajeData[]) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(serializarMensajes(mensajes)));
+  } catch {
+    // localStorage puede estar lleno o bloqueado (modo privado estricto)
+  }
+}
+
+function cargarDeStorage(): MensajeData[] {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as MensajeData[];
+    // Filtrar mensajes en estado de streaming (quedaron incompletos)
+    return parsed.filter((m) => !m.streaming);
+  } catch {
+    return [];
+  }
+}
+
 // ─── Componente principal ──────────────────────────────────────────────────────
 
 export default function ChatPage() {
-  const [mensajes, setMensajes] = useState<MensajeData[]>([]);
+  const [mensajes, setMensajes] = useState<MensajeData[]>(() => {
+    // Cargar historial de localStorage al montar (solo en cliente)
+    if (typeof window === "undefined") return [];
+    return cargarDeStorage();
+  });
   const [pregunta, setPregunta] = useState("");
   const [modo, setModo] = useState<ModoRespuesta>("arquitecto");
   const [cargando, setCargando] = useState(false);
+  const [restantes, setRestantes] = useState<number>(() => {
+    if (typeof window === "undefined") return RATE_LIMIT_MAX;
+    return getRemainingClient();
+  });
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const abortRef = useRef<AbortController | null>(null);
+
+  // Persistir mensajes en localStorage cuando cambian (solo mensajes completados)
+  useEffect(() => {
+    if (mensajes.length === 0) return;
+    guardarEnStorage(mensajes);
+  }, [mensajes]);
 
   // Auto-scroll al último mensaje
   useEffect(() => {
@@ -117,6 +192,8 @@ export default function ChatPage() {
       setPregunta("");
       if (textareaRef.current) textareaRef.current.style.height = "auto";
       setCargando(true);
+      registrarConsulta();
+      setRestantes(getRemainingClient());
 
       const ctrl = new AbortController();
       abortRef.current = ctrl;
@@ -249,6 +326,7 @@ export default function ChatPage() {
     setMensajes([]);
     setPregunta("");
     setCargando(false);
+    try { localStorage.removeItem(STORAGE_KEY); } catch { /* ignorar */ }
     setTimeout(() => textareaRef.current?.focus(), 50);
   }, []);
 
@@ -485,18 +563,31 @@ export default function ChatPage() {
               })}
             </div>
 
-            {/* Botón nueva consulta */}
-            {hayMensajes && (
-              <button
-                onClick={limpiarChat}
-                className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] transition-colors hover:bg-foreground/[0.06]"
-                style={{ color: "var(--ink-4, var(--ink-3))" }}
-                title="Empezar nueva consulta"
+            {/* Contador de consultas restantes + botón nueva consulta */}
+            <div className="flex items-center gap-2 shrink-0">
+              {/* Indicador de consultas restantes (orientativo) */}
+              <span
+                className="text-[10px] tabular-nums"
+                style={{
+                  color: restantes <= 5 ? "var(--terracotta)" : "var(--ink-4, var(--ink-3))",
+                  fontFamily: "var(--font-jetbrains-mono)",
+                }}
+                title={`${restantes} de ${RATE_LIMIT_MAX} consultas disponibles en la próxima hora`}
               >
-                <RotateCcw className="size-3" />
-                Nueva consulta
-              </button>
-            )}
+                {restantes}/{RATE_LIMIT_MAX}
+              </span>
+              {hayMensajes && (
+                <button
+                  onClick={limpiarChat}
+                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] transition-colors hover:bg-foreground/[0.06]"
+                  style={{ color: "var(--ink-4, var(--ink-3))" }}
+                  title="Empezar nueva consulta"
+                >
+                  <RotateCcw className="size-3" />
+                  Nueva consulta
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Caja de entrada */}
@@ -551,22 +642,35 @@ export default function ChatPage() {
             )}
           </div>
 
-          {/* Disclaimer legal */}
-          <p
-            className="text-center mt-1.5 text-[11px]"
-            style={{ color: "var(--ink-3)" }}
-          >
-            REVISOR ARQ no reemplaza asesoría profesional. Verifica siempre en{" "}
-            <a
-              href="https://www.bcn.cl"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline underline-offset-2 hover:opacity-70 transition-opacity"
+          {/* Footer: disclaimer + contador de caracteres */}
+          <div className="flex items-center justify-between mt-1.5">
+            <p
+              className="text-[11px]"
+              style={{ color: "var(--ink-3)" }}
             >
-              BCN
-            </a>
-            .
-          </p>
+              REVISOR ARQ no reemplaza asesoría profesional. Verifica en{" "}
+              <a
+                href="https://www.bcn.cl"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-2 hover:opacity-70 transition-opacity"
+              >
+                BCN
+              </a>
+              .
+            </p>
+            {pregunta.length > 0 && (
+              <span
+                className="text-[10px] tabular-nums shrink-0 ml-2"
+                style={{
+                  color: pregunta.length > 1800 ? "var(--terracotta)" : "var(--ink-4, var(--ink-3))",
+                  fontFamily: "var(--font-jetbrains-mono)",
+                }}
+              >
+                {pregunta.length}/2000
+              </span>
+            )}
+          </div>
         </div>
       </div>
     </div>

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { HardHat, Scale, Microscope, AlertTriangle, ThumbsUp, ThumbsDown, FileDown } from "lucide-react";
+import { useState, useCallback } from "react";
+import { HardHat, Scale, Microscope, AlertTriangle, ThumbsUp, ThumbsDown, FileDown, Copy, Check } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -217,6 +217,48 @@ function CrucesAlert({ cruces }: { cruces: CruceDetectado[] }) {
   );
 }
 
+// ─── Botón de copiar ─────────────────────────────────────────────────────────
+
+function CopyButton({ texto }: { texto: string }) {
+  const [copiado, setCopiado] = useState(false);
+
+  const copiar = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(texto);
+      setCopiado(true);
+      setTimeout(() => setCopiado(false), 2000);
+    } catch {
+      // Fallback para entornos sin API clipboard
+      const ta = document.createElement("textarea");
+      ta.value = texto;
+      ta.style.position = "fixed";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+      setCopiado(true);
+      setTimeout(() => setCopiado(false), 2000);
+    }
+  }, [texto]);
+
+  return (
+    <button
+      onClick={copiar}
+      className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] transition-all hover:bg-foreground/[0.06]"
+      style={{
+        color: copiado ? "var(--ra-green)" : "var(--ink-4, var(--ink-3))",
+        fontFamily: "var(--font-jetbrains-mono)",
+        border: "1px solid var(--rule)",
+      }}
+      title={copiado ? "¡Copiado!" : "Copiar respuesta"}
+    >
+      {copiado ? <Check className="size-3" /> : <Copy className="size-3" />}
+      {copiado ? "¡Copiado!" : "Copiar"}
+    </button>
+  );
+}
+
 // ─── Mensaje asistente ────────────────────────────────────────────────────────
 
 function MensajeAsistente({ mensaje }: { mensaje: MensajeData }) {
@@ -321,26 +363,32 @@ function MensajeAsistente({ mensaje }: { mensaje: MensajeData }) {
                 />
               )}
 
-            {/* Feedback + Exportar PDF */}
+            {/* Feedback + Acciones */}
             {!mensaje.streaming && !mensaje.error && (
               <div className="flex items-center justify-between mt-3">
                 <FeedbackBar consultaId={mensaje.consultaId} />
-                {/* Botón PDF — solo cuando hay contenido suficiente */}
-                {mensaje.contenido.length > 100 && (
-                  <button
-                    onClick={() => setModalPDFAbierto(true)}
-                    className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] transition-colors hover:bg-foreground/[0.06]"
-                    style={{
-                      color: "var(--ink-4, var(--ink-3))",
-                      fontFamily: "var(--font-jetbrains-mono)",
-                      border: "1px solid var(--rule)",
-                    }}
-                    title="Exportar como informe PDF"
-                  >
-                    <FileDown className="size-3" />
-                    PDF
-                  </button>
-                )}
+                <div className="flex items-center gap-1.5">
+                  {/* Botón copiar */}
+                  {mensaje.contenido.length > 10 && (
+                    <CopyButton texto={mensaje.contenido} />
+                  )}
+                  {/* Botón PDF — solo cuando hay contenido suficiente */}
+                  {mensaje.contenido.length > 100 && (
+                    <button
+                      onClick={() => setModalPDFAbierto(true)}
+                      className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] transition-colors hover:bg-foreground/[0.06]"
+                      style={{
+                        color: "var(--ink-4, var(--ink-3))",
+                        fontFamily: "var(--font-jetbrains-mono)",
+                        border: "1px solid var(--rule)",
+                      }}
+                      title="Exportar como informe PDF"
+                    >
+                      <FileDown className="size-3" />
+                      PDF
+                    </button>
+                  )}
+                </div>
               </div>
             )}
           </>
