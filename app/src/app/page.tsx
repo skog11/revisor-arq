@@ -4,6 +4,30 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { motion, type Variants } from "framer-motion";
 
+const CASOS_USO = [
+  {
+    perfil: "Arquitecto en fase de diseño",
+    emoji: "🏗️",
+    consulta: "¿Puedo construir un edificio de 12 pisos en zona ZM-6 de Santiago?",
+    resultado:
+      "Parámetros aplicables al instante: constructibilidad, densidad, rasantes, distanciamientos y qué datos del terreno necesito confirmar.",
+  },
+  {
+    perfil: "Abogado revisando expediente",
+    emoji: "⚖️",
+    consulta: "¿Qué dice literalmente el Art. 161 LGUC sobre demoliciones?",
+    resultado:
+      "Cita íntegra del artículo, jerarquía de fuentes, normas concordantes y riesgos interpretativos detectados.",
+  },
+  {
+    perfil: "Proyectista con permiso rechazado",
+    emoji: "📋",
+    consulta: "¿Por qué la DOM puede rechazar un permiso de edificación por rasante?",
+    resultado:
+      "Análisis del Art. 2.6.3 OGUC, circulares DDU aplicables, criterios de la autoridad y hoja de ruta para subsanar.",
+  },
+];
+
 const FEATURES = [
   {
     num: "01",
@@ -462,6 +486,85 @@ export default function HomePage() {
         ))}
       </section>
 
+      {/* ── CASOS DE USO ─────────────────────────────────── */}
+      <section
+        className="px-10 py-16 lg:px-16"
+        style={{ borderBottom: "1px solid var(--rule)" }}
+      >
+        <div
+          className="mb-3"
+          style={{
+            fontFamily: "var(--font-jetbrains-mono)",
+            fontSize: 11,
+            color: "var(--ink-3)",
+            textTransform: "uppercase",
+            letterSpacing: "1.5px",
+          }}
+        >
+          Casos de uso
+        </div>
+        <h2
+          className="mb-10"
+          style={{
+            fontFamily: "var(--font-instrument-serif)",
+            fontSize: "clamp(32px, 4vw, 48px)",
+            lineHeight: 1.05,
+            letterSpacing: "-1px",
+            color: "var(--ink)",
+            maxWidth: 560,
+          }}
+        >
+          Para decisiones que necesitan respaldo normativo
+        </h2>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+          {CASOS_USO.map((caso, i) => (
+            <motion.div
+              key={caso.perfil}
+              custom={i}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-40px" }}
+              variants={fadeUp}
+              className="rounded-xl p-6 flex flex-col gap-4"
+              style={{
+                background: "var(--paper-2)",
+                border: "1px solid var(--rule)",
+              }}
+            >
+              <div className="flex items-center gap-2.5">
+                <span className="text-xl" aria-hidden="true">{caso.emoji}</span>
+                <span
+                  className="text-[11px] font-medium uppercase tracking-wider"
+                  style={{
+                    fontFamily: "var(--font-jetbrains-mono)",
+                    color: "var(--ink-3)",
+                  }}
+                >
+                  {caso.perfil}
+                </span>
+              </div>
+              <div
+                className="rounded-lg px-3 py-2.5 text-sm italic"
+                style={{
+                  background: "var(--paper)",
+                  border: "1px solid var(--rule)",
+                  color: "var(--ink-2)",
+                  lineHeight: 1.5,
+                }}
+              >
+                &ldquo;{caso.consulta}&rdquo;
+              </div>
+              <p
+                className="text-sm leading-relaxed"
+                style={{ color: "var(--ink-3)" }}
+              >
+                {caso.resultado}
+              </p>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
       {/* ── HOW IT WORKS ─────────────────────────────────── */}
       <section className="px-10 py-16 lg:px-16">
         <div
@@ -536,6 +639,66 @@ export default function HomePage() {
             </motion.div>
           ))}
         </div>
+      </section>
+      {/* ── CTA FINAL ────────────────────────────────────── */}
+      <section
+        className="px-10 py-20 lg:px-16 text-center"
+        style={{
+          borderTop: "1px solid var(--rule)",
+          background: "var(--paper-2)",
+        }}
+      >
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          className="mx-auto max-w-xl"
+        >
+          <p
+            className="mb-3"
+            style={{
+              fontFamily: "var(--font-jetbrains-mono)",
+              fontSize: 11,
+              color: "var(--ink-3)",
+              textTransform: "uppercase",
+              letterSpacing: "1.5px",
+            }}
+          >
+            Beta abierta — sin registro
+          </p>
+          <h2
+            className="mb-4"
+            style={{
+              fontFamily: "var(--font-instrument-serif)",
+              fontSize: "clamp(32px, 4vw, 52px)",
+              lineHeight: 1.05,
+              letterSpacing: "-1px",
+              color: "var(--ink)",
+            }}
+          >
+            Tu primera consulta
+            <br />
+            <em style={{ fontStyle: "italic", color: "var(--terracotta)" }}>está a un clic</em>
+          </h2>
+          <p
+            className="mb-8 text-sm leading-relaxed"
+            style={{ color: "var(--ink-3)", maxWidth: 400, margin: "0 auto 2rem" }}
+          >
+            Sin registro, sin tarjeta de crédito. Hasta 20 consultas por hora durante la beta.
+          </p>
+          <Link
+            href="/chat"
+            className="inline-flex items-center gap-1.5 rounded-full px-7 py-3 text-sm font-medium transition-all hover:-translate-y-px hover:shadow-lg"
+            style={{
+              background: "var(--ink)",
+              color: "var(--paper)",
+              boxShadow: "var(--shadow-1)",
+            }}
+          >
+            Hacer una consulta →
+          </Link>
+        </motion.div>
       </section>
     </>
   );
