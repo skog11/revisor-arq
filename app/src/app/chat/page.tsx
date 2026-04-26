@@ -129,7 +129,13 @@ export default function ChatPage() {
           signal: ctrl.signal,
         });
 
-        if (!res.ok || !res.body) throw new Error(`Error del servidor: ${res.status}`);
+        if (!res.ok || !res.body) {
+          if (res.status === 429) {
+            const j = await res.json().catch(() => ({})) as { error?: string };
+            throw new Error(j.error ?? "Límite de consultas alcanzado. Intenta en unos minutos.");
+          }
+          throw new Error(`Error del servidor: ${res.status}`);
+        }
 
         const reader = res.body.getReader();
         const decoder = new TextDecoder();
