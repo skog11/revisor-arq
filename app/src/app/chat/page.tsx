@@ -176,6 +176,11 @@ export default function ChatPage() {
     textareaRef.current?.focus();
   }, []);
 
+  // Abortar stream si el componente se desmonta (navegación)
+  useEffect(() => {
+    return () => { abortRef.current?.abort(); };
+  }, []);
+
   const enviar = useCallback(
     async (textoPregunta?: string) => {
       const texto = (textoPregunta ?? pregunta).trim();
@@ -313,6 +318,9 @@ export default function ChatPage() {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       enviar();
+    }
+    if (e.key === "Escape" && cargando) {
+      detener();
     }
   };
 
