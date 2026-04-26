@@ -20,7 +20,9 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: "Se requiere un campo 'file' con el PDF" }, { status: 400 });
   }
 
-  if (!file.name.toLowerCase().endsWith(".pdf")) {
+  const extensionOk = file.name.toLowerCase().endsWith(".pdf");
+  const mimeOk = !file.type || file.type === "application/pdf";
+  if (!extensionOk || !mimeOk) {
     return Response.json({ error: "Solo se aceptan archivos PDF" }, { status: 400 });
   }
 

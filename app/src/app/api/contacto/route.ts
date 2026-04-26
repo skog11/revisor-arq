@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { getSupabaseAdmin } from "@/lib/supabase";
 import { z } from "zod";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 
@@ -45,18 +45,12 @@ export async function POST(req: Request) {
   const { tipo, descripcion, email } = parsed.data;
 
   try {
-    // Guardar en Supabase si está configurado
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-    if (url && key) {
-      const sb = createClient(url, key);
-      await sb.from("contacto").insert({
-        tipo,
-        descripcion: descripcion.trim(),
-        email: email?.trim() || null,
-      });
-    }
+    const sb = getSupabaseAdmin();
+    await sb.from("contacto").insert({
+      tipo,
+      descripcion: descripcion.trim(),
+      email: email?.trim() || null,
+    });
   } catch {
     // Falla silenciosa — el usuario igual recibe confirmación
   }
