@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); [print\\(k, d[k].get\\('hash','?'\\)[:8], d[k].get\\('chars','?'\\)\\) for k in d]\")",
+      "Bash(python3 -c ' *)",
+      "Bash(curl -s http://localhost:3000)",
+      "Bash(curl -s http://localhost:3000 -o /dev/null -w \"%{http_code}\")",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__new_page",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__emulate",
+      "mcp__plugin_chrome-devtools-mcp_chrome-devtools__take_screenshot",
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "Bash(supabase --version)",
+      "Bash(grep -E \"^pg$|postgres|supabase\")",
+      "Bash(env)",
+      "Bash(curl -s -o /dev/null -w '%{http_code}' -X POST https://api.supabase.com/v1/projects/tmypbopdgodbolsjbush/database/query -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRteXBib3BkZ29kYm9sc2pidXNoIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjUyNjIzOCwiZXhwIjoyMDkyMTAyMjM4fQ.pyp_NPpQS4iE-TsGorNRzY_1nLC520XebUhIKRrDJNY' -H 'Content-Type: application/json' -d '{\"query\":\"SELECT 1\"}')",
+      "Bash(start chrome *)",
+      "Bash(python3 -c \"import pdfplumber; print\\('pdfplumber OK'\\)\")",
+      "Bash(python -c \"import pdfplumber; print\\('pdfplumber OK'\\)\")",
+      "Bash(python -c \"import requests; print\\('requests OK'\\)\")",
+      "Bash(python -c \"import supabase; print\\('supabase OK'\\)\")",
+      "Bash(xargs -I{} dirname {})",
+      "Bash(xargs -I{} basename {})",
+      "Bash(bash ingestar_normativa_masiva.sh --dry-run --cat 01)",
+      "Bash(bash ingestar_normativa_masiva.sh --cat 01)",
+      "Bash(bash ingestar_normativa_masiva.sh --dry-run)",
+      "Bash(xargs head *)",
+      "Bash(bash ingestar_ddu_masiva.sh --dry-run)",
+      "Bash(tasklist /fi \"imagename eq python.exe\")",
+      "Bash(wmic process *)",
+      "Bash(Get-Content \"C:\\\\00_CLAUDE CODE\\\\REVISOR-ARQ\\\\NORMATIVA\\\\normativa_chile\\\\99_logs\\\\ingesta_masiva.log\" -Tail 40)",
+      "Bash(bash ingestar_ddu_masiva.sh)",
+      "Bash(echo \"PID: $!\")"
+    ]
+  }
+}
