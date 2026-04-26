@@ -24,6 +24,15 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: "Solo se aceptan archivos PDF" }, { status: 400 });
   }
 
+  // Límite: 20 MB (los PDFs de normativa legal rara vez superan 5 MB)
+  const MAX_SIZE_MB = 20;
+  if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+    return Response.json(
+      { error: `El archivo supera el límite de ${MAX_SIZE_MB} MB. Comprime el PDF o divídelo en partes.` },
+      { status: 413 }
+    );
+  }
+
   const buffer = Buffer.from(await file.arrayBuffer());
 
   // eslint-disable-next-line @typescript-eslint/no-require-imports

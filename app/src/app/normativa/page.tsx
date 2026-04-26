@@ -505,6 +505,9 @@ export default function CorpusPage() {
   const [busqueda, setBusqueda] = useState("");
   const [filtroTipo, setFiltroTipo] = useState<string>("todos");
   const [filtroVigente, setFiltroVigente] = useState<"todos" | "vigentes" | "inactivas">("todos");
+  // Paginación
+  const PAGE_SIZE = 50;
+  const [pagina, setPagina] = useState(1);
 
   async function cargar() {
     setLoading(true);
@@ -521,6 +524,9 @@ export default function CorpusPage() {
   }
 
   useEffect(() => { cargar(); }, []);
+
+  // Resetear página cuando cambian los filtros
+  useEffect(() => { setPagina(1); }, [busqueda, filtroTipo, filtroVigente]);
 
   async function toggleVigencia(norma: NormaStatus) {
     if (toggling) return;
@@ -570,7 +576,7 @@ export default function CorpusPage() {
     ? Array.from(new Set(status.normas.map((n) => n.tipo))).sort()
     : [];
 
-  const normasSorted = status
+  const normasFiltradas = status
     ? [...status.normas]
         .filter((n) => {
           if (filtroTipo !== "todos" && n.tipo !== filtroTipo) return false;
@@ -590,6 +596,9 @@ export default function CorpusPage() {
         })
         .sort((a, b) => a.tipo.localeCompare(b.tipo) || a.numero.localeCompare(b.numero))
     : [];
+
+  const totalPaginas = Math.ceil(normasFiltradas.length / PAGE_SIZE);
+  const normasSorted = normasFiltradas.slice((pagina - 1) * PAGE_SIZE, pagina * PAGE_SIZE);
 
   return (
     <>
@@ -738,9 +747,11 @@ export default function CorpusPage() {
         )}
 
         {/* Resultado del filtro */}
-        {status && busqueda && (
+        {status && (busqueda || filtroTipo !== "todos" || filtroVigente !== "todos") && (
           <p className="text-xs" style={{ color: "var(--ink-3)" }}>
-            {normasSorted.length} resultado{normasSorted.length !== 1 ? "s" : ""} para &ldquo;{busqueda}&rdquo;
+            {normasFiltradas.length} resultado{normasFiltradas.length !== 1 ? "s" : ""}
+            {busqueda ? <> para &ldquo;{busqueda}&rdquo;</> : null}
+            {totalPaginas > 1 && <> · página {pagina}/{totalPaginas}</>}
           </p>
         )}
 
@@ -882,6 +893,57 @@ export default function CorpusPage() {
               </table>
             </div>
           </>
+        )}
+
+        {/* ── Paginación ── */}
+        {totalPaginas > 1 && (
+          <div className="flex items-center justify-center gap-2 flex-wrap">
+            <button
+              onClick={() => setPagina((p) => Math.max(1, p - 1))}
+              disabled={pagina === 1}
+              className="px-3 py-1.5 rounded-lg text-xs transition-colors hover:bg-foreground/[0.06] disabled:opacity-40 disabled:cursor-default"
+              style={{ border: "1px solid var(--rule)", color: "var(--ink-3)", fontFamily: "var(--font-jetbrains-mono)" }}
+            >
+              ← Anterior
+            </button>
+            {Array.from({ length: Math.min(totalPaginas, 7) }, (_, i) => {
+              // Mostrar primeras 3, últimas 3 y la actual con sus vecinas
+              const p = i + 1;
+              if (totalPaginas <= 7) return p;
+              if (p <= 2 || p >= totalPaginas - 1 || Math.abs(p - pagina) <= 1) return p;
+              return null;
+            }).filter(Boolean).reduce<(number | string)[]>((acc, p, i, arr) => {
+              if (i > 0 && (arr[i - 1] as number) < (p as number) - 1) acc.push("…");
+              acc.push(p as number);
+              return acc;
+            }, []).map((p, i) => (
+              typeof p === "string" ? (
+                <span key={`ellipsis-${i}`} className="px-1 text-xs" style={{ color: "var(--ink-4)" }}>…</span>
+              ) : (
+                <button
+                  key={p}
+                  onClick={() => setPagina(p)}
+                  className="w-8 h-8 rounded-lg text-xs transition-colors"
+                  style={{
+                    background: pagina === p ? "var(--ink)" : "transparent",
+                    color: pagina === p ? "var(--paper)" : "var(--ink-3)",
+                    border: `1px solid ${pagina === p ? "var(--ink)" : "var(--rule)"}`,
+                    fontFamily: "var(--font-jetbrains-mono)",
+                  }}
+                >
+                  {p}
+                </button>
+              )
+            ))}
+            <button
+              onClick={() => setPagina((p) => Math.min(totalPaginas, p + 1))}
+              disabled={pagina === totalPaginas}
+              className="px-3 py-1.5 rounded-lg text-xs transition-colors hover:bg-foreground/[0.06] disabled:opacity-40 disabled:cursor-default"
+              style={{ border: "1px solid var(--rule)", color: "var(--ink-3)", fontFamily: "var(--font-jetbrains-mono)" }}
+            >
+              Siguiente →
+            </button>
+          </div>
         )}
 
         {loading && !status && (
