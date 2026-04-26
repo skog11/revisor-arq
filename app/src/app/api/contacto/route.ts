@@ -4,7 +4,15 @@ import { z } from "zod";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 
 const ContactoSchema = z.object({
-  tipo: z.enum(["consulta", "soporte", "sugerencia", "otro"]),
+  tipo: z.enum([
+    "error-corpus",
+    "norma-faltante",
+    "respuesta-incorrecta",
+    "sugerencia",
+    "consulta",
+    "soporte",
+    "otro",
+  ]),
   descripcion: z.string().min(10).max(2000),
   email: z.string().email().optional().or(z.literal("")),
 });

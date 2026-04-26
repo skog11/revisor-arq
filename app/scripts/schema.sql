@@ -85,7 +85,26 @@ CREATE TABLE IF NOT EXISTS consultas (
   created_at    timestamptz NOT NULL DEFAULT now()
 );
 
--- 7. Tabla evaluaciones
+-- 7. Tabla contacto
+CREATE TABLE IF NOT EXISTS contacto (
+  id          uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  tipo        text NOT NULL CHECK (tipo IN (
+                'error-corpus', 'norma-faltante', 'respuesta-incorrecta',
+                'sugerencia', 'consulta', 'soporte', 'otro'
+              )),
+  descripcion text NOT NULL,
+  email       text,
+  leido       boolean NOT NULL DEFAULT false,
+  created_at  timestamptz NOT NULL DEFAULT now()
+);
+
+ALTER TABLE contacto ENABLE ROW LEVEL SECURITY;
+-- Inserción pública (sin auth) para el formulario de contacto
+CREATE POLICY "contacto_anon_insert" ON contacto FOR INSERT WITH CHECK (true);
+-- Solo service_role puede leer y gestionar
+CREATE POLICY "contacto_service_all"  ON contacto FOR ALL TO service_role USING (true);
+
+-- 8. Tabla evaluaciones
 CREATE TABLE IF NOT EXISTS evaluaciones (
   id                  uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   pregunta            text NOT NULL,

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import {
   RefreshCw, Database, FileText, CheckCircle2, Clock,
-  Upload, Trash2, ToggleLeft, ToggleRight, Loader2, X,
+  Upload, Trash2, ToggleLeft, ToggleRight, Loader2, X, Search,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -501,6 +501,10 @@ export default function CorpusPage() {
   const [eliminando, setEliminando] = useState<string | null>(null);
   const [confirmarElim, setConfirmarElim] = useState<NormaStatus | null>(null);
   const [showUpload, setShowUpload] = useState(false);
+  // Filtros
+  const [busqueda, setBusqueda] = useState("");
+  const [filtroTipo, setFiltroTipo] = useState<string>("todos");
+  const [filtroVigente, setFiltroVigente] = useState<"todos" | "vigentes" | "inactivas">("todos");
 
   async function cargar() {
     setLoading(true);
@@ -561,10 +565,30 @@ export default function CorpusPage() {
     }
   }
 
+  // Tipos únicos para el selector de filtro
+  const tiposUnicos = status
+    ? Array.from(new Set(status.normas.map((n) => n.tipo))).sort()
+    : [];
+
   const normasSorted = status
-    ? [...status.normas].sort((a, b) =>
-        a.tipo.localeCompare(b.tipo) || a.numero.localeCompare(b.numero)
-      )
+    ? [...status.normas]
+        .filter((n) => {
+          if (filtroTipo !== "todos" && n.tipo !== filtroTipo) return false;
+          if (filtroVigente === "vigentes" && !n.vigente) return false;
+          if (filtroVigente === "inactivas" && n.vigente) return false;
+          if (busqueda.trim()) {
+            const q = busqueda.toLowerCase();
+            return (
+              n.numero.toLowerCase().includes(q) ||
+              n.titulo.toLowerCase().includes(q) ||
+              n.tipo.toLowerCase().includes(q) ||
+              (n.dominio ?? "").toLowerCase().includes(q) ||
+              (n.organo_emisor ?? "").toLowerCase().includes(q)
+            );
+          }
+          return true;
+        })
+        .sort((a, b) => a.tipo.localeCompare(b.tipo) || a.numero.localeCompare(b.numero))
     : [];
 
   return (
@@ -650,6 +674,74 @@ export default function CorpusPage() {
               </div>
             ))}
           </div>
+        )}
+
+        {/* ── Barra de filtros ── */}
+        {status && status.normas.length > 0 && (
+          <div className="flex flex-col sm:flex-row gap-2">
+            {/* Búsqueda */}
+            <div
+              className="flex items-center gap-2 flex-1 rounded-lg px-3 py-2"
+              style={{ background: "var(--paper-2)", border: "1px solid var(--rule)" }}
+            >
+              <Search className="size-3.5 shrink-0" style={{ color: "var(--ink-3)" }} />
+              <input
+                type="text"
+                value={busqueda}
+                onChange={(e) => setBusqueda(e.target.value)}
+                placeholder="Buscar por número, título, dominio…"
+                className="flex-1 bg-transparent text-sm focus:outline-none placeholder:text-xs"
+                style={{ color: "var(--ink)" }}
+              />
+              {busqueda && (
+                <button onClick={() => setBusqueda("")} className="shrink-0">
+                  <X className="size-3.5" style={{ color: "var(--ink-4)" }} />
+                </button>
+              )}
+            </div>
+
+            {/* Filtro tipo */}
+            <select
+              value={filtroTipo}
+              onChange={(e) => setFiltroTipo(e.target.value)}
+              className="rounded-lg px-3 py-2 text-xs focus:outline-none"
+              style={{
+                background: "var(--paper-2)",
+                border: "1px solid var(--rule)",
+                color: "var(--ink-2)",
+                fontFamily: "var(--font-jetbrains-mono)",
+              }}
+            >
+              <option value="todos">Todos los tipos</option>
+              {tiposUnicos.map((t) => (
+                <option key={t} value={t}>{t}</option>
+              ))}
+            </select>
+
+            {/* Filtro vigencia */}
+            <select
+              value={filtroVigente}
+              onChange={(e) => setFiltroVigente(e.target.value as typeof filtroVigente)}
+              className="rounded-lg px-3 py-2 text-xs focus:outline-none"
+              style={{
+                background: "var(--paper-2)",
+                border: "1px solid var(--rule)",
+                color: "var(--ink-2)",
+                fontFamily: "var(--font-jetbrains-mono)",
+              }}
+            >
+              <option value="todos">Vigentes e inactivas</option>
+              <option value="vigentes">Solo vigentes</option>
+              <option value="inactivas">Solo inactivas</option>
+            </select>
+          </div>
+        )}
+
+        {/* Resultado del filtro */}
+        {status && busqueda && (
+          <p className="text-xs" style={{ color: "var(--ink-3)" }}>
+            {normasSorted.length} resultado{normasSorted.length !== 1 ? "s" : ""} para &ldquo;{busqueda}&rdquo;
+          </p>
         )}
 
         {/* ── Lista normas: tarjetas en móvil, tabla en desktop ── */}
