@@ -1,7 +1,8 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 
-export const metadata = {
-  title: "Página no encontrada — REVISOR ARQ",
+export const metadata: Metadata = {
+  title: "Página no encontrada",
 };
 
 export default function NotFound() {
