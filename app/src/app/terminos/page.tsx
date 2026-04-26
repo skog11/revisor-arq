@@ -1,4 +1,10 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Términos y condiciones",
+  description: "Condiciones de uso del servicio REVISOR ARQ, consultora de normativa urbana chilena.",
+};
 
 const FECHA_VIGENCIA = "20 de abril de 2026";
 
