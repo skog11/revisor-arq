@@ -30,15 +30,22 @@ export async function GET() {
 
   if (chunksErr) return Response.json({ error: chunksErr.message }, { status: 500 });
 
-  // Chunks por norma — traemos solo norma_id (columna ligera)
-  const { data: chunkRows } = await sb
-    .from("chunks")
-    .select("norma_id");
-
+  // Chunks por norma — usar RPC agregado para evitar traer miles de filas
+  // Requiere: scripts/migration-rpc-count-chunks.sql ejecutado en Supabase
   const conteoChunks: Record<string, number> = {};
-  for (const row of chunkRows ?? []) {
-    const nid = (row as { norma_id: string }).norma_id;
-    conteoChunks[nid] = (conteoChunks[nid] ?? 0) + 1;
+  const { data: rpcRows, error: rpcErr } = await sb.rpc("count_chunks_por_norma" as never);
+
+  if (!rpcErr && rpcRows) {
+    for (const row of rpcRows as { norma_id: string; total: number }[]) {
+      conteoChunks[row.norma_id] = Number(row.total);
+    }
+  } else {
+    // Fallback: traer solo norma_id si el RPC no está disponible
+    const { data: chunkRows } = await sb.from("chunks").select("norma_id");
+    for (const row of chunkRows ?? []) {
+      const nid = (row as { norma_id: string }).norma_id;
+      conteoChunks[nid] = (conteoChunks[nid] ?? 0) + 1;
+    }
   }
 
   const normasData = (normas ?? []) as unknown as Array<Record<string, unknown>>;
