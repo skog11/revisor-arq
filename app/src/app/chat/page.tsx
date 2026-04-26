@@ -615,6 +615,7 @@ export default function ChatPage() {
               }}
               onKeyDown={handleKeyDown}
               placeholder="Escribe tu consulta… (Enter para enviar, Shift+Enter para nueva línea)"
+              aria-label="Consulta normativa"
               className="flex-1 min-h-[40px] resize-none border-0 bg-transparent py-1.5 text-sm focus:outline-none placeholder:text-sm"
               style={{
                 color: "var(--ink)",
@@ -630,6 +631,7 @@ export default function ChatPage() {
                 onClick={detener}
                 className="shrink-0 size-8 rounded-lg flex items-center justify-center transition-colors hover:bg-foreground/8"
                 title="Detener generación"
+                aria-label="Detener generación"
               >
                 <Square className="size-3.5 fill-current" style={{ color: "var(--ink-3)" }} />
               </button>
@@ -644,6 +646,7 @@ export default function ChatPage() {
                   opacity: pregunta.trim() ? 1 : 0.45,
                 }}
                 title="Enviar consulta"
+                aria-label="Enviar consulta"
               >
                 <Send className="size-3.5" />
               </button>

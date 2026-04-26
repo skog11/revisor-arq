@@ -5,8 +5,7 @@
  * La clave se configura con la variable de entorno ADMIN_SECRET.
  *
  * Acceso:
- *   - Cookie "admin_session" con valor igual a ADMIN_SECRET, O
- *   - Query param ?key=<ADMIN_SECRET> (establece la cookie y redirige limpio)
+ *   - Cookie "admin_session" con valor igual a ADMIN_SECRET (establecida por POST /api/admin/login)
  *
  * Si ADMIN_SECRET no está definida, el acceso queda abierto (entorno dev).
  */
@@ -40,23 +39,6 @@ export function middleware(req: NextRequest) {
   // Verificar cookie de sesión
   const cookie = req.cookies.get("admin_session")?.value;
   if (cookie === secret) return NextResponse.next();
-
-  // Verificar query param ?key=... (legado, redirigir a POST login)
-  // Mantenido por compatibilidad pero desaconsejado — la clave queda en logs
-  const keyParam = req.nextUrl.searchParams.get("key");
-  if (keyParam === secret) {
-    const url = req.nextUrl.clone();
-    url.searchParams.delete("key");
-    const res = NextResponse.redirect(url);
-    res.cookies.set("admin_session", secret, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 60 * 60 * 8, // 8 horas
-      path: "/",
-    });
-    return res;
-  }
 
   // API routes → JSON 401 en lugar de HTML
   if (pathname.startsWith("/api/")) {
