@@ -11,6 +11,7 @@
 import { getSupabaseServiceClient } from "@/lib/supabase";
 import { embedBatch } from "@/lib/voyage";
 import { NextRequest } from "next/server";
+import { z } from "zod";
 
 const MAX_TOKENS = 800;
 const OVERLAP_TOKENS = 100;
@@ -79,26 +80,34 @@ function chunkearTexto(texto: string): string[] {
   return chunks;
 }
 
+const IngestarSchema = z.object({
+  tipo:             z.string().min(1).max(30),
+  numero:           z.string().min(1).max(80),
+  titulo:           z.string().min(1).max(300),
+  texto:            z.string().min(10),
+  url_fuente:       z.string().url().optional().or(z.literal("")),
+  // Fase 5: metadatos expandidos
+  dominio:          z.string().max(100).optional(),
+  subdominio:       z.string().max(100).optional(),
+  organo_emisor:    z.string().max(100).optional(),
+  jerarquia_norm:   z.string().max(100).optional(),
+  etapas_proyecto:  z.array(z.string()).optional(),
+  dependencias:     z.array(z.string()).optional(),
+  alcance:          z.string().max(200).optional(),
+});
+
 export async function POST(req: NextRequest) {
-  let body: {
-    tipo?: string;
-    numero?: string;
-    titulo?: string;
-    texto?: string;
-    url_fuente?: string;
-    // Fase 5: metadatos expandidos (todos opcionales)
-    dominio?: string;
-    subdominio?: string;
-    organo_emisor?: string;
-    jerarquia_norm?: string;
-    etapas_proyecto?: string[];
-    dependencias?: string[];
-    alcance?: string;
-  };
+  let raw: unknown;
   try {
-    body = await req.json();
+    raw = await req.json();
   } catch {
     return Response.json({ error: "Body JSON inválido" }, { status: 400 });
+  }
+
+  const parsed = IngestarSchema.safeParse(raw);
+  if (!parsed.success) {
+    const msg = parsed.error.issues.map((e) => e.message).join("; ");
+    return Response.json({ error: msg }, { status: 400 });
   }
 
   const {
@@ -106,11 +115,7 @@ export async function POST(req: NextRequest) {
     url_fuente = "",
     dominio, subdominio, organo_emisor,
     jerarquia_norm, etapas_proyecto, dependencias, alcance,
-  } = body;
-
-  if (!tipo || !numero || !titulo || !texto) {
-    return Response.json({ error: "Se requieren tipo, numero, titulo y texto" }, { status: 400 });
-  }
+  } = parsed.data;
 
   const sb = getSupabaseServiceClient();
 
