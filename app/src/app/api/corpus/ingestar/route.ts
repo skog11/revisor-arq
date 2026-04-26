@@ -138,9 +138,10 @@ export async function POST(req: NextRequest) {
   );
 
   // 4. Embeddings via Voyage AI
+  // input_type="document" mejora la representación para indexación
   let embeddings: number[][];
   try {
-    embeddings = await embedBatch(textosConPrefijo);
+    embeddings = await embedBatch(textosConPrefijo, "document");
   } catch (err) {
     return Response.json({ error: `Error generando embeddings: ${(err as Error).message}` }, { status: 502 });
   }
