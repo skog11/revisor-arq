@@ -78,6 +78,9 @@ async function withRetry<T>(fn: () => Promise<T>, attempt = 0): Promise<T> {
   try {
     return await fn();
   } catch (err) {
+    const name = (err as Error).name ?? "";
+    // No reintentar en timeouts o aborts — ya esperamos suficiente
+    if (name === "AbortError" || name === "TimeoutError") throw err;
     if (attempt >= MAX_RETRIES) throw err;
     await new Promise((r) => setTimeout(r, Math.pow(2, attempt) * 500));
     return withRetry(fn, attempt + 1);
