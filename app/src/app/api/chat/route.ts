@@ -150,7 +150,7 @@ export async function POST(req: NextRequest) {
         // 7. Guardar consulta y enviar ID al cliente (para feedback)
         const consultaId = crypto.randomUUID();
         const latenciaMs = Date.now() - t0;
-        guardarConsulta({
+        await guardarConsulta({
           id: consultaId,
           pregunta,
           modo: modo as ModoRespuesta,
