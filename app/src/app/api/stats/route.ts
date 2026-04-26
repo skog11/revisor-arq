@@ -5,14 +5,15 @@
  * Cache: 10 minutos (no cambia en tiempo real).
  */
 
-import { getSupabaseServiceClient } from "@/lib/supabase";
+// Usa el cliente público (anon key + RLS) — endpoint sin auth
+import { getSupabasePublic } from "@/lib/supabase";
 import { NextResponse } from "next/server";
 
 export const revalidate = 600; // 10 minutos
 
 export async function GET() {
   try {
-    const sb = getSupabaseServiceClient();
+    const sb = getSupabasePublic();
 
     const [normasRes, chunksRes] = await Promise.all([
       sb

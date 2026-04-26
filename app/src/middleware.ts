@@ -23,14 +23,26 @@ export function middleware(req: NextRequest) {
   if (!esProtegida) return NextResponse.next();
 
   const secret = process.env.ADMIN_SECRET;
-  // Sin secret configurado → abierto (desarrollo local)
-  if (!secret) return NextResponse.next();
+  // Sin secret configurado → abierto en dev, cerrado en producción
+  if (!secret) {
+    if (process.env.NODE_ENV === "production") {
+      if (pathname.startsWith("/api/")) {
+        return Response.json(
+          { error: "Servidor mal configurado. Contacta al administrador." },
+          { status: 500 }
+        );
+      }
+      return new NextResponse("Error de configuración del servidor.", { status: 500 });
+    }
+    return NextResponse.next();
+  }
 
   // Verificar cookie de sesión
   const cookie = req.cookies.get("admin_session")?.value;
   if (cookie === secret) return NextResponse.next();
 
-  // Verificar query param ?key=... → establecer cookie y redirigir
+  // Verificar query param ?key=... (legado, redirigir a POST login)
+  // Mantenido por compatibilidad pero desaconsejado — la clave queda en logs
   const keyParam = req.nextUrl.searchParams.get("key");
   if (keyParam === secret) {
     const url = req.nextUrl.clone();
@@ -54,7 +66,7 @@ export function middleware(req: NextRequest) {
     );
   }
 
-  // Páginas → 401 con pantalla de login minimalista
+  // Páginas → 401 con pantalla de login minimalista (POST al endpoint /api/admin/login)
   return new NextResponse(loginHtml(req.nextUrl.pathname), {
     status: 401,
     headers: { "Content-Type": "text/html; charset=utf-8" },
@@ -62,6 +74,7 @@ export function middleware(req: NextRequest) {
 }
 
 function loginHtml(returnTo: string) {
+  // POST a /api/admin/login para evitar que la clave aparezca en logs del servidor
   return `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -79,6 +92,7 @@ function loginHtml(returnTo: string) {
     button{margin-top:.75rem;width:100%;background:#a33f27;color:#fff;border:none;border-radius:8px;padding:.625rem;font-size:.875rem;font-weight:500;cursor:pointer}
     button:hover{opacity:.9}
     .logo{font-size:.65rem;letter-spacing:.1em;color:#b0a898;text-transform:uppercase;margin-bottom:1rem;font-family:monospace}
+    .err{margin-top:.75rem;font-size:.8rem;color:#c0392b;display:none}
   </style>
 </head>
 <body>
@@ -86,11 +100,29 @@ function loginHtml(returnTo: string) {
     <div class="logo">REVISOR ARQ</div>
     <h1>Acceso restringido</h1>
     <p>Panel de gestión normativa. Ingresa la clave de administrador.</p>
-    <form method="get" action="${returnTo}">
-      <input type="password" name="key" placeholder="Clave de administrador" autofocus autocomplete="current-password">
+    <form id="f">
+      <input type="password" id="k" placeholder="Clave de administrador" autofocus autocomplete="current-password">
       <button type="submit">Ingresar</button>
+      <p class="err" id="e">Clave incorrecta.</p>
     </form>
   </div>
+  <script>
+    document.getElementById('f').addEventListener('submit', async function(ev) {
+      ev.preventDefault();
+      const key = document.getElementById('k').value;
+      const r = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ key, returnTo: ${JSON.stringify(returnTo)} })
+      });
+      if (r.ok) {
+        const j = await r.json();
+        window.location.href = j.redirectTo ?? '/normativa';
+      } else {
+        document.getElementById('e').style.display = 'block';
+      }
+    });
+  </script>
 </body>
 </html>`;
 }

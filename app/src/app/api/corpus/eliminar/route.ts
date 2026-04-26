@@ -6,19 +6,24 @@
 
 import { getSupabaseServiceClient } from "@/lib/supabase";
 import { NextRequest } from "next/server";
+import { z } from "zod";
+
+const BodySchema = z.object({ id: z.string().uuid() });
 
 export async function DELETE(req: NextRequest) {
-  let body: { id?: string };
+  let raw: unknown;
   try {
-    body = await req.json();
+    raw = await req.json();
   } catch {
     return Response.json({ error: "Body JSON inválido" }, { status: 400 });
   }
 
-  const { id } = body;
-  if (!id) {
-    return Response.json({ error: "Se requiere el campo id" }, { status: 400 });
+  const parsed = BodySchema.safeParse(raw);
+  if (!parsed.success) {
+    return Response.json({ error: "El campo id debe ser un UUID válido" }, { status: 400 });
   }
+
+  const { id } = parsed.data;
 
   const sb = getSupabaseServiceClient();
 
