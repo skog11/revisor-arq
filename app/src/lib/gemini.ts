@@ -15,11 +15,25 @@ function getClient() {
   return new GoogleGenerativeAI(apiKey);
 }
 
-export function getGeminiModel() {
-  return getClient().getGenerativeModel({
+/**
+ * Crea el modelo Gemini con un system instruction opcional.
+ * Usar systemInstruction en lugar de concatenar al mensaje del usuario
+ * permite que Gemini trate las instrucciones del sistema con mayor autoridad
+ * y genere respuestas más precisas y consistentes.
+ */
+export function getGeminiModel(systemInstruction?: string) {
+  const config: Parameters<ReturnType<typeof getClient>["getGenerativeModel"]>[0] = {
     model: MODEL_NAME,
-    generationConfig: { temperature: 0.2, topP: 0.9, maxOutputTokens: 4096 },
-  });
+    generationConfig: {
+      temperature: 0.15, // Reducido de 0.2 para más determinismo en respuestas legales
+      topP: 0.9,
+      maxOutputTokens: 8192, // Aumentado de 4096 para respuestas profundas
+    },
+  };
+  if (systemInstruction) {
+    config.systemInstruction = systemInstruction;
+  }
+  return getClient().getGenerativeModel(config);
 }
 
 function isRetryable(err: unknown): boolean {
@@ -56,12 +70,13 @@ export async function streamGemini(
   systemPrompt: string,
   userMessage: string,
 ): Promise<GenerateContentStreamResult> {
-  const model = getGeminiModel();
+  // Usar systemInstruction para una separación clara de roles
+  const model = getGeminiModel(systemPrompt);
   let lastErr: unknown;
 
   for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
     try {
-      return await model.generateContentStream(systemPrompt + "\n\n" + userMessage);
+      return await model.generateContentStream(userMessage);
     } catch (err) {
       lastErr = err;
       if (!isRetryable(err) || attempt === MAX_RETRIES - 1) break;
@@ -76,12 +91,12 @@ export async function generateGemini(
   systemPrompt: string,
   userMessage: string,
 ): Promise<string> {
-  const model = getGeminiModel();
+  const model = getGeminiModel(systemPrompt);
   let lastErr: unknown;
 
   for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
     try {
-      const result = await model.generateContent(systemPrompt + "\n\n" + userMessage);
+      const result = await model.generateContent(userMessage);
       return result.response.text();
     } catch (err) {
       lastErr = err;
