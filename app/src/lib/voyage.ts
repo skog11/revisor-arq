@@ -79,10 +79,12 @@ async function withRetry<T>(fn: () => Promise<T>, attempt = 0): Promise<T> {
     return await fn();
   } catch (err) {
     const name = (err as Error).name ?? "";
-    // No reintentar en timeouts o aborts — ya esperamos suficiente
     if (name === "AbortError" || name === "TimeoutError") throw err;
     if (attempt >= MAX_RETRIES) throw err;
-    await new Promise((r) => setTimeout(r, Math.pow(2, attempt) * 500));
+    const msg = String(err);
+    // Rate limit de Voyage (3 RPM en free tier): esperar ventana completa
+    const delayMs = msg.includes("429") ? 20_000 : Math.pow(2, attempt) * 500;
+    await new Promise((r) => setTimeout(r, delayMs));
     return withRetry(fn, attempt + 1);
   }
 }

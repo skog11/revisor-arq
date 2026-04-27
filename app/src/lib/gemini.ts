@@ -44,7 +44,9 @@ function isRetryable(err: unknown): boolean {
     msg.includes("429") ||
     msg.includes("Service Unavailable") ||
     msg.includes("overloaded") ||
-    msg.includes("high demand")
+    msg.includes("high demand") ||
+    msg.includes("Failed to parse stream") ||
+    msg.includes("parse stream")
   );
 }
 

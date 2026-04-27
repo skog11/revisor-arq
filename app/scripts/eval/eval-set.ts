@@ -39,7 +39,7 @@ export const EVAL_SET: EvalCase[] = [
     id: "lguc-planificacion",
     pregunta: "¿Qué es la planificación urbana según la LGUC y cuáles son sus niveles?",
     modo: "arquitecto",
-    articulosEsperados: ["1", "2"],
+    articulosEsperados: ["28"],
     frasesEsperadas: ["planificación", "niveles"],
     minFuentes: 2,
   },
@@ -50,6 +50,16 @@ export const EVAL_SET: EvalCase[] = [
     articulosEsperados: [],
     frasesEsperadas: ["copropiedad", "condominio"],
     minFuentes: 1,
+  },
+  // ── OGUC ──────────────────────────────────────────────────────────────────
+  {
+    id: "oguc-rasante",
+    pregunta: "¿Cuántos metros de rasante exige la OGUC?",
+    modo: "arquitecto",
+    articulosEsperados: [],
+    frasesEsperadas: ["rasante", "OGUC"],
+    frasesProhibidas: [],
+    minFuentes: 2,
   },
   // ── DDU ───────────────────────────────────────────────────────────────────
   {
