@@ -25,13 +25,20 @@ interface NormaJoin {
   titulo: string;
 }
 
-// Supabase devuelve los joins de FK como array (aunque sean 1:1)
+// Supabase devuelve joins many-to-one (FK en esta tabla → PK en la otra) como objeto único.
+// Se tipan como union para ser defensivos ante diferencias de versión del cliente.
 interface RelacionRow {
   tipo_relacion: string;
   articulos_afectados: string[] | null;
   descripcion: string | null;
-  norma_origen: NormaJoin[] | null;
-  norma_destino: NormaJoin[] | null;
+  norma_origen: NormaJoin | NormaJoin[] | null;
+  norma_destino: NormaJoin | NormaJoin[] | null;
+}
+
+/** Normaliza el resultado de un FK join (puede ser objeto o array) */
+function primerItem(v: NormaJoin | NormaJoin[] | null | undefined): NormaJoin | null {
+  if (!v) return null;
+  return Array.isArray(v) ? (v[0] ?? null) : v;
 }
 
 export async function obtenerRelacionesNormativas(
@@ -58,8 +65,9 @@ export async function obtenerRelacionesNormativas(
 
   const idsPresentes = normasPresentes.map((n: { id: string }) => n.id);
 
-  // Consultar relaciones donde alguna de las normas presentes sea origen o destino
-  const { data: relaciones } = await sb
+  // Consultar relaciones donde alguna de las normas presentes sea origen o destino.
+  // `.or()` con sintaxis `.in.()` es PostgREST válido y soportado por el cliente JS v2.
+  const { data: relaciones, error: relError } = await sb
     .from("norm_relations")
     .select(`
       tipo_relacion,
@@ -72,20 +80,28 @@ export async function obtenerRelacionesNormativas(
     .eq("verificado", true)
     .limit(20);
 
+  if (relError) {
+    console.error("[grafo] Error al consultar norm_relations:", relError.message);
+    return [];
+  }
   if (!relaciones || relaciones.length === 0) return [];
 
   return (relaciones as unknown as RelacionRow[])
-    .filter((r) => r.norma_origen?.[0] && r.norma_destino?.[0])
-    .map((r) => ({
-      norma_origen_tipo: r.norma_origen![0].tipo,
-      norma_origen_numero: r.norma_origen![0].numero,
-      norma_destino_tipo: r.norma_destino![0].tipo,
-      norma_destino_numero: r.norma_destino![0].numero,
-      norma_destino_titulo: r.norma_destino![0].titulo,
-      tipo_relacion: r.tipo_relacion,
-      articulos_afectados: r.articulos_afectados ?? [],
-      descripcion: r.descripcion,
-    }));
+    .filter((r) => primerItem(r.norma_origen) && primerItem(r.norma_destino))
+    .map((r) => {
+      const origen = primerItem(r.norma_origen)!;
+      const destino = primerItem(r.norma_destino)!;
+      return {
+        norma_origen_tipo: origen.tipo,
+        norma_origen_numero: origen.numero,
+        norma_destino_tipo: destino.tipo,
+        norma_destino_numero: destino.numero,
+        norma_destino_titulo: destino.titulo,
+        tipo_relacion: r.tipo_relacion,
+        articulos_afectados: r.articulos_afectados ?? [],
+        descripcion: r.descripcion,
+      };
+    });
 }
 
 export function formatearRelaciones(relaciones: RelacionNorma[]): string {
