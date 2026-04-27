@@ -90,8 +90,19 @@ export async function streamGemini(
 export async function generateGemini(
   systemPrompt: string,
   userMessage: string,
+  opts: { temperature?: number; maxOutputTokens?: number } = {},
 ): Promise<string> {
-  const model = getGeminiModel(systemPrompt);
+  const model = opts.temperature !== undefined || opts.maxOutputTokens !== undefined
+    ? getClient().getGenerativeModel({
+        model: MODEL_NAME,
+        systemInstruction: systemPrompt,
+        generationConfig: {
+          temperature: opts.temperature ?? 0.15,
+          topP: 0.9,
+          maxOutputTokens: opts.maxOutputTokens ?? 8192,
+        },
+      })
+    : getGeminiModel(systemPrompt);
   let lastErr: unknown;
 
   for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {

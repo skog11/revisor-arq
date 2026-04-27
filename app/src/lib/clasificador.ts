@@ -97,10 +97,11 @@ resumen_consulta: resumen breve de la consulta en no más de 120 caracteres.
 Responde SOLO con el JSON. No incluyas markdown, bloques de código ni texto adicional.`;
 
 function stripMarkdownJson(raw: string): string {
-  // Remove ```json ... ``` or ``` ... ``` wrappers if present
+  // Remove ```json ... ``` or ``` ... ``` wrappers if present.
+  // ^\s* en lugar de ^ para capturar newlines antes del fence que Gemini a veces emite.
   return raw
-    .replace(/^```(?:json)?\s*/i, "")
-    .replace(/\s*```\s*$/, "")
+    .replace(/^\s*```(?:json)?\s*/i, "")
+    .replace(/\s*```\s*$/i, "")
     .trim();
 }
 
@@ -108,11 +109,12 @@ export async function clasificarConsulta(
   pregunta: string,
 ): Promise<QueryClassificada> {
   try {
-    const raw = await generateGemini(SYSTEM_PROMPT, pregunta);
+    const raw = await generateGemini(SYSTEM_PROMPT, pregunta, { temperature: 0, maxOutputTokens: 512 });
     const cleaned = stripMarkdownJson(raw);
     const parsed = JSON.parse(cleaned) as QueryClassificada;
     return parsed;
-  } catch {
+  } catch (err) {
+    console.error("[clasificador] error al clasificar consulta:", err);
     return {
       ...FALLBACK,
       resumen_consulta: pregunta.slice(0, 120),
