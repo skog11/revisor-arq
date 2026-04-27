@@ -175,6 +175,9 @@ export async function POST(req: NextRequest) {
           chunksUsados: chunks,
           modelo: MODEL_NAME,
           latenciaMs,
+          // Pipeline v2 metadata:
+          clasificacion,
+          advertenciasValidacion: validacion.advertencias,
         });
 
         send({ type: "meta", consultaId });

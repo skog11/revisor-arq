@@ -553,6 +553,10 @@ export async function guardarConsulta(opts: {
   chunksUsados: ChunkRecuperado[];
   modelo: string;
   latenciaMs: number;
+  // Nuevos en pipeline v2 (opcionales para retrocompatibilidad)
+  clasificacion?: import("./clasificador").QueryClassificada;
+  relacionesDetectadas?: number;
+  advertenciasValidacion?: string[];
 }): Promise<void> {
   try {
     const sb = getSupabaseServiceClient();
@@ -568,6 +572,9 @@ export async function guardarConsulta(opts: {
       })),
       modelo: opts.modelo,
       latencia_ms: opts.latenciaMs,
+      ...(opts.clasificacion ? { clasificacion: opts.clasificacion } : {}),
+      ...(opts.relacionesDetectadas !== undefined ? { relaciones_detectadas: opts.relacionesDetectadas } : {}),
+      ...(opts.advertenciasValidacion?.length ? { advertencias_validacion: opts.advertenciasValidacion } : {}),
     };
     if (opts.id) row.id = opts.id;
     await sb.from("consultas").insert(row);
