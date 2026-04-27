@@ -6,6 +6,8 @@
  * Eventos SSE:
  *   data: {"type":"chunk","text":"..."}   — fragmento de texto generado
  *   data: {"type":"fuentes","data":[...]} — chunks RAG usados (enviado al inicio)
+ *   data: {"type":"clasificacion","data":{tipo_proyecto,etapa,dominios,confianza}} — resultado del clasificador
+ *   data: {"type":"cruces","data":[...]} — cruces regulatorios detectados
  *   data: {"type":"done"}                — fin del stream
  *   data: {"type":"meta","consultaId":"..."} — ID de consulta guardada (para feedback)
  *   data: {"type":"error","message":"..."} — error
@@ -14,7 +16,6 @@
 import { NextRequest } from "next/server";
 import { z } from "zod";
 import {
-  recuperarChunks,
   construirContexto,
   buildSystemPrompt,
   guardarConsulta,
@@ -25,6 +26,9 @@ import {
 } from "@/lib/rag";
 import { streamGemini, MODEL_NAME } from "@/lib/gemini";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
+import { clasificarConsulta } from "@/lib/clasificador";
+import { routear } from "@/lib/router";
+import { recuperarPorCapas } from "@/lib/retriever";
 
 // ─── Validación ───────────────────────────────────────────────────────────────
 
@@ -99,12 +103,20 @@ export async function POST(req: NextRequest) {
         const cruces = detectarCruces(pregunta);
         send({ type: "cruces", data: cruces });
 
-        // 2. Recuperar chunks relevantes (modo profundo = más contexto)
-        const matchCount = modo === "profundo" ? 14 : 8;
-        const chunks = await recuperarChunks(pregunta, {
-          matchCount,
-          soloVigentes: true,
-        });
+        // 1b. Clasificar la consulta para determinar tipo de proyecto y dominios
+        const clasificacion = await clasificarConsulta(pregunta);
+        send({ type: "clasificacion", data: {
+          tipo_proyecto: clasificacion.tipo_proyecto,
+          etapa: clasificacion.etapa,
+          dominios: clasificacion.dominios_detectados,
+          confianza: clasificacion.confianza,
+        }});
+
+        // 1c. Construir plan de recuperación basado en la clasificación
+        const plan = routear(clasificacion);
+
+        // 2. Recuperar chunks por capas respetando jerarquía normativa
+        const chunks = await recuperarPorCapas(pregunta, plan);
 
         // 3. Enviar fuentes al cliente (antes de generar)
         send({
