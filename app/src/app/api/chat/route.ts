@@ -108,7 +108,7 @@ export async function POST(req: NextRequest) {
         send({ type: "clasificacion", data: {
           tipo_proyecto: clasificacion.tipo_proyecto,
           etapa: clasificacion.etapa,
-          dominios: clasificacion.dominios_detectados,
+          dominios_detectados: clasificacion.dominios_detectados,
           confianza: clasificacion.confianza,
         }});
 
