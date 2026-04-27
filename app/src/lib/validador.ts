@@ -45,21 +45,22 @@ export function validarConsistencia(
     }
   }
 
-  // 4. Encontrar todos los artículos citados en la respuesta
-  const advertencias: string[] = [];
-  const regexArticulos = /\bart[íi]culo\s+([\d.]+[°º]?)/gi;
+  // 4. Encontrar todos los artículos citados en la respuesta.
+  // El regex captura tanto "artículo 5.3.1" como "Art. 5.3.1" (abreviatura común en textos legales).
+  const articulosNoVerificados = new Set<string>();
+  const regexArticulos = /\b(?:art[íi]culo|art\.)\s*([\d.]+[°º]?)/gi;
   let match: RegExpExecArray | null;
 
   while ((match = regexArticulos.exec(respuesta)) !== null) {
     const citado = match[1].replace(/[°º]/g, "").trim();
     if (!articulosEnContexto.has(citado)) {
-      // Evitar duplicados en advertencias
-      const advertencia = `Art. ${match[1]} citado en la respuesta no está en el contexto recuperado — verificar en BCN`;
-      if (!advertencias.includes(advertencia)) {
-        advertencias.push(advertencia);
-      }
+      articulosNoVerificados.add(citado); // Set evita duplicados automáticamente
     }
   }
+
+  const advertencias = Array.from(articulosNoVerificados).map(
+    (art) => `Art. ${art} citado en la respuesta no está en el contexto recuperado — verificar en BCN`
+  );
 
   // 5. Construir notasAdicionales
   const notasAdicionales =
