@@ -58,29 +58,34 @@ function mapearChunk(r: Record<string, unknown>): ChunkRecuperado {
     norma_dominio: (r.norma_dominio as string | null) ?? null,
     norma_organo_emisor: (r.norma_organo_emisor as string | null) ?? null,
     norma_jerarquia_norm: (r.norma_jerarquia_norm as string | null) ?? null,
-    norma_etapas_proyecto:
-      (r.norma_etapas_proyecto as string[] | null) ?? [],
+    norma_etapas_proyecto: Array.isArray(r.norma_etapas_proyecto)
+      ? (r.norma_etapas_proyecto as string[])
+      : [],
   };
 }
 
 // ─── Llamada al RPC match_chunks ─────────────────────────────────────────────
 
 async function llamarMatchChunks(
+  sb: ReturnType<typeof getSupabaseServiceClient>,
   embedding: number[],
   count: number,
-  filterTipos: string[] | null
+  filterTipos: string[] | null,
+  soloVigentes: boolean
 ): Promise<ChunkRecuperado[]> {
-  const sb = getSupabaseServiceClient();
-
   const { data, error } = await sb.rpc("match_chunks", {
     query_embedding: embedding,
     match_count: count,
     filter_tipos: filterTipos,
-    solo_vigentes: true,
+    solo_vigentes: soloVigentes,
   });
 
   if (error) throw new Error(`Error RPC match_chunks: ${error.message}`);
-  if (!data?.length) return [];
+  if (data === null) {
+    console.error("[retriever] match_chunks retornó null sin error — filterTipos:", filterTipos);
+    return [];
+  }
+  if (!data.length) return [];
 
   return (data as Record<string, unknown>[]).map(mapearChunk);
 }
@@ -100,21 +105,34 @@ export async function recuperarPorCapas(
   pregunta: string,
   plan: PlanRecuperacion
 ): Promise<ChunkRecuperado[]> {
-  // Generar embedding de la consulta
+  // Instanciar cliente Supabase una sola vez para ambas capas
+  const sb = getSupabaseServiceClient();
+
+  // Generar embedding de la consulta (una sola llamada a Voyage, reutilizada en ambas capas)
   const embedding = await embedText(pregunta, "query");
 
+  // Los índices [0] y [1] son garantizados por PlanRecuperacion (siempre 2 capas)
+  const countCapa1 = plan.matchCountPorCapa[0] ?? 5;
+  const countCapa2 = plan.matchCountPorCapa[1] ?? 8;
+
   // ── Capa 1: normas de alta jerarquía ──────────────────────────────────────
+  // Siempre incluye LGUC/OGUC/Ley/DFL/DL sin intersectar con el plan,
+  // para garantizar cobertura de las normas base independientemente del dominio.
   const capa1 = await llamarMatchChunks(
+    sb,
     embedding,
-    plan.matchCountPorCapa[0],
-    TIPOS_ALTA_JERARQUIA
+    countCapa1,
+    TIPOS_ALTA_JERARQUIA,
+    plan.filtrarSoloVigentes
   );
 
   // ── Capa 2: todos los tipos del plan ─────────────────────────────────────
   const capa2 = await llamarMatchChunks(
+    sb,
     embedding,
-    plan.matchCountPorCapa[1],
-    plan.tiposNorma.length > 0 ? plan.tiposNorma : null
+    countCapa2,
+    plan.tiposNorma.length > 0 ? plan.tiposNorma : null,
+    plan.filtrarSoloVigentes
   );
 
   // ── Fusión: capa 1 primero, luego capa 2 sin duplicados ───────────────────
