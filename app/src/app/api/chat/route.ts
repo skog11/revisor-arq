@@ -17,11 +17,9 @@ import { NextRequest } from "next/server";
 import { z } from "zod";
 import {
   construirContexto,
-  buildSystemPrompt,
   guardarConsulta,
   detectarFueraDominio,
   detectarCruces,
-  validarRespuesta,
   type ModoRespuesta,
 } from "@/lib/rag";
 import { streamGemini, MODEL_NAME } from "@/lib/gemini";
@@ -29,6 +27,8 @@ import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 import { clasificarConsulta } from "@/lib/clasificador";
 import { routear } from "@/lib/router";
 import { recuperarPorCapas } from "@/lib/retriever";
+import { buildSystemPromptV2 } from "@/lib/sintetizador";
+import { validarConsistencia } from "@/lib/validador";
 
 // ─── Validación ───────────────────────────────────────────────────────────────
 
@@ -134,7 +134,7 @@ export async function POST(req: NextRequest) {
 
         // 4. Construir contexto y sistema (con cruces inyectados)
         const { textoContexto } = construirContexto(chunks);
-        const systemPrompt = buildSystemPrompt(modo as ModoRespuesta, textoContexto, cruces);
+        const systemPrompt = buildSystemPromptV2(modo as ModoRespuesta, textoContexto, cruces, clasificacion);
 
         // 5. Streaming Gemini
         const geminiStream = await streamGemini(systemPrompt, pregunta);
@@ -149,14 +149,19 @@ export async function POST(req: NextRequest) {
           }
         }
 
-        // 6. Post-guardrail: añadir disclaimer si el LLM lo omitió
-        const validacion = validarRespuesta(respuestaCompleta);
+        // 6. Post-guardrail: validar consistencia y añadir disclaimer si el LLM lo omitió
+        const validacion = validarConsistencia(respuestaCompleta, chunks);
         if (!validacion.valida && validacion.motivo === "Falta disclaimer legal") {
           const disclaimerExtra =
             "\n\n---\n⚠️ **Aviso legal**: Esta respuesta es orientativa y no constituye asesoría jurídica profesional. " +
             "Verifica siempre el texto vigente en BCN (www.bcn.cl) y consulta con un profesional habilitado.";
           send({ type: "chunk", text: disclaimerExtra });
           respuestaCompleta += disclaimerExtra;
+        }
+        // Añadir notas de verificación si hay artículos no verificados
+        if (validacion.notasAdicionales) {
+          send({ type: "chunk", text: validacion.notasAdicionales });
+          respuestaCompleta += validacion.notasAdicionales;
         }
 
         // 7. Guardar consulta y enviar ID al cliente (para feedback)
