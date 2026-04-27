@@ -85,7 +85,26 @@ CREATE TABLE IF NOT EXISTS consultas (
   created_at    timestamptz NOT NULL DEFAULT now()
 );
 
--- 7. Tabla evaluaciones
+-- 7. Tabla contacto
+CREATE TABLE IF NOT EXISTS contacto (
+  id          uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  tipo        text NOT NULL CHECK (tipo IN (
+                'error-corpus', 'norma-faltante', 'respuesta-incorrecta',
+                'sugerencia', 'consulta', 'soporte', 'otro'
+              )),
+  descripcion text NOT NULL,
+  email       text,
+  leido       boolean NOT NULL DEFAULT false,
+  created_at  timestamptz NOT NULL DEFAULT now()
+);
+
+ALTER TABLE contacto ENABLE ROW LEVEL SECURITY;
+-- Inserción pública (sin auth) para el formulario de contacto
+CREATE POLICY "contacto_anon_insert" ON contacto FOR INSERT WITH CHECK (true);
+-- Solo service_role puede leer y gestionar
+CREATE POLICY "contacto_service_all"  ON contacto FOR ALL TO service_role USING (true);
+
+-- 8. Tabla evaluaciones
 CREATE TABLE IF NOT EXISTS evaluaciones (
   id                  uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
   pregunta            text NOT NULL,
@@ -109,7 +128,8 @@ CREATE INDEX IF NOT EXISTS normas_tipo_idx
 CREATE INDEX IF NOT EXISTS chunks_metadatos_idx
   ON chunks USING gin (metadatos);
 
--- 9. Función RPC match_chunks
+-- 9. Función RPC match_chunks (v2)
+-- Nota: usar migration-match-chunks-v2.sql para actualizar en producción.
 CREATE OR REPLACE FUNCTION match_chunks(
   query_embedding   vector(1024),
   match_count       int DEFAULT 8,
@@ -123,10 +143,14 @@ RETURNS TABLE (
   fecha_vigencia_desde  date,
   fecha_vigencia_hasta  date,
   fuente                text,
-  norma_tipo            tipo_norma,
+  norma_tipo            text,
   norma_numero          text,
   norma_titulo          text,
   norma_fecha_actualizacion date,
+  norma_dominio         text,
+  norma_organo_emisor   text,
+  norma_jerarquia_norm  text,
+  norma_etapas_proyecto text[],
   similarity            float
 )
 LANGUAGE sql STABLE
@@ -138,16 +162,20 @@ AS $$
     c.fecha_vigencia_desde,
     c.fecha_vigencia_hasta,
     c.fuente,
-    n.tipo   AS norma_tipo,
-    n.numero AS norma_numero,
-    n.titulo AS norma_titulo,
-    n.fecha_actualizacion AS norma_fecha_actualizacion,
+    n.tipo                     AS norma_tipo,
+    n.numero                   AS norma_numero,
+    n.titulo                   AS norma_titulo,
+    n.fecha_actualizacion      AS norma_fecha_actualizacion,
+    n.dominio                  AS norma_dominio,
+    n.organo_emisor            AS norma_organo_emisor,
+    n.jerarquia_norm           AS norma_jerarquia_norm,
+    n.etapas_proyecto          AS norma_etapas_proyecto,
     1 - (c.embedding <=> query_embedding) AS similarity
   FROM chunks c
   JOIN normas n ON n.id = c.norma_id
   WHERE
-    (filter_tipos IS NULL OR n.tipo::text = ANY(filter_tipos))
-    AND (NOT solo_vigentes OR c.fecha_vigencia_hasta IS NULL)
+    (filter_tipos IS NULL OR n.tipo = ANY(filter_tipos))
+    AND (NOT solo_vigentes OR (n.vigente = true AND c.fecha_vigencia_hasta IS NULL))
     AND c.embedding IS NOT NULL
   ORDER BY c.embedding <=> query_embedding
   LIMIT match_count;

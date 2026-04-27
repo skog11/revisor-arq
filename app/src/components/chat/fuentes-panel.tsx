@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ExternalLink, ChevronDown, ChevronUp, X, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -37,6 +37,12 @@ function ArticuloDrawer({
   fuente: Fuente;
   onClose: () => void;
 }) {
+  const drawerRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    drawerRef.current?.focus();
+  }, []);
+
   const parts = fuente.norma.split(" ");
   const tipo = parts[0];
   const numero = parts.slice(1).join(" ");
@@ -59,6 +65,7 @@ function ArticuloDrawer({
       {/* Panel lateral */}
       <motion.aside
         key="drawer"
+        ref={drawerRef}
         role="dialog"
         aria-modal="true"
         aria-label="Texto del artículo"

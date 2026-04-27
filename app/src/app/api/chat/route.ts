@@ -73,11 +73,15 @@ export async function POST(req: NextRequest) {
 
   // Crear stream SSE
   const encoder = new TextEncoder();
+  let streamCancelled = false;
   const stream = new ReadableStream({
     async start(controller) {
       function send(event: Record<string, unknown>) {
+        if (streamCancelled) return;
         controller.enqueue(encoder.encode(`data: ${JSON.stringify(event)}\n\n`));
       }
+      // Si el cliente desconecta, no seguir enqueuing
+      req.signal.addEventListener("abort", () => { streamCancelled = true; });
 
       try {
         // 0. Guardrail: detectar pregunta fuera de dominio
@@ -125,6 +129,7 @@ export async function POST(req: NextRequest) {
         let respuestaCompleta = "";
 
         for await (const chunk of geminiStream.stream) {
+          if (streamCancelled) break;
           const text = chunk.text();
           if (text) {
             respuestaCompleta += text;
@@ -145,7 +150,7 @@ export async function POST(req: NextRequest) {
         // 7. Guardar consulta y enviar ID al cliente (para feedback)
         const consultaId = crypto.randomUUID();
         const latenciaMs = Date.now() - t0;
-        guardarConsulta({
+        await guardarConsulta({
           id: consultaId,
           pregunta,
           modo: modo as ModoRespuesta,

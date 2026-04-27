@@ -26,14 +26,33 @@ const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
 });
 
+const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://revisor-arq.vercel.app";
+
 export const metadata: Metadata = {
-  title: "REVISOR ARQ — Normativa urbana chilena",
+  metadataBase: new URL(BASE_URL),
+  title: {
+    default: "REVISOR ARQ — Normativa urbana chilena",
+    template: "%s — REVISOR ARQ",
+  },
   description:
-    "Consulta LGUC, OGUC y DDU con respuestas verificables. Para arquitectos y abogados.",
+    "Consulta LGUC, OGUC y DDU con respuestas verificables que citan el artículo exacto. Para arquitectos y abogados en Chile.",
+  keywords: ["LGUC", "OGUC", "DDU", "normativa urbana", "arquitectura Chile", "urbanismo"],
   openGraph: {
-    title: "REVISOR ARQ",
-    description: "Normativa urbana chilena, respondida con fuentes verificables.",
+    title: "REVISOR ARQ — Normativa urbana chilena",
+    description: "Normativa urbana chilena, respondida con fuentes verificables. LGUC · OGUC · DDU.",
     type: "website",
+    url: BASE_URL,
+    siteName: "REVISOR ARQ",
+    locale: "es_CL",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "REVISOR ARQ — Normativa urbana chilena",
+    description: "Consulta LGUC, OGUC y DDU con respuestas verificables.",
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 

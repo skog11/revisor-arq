@@ -31,7 +31,6 @@ export const EVAL_SET: EvalCase[] = [
     id: "lguc-subdivison",
     pregunta: "¿Qué normas aplican para subdividir un terreno urbano en Chile?",
     modo: "arquitecto",
-    articulosEsperadas: [],
     articulosEsperados: [],
     frasesEsperadas: ["subdivisión", "Dirección de Obras"],
     minFuentes: 2,

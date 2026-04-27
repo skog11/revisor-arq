@@ -1,4 +1,10 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Política de privacidad",
+  description: "Política de privacidad y tratamiento de datos personales de REVISOR ARQ.",
+};
 
 const FECHA_VIGENCIA = "20 de abril de 2026";
 

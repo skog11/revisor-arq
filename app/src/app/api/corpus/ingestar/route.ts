@@ -11,6 +11,7 @@
 import { getSupabaseServiceClient } from "@/lib/supabase";
 import { embedBatch } from "@/lib/voyage";
 import { NextRequest } from "next/server";
+import { z } from "zod";
 
 const MAX_TOKENS = 800;
 const OVERLAP_TOKENS = 100;
@@ -20,36 +21,57 @@ function estimarTokens(s: string) {
   return Math.ceil(s.length / CHARS_PER_TOKEN);
 }
 
-function chunkearTexto(texto: string): string[] {
-  const parrafos = texto
-    .split(/\n{2,}/)
-    .map((p) => p.trim())
-    .filter(Boolean);
+/**
+ * Detecta si el texto contiene estructura de artículos (LGUC, OGUC, DDU).
+ * Patrones: "Artículo 1°", "Art. 2.6.3", "ARTÍCULO 115", "Circular DDU N°..."
+ */
+const RE_ARTICULO = /^(?:art[ií]culo|art\.|circular\s+ddu\s+n[°º])\s*[\d.]+/im;
 
-  if (!parrafos.length) return [];
+/**
+ * Extrae artículos como unidades semánticas independientes.
+ * Si el texto no tiene estructura de artículos, cae al chunking por párrafos.
+ */
+function extraerArticulos(texto: string): string[] | null {
+  // Detectar separadores de artículo: líneas que empiezan con "Artículo X", "Art. X.X.X"
+  const separador = /\n(?=(?:art[ií]culo\s+\d+[°º]?|art\.\s*[\d.]+)\s*[.–\-\s])/gi;
+
+  if (!RE_ARTICULO.test(texto)) return null; // sin estructura de artículos
+
+  const partes = texto.split(separador).map((p) => p.trim()).filter(Boolean);
+  if (partes.length < 2) return null; // solo encontró un artículo, usar párrafos
+
+  return partes;
+}
+
+function chunkearTexto(texto: string): string[] {
+  // Intentar extracción por artículos primero
+  const articulos = extraerArticulos(texto);
+  const unidades = articulos ?? texto.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean);
+
+  if (!unidades.length) return [];
 
   const chunks: string[] = [];
   let inicio = 0;
 
-  while (inicio < parrafos.length) {
+  while (inicio < unidades.length) {
     let fin = inicio;
     let tokens = 0;
-    while (fin < parrafos.length) {
-      const t = estimarTokens(parrafos[fin]);
+    while (fin < unidades.length) {
+      const t = estimarTokens(unidades[fin]);
       if (tokens + t > MAX_TOKENS && fin > inicio) break;
       tokens += t;
       fin++;
     }
     if (fin === inicio) fin = inicio + 1;
 
-    chunks.push(parrafos.slice(inicio, fin).join("\n\n"));
+    chunks.push(unidades.slice(inicio, fin).join("\n\n"));
 
     // Solapamiento: retroceder hasta cubrir OVERLAP_TOKENS
     let solapTokens = 0;
     let retroceso = fin;
     while (retroceso > inicio + 1) {
       retroceso--;
-      solapTokens += estimarTokens(parrafos[retroceso]);
+      solapTokens += estimarTokens(unidades[retroceso]);
       if (solapTokens >= OVERLAP_TOKENS) break;
     }
     inicio = retroceso >= fin ? fin : retroceso;
@@ -58,26 +80,34 @@ function chunkearTexto(texto: string): string[] {
   return chunks;
 }
 
+const IngestarSchema = z.object({
+  tipo:             z.string().min(1).max(30),
+  numero:           z.string().min(1).max(80),
+  titulo:           z.string().min(1).max(300),
+  texto:            z.string().min(10),
+  url_fuente:       z.string().url().optional().or(z.literal("")),
+  // Fase 5: metadatos expandidos
+  dominio:          z.string().max(100).optional(),
+  subdominio:       z.string().max(100).optional(),
+  organo_emisor:    z.string().max(100).optional(),
+  jerarquia_norm:   z.string().max(100).optional(),
+  etapas_proyecto:  z.array(z.string()).optional(),
+  dependencias:     z.array(z.string()).optional(),
+  alcance:          z.string().max(200).optional(),
+});
+
 export async function POST(req: NextRequest) {
-  let body: {
-    tipo?: string;
-    numero?: string;
-    titulo?: string;
-    texto?: string;
-    url_fuente?: string;
-    // Fase 5: metadatos expandidos (todos opcionales)
-    dominio?: string;
-    subdominio?: string;
-    organo_emisor?: string;
-    jerarquia_norm?: string;
-    etapas_proyecto?: string[];
-    dependencias?: string[];
-    alcance?: string;
-  };
+  let raw: unknown;
   try {
-    body = await req.json();
+    raw = await req.json();
   } catch {
     return Response.json({ error: "Body JSON inválido" }, { status: 400 });
+  }
+
+  const parsed = IngestarSchema.safeParse(raw);
+  if (!parsed.success) {
+    const msg = parsed.error.issues.map((e) => e.message).join("; ");
+    return Response.json({ error: msg }, { status: 400 });
   }
 
   const {
@@ -85,11 +115,7 @@ export async function POST(req: NextRequest) {
     url_fuente = "",
     dominio, subdominio, organo_emisor,
     jerarquia_norm, etapas_proyecto, dependencias, alcance,
-  } = body;
-
-  if (!tipo || !numero || !titulo || !texto) {
-    return Response.json({ error: "Se requieren tipo, numero, titulo y texto" }, { status: 400 });
-  }
+  } = parsed.data;
 
   const sb = getSupabaseServiceClient();
 
@@ -132,29 +158,46 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: "El texto no produjo chunks válidos" }, { status: 422 });
   }
 
+  // Extraer número de artículo para metadatos (si el chunk empieza con "Art.")
+  const RE_ART_NUM = /^(?:art[ií]culo|art\.)\s*([\d.]+[°º]?)/i;
+
+  function extraerNumeroArticulo(texto: string): string | null {
+    const m = texto.trimStart().match(RE_ART_NUM);
+    return m ? m[1].replace(/[°º]$/, "") : null;
+  }
+
   // Prefijo contextual por chunk
   const textosConPrefijo = textos.map(
     (t, i) => `[${tipo} ${numero}${textos.length > 1 ? ` – parte ${i + 1}/${textos.length}` : ""}]\n${t}`
   );
 
   // 4. Embeddings via Voyage AI
+  // input_type="document" mejora la representación para indexación
   let embeddings: number[][];
   try {
-    embeddings = await embedBatch(textosConPrefijo);
+    embeddings = await embedBatch(textosConPrefijo, "document");
   } catch (err) {
     return Response.json({ error: `Error generando embeddings: ${(err as Error).message}` }, { status: 502 });
   }
 
   // 5. Insertar chunks
-  const rows = textosConPrefijo.map((t, i) => ({
-    norma_id: normaId,
-    texto: t,
-    tokens: estimarTokens(t),
-    orden: i,
-    metadatos: { tipo_norma: tipo, numero_norma: numero, url_fuente },
-    fuente: url_fuente,
-    embedding: embeddings[i],
-  }));
+  const rows = textos.map((textoOriginal, i) => {
+    const articuloNum = extraerNumeroArticulo(textoOriginal);
+    return {
+      norma_id: normaId,
+      texto: textosConPrefijo[i],
+      tokens: estimarTokens(textosConPrefijo[i]),
+      orden: i,
+      metadatos: {
+        tipo_norma: tipo,
+        numero_norma: numero,
+        url_fuente,
+        ...(articuloNum ? { articulo: articuloNum } : {}),
+      },
+      fuente: url_fuente,
+      embedding: embeddings[i],
+    };
+  });
 
   const { error: insertErr } = await sb.from("chunks").insert(rows);
   if (insertErr) return Response.json({ error: insertErr.message }, { status: 500 });

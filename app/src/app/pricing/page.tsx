@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { Check } from "lucide-react";
+import type { Metadata } from "next";
 
-export const metadata = {
-  title: "Precios — REVISOR ARQ",
+export const metadata: Metadata = {
+  title: "Precios",
   description: "REVISOR ARQ está en beta abierta y es completamente gratuito durante este período.",
 };
 

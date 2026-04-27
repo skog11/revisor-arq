@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FileText, X, Download, Loader2, ChevronDown, ChevronUp } from "lucide-react";
 import type { ConfigPDF, DatosPDF } from "@/lib/generar-pdf";
 
@@ -69,6 +69,12 @@ interface Props {
 // ─── Componente ───────────────────────────────────────────────────────────────
 
 export function ModalExportarPDF({ datos, onCerrar }: Props) {
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    panelRef.current?.focus();
+  }, []);
+
   const [tipo,          setTipo]          = useState<ConfigPDF["tipo"]>("tecnico");
   const [nombreProyecto,setNombreProyecto]= useState("");
   const [profesional,   setProfesional]   = useState("");
@@ -81,9 +87,11 @@ export function ModalExportarPDF({ datos, onCerrar }: Props) {
   const [dom,           setDom]           = useState("");
   const [expandido,     setExpandido]     = useState(false);
   const [generando,     setGenerando]     = useState(false);
+  const [errorPdf,      setErrorPdf]      = useState<string | null>(null);
 
   async function handleGenerar() {
     setGenerando(true);
+    setErrorPdf(null);
     try {
       const { generarPDF } = await import("@/lib/generar-pdf");
       await generarPDF(datos, {
@@ -100,7 +108,7 @@ export function ModalExportarPDF({ datos, onCerrar }: Props) {
       });
       onCerrar();
     } catch (err) {
-      console.error("Error generando PDF:", err);
+      setErrorPdf((err as Error).message ?? "No se pudo generar el PDF. Intenta de nuevo.");
     } finally {
       setGenerando(false);
     }
@@ -114,7 +122,13 @@ export function ModalExportarPDF({ datos, onCerrar }: Props) {
     >
       {/* Panel */}
       <div
-        className="relative w-full max-w-md rounded-2xl shadow-xl flex flex-col"
+        ref={panelRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-pdf-titulo"
+        tabIndex={-1}
+        onKeyDown={(e) => e.key === "Escape" && !generando && onCerrar()}
+        className="relative w-full max-w-md rounded-2xl shadow-xl flex flex-col outline-none"
         style={{
           background: "var(--paper)",
           border: "1px solid var(--rule)",
@@ -129,6 +143,7 @@ export function ModalExportarPDF({ datos, onCerrar }: Props) {
           <div className="flex items-center gap-2.5">
             <FileText className="size-4" style={{ color: "var(--terracotta)" }} />
             <h2
+              id="modal-pdf-titulo"
               className="text-sm font-semibold"
               style={{ color: "var(--ink)", fontFamily: "var(--font-instrument-serif)", fontSize: 17 }}
             >
@@ -312,6 +327,13 @@ export function ModalExportarPDF({ datos, onCerrar }: Props) {
             {tipo === "tecnico" ? " (detalle completo)" : " (resumen ejecutivo)"}
           </div>
         </div>
+
+        {/* Error */}
+        {errorPdf && (
+          <p className="px-6 pb-3 text-xs" style={{ color: "var(--terracotta)" }}>
+            {errorPdf}
+          </p>
+        )}
 
         {/* Footer */}
         <div

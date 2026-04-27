@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import {
   RefreshCw, Database, FileText, CheckCircle2, Clock,
-  Upload, Trash2, ToggleLeft, ToggleRight, Loader2, X,
+  Upload, Trash2, ToggleLeft, ToggleRight, Loader2, X, Search,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -68,16 +68,28 @@ function ModalConfirmar({
   onCancelar: () => void;
   cargando: boolean;
 }) {
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    dialogRef.current?.focus();
+  }, []);
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0" style={{ background: "rgba(0,0,0,0.45)" }} onClick={onCancelar} />
       <div
-        className="relative z-10 w-full max-w-md rounded-xl p-6 space-y-4 shadow-2xl"
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-confirmar-titulo"
+        tabIndex={-1}
+        onKeyDown={(e) => e.key === "Escape" && !cargando && onCancelar()}
+        className="relative z-10 w-full max-w-md rounded-xl p-6 space-y-4 shadow-2xl outline-none"
         style={{ background: "var(--card)", border: "1px solid var(--rule)" }}
       >
         <div className="flex items-start justify-between gap-3">
           <div className="space-y-1">
-            <p className="font-semibold text-sm" style={{ color: "var(--ink)" }}>
+            <p id="modal-confirmar-titulo" className="font-semibold text-sm" style={{ color: "var(--ink)" }}>
               ¿Eliminar esta norma de la base normativa?
             </p>
             <p className="text-xs" style={{ color: "var(--ink-3)" }}>
@@ -501,6 +513,13 @@ export default function CorpusPage() {
   const [eliminando, setEliminando] = useState<string | null>(null);
   const [confirmarElim, setConfirmarElim] = useState<NormaStatus | null>(null);
   const [showUpload, setShowUpload] = useState(false);
+  // Filtros
+  const [busqueda, setBusqueda] = useState("");
+  const [filtroTipo, setFiltroTipo] = useState<string>("todos");
+  const [filtroVigente, setFiltroVigente] = useState<"todos" | "vigentes" | "inactivas">("todos");
+  // Paginación
+  const PAGE_SIZE = 50;
+  const [pagina, setPagina] = useState(1);
 
   async function cargar() {
     setLoading(true);
@@ -517,6 +536,9 @@ export default function CorpusPage() {
   }
 
   useEffect(() => { cargar(); }, []);
+
+  // Resetear página cuando cambian los filtros
+  useEffect(() => { setPagina(1); }, [busqueda, filtroTipo, filtroVigente]);
 
   async function toggleVigencia(norma: NormaStatus) {
     if (toggling) return;
@@ -561,11 +583,34 @@ export default function CorpusPage() {
     }
   }
 
-  const normasSorted = status
-    ? [...status.normas].sort((a, b) =>
-        a.tipo.localeCompare(b.tipo) || a.numero.localeCompare(b.numero)
-      )
+  // Tipos únicos para el selector de filtro
+  const tiposUnicos = status
+    ? Array.from(new Set(status.normas.map((n) => n.tipo))).sort()
     : [];
+
+  const normasFiltradas = status
+    ? [...status.normas]
+        .filter((n) => {
+          if (filtroTipo !== "todos" && n.tipo !== filtroTipo) return false;
+          if (filtroVigente === "vigentes" && !n.vigente) return false;
+          if (filtroVigente === "inactivas" && n.vigente) return false;
+          if (busqueda.trim()) {
+            const q = busqueda.toLowerCase();
+            return (
+              n.numero.toLowerCase().includes(q) ||
+              n.titulo.toLowerCase().includes(q) ||
+              n.tipo.toLowerCase().includes(q) ||
+              (n.dominio ?? "").toLowerCase().includes(q) ||
+              (n.organo_emisor ?? "").toLowerCase().includes(q)
+            );
+          }
+          return true;
+        })
+        .sort((a, b) => a.tipo.localeCompare(b.tipo) || a.numero.localeCompare(b.numero))
+    : [];
+
+  const totalPaginas = Math.ceil(normasFiltradas.length / PAGE_SIZE);
+  const normasSorted = normasFiltradas.slice((pagina - 1) * PAGE_SIZE, pagina * PAGE_SIZE);
 
   return (
     <>
@@ -650,6 +695,76 @@ export default function CorpusPage() {
               </div>
             ))}
           </div>
+        )}
+
+        {/* ── Barra de filtros ── */}
+        {status && status.normas.length > 0 && (
+          <div className="flex flex-col sm:flex-row gap-2">
+            {/* Búsqueda */}
+            <div
+              className="flex items-center gap-2 flex-1 rounded-lg px-3 py-2"
+              style={{ background: "var(--paper-2)", border: "1px solid var(--rule)" }}
+            >
+              <Search className="size-3.5 shrink-0" style={{ color: "var(--ink-3)" }} />
+              <input
+                type="text"
+                value={busqueda}
+                onChange={(e) => setBusqueda(e.target.value)}
+                placeholder="Buscar por número, título, dominio…"
+                className="flex-1 bg-transparent text-sm focus:outline-none placeholder:text-xs"
+                style={{ color: "var(--ink)" }}
+              />
+              {busqueda && (
+                <button onClick={() => setBusqueda("")} className="shrink-0">
+                  <X className="size-3.5" style={{ color: "var(--ink-4)" }} />
+                </button>
+              )}
+            </div>
+
+            {/* Filtro tipo */}
+            <select
+              value={filtroTipo}
+              onChange={(e) => setFiltroTipo(e.target.value)}
+              className="rounded-lg px-3 py-2 text-xs focus:outline-none"
+              style={{
+                background: "var(--paper-2)",
+                border: "1px solid var(--rule)",
+                color: "var(--ink-2)",
+                fontFamily: "var(--font-jetbrains-mono)",
+              }}
+            >
+              <option value="todos">Todos los tipos</option>
+              {tiposUnicos.map((t) => (
+                <option key={t} value={t}>{t}</option>
+              ))}
+            </select>
+
+            {/* Filtro vigencia */}
+            <select
+              value={filtroVigente}
+              onChange={(e) => setFiltroVigente(e.target.value as typeof filtroVigente)}
+              className="rounded-lg px-3 py-2 text-xs focus:outline-none"
+              style={{
+                background: "var(--paper-2)",
+                border: "1px solid var(--rule)",
+                color: "var(--ink-2)",
+                fontFamily: "var(--font-jetbrains-mono)",
+              }}
+            >
+              <option value="todos">Vigentes e inactivas</option>
+              <option value="vigentes">Solo vigentes</option>
+              <option value="inactivas">Solo inactivas</option>
+            </select>
+          </div>
+        )}
+
+        {/* Resultado del filtro */}
+        {status && (busqueda || filtroTipo !== "todos" || filtroVigente !== "todos") && (
+          <p className="text-xs" style={{ color: "var(--ink-3)" }}>
+            {normasFiltradas.length} resultado{normasFiltradas.length !== 1 ? "s" : ""}
+            {busqueda ? <> para &ldquo;{busqueda}&rdquo;</> : null}
+            {totalPaginas > 1 && <> · página {pagina}/{totalPaginas}</>}
+          </p>
         )}
 
         {/* ── Lista normas: tarjetas en móvil, tabla en desktop ── */}
@@ -790,6 +905,57 @@ export default function CorpusPage() {
               </table>
             </div>
           </>
+        )}
+
+        {/* ── Paginación ── */}
+        {totalPaginas > 1 && (
+          <div className="flex items-center justify-center gap-2 flex-wrap">
+            <button
+              onClick={() => setPagina((p) => Math.max(1, p - 1))}
+              disabled={pagina === 1}
+              className="px-3 py-1.5 rounded-lg text-xs transition-colors hover:bg-foreground/[0.06] disabled:opacity-40 disabled:cursor-default"
+              style={{ border: "1px solid var(--rule)", color: "var(--ink-3)", fontFamily: "var(--font-jetbrains-mono)" }}
+            >
+              ← Anterior
+            </button>
+            {Array.from({ length: Math.min(totalPaginas, 7) }, (_, i) => {
+              // Mostrar primeras 3, últimas 3 y la actual con sus vecinas
+              const p = i + 1;
+              if (totalPaginas <= 7) return p;
+              if (p <= 2 || p >= totalPaginas - 1 || Math.abs(p - pagina) <= 1) return p;
+              return null;
+            }).filter(Boolean).reduce<(number | string)[]>((acc, p, i, arr) => {
+              if (i > 0 && (arr[i - 1] as number) < (p as number) - 1) acc.push("…");
+              acc.push(p as number);
+              return acc;
+            }, []).map((p, i) => (
+              typeof p === "string" ? (
+                <span key={`ellipsis-${i}`} className="px-1 text-xs" style={{ color: "var(--ink-4)" }}>…</span>
+              ) : (
+                <button
+                  key={p}
+                  onClick={() => setPagina(p)}
+                  className="w-8 h-8 rounded-lg text-xs transition-colors"
+                  style={{
+                    background: pagina === p ? "var(--ink)" : "transparent",
+                    color: pagina === p ? "var(--paper)" : "var(--ink-3)",
+                    border: `1px solid ${pagina === p ? "var(--ink)" : "var(--rule)"}`,
+                    fontFamily: "var(--font-jetbrains-mono)",
+                  }}
+                >
+                  {p}
+                </button>
+              )
+            ))}
+            <button
+              onClick={() => setPagina((p) => Math.min(totalPaginas, p + 1))}
+              disabled={pagina === totalPaginas}
+              className="px-3 py-1.5 rounded-lg text-xs transition-colors hover:bg-foreground/[0.06] disabled:opacity-40 disabled:cursor-default"
+              style={{ border: "1px solid var(--rule)", color: "var(--ink-3)", fontFamily: "var(--font-jetbrains-mono)" }}
+            >
+              Siguiente →
+            </button>
+          </div>
         )}
 
         {loading && !status && (

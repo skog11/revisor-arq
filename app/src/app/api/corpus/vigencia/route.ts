@@ -6,19 +6,30 @@
 
 import { getSupabaseServiceClient } from "@/lib/supabase";
 import { NextRequest } from "next/server";
+import { z } from "zod";
+
+const BodySchema = z.object({
+  id: z.string().uuid(),
+  vigente: z.boolean(),
+});
 
 export async function PATCH(req: NextRequest) {
-  let body: { id?: string; vigente?: boolean };
+  let raw: unknown;
   try {
-    body = await req.json();
+    raw = await req.json();
   } catch {
     return Response.json({ error: "Body JSON inválido" }, { status: 400 });
   }
 
-  const { id, vigente } = body;
-  if (!id || typeof vigente !== "boolean") {
-    return Response.json({ error: "Se requiere id (string) y vigente (boolean)" }, { status: 400 });
+  const parsed = BodySchema.safeParse(raw);
+  if (!parsed.success) {
+    return Response.json(
+      { error: "Se requiere id (UUID válido) y vigente (boolean)" },
+      { status: 400 }
+    );
   }
+
+  const { id, vigente } = parsed.data;
 
   const sb = getSupabaseServiceClient();
   const { error } = await sb

@@ -46,10 +46,13 @@ export interface ContextoRAG {
  * Embedding de queries usando Voyage AI voyage-law-2 (mismo modelo que la ingesta).
  * CRÍTICO: debe coincidir con el modelo usado al embeber documentos,
  * de lo contrario la similitud coseno no tiene ningún significado.
+ *
+ * Usa input_type="query" para optimizar la representación de búsquedas
+ * (voyage-law-2 soporta input_type diferenciado para queries vs documentos).
  */
 async function embedQuery(texto: string): Promise<number[]> {
   const { embedText } = await import("./voyage");
-  return embedText(texto);
+  return embedText(texto, "query");
 }
 
 // ─── Retrieval ────────────────────────────────────────────────────────────────
@@ -500,7 +503,7 @@ const TEMAS_FUERA_DOMINIO = [
   /receta|cocina|aliment/i,
   /medicina|enfermedad|tratamiento médico/i,
   /código civil|código penal|código laboral/i,
-  /\\bsueldo\\b|\\bsalario\\b|\\bcontrato laboral\\b/i,
+  /\bsueldo\b|\bsalario\b|\bcontrato laboral\b/i,
 ];
 
 /**
