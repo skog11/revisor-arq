@@ -178,8 +178,8 @@ async function main() {
         console.log(`     ✗ Artículos no citados: ${r.articulosEsperadosFaltantes.join(", ")}`);
     }
 
-    // Pequeña pausa entre casos
-    await new Promise((r) => setTimeout(r, 2000));
+    // Pausa entre casos para respetar Voyage free tier (3 RPM = 20s mín)
+    await new Promise((r) => setTimeout(r, 22000));
   }
 
   // ── Resumen ──
