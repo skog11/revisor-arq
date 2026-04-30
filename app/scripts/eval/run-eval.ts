@@ -195,8 +195,8 @@ async function main() {
     }
 
     // Pausa entre casos — Gemini free tier: 10 RPM, ventana de 60s
-    // Con respuestas de ~15s + 70s de pausa = ~1 req/85s → bien bajo el límite
-    await new Promise((r) => setTimeout(r, 70_000));
+    // Con respuestas de ~25-35s + 90s de pausa = ~1 req/120s → bien bajo el límite
+    await new Promise((r) => setTimeout(r, 90_000));
   }
 
   // ── Resumen ──

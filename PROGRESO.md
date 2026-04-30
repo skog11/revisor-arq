@@ -8,9 +8,9 @@
 
 ```
 FASE 1 — Estabilización     ██████████ 100%   ✅ Completa
-FASE 2 — Corpus completo    ███░░░░░░░  25%   Bloqueado (cuota Voyage AI)
+FASE 2 — Corpus completo    ███████░░░  70%   Core OK, pendiente normativa complementaria
 FASE 3 — Deploy             ██████████ 100%   ✅ Completa
-FASE 4 — Calidad/UX         ██░░░░░░░░  20%   Parcial
+FASE 4 — Calidad/UX         ███░░░░░░░  30%   Evals en curso
 FASE 5 — Monetización       ░░░░░░░░░░   0%   No iniciado
 ```
 
@@ -106,7 +106,7 @@ FASE 5 — Monetización       ░░░░░░░░░░   0%   No iniciado
 
 ---
 
-### 2026-04-30 — Sesión 8: Estabilización completa + Deploy ← HOY
+### 2026-04-30 — Sesión 8: Estabilización completa + Deploy
 **Hecho:**
 - Limpieza worktrees: 6 eliminados + 1 prunado → quedan master + beautiful-shamir
 - Rutas `manifiesto.json` verificadas (ya correctas)
@@ -114,41 +114,62 @@ FASE 5 — Monetización       ░░░░░░░░░░   0%   No iniciado
 - `jspdf` instalado como dependencia
 - Build: ✅ 21 rutas, 0 errores TypeScript
 - Commits: `16395eb` (limpieza general) + `91d1ef9` (embedder Voyage AI)
-- Ingesta parcial: LGUC (284 chunks) + 8 DDUs (250 chunks) → **bloqueado por cuota Voyage AI**
+- Ingesta parcial: LGUC (284 chunks) + 8 DDUs (250 chunks) → bloqueado por cuota Voyage AI
 - Vercel CLI instalado + proyecto vinculado (`prj_qPBAs8QBkMmaLwbfK384UiuKA4Os`)
 - 7 env vars configuradas en Vercel producción
 - **Deploy exitoso**: https://app-jade-nine-25.vercel.app
 - Health check: `{"status":"ok","db":"ok","db_latencia_ms":430}`
 
+---
+
+### 2026-04-30 — Sesión 9: Auditoría corpus + Evaluaciones ← HOY
+**Hecho:**
+- Auditoría completa del corpus en Supabase → **3.135 chunks / 304 normas** (más de lo esperado)
+- Estado real verificado norma por norma:
+  - LGUC: ✅ 284 chunks (completo)
+  - OGUC: ✅ 806/820 chunks (98% — funcional)
+  - DDU-527 al DDU-541: ✅ todos presentes (6–42 chunks c/u)
+  - DDU-000 al DDU-526: ✅ ~289 DDUs históricos ingestados (sesión Apr-25)
+  - Solo 3 normas con 0 chunks de 304 totales
+- Evaluaciones corriendo contra producción (`npm run eval -- --url=https://app-jade-nine-25.vercel.app`)
+
 **Pendiente:**
-- [ ] Retomar ingesta corpus cuando cuota Voyage AI se resetee (medianoche UTC)
+- [ ] Resultados evaluaciones (en curso)
+- [ ] Ingestar normativa complementaria cat.01–11 (DS-60, DS-61, Ley 19.300, etc.)
 - [ ] Actualizar `NEXT_PUBLIC_APP_URL` tras asignar dominio personalizado
 - [ ] Conectar repo GitHub para auto-deploy en push (Vercel dashboard)
-- [ ] Correr evaluaciones (`npm run eval`) apuntando a producción
 
 ---
 
 ## Próximos pasos (ordenados por prioridad)
 
-### Inmediato (próxima sesión)
+### Inmediato (en curso)
 - [x] ~~Git cleanup: worktrees colgantes eliminados~~
 - [x] ~~Corregir manifiesto: rutas ya correctas~~
 - [x] ~~Commit master: `16395eb`~~
 - [x] ~~Build verificado: 21 rutas, 0 errores~~
-- [ ] **Configurar `.env.local`**: verificar que todas las API keys estén presentes antes de ingestar
+- [x] ~~Deploy Vercel: https://app-jade-nine-25.vercel.app~~
+- [x] ~~Auditar corpus: 3.135 chunks / 304 normas verificados~~
+- [ ] **Evaluaciones**: ver resultado de `npm run eval` (en ejecución)
 
 ### Corto plazo
-- [ ] **Completar OGUC**: re-ingestar chunks faltantes — **bloqueado hasta reset cuota Voyage AI (medianoche UTC)**
-- [ ] **Ingestar DDUs históricos**: ejecutar `ingestar_ddu_masiva.sh` (303 PDFs → ~9.000 chunks)
-- [ ] **Ingestar DS-60 y DS-61**: normas técnicas estructurales (textos ya extraídos)
-- [ ] **Ingestar normativa cat. 01–11**: ejecutar `ingestar_normativa_masiva.sh`
-- [ ] **Correr evaluaciones**: meta 7/7 casos pasando
+- [ ] **Ingestar normativa cat. 01–11**: DS-60, DS-61, Ley 19.300, DFL 382, etc. → añadir al `manifiesto.json` y correr `npm run corpus:ingest`
+- [ ] **Dominio personalizado**: asignar en Vercel + actualizar `NEXT_PUBLIC_APP_URL`
+- [ ] **GitHub auto-deploy**: conectar repo en Vercel dashboard (CI/CD)
+- [ ] **Eval en producción**: correr periódicamente, meta 7/7
 
-### Mediano plazo
-- [ ] **Deploy Vercel**: configurar env vars + activar GitHub Actions
-- [ ] **Eval en producción**: verificar latencias y calidad
-- [ ] **Agregar Voyage rerank**: mejorar precisión del retrieval
-- [ ] **Poblar grafo normativo**: relaciones LGUC ↔ OGUC ↔ DDU
+### Mediano plazo (Fase 4)
+- [ ] **Voyage rerank**: post-retrieval reranking (voyage-rerank-2) para mejor precisión
+- [ ] **Búsqueda híbrida**: BM25 + vector (pgvector + tsvector) para queries exactas
+- [ ] **Grafo normativo**: relaciones LGUC ↔ OGUC ↔ DDU en tabla `norm_relations`
+- [ ] **Mobile UX**: revisar responsividad, tests en móvil
+- [ ] **Security audit**: antes de merge a main (invocar `security-auditor`)
+
+### Largo plazo (Fase 5 — Monetización)
+- [ ] Supabase Auth (email + Google)
+- [ ] Stripe (plan Pro)
+- [ ] Dashboard de usuario (historial de consultas)
+- [ ] API pública con rate limiting por API key
 
 ---
 
@@ -156,10 +177,10 @@ FASE 5 — Monetización       ░░░░░░░░░░   0%   No iniciado
 
 | Norma | Categoría | Chunks Supabase | Texto local | Estado |
 |---|---|---|---|---|
-| LGUC DFL-458 | Core | ~280 | ✅ `corpus/lguc/LGUC.txt` | ✅ OK |
-| OGUC DS-47 | Core | ~parcial | ✅ `corpus/oguc/OGUC.txt` | ⚠️ Incompleto |
-| DDU-527 al 541 (14 DDUs) | Core | ~500 | ✅ `corpus/ddu/*.txt` | ✅ OK |
-| DDU-000 al DDU-526 (303) | 12_Tecnica | 0 | ✅ PDFs descargados | ❌ Sin ingestar |
+| LGUC DFL-458 | Core | 284 | ✅ `corpus/lguc/LGUC.txt` | ✅ OK |
+| OGUC DS-47 | Core | 806 | ✅ `corpus/oguc/OGUC.txt` | ✅ OK (98%) |
+| DDU-527 al 542 (16 DDUs) | Core | ~320 | ✅ `corpus/ddu/*.txt` | ✅ OK |
+| DDU-000 al DDU-526 (~289) | 12_Tecnica | ~2.700 | ✅ PDFs (ingest Apr-25) | ✅ Ingestados |
 | DS-60 OGUC Cap.1 | 12_Tecnica | 0 | ✅ `fuente.txt` | ❌ Sin ingestar |
 | DS-61 OGUC Cap.2 | 12_Tecnica | 0 | ✅ `fuente.txt` | ❌ Sin ingestar |
 | Ley 19.300 (ambiental) | 01 | 0 | ✅ HTML | ❌ Sin ingestar |
@@ -174,8 +195,8 @@ FASE 5 — Monetización       ░░░░░░░░░░   0%   No iniciado
 | DFL 850 (caminos) | 10 | 0 | ✅ `fuente.txt` | ❌ Sin ingestar |
 | DFL 4 (electricidad) | 11 | 0 | ✅ `fuente.txt` | ❌ Sin ingestar |
 
-**Total en Supabase:** ~780 chunks / 16 normas
-**Total pendiente:** ~15.000 chunks estimados
+**Total en Supabase:** 3.135 chunks / 304 normas  ← verificado 2026-04-30
+**Total pendiente (complementaria):** ~5.000 chunks estimados (cat. 01–11 + DS-60/61)
 
 ---
 

@@ -1,4 +1,0 @@
-nombre_oficial,url_principal,url_exportacion_pdf,tipo_fuente,fecha_ultima_verificacion,observaciones
-Biblioteca del Congreso Nacional de Chile - Ley Chile,https://www.bcn.cl/leychile/,https://www.bcn.cl/leychile/exportar,oficial,2026-04-22,Fuente principal para leyes, DFL, DL, decretos y reglamentos
-Portal Ley Chile Alternativo,https://www.leychile.cl/,https://www.leychile.cl/exportar,oficial,2026-04-22,Fuente secundaria de respaldo
-Diario Oficial de la República de Chile,https://www.diariooficial.interior.gob.cl/,,oficial,2026-04-22,Usar solo como respaldo para validación cuando falte descarga útil en Ley Chile
