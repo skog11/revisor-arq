@@ -11,6 +11,10 @@
     "corpus:verify": "tsx scripts/download/verify-corpus.ts",
     "corpus:ingest": "tsx --env-file=.env.local scripts/ingest/ingest.ts",
     "corpus:ingest:dry": "tsx --env-file=.env.local scripts/ingest/ingest.ts --dry",
+    "extract:pdfs": "tsx scripts/ingest/extract-pdfs.ts",
+    "extract:pdfs:dry": "tsx scripts/ingest/extract-pdfs.ts --dry",
+    "manifiesto:build": "tsx scripts/ingest/build-manifiesto.ts",
+    "manifiesto:build:dry": "tsx scripts/ingest/build-manifiesto.ts --dry",
     "eval": "tsx --env-file=.env.local scripts/eval/run-eval.ts"
   },
   "dependencies": {
@@ -49,6 +53,7 @@
     "dotenv": "^16.4.5",
     "eslint": "^9",
     "eslint-config-next": "15.2.1",
+    "glob": "^13.0.6",
     "pg": "^8.20.0",
     "tailwindcss": "^4",
     "tsx": "^4.19.3",

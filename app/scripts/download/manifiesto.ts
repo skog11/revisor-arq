@@ -18,6 +18,7 @@ export interface ManifiestoEntry {
   archivo: string;
   chars: number;
   paginas?: number;
+  fecha_publicacion?: string;  // ISO date "YYYY-MM-DD" — para normas complementarias
 }
 
 export type Manifiesto = Record<string, ManifiestoEntry>;

@@ -174,5 +174,180 @@
     "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\ddu\\DDU-ESP-025-07.txt",
     "chars": 6374,
     "paginas": 3
+  },
+  "LEY-19300": {
+    "tipo": "LEY",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\01_Medio_Ambiente_e_Institucionalidad_Ambiental\\01_01_Marco_General\\Ley_19300_1994_BCN_Bases_Generales_Medio_Ambiente\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=30312",
+    "titulo": "Aprueba la Ley sobre Bases Generales del Medio Ambiente",
+    "fecha_publicacion": "1994-01-01"
+  },
+  "LEY-20417": {
+    "tipo": "LEY",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\01_Medio_Ambiente_e_Institucionalidad_Ambiental\\01_01_Marco_General\\Ley_20417_2010_BCN_Crea_MMA_SEA_SMA\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=31387",
+    "titulo": "Crea el Ministerio del Medio Ambiente, el Servicio de Evaluación Ambiental y la Superintendencia del Medio Ambiente",
+    "fecha_publicacion": "2010-01-01"
+  },
+  "LEY-20600": {
+    "tipo": "LEY",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\01_Medio_Ambiente_e_Institucionalidad_Ambiental\\01_01_Marco_General\\Ley_20600_2012_BCN_Crea_Tribunales_Ambientales\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=103165",
+    "titulo": "Crea los Tribunales Ambientales",
+    "fecha_publicacion": "2012-01-01"
+  },
+  "DS-30": {
+    "tipo": "DS",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\01_Medio_Ambiente_e_Institucionalidad_Ambiental\\01_02_Evaluacion_Ambiental\\DS_30_2023_MMA_Modifica_Reglamento_SEIA\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://mma.gob.cl/",
+    "titulo": "Modifica el Reglamento del SEIA",
+    "fecha_publicacion": "2023-01-01"
+  },
+  "DS-40": {
+    "tipo": "DS",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\01_Medio_Ambiente_e_Institucionalidad_Ambiental\\01_02_Evaluacion_Ambiental\\DS_40_2012_MMA_Reglamento_SEIA\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://mma.gob.cl/",
+    "titulo": "Reglamento del Sistema de Evaluación de Impacto Ambiental (SEIA)",
+    "fecha_publicacion": "2012-01-01"
+  },
+  "DS-38": {
+    "tipo": "DS",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\01_Medio_Ambiente_e_Institucionalidad_Ambiental\\01_03_Emisiones_Ruido_y_Residuos\\DS_38_2011_MMA_Norma_Emision_Ruidos\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://mma.gob.cl/",
+    "titulo": "Norma de emisión de ruidos generados por fuentes fijas",
+    "fecha_publicacion": "2011-01-01"
+  },
+  "DFL-725": {
+    "tipo": "DFL",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\02_Sanitario_Seguridad_y_Residuos_Peligrosos\\02_01_Base_Sanitaria_General\\DFL_725_1967_MINSAL_Codigo_Sanitario\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=6660",
+    "titulo": "Código Sanitario",
+    "fecha_publicacion": "1967-01-01"
+  },
+  "DS-148": {
+    "tipo": "DS",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\02_Sanitario_Seguridad_y_Residuos_Peligrosos\\02_03_Residuos_Peligrosos\\DS_148_2003_MINSAL_Manejo_Residuos_Peligrosos\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=23065",
+    "titulo": "Reglamento para el manejo de residuos peligrosos",
+    "fecha_publicacion": "2003-01-01"
+  },
+  "LEY-21435": {
+    "tipo": "LEY",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\03_Agua_Servicios_Sanitarios_y_Drenaje\\03_01_Recursos_Hidricos\\Ley_21435_2022_BCN_Reforma_Codigo_Aguas\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=117575",
+    "titulo": "Reforma el Código de Aguas",
+    "fecha_publicacion": "2022-01-01"
+  },
+  "DFL-382": {
+    "tipo": "DFL",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\03_Agua_Servicios_Sanitarios_y_Drenaje\\03_02_Servicios_Sanitarios\\DFL_382_1988_MOP_Ley_Gral_Servicios_Sanitarios\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=29596",
+    "titulo": "Ley General de Servicios Sanitarios",
+    "fecha_publicacion": "1988-01-01"
+  },
+  "LEY-17288": {
+    "tipo": "LEY",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\04_Patrimonio_Arqueologia_y_Hallazgos\\Ley_17288_1970_BCN_Monumentos_Nacionales\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=6654",
+    "titulo": "Ley de Monumentos Nacionales",
+    "fecha_publicacion": "1970-01-01"
+  },
+  "LEY-19880": {
+    "tipo": "LEY",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\05_Procedimiento_Administrativo_Transparencia_y_Defensa_Juridica\\Ley_19880_2003_BCN_Bases_Procedimientos_Administrativos\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=22165",
+    "titulo": "Ley de Bases de los Procedimientos Administrativos que rigen los órganos de la Administración del Estado",
+    "fecha_publicacion": "2003-01-01"
+  },
+  "LEY-20285": {
+    "tipo": "LEY",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\05_Procedimiento_Administrativo_Transparencia_y_Defensa_Juridica\\Ley_20285_2008_BCN_Ley_Transparencia\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=27748",
+    "titulo": "Ley de Transparencia de la Función Pública y de Acceso a la Información de la Administración del Estado",
+    "fecha_publicacion": "2008-01-01"
+  },
+  "DL-1939": {
+    "tipo": "DL",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\06_Bienes_del_Estado_Propiedad_y_Regularizacion\\DL_1939_1977_BCN_Bienes_del_Estado\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=6580",
+    "titulo": "Normas sobre administración y disposición de bienes del Estado",
+    "fecha_publicacion": "1977-01-01"
+  },
+  "DL-2695": {
+    "tipo": "DL",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\06_Bienes_del_Estado_Propiedad_y_Regularizacion\\DL_2695_1979_BCN_Regularizacion_Pequena_Propiedad\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=6647",
+    "titulo": "Regularización de la pequeña propiedad y construcción",
+    "fecha_publicacion": "1979-01-01"
+  },
+  "LEY-21442": {
+    "tipo": "LEY",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\06_Bienes_del_Estado_Propiedad_y_Regularizacion\\Ley_21442_2022_BCN_Regularizacion_Propiedades\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=117814",
+    "titulo": "Moderniza y simplifica la normativa de regularización de propiedades",
+    "fecha_publicacion": "2022-01-01"
+  },
+  "DS-236": {
+    "tipo": "DS",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\07_Pueblos_Indigenas_Consulta_y_Territorio\\DS_236_2008_MinRelacionesExteriores_Convenio_169_OIT\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=28332",
+    "titulo": "Aprueba Convenio 169 de la OIT sobre pueblos indígenas y tribales",
+    "fecha_publicacion": "2008-01-01"
+  },
+  "DS-66": {
+    "tipo": "DS",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\07_Pueblos_Indigenas_Consulta_y_Territorio\\DS_66_2013_MinDesarrolloSocial_Consulta_Indigena\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=105244",
+    "titulo": "Reglamento del Sistema de Consulta Indígena",
+    "fecha_publicacion": "2013-01-01"
+  },
+  "LEY-19253": {
+    "tipo": "LEY",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\07_Pueblos_Indigenas_Consulta_y_Territorio\\Ley_19253_1993_BCN_Ley_Indigena\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=30312",
+    "titulo": "Ley Indígena",
+    "fecha_publicacion": "1993-01-01"
+  },
+  "DS-93": {
+    "tipo": "DS",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\08_Forestal_y_Bosque_Nativo\\08_01_Bosque_Nativo\\DS_93_2008_Minagri_Reglamento_Bosque_Nativo\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.minagri.gob.cl/",
+    "titulo": "Reglamento de la Ley de Bosque Nativo",
+    "fecha_publicacion": "2008-01-01"
+  },
+  "LEY-20283": {
+    "tipo": "LEY",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\08_Forestal_y_Bosque_Nativo\\08_01_Bosque_Nativo\\Ley_20283_2008_BCN_Bosque_Nativo\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=27218",
+    "titulo": "Ley sobre recuperación del bosque nativo y fomento forestal",
+    "fecha_publicacion": "2008-01-01"
+  },
+  "DFL-340": {
+    "tipo": "DFL",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\09_Borde_Costero_y_Concesiones_Maritimas\\DFL_340_1960_Mindefensa_Concesiones_Maritimas\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=6631",
+    "titulo": "Ley de Concesiones Marítimas",
+    "fecha_publicacion": "1960-01-01"
+  },
+  "DS-660": {
+    "tipo": "DS",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\09_Borde_Costero_y_Concesiones_Maritimas\\DS_660_1988_Mindefensa_Reglamento_Concesiones_Maritimas\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=29524",
+    "titulo": "Reglamento de la Ley de Concesiones Marítimas",
+    "fecha_publicacion": "1988-01-01"
+  },
+  "DFL-850": {
+    "tipo": "DFL",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\10_Vialidad_Caminos_y_Transito\\DFL_850_1997_MOP_Ley_Caminos\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=6631",
+    "titulo": "Ley de Caminos",
+    "fecha_publicacion": "1997-01-01"
+  },
+  "LEY-18290": {
+    "tipo": "LEY",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\10_Vialidad_Caminos_y_Transito\\Ley_18290_1984_BCN_Ley_Transito\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=6631",
+    "titulo": "Ley de Tránsito",
+    "fecha_publicacion": "1984-01-01"
   }
 }

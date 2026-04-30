@@ -22,6 +22,7 @@ import { join } from "path";
 import { loadManifiesto, CORPUS_ROOT } from "../download/manifiesto";
 import { parseLGUCFile, parseOGUCFile } from "./parsers/lguc-oguc";
 import { parseDDUFile } from "./parsers/ddu";
+import { parseLey } from "./parsers/ley";
 import { chunkearNorma } from "./chunker";
 import { embedTextos } from "./embedder";
 import type { TipoNorma } from "./types";
@@ -61,7 +62,12 @@ function tipoNormaDeKey(key: string): TipoNorma {
   if (key === "LGUC") return "LGUC";
   if (key === "OGUC") return "OGUC";
   if (key.startsWith("DDU-ESP-")) return "DDU_ESPECIFICA";
-  return "DDU";
+  if (key.startsWith("DDU-")) return "DDU";
+  if (key.startsWith("LEY-")) return "LEY";
+  if (key.startsWith("DFL-")) return "DFL";
+  if (key.startsWith("DL-")) return "DL";
+  if (key.startsWith("DS-")) return "DS";
+  return "DDU"; // fallback
 }
 
 // ─── Operaciones Supabase ─────────────────────────────────────────────────────
@@ -202,6 +208,16 @@ async function procesarNorma(
       norma = parseLGUCFile(entry.archivo, entry.url_fuente);
     } else if (tipo === "OGUC") {
       norma = parseOGUCFile(entry.archivo, entry.url_fuente);
+    } else if (["LEY", "DFL", "DL", "DS"].includes(tipo)) {
+      // Inferir número desde la key (ej. "LEY-19300" → "19300")
+      const numero = key.split("-").slice(1).join("-");
+      norma = parseLey(entry.archivo, {
+        tipo,
+        numero,
+        titulo: entry.titulo ?? key,
+        url_fuente: entry.url_fuente,
+        fecha_publicacion: entry.fecha_publicacion,
+      });
     } else {
       norma = parseDDUFile(entry.archivo, entry.url_fuente, key, tipo);
     }
