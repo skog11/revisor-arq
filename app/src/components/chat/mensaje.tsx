@@ -1,11 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { HardHat, Scale, Microscope, AlertTriangle, ThumbsUp, ThumbsDown, Download } from "lucide-react";
+import { HardHat, Scale, Microscope, AlertTriangle, ThumbsUp, ThumbsDown, FileDown } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { FuentesPanel, type Fuente } from "./fuentes-panel";
+import dynamic from "next/dynamic";
+
+const ModalDescargaPDF = dynamic(
+  () => import("./modal-descarga-pdf").then((m) => m.ModalDescargaPDF),
+  { ssr: false }
+);
 
 export type ModoRespuesta = "arquitecto" | "abogado" | "profundo";
 
@@ -20,72 +26,9 @@ export interface MensajeData {
   error?: boolean;
   modo?: ModoRespuesta;
   consultaId?: string; // ID de la consulta guardada en Supabase para feedback
+  preguntaUsuario?: string; // Texto original de la pregunta (para portada PDF)
 }
 
-// ─── Descarga PDF (modo profundo) ────────────────────────────────────────────
-
-function descargarInformePDF(contenido: string) {
-  // Convierte markdown básico a HTML para el informe
-  const mdToHtml = (md: string) =>
-    md
-      .replace(/^## (.+)$/gm, "<h2>$1</h2>")
-      .replace(/^### (.+)$/gm, "<h3>$1</h3>")
-      .replace(/^#### (.+)$/gm, "<h4>$1</h4>")
-      .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-      .replace(/^> (.+)$/gm, "<blockquote>$1</blockquote>")
-      .replace(/^[-–•] (.+)$/gm, "<li>$1</li>")
-      .replace(/(<li>.*<\/li>\n?)+/g, (m) => `<ul>${m}</ul>`)
-      .replace(/\n{2,}/g, "</p><p>")
-      .replace(/^(?!<[hublq])(.+)$/gm, (m) => (m.trim() ? m : ""))
-      .replace(/---/g, "<hr/>")
-      .trim();
-
-  const fecha = new Date().toLocaleDateString("es-CL", {
-    day: "2-digit", month: "long", year: "numeric",
-  });
-
-  const html = `<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8"/>
-  <title>Informe REVISOR ARQ — ${fecha}</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
-    body { font-family: Inter, sans-serif; font-size: 13px; color: #19160f;
-           max-width: 720px; margin: 0 auto; padding: 48px 40px; line-height: 1.65; }
-    h1 { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
-    .meta { font-size: 11px; color: #9a907e; margin-bottom: 32px; }
-    h2 { font-size: 15px; font-weight: 600; margin-top: 28px; margin-bottom: 8px;
-         padding-bottom: 4px; border-bottom: 1px solid #e5e0d6; }
-    h3 { font-size: 13px; font-weight: 600; margin-top: 18px; margin-bottom: 6px; }
-    h4 { font-size: 12px; font-weight: 600; margin-top: 14px; color: #6a6358; }
-    p { margin: 8px 0; }
-    ul { margin: 6px 0; padding-left: 20px; }
-    li { margin: 3px 0; }
-    blockquote { border-left: 3px solid #c4bbb0; margin: 12px 0; padding: 4px 14px;
-                 color: #6a6358; font-style: italic; }
-    strong { font-weight: 600; }
-    hr { border: none; border-top: 1px solid #e5e0d6; margin: 20px 0; }
-    .disclaimer { margin-top: 32px; padding: 12px 16px; background: #f6f1e7;
-                  border: 1px solid #e5e0d6; border-radius: 6px;
-                  font-size: 11px; color: #9a907e; }
-    @media print { body { padding: 24px; } }
-  </style>
-</head>
-<body>
-  <h1>Informe de análisis normativo</h1>
-  <p class="meta">REVISOR ARQ · ${fecha} · Modo Análisis Profundo</p>
-  <p>${mdToHtml(contenido)}</p>
-</body>
-</html>`;
-
-  const ventana = window.open("", "_blank");
-  if (!ventana) return;
-  ventana.document.write(html);
-  ventana.document.close();
-  ventana.focus();
-  setTimeout(() => ventana.print(), 400);
-}
 
 // ─── Feedback ─────────────────────────────────────────────────────────────────
 
@@ -190,6 +133,7 @@ function MensajeUsuario({ contenido }: { contenido: string }) {
 // ─── Mensaje asistente ────────────────────────────────────────────────────────
 
 function MensajeAsistente({ mensaje }: { mensaje: MensajeData }) {
+  const [modalPDF, setModalPDF] = useState(false);
   const cfg = mensaje.modo ? MODO_CFG[mensaje.modo] : null;
   const accentColor = cfg?.color ?? "var(--ink-4, var(--ink-3))";
 
@@ -284,21 +228,32 @@ function MensajeAsistente({ mensaje }: { mensaje: MensajeData }) {
                 />
               )}
 
-            {/* Descarga PDF — solo modo profundo */}
+            {/* Descarga PDF — solo modo profundo, respuesta completa */}
             {!mensaje.streaming && !mensaje.error && mensaje.modo === "profundo" && mensaje.contenido && (
-              <button
-                onClick={() => descargarInformePDF(mensaje.contenido)}
-                className="flex items-center gap-1.5 mt-3 rounded-md px-2.5 py-1 text-[11px] transition-colors hover:bg-foreground/[0.06]"
-                style={{
-                  border: "1px solid var(--rule)",
-                  color: "var(--ink-4)",
-                  background: "transparent",
-                }}
-                title="Descargar informe como PDF"
-              >
-                <Download className="size-3" />
-                Descargar informe PDF
-              </button>
+              <>
+                <button
+                  onClick={() => setModalPDF(true)}
+                  className="flex items-center gap-1.5 mt-4 rounded-lg px-3 py-1.5 text-[12px] font-medium transition-all hover:-translate-y-px"
+                  style={{
+                    background: "var(--ink)",
+                    color: "var(--paper)",
+                    border: "1px solid var(--ink)",
+                    alignSelf: "flex-end",
+                  }}
+                  title="Descargar informe técnico como PDF profesional"
+                >
+                  <FileDown className="size-3.5" />
+                  Descargar Informe PDF
+                </button>
+
+                {modalPDF && (
+                  <ModalDescargaPDF
+                    contenido={mensaje.contenido}
+                    tituloConsulta={mensaje.preguntaUsuario ?? "Consulta normativa"}
+                    onClose={() => setModalPDF(false)}
+                  />
+                )}
+              </>
             )}
 
             {/* Feedback */}
