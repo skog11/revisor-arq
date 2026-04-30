@@ -353,7 +353,7 @@ export function FuentesPanel({ fuentes, className, initialVisible = 3 }: Fuentes
                     <div className="flex items-center gap-0.5 shrink-0">
                       {tieneTexto && (
                         <span
-                          className="opacity-0 group-hover:opacity-40 transition-opacity"
+                          className="opacity-25 group-hover:opacity-50 transition-opacity"
                           style={{ color: "var(--ink-3)" }}
                         >
                           <FileText className="size-3" />
@@ -365,7 +365,7 @@ export function FuentesPanel({ fuentes, className, initialVisible = 3 }: Fuentes
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}
-                          className="p-0.5 opacity-0 group-hover:opacity-40 hover:!opacity-90 transition-opacity"
+                          className="p-0.5 opacity-25 group-hover:opacity-50 hover:!opacity-90 transition-opacity"
                           style={{ color: "var(--ink-3)" }}
                           title={`Ver ${f.norma_titulo || f.norma} en BCN`}
                         >

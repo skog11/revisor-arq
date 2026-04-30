@@ -244,7 +244,7 @@ export default function ChatPage() {
   // Fondo = var(--background) estático — Nordic puro.
 
   return (
-    <div className="flex h-[calc(100vh-57px)] flex-col">
+    <div className="flex h-[calc(100dvh-57px)] flex-col">
 
       {/* ══════════════════════════════════════════════════
           ÁREA DE MENSAJES
@@ -579,8 +579,8 @@ export default function ChatPage() {
         <div className="mx-auto max-w-2xl px-5 pt-3 pb-4">
 
           {/* Selector modo + nueva consulta */}
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-0.5">
+          <div className="flex items-center justify-between mb-2 gap-2">
+            <div className="flex items-center gap-0.5 overflow-x-auto shrink-0">
               {MODOS.map((key) => {
                 const cfg    = MODO_CFG[key];
                 const active = modo === key;
@@ -673,7 +673,7 @@ export default function ChatPage() {
           {/* Footer: hints teclado + disclaimer */}
           <div className="flex items-center justify-between mt-1.5 px-0.5">
             <div
-              className="flex items-center gap-3"
+              className="hidden sm:flex items-center gap-3"
               style={{ fontSize: 10, color: "var(--ink-5)" }}
             >
               <span>↵ enviar</span>

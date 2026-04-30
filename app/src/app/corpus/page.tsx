@@ -371,14 +371,15 @@ export default function NormativaPage() {
 
       {/* Stats */}
       {status && (
-        <div className="grid grid-cols-3 overflow-hidden rounded-lg" style={{ border: "1px solid var(--rule)" }}>
+        <div className="grid grid-cols-1 sm:grid-cols-3 overflow-hidden rounded-lg" style={{ border: "1px solid var(--rule)" }}>
           {[
             { label: "Total chunks",   val: status.totalChunks.toLocaleString("es-CL"), Icon: Database },
             { label: "Normas activas", val: String(status.normas.filter((n) => n.vigente).length), Icon: FileText },
             { label: "Última carga",   val: formatFecha(status.timestamp), Icon: Clock },
           ].map(({ label, val, Icon }, i, arr) => (
-            <div key={label} className="flex items-center gap-3 px-4 py-3.5"
-              style={{ background: "var(--card-bg)", borderRight: i < arr.length - 1 ? "1px solid var(--rule)" : "none" }}>
+            <div key={label}
+              className={cn("flex items-center gap-3 px-4 py-3.5", i < arr.length - 1 && "border-b sm:border-b-0 sm:border-r")}
+              style={{ background: "var(--card-bg)", borderColor: "var(--rule)" }}>
               <Icon className="size-4 shrink-0" style={{ color: "var(--ink-4)" }} />
               <div>
                 <p style={{ fontSize: 17, fontFamily: "var(--font-jetbrains-mono)", color: "var(--ink)", lineHeight: 1 }}>{val}</p>
@@ -420,7 +421,7 @@ export default function NormativaPage() {
 
       {/* Tabla */}
       {status && normasFiltradas.length > 0 && (
-        <div className="rounded-lg overflow-hidden" style={{ border: "1px solid var(--rule)" }}>
+        <div className="rounded-lg overflow-hidden overflow-x-auto" style={{ border: "1px solid var(--rule)" }}>
           <table className="w-full text-sm">
             <thead>
               <tr style={{ background: "var(--paper-2)", borderBottom: "1px solid var(--rule)" }}>
@@ -468,7 +469,7 @@ export default function NormativaPage() {
                   </td>
                   <td className="px-3 py-2.5">
                     <button onClick={() => setNormaAEliminar(n)}
-                      className="rounded p-1 opacity-0 group-hover:opacity-100 transition-opacity hover:bg-foreground/[0.06]"
+                      className="rounded p-1 opacity-30 group-hover:opacity-100 transition-opacity hover:bg-foreground/[0.06] sm:opacity-0"
                       title="Eliminar">
                       <Trash2 className="size-3.5" style={{ color: "var(--terracotta)" }} />
                     </button>

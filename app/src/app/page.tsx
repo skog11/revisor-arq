@@ -145,7 +145,7 @@ export default function HomePage() {
         style={{ borderBottom: "1px solid var(--rule)" }}
       >
         {/* Left */}
-        <div className="flex flex-col justify-center px-10 py-20 lg:px-16">
+        <div className="flex flex-col justify-center px-5 py-12 sm:px-8 sm:py-16 lg:px-16 lg:py-20">
           {/* Eyebrow */}
           <motion.div
             custom={0}
@@ -441,7 +441,7 @@ export default function HomePage() {
       {/* ── FEATURES ─────────────────────────────────────── */}
       <section
         id="como-funciona"
-        className="grid grid-cols-1 gap-8 px-10 py-16 md:grid-cols-3 lg:px-16"
+        className="grid grid-cols-1 gap-8 px-5 py-12 sm:px-8 md:grid-cols-3 lg:px-16 lg:py-16"
         style={{ borderBottom: "1px solid var(--rule)" }}
       >
         {FEATURES.map((f, i) => (
@@ -488,7 +488,7 @@ export default function HomePage() {
 
       {/* ── CASOS DE USO ─────────────────────────────────── */}
       <section
-        className="px-10 py-16 lg:px-16"
+        className="px-5 py-12 sm:px-8 lg:px-16 lg:py-16"
         style={{ borderBottom: "1px solid var(--rule)" }}
       >
         <div
@@ -566,7 +566,7 @@ export default function HomePage() {
       </section>
 
       {/* ── HOW IT WORKS ─────────────────────────────────── */}
-      <section className="px-10 py-16 lg:px-16">
+      <section className="px-5 py-12 sm:px-8 lg:px-16 lg:py-16">
         <div
           className="mb-3"
           style={{
@@ -642,7 +642,7 @@ export default function HomePage() {
       </section>
       {/* ── CTA FINAL ────────────────────────────────────── */}
       <section
-        className="px-10 py-20 lg:px-16 text-center"
+        className="px-5 py-14 sm:px-8 lg:px-16 lg:py-20 text-center"
         style={{
           borderTop: "1px solid var(--rule)",
           background: "var(--paper-2)",
