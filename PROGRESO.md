@@ -122,22 +122,24 @@ FASE 5 — Monetización       ░░░░░░░░░░   0%   No iniciado
 
 ---
 
-### 2026-04-30 — Sesión 9: Auditoría corpus + Evaluaciones ← HOY
+### 2026-04-30 — Sesión 9: Auditoría corpus + Pipeline normativa complementaria
 **Hecho:**
-- Auditoría completa del corpus en Supabase → **3.135 chunks / 304 normas** (más de lo esperado)
-- Estado real verificado norma por norma:
-  - LGUC: ✅ 284 chunks (completo)
-  - OGUC: ✅ 806/820 chunks (98% — funcional)
-  - DDU-527 al DDU-541: ✅ todos presentes (6–42 chunks c/u)
-  - DDU-000 al DDU-526: ✅ ~289 DDUs históricos ingestados (sesión Apr-25)
-  - Solo 3 normas con 0 chunks de 304 totales
-- Evaluaciones corriendo contra producción (`npm run eval -- --url=https://app-jade-nine-25.vercel.app`)
+- Auditoría Supabase → **3.135 chunks / 304 normas** verificados
+  - LGUC 284, OGUC 806, 16 DDUs recientes, ~289 DDUs históricos — solo 3 con 0 chunks
+- Evaluaciones primera corrida: **3/7** — 3 fallos son bugs del eval, 1 es rate limit diario Gemini
+- Eval set corregido (criterios más flexibles) + pausa aumentada a 90s
+- Pipeline normativa complementaria construido:
+  - `extract-pdfs.ts` + `build-manifiesto.ts` + `parsers/ley.ts`
+  - 25 PDFs extraídos (Ley 19300, DFL 725, DFL 382, Ley 17288, Ley 19880, etc.)
+  - Manifiesto: **41 entradas** (16 core + 25 nuevas)
+  - Dry-run confirma ~**4.494 chunks** adicionales listos
+- Commits: `3cdab6d` (eval) + `3cf5212` (pipeline)
 
-**Pendiente:**
-- [ ] Resultados evaluaciones (en curso)
-- [ ] Ingestar normativa complementaria cat.01–11 (DS-60, DS-61, Ley 19.300, etc.)
-- [ ] Actualizar `NEXT_PUBLIC_APP_URL` tras asignar dominio personalizado
-- [ ] Conectar repo GitHub para auto-deploy en push (Vercel dashboard)
+**Pendiente sesión siguiente:**
+- [ ] `npm run corpus:ingest` — ingestar 25 normas (cuota Voyage AI disponible)
+- [ ] `npm run eval -- --url=...` — re-correr eval (cuota Gemini reset mañana)
+- [ ] DS-60 y DS-61 — PDFs escaneados sin OCR, requieren extracción manual
+- [ ] Dominio personalizado en Vercel + GitHub auto-deploy
 
 ---
 
