@@ -20,11 +20,9 @@ CREATE TYPE tipo_norma AS ENUM (
 );
 
 -- 3. Tabla normas
--- NOTA: tipo es TEXT (no ENUM) para permitir tipos personalizados.
--- Se mantiene el tipo tipo_norma para compatibilidad pero se recomienda TEXT en producción.
 CREATE TABLE IF NOT EXISTS normas (
   id                  uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-  tipo                text NOT NULL,               -- texto libre: LGUC, OGUC, DDU, NCH, etc.
+  tipo                tipo_norma NOT NULL,
   numero              text NOT NULL,
   titulo              text NOT NULL,
   fecha_publicacion   date,
@@ -33,17 +31,8 @@ CREATE TABLE IF NOT EXISTS normas (
   hash_contenido      text,
   texto_completo      text,
   vigente             boolean NOT NULL DEFAULT true,
-  -- Fase 5: metadatos expandidos
-  dominio             text,
-  subdominio          text,
-  organo_emisor       text,
-  jerarquia_norm      text CHECK (jerarquia_norm IN ('ley', 'reglamento', 'instruccion', 'resolucion', 'norma_tecnica', 'otro')),
-  etapas_proyecto     text[] NOT NULL DEFAULT '{}',
-  dependencias        text[] NOT NULL DEFAULT '{}',
-  alcance             text CHECK (alcance IN ('nacional', 'regional', 'comunal', 'sectorial')),
   created_at          timestamptz NOT NULL DEFAULT now(),
-  updated_at          timestamptz NOT NULL DEFAULT now(),
-  UNIQUE (tipo, numero)   -- necesario para upsert onConflict: "tipo,numero"
+  updated_at          timestamptz NOT NULL DEFAULT now()
 );
 
 -- 4. Tabla articulos
@@ -85,13 +74,10 @@ CREATE TABLE IF NOT EXISTS consultas (
   created_at    timestamptz NOT NULL DEFAULT now()
 );
 
--- 7. Tabla contacto
+-- 7. Tabla contacto (reportes de errores del corpus)
 CREATE TABLE IF NOT EXISTS contacto (
   id          uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-  tipo        text NOT NULL CHECK (tipo IN (
-                'error-corpus', 'norma-faltante', 'respuesta-incorrecta',
-                'sugerencia', 'consulta', 'soporte', 'otro'
-              )),
+  tipo        text NOT NULL CHECK (tipo IN ('error-corpus','norma-faltante','respuesta-incorrecta','sugerencia','otro')),
   descripcion text NOT NULL,
   email       text,
   leido       boolean NOT NULL DEFAULT false,
@@ -99,10 +85,8 @@ CREATE TABLE IF NOT EXISTS contacto (
 );
 
 ALTER TABLE contacto ENABLE ROW LEVEL SECURITY;
--- Inserción pública (sin auth) para el formulario de contacto
-CREATE POLICY "contacto_anon_insert" ON contacto FOR INSERT WITH CHECK (true);
--- Solo service_role puede leer y gestionar
-CREATE POLICY "contacto_service_all"  ON contacto FOR ALL TO service_role USING (true);
+CREATE POLICY "contacto_anon_insert"   ON contacto FOR INSERT WITH CHECK (true);
+CREATE POLICY "contacto_service_all"   ON contacto FOR ALL TO service_role USING (true);
 
 -- 8. Tabla evaluaciones
 CREATE TABLE IF NOT EXISTS evaluaciones (
@@ -128,8 +112,7 @@ CREATE INDEX IF NOT EXISTS normas_tipo_idx
 CREATE INDEX IF NOT EXISTS chunks_metadatos_idx
   ON chunks USING gin (metadatos);
 
--- 9. Función RPC match_chunks (v2)
--- Nota: usar migration-match-chunks-v2.sql para actualizar en producción.
+-- 9. Función RPC match_chunks
 CREATE OR REPLACE FUNCTION match_chunks(
   query_embedding   vector(1024),
   match_count       int DEFAULT 8,
@@ -143,14 +126,10 @@ RETURNS TABLE (
   fecha_vigencia_desde  date,
   fecha_vigencia_hasta  date,
   fuente                text,
-  norma_tipo            text,
+  norma_tipo            tipo_norma,
   norma_numero          text,
   norma_titulo          text,
   norma_fecha_actualizacion date,
-  norma_dominio         text,
-  norma_organo_emisor   text,
-  norma_jerarquia_norm  text,
-  norma_etapas_proyecto text[],
   similarity            float
 )
 LANGUAGE sql STABLE
@@ -162,20 +141,16 @@ AS $$
     c.fecha_vigencia_desde,
     c.fecha_vigencia_hasta,
     c.fuente,
-    n.tipo                     AS norma_tipo,
-    n.numero                   AS norma_numero,
-    n.titulo                   AS norma_titulo,
-    n.fecha_actualizacion      AS norma_fecha_actualizacion,
-    n.dominio                  AS norma_dominio,
-    n.organo_emisor            AS norma_organo_emisor,
-    n.jerarquia_norm           AS norma_jerarquia_norm,
-    n.etapas_proyecto          AS norma_etapas_proyecto,
+    n.tipo   AS norma_tipo,
+    n.numero AS norma_numero,
+    n.titulo AS norma_titulo,
+    n.fecha_actualizacion AS norma_fecha_actualizacion,
     1 - (c.embedding <=> query_embedding) AS similarity
   FROM chunks c
   JOIN normas n ON n.id = c.norma_id
   WHERE
-    (filter_tipos IS NULL OR n.tipo = ANY(filter_tipos))
-    AND (NOT solo_vigentes OR (n.vigente = true AND c.fecha_vigencia_hasta IS NULL))
+    (filter_tipos IS NULL OR n.tipo::text = ANY(filter_tipos))
+    AND (NOT solo_vigentes OR c.fecha_vigencia_hasta IS NULL)
     AND c.embedding IS NOT NULL
   ORDER BY c.embedding <=> query_embedding
   LIMIT match_count;

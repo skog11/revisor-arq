@@ -1,0 +1,158 @@
+{
+  "fecha": "2026-04-21T13:22:31.486Z",
+  "baseUrl": "http://localhost:3000",
+  "total": 7,
+  "pasados": 6,
+  "fallados": 1,
+  "avgLatenciaMs": 12099,
+  "casos": [
+    {
+      "id": "lguc-116-permiso",
+      "pregunta": "¿Qué obras requieren permiso de edificación según el Art. 116 de la LGUC?",
+      "pasa": true,
+      "fuentes": 8,
+      "frasesEsperadasEncontradas": [
+        "Dirección de Obras Municipales",
+        "permiso"
+      ],
+      "frasesEsperadasFaltantes": [],
+      "frasesProhibidasEncontradas": [],
+      "articulosCitados": [
+        "116",
+        "55",
+        "17"
+      ],
+      "articulosEsperadosFaltantes": [],
+      "respuesta": "De acuerdo con el Artículo 116 de la Ley General de Urbanismo y Construcciones (LGUC), las obras que requieren permiso de edificación son las siguientes:\n\n1.  **Regla General:**\n    \"La construcción, reconstrucción, reparación, alteración, ampliación y demolición de edificios y obras de urbanización de cualquier naturaleza, sean urbanas o rurales, requerirán permiso de la Dirección de Obras Municipales a solicitud del propietario.\" (FUENTE [1]: LGUC DFL-458 – Art. 116, parte 1/5, inciso primero).\n\n2.  **Entidades y Obras Específicas Sujetas a la Obligación:**\n    \"Deberán cumplir con esta obligación las urbanizaciones y construcciones fiscales, semifiscales, de corporaciones o empresas autónomas del Estado y de las Fuerzas Armadas, de las Fuerzas de Orden y Seguridad Pública, de Gendarmerí",
+      "latenciaMs": 16615
+    },
+    {
+      "id": "lguc-subdivison",
+      "pregunta": "¿Qué normas aplican para subdividir un terreno urbano en Chile?",
+      "pasa": true,
+      "fuentes": 8,
+      "frasesEsperadasEncontradas": [
+        "subdivisión",
+        "Dirección de Obras"
+      ],
+      "frasesEsperadasFaltantes": [],
+      "frasesProhibidasEncontradas": [],
+      "articulosCitados": [
+        "67",
+        "3",
+        "71",
+        "65",
+        "55",
+        "2"
+      ],
+      "articulosEsperadosFaltantes": [],
+      "respuesta": "Para la subdivisión de un terreno urbano en Chile, las normas aplicables se centran en la conformidad con el Instrumento de Planificación Territorial (IPT) y la tramitación ante la Dirección de Obras Municipales (DOM). A continuación, se detallan los parámetros y requisitos:\n\n1.  **Ajuste al Plan Regulador**\n    *   **Valor:** Los proyectos de subdivisión deben ajustarse estrictamente a los trazados y normas que consulte el Plan Regulador.\n    *   **Artículo de respaldo:** Según el Art. 67 de la LGUC.\n    *   **Observaciones prácticas:** Esto implica que la subdivisión debe respetar el uso de suelo, la densidad, la altura, los distanciamientos, las áreas verdes y demás condiciones establecidas por el Plan Regulador Comunal o Intercomunal/Metropolitano vigente para el sector urbano donde se",
+      "latenciaMs": 17956
+    },
+    {
+      "id": "lguc-planificacion",
+      "pregunta": "¿Qué es la planificación urbana según la LGUC y cuáles son sus niveles?",
+      "pasa": true,
+      "fuentes": 8,
+      "frasesEsperadasEncontradas": [
+        "planificación",
+        "niveles"
+      ],
+      "frasesEsperadasFaltantes": [],
+      "frasesProhibidasEncontradas": [],
+      "articulosCitados": [
+        "1",
+        "28",
+        "2",
+        "29",
+        "34",
+        "41",
+        "27 ter"
+      ],
+      "articulosEsperadosFaltantes": [],
+      "respuesta": "La planificación urbana, según la normativa chilena, se define y estructura de la siguiente manera:\n\n### Definición de Planificación Urbana\n\nLa planificación urbana es una función pública cuyo objetivo es organizar y definir el uso del suelo y las demás normas urbanísticas de acuerdo a objetivos de interés general. Su ejercicio debe ajustarse a principios orientados hacia la integración e inclusión social, la cohesión territorial, la sustentabilidad en sus dimensiones social, económica, cultural y ambiental, procurando que el suelo se ocupe de manera eficiente y combine los usos en un contexto urbano seguro, saludable, resiliente, accesible e integrado (según el Art. 1 de la DDU 540, que hace referencia al Art. 28 decies de la LGUC).\n\nAdemás, el proceso de Planificación Urbana orienta o re",
+      "latenciaMs": 8890
+    },
+    {
+      "id": "lguc-condominio",
+      "pregunta": "¿Qué es un condominio y qué normas lo rigen según la LGUC?",
+      "pasa": true,
+      "fuentes": 8,
+      "frasesEsperadasEncontradas": [
+        "copropiedad",
+        "condominio"
+      ],
+      "frasesEsperadasFaltantes": [],
+      "frasesProhibidasEncontradas": [],
+      "articulosCitados": [
+        "79",
+        "2",
+        "164",
+        "109",
+        "6",
+        "3",
+        "4"
+      ],
+      "articulosEsperadosFaltantes": [],
+      "respuesta": "Según el contexto normativo proporcionado, el concepto de \"condominio\" se encuentra estrechamente vinculado al régimen de copropiedad inmobiliaria, aunque la LGUC y la OGUC no ofrecen una definición explícita y directa de \"condominio\" en los fragmentos recuperados.\n\n**1. ¿Qué es un condominio?**\n\nEl contexto normativo no proporciona una definición literal de \"condominio\". Sin embargo, se refiere a ellos en el marco de la Ley de Copropiedad Inmobiliaria y los clasifica en tipos:\n\n*   **Condominios de densificación predial / Condominios Tipo A**: Son aquellos a los que se refiere el artículo 79 de la Ley N° 21.442, que aprueba la nueva Ley de Copropiedad Inmobiliaria, o aquella que la reemplace (FUENTE [1]).\n*   **Condominios Tipo B**: Son proyectos acogidos al régimen de copropiedad inmobil",
+      "latenciaMs": 18479
+    },
+    {
+      "id": "ddu-541",
+      "pregunta": "¿Qué instrucciones da la DDU 541 sobre normativa urbana?",
+      "pasa": false,
+      "fuentes": 8,
+      "frasesEsperadasEncontradas": [
+        "DDU 541",
+        "MINVU"
+      ],
+      "frasesEsperadasFaltantes": [],
+      "frasesProhibidasEncontradas": [],
+      "articulosCitados": [
+        "1",
+        "3"
+      ],
+      "articulosEsperadosFaltantes": [],
+      "respuesta": "La Circular DDU 541 del MINVU tiene como objetivo principal informar, difundir y precisar las nuevas herramientas, alcances y posibilidades introducidas por la Ley Nº 21.807 de Fortalecimiento y Modernización del Sistema de Planificación Territorial, y su incidencia en la estructuración de modelos y estrategias de gestión urbana integrada.\n\nA continuación, se detallan las instrucciones y precisiones que la DDU 541 entrega sobre normativa urbana, según el contexto normativo proporcionado:\n\n*   **Propósito General de la Circular**\n    *   **Descripción:** La DDU 541 se emite para informar, difundir y precisar las nuevas herramientas, alcances y posibilidades que la Ley Nº 21.807 incorpora, y su incidencia en la estructuración de modelos y estrategias de gestión urbana integrada. Esta ley bus",
+      "latenciaMs": 10152,
+      "error": "[GoogleGenerativeAI Error]: Failed to parse stream"
+    },
+    {
+      "id": "guardrail-articuloinexistente",
+      "pregunta": "¿Qué dice el Art. 9999 de la LGUC sobre alturas máximas?",
+      "pasa": true,
+      "fuentes": 8,
+      "frasesEsperadasEncontradas": [
+        "No encontré respaldo",
+        "base de conocimiento"
+      ],
+      "frasesEsperadasFaltantes": [],
+      "frasesProhibidasEncontradas": [],
+      "articulosCitados": [
+        "9999",
+        "28 quinquies"
+      ],
+      "articulosEsperadosFaltantes": [],
+      "respuesta": "No encontré respaldo normativo suficiente en la base de conocimiento para el \"Art. 9999 de la LGUC\". El contexto normativo proporcionado incluye el \"Art. 28 quinquies\" de la LGUC DFL-458, pero no el artículo específico que usted menciona.\n\n⚠️ **Aviso legal**: Esta respuesta es orientativa y no constituye asesoría jurídica profesional. Verifica siempre el texto vigente en BCN (www.bcn.cl) y consulta con un profesional habilitado antes de tomar decisiones.",
+      "latenciaMs": 4083
+    },
+    {
+      "id": "guardrail-normafalsa",
+      "pregunta": "¿Qué establece la Circular DDU 999 sobre restricciones costeras?",
+      "pasa": true,
+      "fuentes": 8,
+      "frasesEsperadasEncontradas": [
+        "No encontré",
+        "base de conocimiento"
+      ],
+      "frasesEsperadasFaltantes": [],
+      "frasesProhibidasEncontradas": [],
+      "articulosCitados": [
+        "2"
+      ],
+      "articulosEsperadosFaltantes": [],
+      "respuesta": "No encontré respaldo normativo suficiente en la base de conocimiento para la \"Circular DDU 999\". La información proporcionada no contiene ninguna circular con ese número.\n\nSin embargo, la base de conocimiento sí incluye disposiciones sobre restricciones costeras en la Ordenanza General de Urbanismo y Construcciones (OGUC):\n\n*   **Zonas de Protección Costera:** Los Planes Reguladores Intercomunales y Comunales deben cautelar que en los territorios definidos como zonas de protección costera, las vías expresas y las vías de servicio se emplacen, cuando el terreno lo permita, a una distancia mayor de 1.000 metros y de 80 metros respectivamente, medidos a partir de la línea de más alta marea.\n    *   **Respaldo:** conforme al Art. 2.3.5 de la OGUC (FUENTE [5]).\n    *   **Observaciones prácticas",
+      "latenciaMs": 8519
+    }
+  ]
+}

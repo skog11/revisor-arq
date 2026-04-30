@@ -1,0 +1,134 @@
+{
+  "fecha": "2026-04-22T01:52:03.630Z",
+  "baseUrl": "http://localhost:3000",
+  "total": 7,
+  "pasados": 0,
+  "fallados": 7,
+  "avgLatenciaMs": 151611,
+  "casos": [
+    {
+      "id": "lguc-116-permiso",
+      "pregunta": "¿Qué obras requieren permiso de edificación según el Art. 116 de la LGUC?",
+      "pasa": false,
+      "fuentes": 0,
+      "frasesEsperadasEncontradas": [],
+      "frasesEsperadasFaltantes": [
+        "Dirección de Obras Municipales",
+        "permiso"
+      ],
+      "frasesProhibidasEncontradas": [],
+      "articulosCitados": [],
+      "articulosEsperadosFaltantes": [
+        "116"
+      ],
+      "respuesta": "",
+      "latenciaMs": 227819,
+      "error": "Error embedding query: 429 {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-a"
+    },
+    {
+      "id": "lguc-subdivison",
+      "pregunta": "¿Qué normas aplican para subdividir un terreno urbano en Chile?",
+      "pasa": false,
+      "fuentes": 0,
+      "frasesEsperadasEncontradas": [],
+      "frasesEsperadasFaltantes": [
+        "subdivisión",
+        "Dirección de Obras"
+      ],
+      "frasesProhibidasEncontradas": [],
+      "articulosCitados": [],
+      "articulosEsperadosFaltantes": [],
+      "respuesta": "",
+      "latenciaMs": 93360,
+      "error": "Error embedding query: 429 {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-a"
+    },
+    {
+      "id": "lguc-planificacion",
+      "pregunta": "¿Qué es la planificación urbana según la LGUC y cuáles son sus niveles?",
+      "pasa": false,
+      "fuentes": 0,
+      "frasesEsperadasEncontradas": [],
+      "frasesEsperadasFaltantes": [
+        "planificación",
+        "niveles"
+      ],
+      "frasesProhibidasEncontradas": [],
+      "articulosCitados": [],
+      "articulosEsperadosFaltantes": [
+        "1",
+        "2"
+      ],
+      "respuesta": "",
+      "latenciaMs": 93621,
+      "error": "Error embedding query: 429 {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-a"
+    },
+    {
+      "id": "lguc-condominio",
+      "pregunta": "¿Qué es un condominio y qué normas lo rigen según la LGUC?",
+      "pasa": false,
+      "fuentes": 0,
+      "frasesEsperadasEncontradas": [],
+      "frasesEsperadasFaltantes": [
+        "copropiedad",
+        "condominio"
+      ],
+      "frasesProhibidasEncontradas": [],
+      "articulosCitados": [],
+      "articulosEsperadosFaltantes": [],
+      "respuesta": "",
+      "latenciaMs": 93550,
+      "error": "Error embedding query: 429 {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-a"
+    },
+    {
+      "id": "ddu-541",
+      "pregunta": "¿Qué instrucciones da la DDU 541 sobre normativa urbana?",
+      "pasa": false,
+      "fuentes": 8,
+      "frasesEsperadasEncontradas": [],
+      "frasesEsperadasFaltantes": [
+        "DDU 541",
+        "MINVU"
+      ],
+      "frasesProhibidasEncontradas": [],
+      "articulosCitados": [],
+      "articulosEsperadosFaltantes": [],
+      "respuesta": "",
+      "latenciaMs": 364930,
+      "error": "Se alcanzó el límite de consultas por minuto. Por favor espere unos segundos e intente de nuevo."
+    },
+    {
+      "id": "guardrail-articuloinexistente",
+      "pregunta": "¿Qué dice el Art. 9999 de la LGUC sobre alturas máximas?",
+      "pasa": false,
+      "fuentes": 0,
+      "frasesEsperadasEncontradas": [],
+      "frasesEsperadasFaltantes": [
+        "No encontré respaldo",
+        "base de conocimiento"
+      ],
+      "frasesProhibidasEncontradas": [],
+      "articulosCitados": [],
+      "articulosEsperadosFaltantes": [],
+      "respuesta": "",
+      "latenciaMs": 94086,
+      "error": "Error embedding query: 429 {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-a"
+    },
+    {
+      "id": "guardrail-normafalsa",
+      "pregunta": "¿Qué establece la Circular DDU 999 sobre restricciones costeras?",
+      "pasa": false,
+      "fuentes": 0,
+      "frasesEsperadasEncontradas": [],
+      "frasesEsperadasFaltantes": [
+        "No encontré",
+        "base de conocimiento"
+      ],
+      "frasesProhibidasEncontradas": [],
+      "articulosCitados": [],
+      "articulosEsperadosFaltantes": [],
+      "respuesta": "",
+      "latenciaMs": 93911,
+      "error": "Error embedding query: 429 {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-a"
+    }
+  ]
+}

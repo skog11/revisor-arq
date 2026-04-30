@@ -1,206 +1,184 @@
 /**
  * POST /api/corpus/ingestar
- * Body: { tipo: string; numero: string; titulo: string; texto: string; url_fuente?: string }
- * 1. Upsert norma en Supabase.
- * 2. Elimina chunks previos para esa norma.
- * 3. Divide texto en chunks de ~800 tokens con solapamiento.
- * 4. Genera embeddings con Voyage AI.
- * 5. Inserta chunks en Supabase.
+ * Crea una norma nueva y genera sus chunks con embeddings.
+ *
+ * Body JSON:
+ *   tipo     string   — ej. "LGUC", "OGUC", "DDU", "SECTORIAL", etc.
+ *   numero   string   — ej. "21.450" o "DDU-85"
+ *   titulo   string   — título completo
+ *   texto    string   — texto completo de la norma (plano)
+ *   url      string?  — URL fuente opcional
+ *
+ * Usa Gemini embedding-001 (mismo modelo que el retrieval) con 1024 dimensiones.
+ * El texto se parte en chunks de ~600 caracteres respetando límites de párrafo.
  */
 
 import { getSupabaseServiceClient } from "@/lib/supabase";
-import { embedBatch } from "@/lib/voyage";
-import { NextRequest } from "next/server";
-import { z } from "zod";
 
-const MAX_TOKENS = 800;
-const OVERLAP_TOKENS = 100;
-const CHARS_PER_TOKEN = 4;
+const CHUNK_TARGET = 600;   // caracteres aprox por chunk
+const CHUNK_OVERLAP = 80;   // superposición entre chunks
 
-function estimarTokens(s: string) {
-  return Math.ceil(s.length / CHARS_PER_TOKEN);
-}
+// ─── Chunking ────────────────────────────────────────────────────────────────
 
-/**
- * Detecta si el texto contiene estructura de artículos (LGUC, OGUC, DDU).
- * Patrones: "Artículo 1°", "Art. 2.6.3", "ARTÍCULO 115", "Circular DDU N°..."
- */
-const RE_ARTICULO = /^(?:art[ií]culo|art\.|circular\s+ddu\s+n[°º])\s*[\d.]+/im;
-
-/**
- * Extrae artículos como unidades semánticas independientes.
- * Si el texto no tiene estructura de artículos, cae al chunking por párrafos.
- */
-function extraerArticulos(texto: string): string[] | null {
-  // Detectar separadores de artículo: líneas que empiezan con "Artículo X", "Art. X.X.X"
-  const separador = /\n(?=(?:art[ií]culo\s+\d+[°º]?|art\.\s*[\d.]+)\s*[.–\-\s])/gi;
-
-  if (!RE_ARTICULO.test(texto)) return null; // sin estructura de artículos
-
-  const partes = texto.split(separador).map((p) => p.trim()).filter(Boolean);
-  if (partes.length < 2) return null; // solo encontró un artículo, usar párrafos
-
-  return partes;
-}
-
-function chunkearTexto(texto: string): string[] {
-  // Intentar extracción por artículos primero
-  const articulos = extraerArticulos(texto);
-  const unidades = articulos ?? texto.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean);
-
-  if (!unidades.length) return [];
+function chunkText(texto: string): string[] {
+  // Divide por párrafos (doble salto de línea o salto simple largo)
+  const parrafos = texto
+    .split(/\n{2,}/)
+    .map((p) => p.trim())
+    .filter((p) => p.length > 0);
 
   const chunks: string[] = [];
-  let inicio = 0;
+  let buffer = "";
 
-  while (inicio < unidades.length) {
-    let fin = inicio;
-    let tokens = 0;
-    while (fin < unidades.length) {
-      const t = estimarTokens(unidades[fin]);
-      if (tokens + t > MAX_TOKENS && fin > inicio) break;
-      tokens += t;
-      fin++;
+  for (const parrafo of parrafos) {
+    if (buffer.length + parrafo.length + 1 > CHUNK_TARGET && buffer.length > 0) {
+      chunks.push(buffer.trim());
+      // Overlap: mantener últimas palabras del chunk anterior
+      const words = buffer.split(" ");
+      buffer = words.slice(-Math.floor(CHUNK_OVERLAP / 6)).join(" ") + "\n" + parrafo;
+    } else {
+      buffer = buffer ? buffer + "\n" + parrafo : parrafo;
     }
-    if (fin === inicio) fin = inicio + 1;
-
-    chunks.push(unidades.slice(inicio, fin).join("\n\n"));
-
-    // Solapamiento: retroceder hasta cubrir OVERLAP_TOKENS
-    let solapTokens = 0;
-    let retroceso = fin;
-    while (retroceso > inicio + 1) {
-      retroceso--;
-      solapTokens += estimarTokens(unidades[retroceso]);
-      if (solapTokens >= OVERLAP_TOKENS) break;
-    }
-    inicio = retroceso >= fin ? fin : retroceso;
   }
 
-  return chunks;
+  if (buffer.trim()) chunks.push(buffer.trim());
+
+  // Si el texto no tiene párrafos (todo seguido), partir por tamaño
+  if (chunks.length === 0 && texto.trim()) {
+    for (let i = 0; i < texto.length; i += CHUNK_TARGET - CHUNK_OVERLAP) {
+      chunks.push(texto.slice(i, i + CHUNK_TARGET).trim());
+    }
+  }
+
+  return chunks.filter((c) => c.length > 20);
 }
 
-const IngestarSchema = z.object({
-  tipo:             z.string().min(1).max(30),
-  numero:           z.string().min(1).max(80),
-  titulo:           z.string().min(1).max(300),
-  texto:            z.string().min(10),
-  url_fuente:       z.string().url().optional().or(z.literal("")),
-  // Fase 5: metadatos expandidos
-  dominio:          z.string().max(100).optional(),
-  subdominio:       z.string().max(100).optional(),
-  organo_emisor:    z.string().max(100).optional(),
-  jerarquia_norm:   z.string().max(100).optional(),
-  etapas_proyecto:  z.array(z.string()).optional(),
-  dependencias:     z.array(z.string()).optional(),
-  alcance:          z.string().max(200).optional(),
-});
+// ─── Embedding (Gemini — mismo modelo que retrieval) ─────────────────────────
 
-export async function POST(req: NextRequest) {
-  let raw: unknown;
+async function embedTexto(texto: string): Promise<number[]> {
+  const key = process.env.GEMINI_API_KEY;
+  if (!key) throw new Error("Falta GEMINI_API_KEY");
+
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-001:embedContent?key=${key}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "models/gemini-embedding-001",
+        content: { role: "user", parts: [{ text: texto }] },
+        taskType: "RETRIEVAL_DOCUMENT",
+        outputDimensionality: 1024,
+      }),
+    }
+  );
+
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`Gemini embedding error ${res.status}: ${body.slice(0, 200)}`);
+  }
+
+  const json = (await res.json()) as { embedding: { values: number[] } };
+  return json.embedding.values;
+}
+
+// ─── Handler ─────────────────────────────────────────────────────────────────
+
+export async function POST(request: Request) {
+  let body: {
+    tipo: string;
+    numero: string;
+    titulo: string;
+    texto: string;
+    url?: string;
+  };
+
   try {
-    raw = await req.json();
+    body = await request.json();
   } catch {
-    return Response.json({ error: "Body JSON inválido" }, { status: 400 });
+    return Response.json({ error: "JSON inválido" }, { status: 400 });
   }
 
-  const parsed = IngestarSchema.safeParse(raw);
-  if (!parsed.success) {
-    const msg = parsed.error.issues.map((e) => e.message).join("; ");
-    return Response.json({ error: msg }, { status: 400 });
-  }
+  const { tipo, numero, titulo, texto, url } = body;
 
-  const {
-    tipo, numero, titulo, texto,
-    url_fuente = "",
-    dominio, subdominio, organo_emisor,
-    jerarquia_norm, etapas_proyecto, dependencias, alcance,
-  } = parsed.data;
+  if (!tipo || !numero || !titulo || !texto) {
+    return Response.json(
+      { error: "Faltan campos obligatorios: tipo, numero, titulo, texto" },
+      { status: 400 }
+    );
+  }
 
   const sb = getSupabaseServiceClient();
 
-  // Construir payload de norma (excluye undefined para no sobreescribir con null)
-  const normaPayload: Record<string, unknown> = {
-    tipo,
-    numero,
-    titulo,
-    vigente: true,
-    fecha_actualizacion: new Date().toISOString(),
-  };
-  if (url_fuente)          normaPayload.url_fuente       = url_fuente;
-  if (dominio)             normaPayload.dominio           = dominio;
-  if (subdominio)          normaPayload.subdominio        = subdominio;
-  if (organo_emisor)       normaPayload.organo_emisor     = organo_emisor;
-  if (jerarquia_norm)      normaPayload.jerarquia_norm    = jerarquia_norm;
-  if (etapas_proyecto)     normaPayload.etapas_proyecto   = etapas_proyecto;
-  if (dependencias)        normaPayload.dependencias      = dependencias;
-  if (alcance)             normaPayload.alcance           = alcance;
-
-  // 1. Upsert norma
-  const { data: normaRows, error: normaErr } = await sb
+  // 1. Crear norma
+  const { data: norma, error: errNorma } = await sb
     .from("normas")
-    .upsert(normaPayload, { onConflict: "tipo,numero", ignoreDuplicates: false })
-    .select("id");
+    .insert({
+      tipo: tipo.toUpperCase().trim(),
+      numero: numero.trim(),
+      titulo: titulo.trim(),
+      vigente: true,
+      fecha_actualizacion: new Date().toISOString(),
+    })
+    .select("id")
+    .single();
 
-  if (normaErr || !normaRows?.length) {
-    return Response.json({ error: normaErr?.message ?? "Error upserting norma" }, { status: 500 });
+  if (errNorma || !norma) {
+    return Response.json(
+      { error: `Error al crear norma: ${errNorma?.message}` },
+      { status: 500 }
+    );
   }
 
-  const normaId = normaRows[0].id as string;
+  const normaId = norma.id as string;
 
-  // 2. Eliminar chunks previos
-  const { error: delErr } = await sb.from("chunks").delete().eq("norma_id", normaId);
-  if (delErr) return Response.json({ error: delErr.message }, { status: 500 });
+  // 2. Partir en chunks
+  const chunks = chunkText(texto);
 
-  // 3. Dividir en chunks
-  const textos = chunkearTexto(texto);
-  if (!textos.length) {
-    return Response.json({ error: "El texto no produjo chunks válidos" }, { status: 422 });
+  if (chunks.length === 0) {
+    // Revertir norma creada
+    await sb.from("normas").delete().eq("id", normaId);
+    return Response.json({ error: "El texto no produjo chunks válidos" }, { status: 400 });
   }
 
-  // Extraer número de artículo para metadatos (si el chunk empieza con "Art.")
-  const RE_ART_NUM = /^(?:art[ií]culo|art\.)\s*([\d.]+[°º]?)/i;
+  // 3. Generar embeddings e insertar chunks
+  const errores: string[] = [];
+  let insertados = 0;
 
-  function extraerNumeroArticulo(texto: string): string | null {
-    const m = texto.trimStart().match(RE_ART_NUM);
-    return m ? m[1].replace(/[°º]$/, "") : null;
+  for (let i = 0; i < chunks.length; i++) {
+    const chunk = chunks[i];
+    try {
+      const embedding = await embedTexto(chunk);
+
+      const { error: errChunk } = await sb.from("chunks").insert({
+        norma_id: normaId,
+        texto: chunk,
+        embedding,
+        fuente: url ?? "",
+        metadatos: { indice: i, total: chunks.length },
+      });
+
+      if (errChunk) {
+        errores.push(`Chunk ${i}: ${errChunk.message}`);
+      } else {
+        insertados++;
+      }
+    } catch (e) {
+      errores.push(`Chunk ${i}: ${(e as Error).message}`);
+    }
   }
 
-  // Prefijo contextual por chunk
-  const textosConPrefijo = textos.map(
-    (t, i) => `[${tipo} ${numero}${textos.length > 1 ? ` – parte ${i + 1}/${textos.length}` : ""}]\n${t}`
-  );
+  // Actualizar fecha_actualizacion con el conteo final
+  await sb
+    .from("normas")
+    .update({ fecha_actualizacion: new Date().toISOString() })
+    .eq("id", normaId);
 
-  // 4. Embeddings via Voyage AI
-  // input_type="document" mejora la representación para indexación
-  let embeddings: number[][];
-  try {
-    embeddings = await embedBatch(textosConPrefijo, "document");
-  } catch (err) {
-    return Response.json({ error: `Error generando embeddings: ${(err as Error).message}` }, { status: 502 });
-  }
-
-  // 5. Insertar chunks
-  const rows = textos.map((textoOriginal, i) => {
-    const articuloNum = extraerNumeroArticulo(textoOriginal);
-    return {
-      norma_id: normaId,
-      texto: textosConPrefijo[i],
-      tokens: estimarTokens(textosConPrefijo[i]),
-      orden: i,
-      metadatos: {
-        tipo_norma: tipo,
-        numero_norma: numero,
-        url_fuente,
-        ...(articuloNum ? { articulo: articuloNum } : {}),
-      },
-      fuente: url_fuente,
-      embedding: embeddings[i],
-    };
+  return Response.json({
+    ok: true,
+    normaId,
+    totalChunks: chunks.length,
+    insertados,
+    errores: errores.length > 0 ? errores : undefined,
   });
-
-  const { error: insertErr } = await sb.from("chunks").insert(rows);
-  if (insertErr) return Response.json({ error: insertErr.message }, { status: 500 });
-
-  return Response.json({ ok: true, normaId, chunks: rows.length });
 }

@@ -42,11 +42,16 @@ interface ResultadoEval {
 
 // ─── Evaluar un caso ──────────────────────────────────────────────────────────
 
-async function evalCaso(caso: EvalCase, baseUrl: string): Promise<ResultadoEval> {
+async function evalCaso(caso: EvalCase, baseUrl: string, intentos = 3): Promise<ResultadoEval> {
   const t0 = Date.now();
   let respuesta = "";
   let fuentes = 0;
   let error: string | undefined;
+
+  for (let intento = 1; intento <= intentos; intento++) {
+    respuesta = "";
+    fuentes = 0;
+    error = undefined;
 
   try {
     const res = await fetch(`${baseUrl}/api/chat`, {
@@ -81,6 +86,17 @@ async function evalCaso(caso: EvalCase, baseUrl: string): Promise<ResultadoEval>
     }
   } catch (err) {
     error = (err as Error).message.slice(0, 100);
+  }
+
+    // Retry si es rate limit y quedan intentos
+    const esRateLimit = error && (error.includes("límite") || error.includes("503") || error.includes("429"));
+    if (esRateLimit && intento < intentos) {
+      const espera = intento * 30_000;
+      process.stdout.write(` [rate limit, reintento ${intento}/${intentos - 1} en ${espera / 1000}s] `);
+      await new Promise((r) => setTimeout(r, espera));
+      continue;
+    }
+    break;
   }
 
   const latenciaMs = Date.now() - t0;
@@ -178,8 +194,9 @@ async function main() {
         console.log(`     ✗ Artículos no citados: ${r.articulosEsperadosFaltantes.join(", ")}`);
     }
 
-    // Pequeña pausa entre casos
-    await new Promise((r) => setTimeout(r, 2000));
+    // Pausa entre casos — Gemini free tier: 10 RPM, ventana de 60s
+    // Con respuestas de ~15s + 70s de pausa = ~1 req/85s → bien bajo el límite
+    await new Promise((r) => setTimeout(r, 70_000));
   }
 
   // ── Resumen ──

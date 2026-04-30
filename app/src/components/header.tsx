@@ -4,73 +4,85 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 import { ModeToggle } from "@/components/mode-toggle";
 import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
-  { href: "/chat", label: "Consulta" },
-  { href: "/#como-funciona", label: "Cómo funciona" },
-  { href: "/normativa", label: "Normativa" },
+  { href: "/",        label: "Home"      },
+  { href: "/chat",    label: "Consulta"  },
+  { href: "/corpus",  label: "Normativa" },
 ];
 
 export function Header() {
-  const pathname = usePathname();
+  const pathname  = usePathname();
   const [menuAbierto, setMenuAbierto] = useState(false);
 
   return (
     <header
       className="sticky top-0 z-50"
       style={{
-        background: "color-mix(in srgb, var(--paper) 92%, transparent)",
-        backdropFilter: "blur(12px)",
-        borderBottom: "1px solid var(--rule)",
+        background:    "var(--paper)",
+        borderBottom:  "1px solid var(--rule)",
       }}
     >
-      <div className="flex items-center justify-between px-6 py-4 sm:px-8">
-        {/* Logo */}
-        <div className="flex items-center gap-3">
-          <Link href="/" className="flex items-center gap-2.5 no-underline" aria-label="REVISOR ARQ — Inicio">
-            <div
-              className="grid place-items-center rounded-[7px] text-xs font-semibold"
-              style={{ width: 26, height: 26, background: "var(--ink)", color: "var(--paper)" }}
-            >
-              R
-            </div>
+      <div className="flex items-center justify-between px-6 py-4 sm:px-10">
+
+        {/* ── Logo ── */}
+        <Link href="/" className="flex items-center gap-3 no-underline group">
+          {/* Plano arquitectónico minimalista */}
+          <div className="shrink-0 opacity-80 group-hover:opacity-100 transition-opacity">
+            <svg viewBox="0 0 24 24" fill="none" width="22" height="22" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2"  y="3"  width="8"  height="10" rx="1" stroke="var(--mode-arq)" strokeWidth="1.1"/>
+              <rect x="4"  y="5"  width="4"  height="3"  rx=".5" stroke="var(--mode-arq)" strokeWidth=".8" opacity=".6"/>
+              <line x1="4"  y1="10" x2="8"  y2="10" stroke="var(--mode-arq)" strokeWidth=".7" opacity=".4"/>
+              <rect x="12" y="6"  width="10" height="7"  rx="1" stroke="var(--mode-arq)" strokeWidth="1.1" opacity=".5"/>
+              <line x1="12" y1="10" x2="22" y2="10" stroke="var(--mode-arq)" strokeWidth=".7" opacity=".3"/>
+              <line x1="17" y1="6"  x2="17" y2="13" stroke="var(--mode-arq)" strokeWidth=".7" opacity=".3"/>
+              <line x1="2"  y1="17" x2="22" y2="17" stroke="var(--mode-arq)" strokeWidth=".8" opacity=".16"/>
+            </svg>
+          </div>
+
+          {/* Nombre */}
+          <div className="flex items-baseline gap-2.5">
             <span
-              className="text-2xl tracking-[-0.5px]"
-              style={{ fontFamily: "var(--font-instrument-serif)", color: "var(--ink)" }}
+              style={{
+                fontFamily:    "var(--font-instrument-serif)",
+                fontSize:      15,
+                letterSpacing: "0.01em",
+                color:         "var(--ink)",
+              }}
             >
               REVISOR ARQ
             </span>
-          </Link>
-          <span
-            className="ml-1 hidden sm:inline"
-            style={{
-              fontFamily: "var(--font-jetbrains-mono)",
-              fontSize: 10,
-              color: "var(--ink-3)",
-              textTransform: "uppercase",
-              letterSpacing: "1.4px",
-              paddingLeft: 14,
-              marginLeft: 4,
-              borderLeft: "1px solid var(--rule-2)",
-            }}
-          >
-            beta
-          </span>
-        </div>
+            <span
+              className="hidden sm:inline"
+              style={{
+                fontFamily:    "var(--font-jetbrains-mono)",
+                fontSize:      8.5,
+                letterSpacing: "0.10em",
+                textTransform: "uppercase",
+                color:         "var(--ink-5)",
+                paddingLeft:   10,
+                borderLeft:    "1px solid var(--rule-2)",
+              }}
+            >
+              beta
+            </span>
+          </div>
+        </Link>
 
-        {/* Nav desktop */}
-        <nav className="hidden items-center gap-1 md:flex">
+        {/* ── Nav desktop ── */}
+        <nav className="hidden items-center gap-0.5 md:flex">
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               className={cn(
-                "rounded-full px-3 py-1.5 text-sm font-medium transition-colors",
-                "hover:bg-[var(--paper-2)] hover:text-[var(--ink)]",
-                pathname === link.href ? "text-[var(--ink)]" : "text-[var(--ink-3)]"
+                "rounded-md px-3.5 py-1.5 text-[13px] transition-colors duration-150",
+                "hover:bg-foreground/[0.04]",
+                pathname === link.href
+                  ? "text-[var(--ink)] font-medium"
+                  : "text-[var(--ink-3)] hover:text-[var(--ink-2)]"
               )}
             >
               {link.label}
@@ -78,56 +90,61 @@ export function Header() {
           ))}
         </nav>
 
-        {/* Acciones derecha */}
+        {/* ── Acciones ── */}
         <div className="flex items-center gap-2">
           <ModeToggle />
-          {/* Botón hamburguesa — solo mobile */}
+
+          {/* Hamburguesa */}
           <button
-            className="flex items-center justify-center rounded-lg p-1.5 transition-colors hover:bg-foreground/[0.06] md:hidden"
+            className="flex items-center justify-center rounded-md p-1.5 transition-colors hover:bg-foreground/[0.05] md:hidden"
             onClick={() => setMenuAbierto((v) => !v)}
             aria-label={menuAbierto ? "Cerrar menú" : "Abrir menú"}
             aria-expanded={menuAbierto}
           >
             {menuAbierto
-              ? <X className="size-5" style={{ color: "var(--ink)" }} />
+              ? <X    className="size-5" style={{ color: "var(--ink)" }} />
               : <Menu className="size-5" style={{ color: "var(--ink)" }} />
             }
           </button>
         </div>
       </div>
 
-      {/* Menú mobile desplegable */}
-      <AnimatePresence>
-        {menuAbierto && (
-          <motion.nav
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.15 }}
-            className="border-t px-6 py-3 md:hidden"
-            aria-label="Menú de navegación"
-            style={{ borderColor: "var(--rule)", background: "var(--paper)" }}
-          >
-            <ul className="flex flex-col gap-1">
-              {NAV_LINKS.map((link) => (
-                <li key={link.href}>
-                  <Link
-                    href={link.href}
-                    onClick={() => setMenuAbierto(false)}
-                    className={cn(
-                      "block rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
-                      "hover:bg-[var(--paper-2)]",
-                      pathname === link.href ? "text-[var(--ink)]" : "text-[var(--ink-2)]"
-                    )}
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </motion.nav>
-        )}
-      </AnimatePresence>
+      {/* ── Menú mobile ── */}
+      {menuAbierto && (
+        <nav
+          className="border-t px-6 pb-3 pt-2 md:hidden"
+          style={{ borderColor: "var(--rule)", background: "var(--paper)" }}
+        >
+          <ul className="flex flex-col gap-0.5">
+            {NAV_LINKS.map((link) => (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  onClick={() => setMenuAbierto(false)}
+                  className={cn(
+                    "block rounded-md px-3 py-2.5 text-sm transition-colors hover:bg-foreground/[0.04]",
+                    pathname === link.href
+                      ? "text-[var(--ink)] font-medium"
+                      : "text-[var(--ink-2)]"
+                  )}
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+            <li className="mt-2 border-t pt-2" style={{ borderColor: "var(--rule)" }}>
+              <Link
+                href="/chat"
+                onClick={() => setMenuAbierto(false)}
+                className="block rounded-md px-3 py-2.5 text-sm font-medium text-center transition-colors"
+                style={{ background: "var(--ink)", color: "var(--paper)" }}
+              >
+                Consultar
+              </Link>
+            </li>
+          </ul>
+        </nav>
+      )}
     </header>
   );
 }

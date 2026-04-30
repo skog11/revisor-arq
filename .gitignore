@@ -24,7 +24,22 @@ Thumbs.db
 .vscode/
 .idea/
 
-# Claude
+# Claude worktrees (generados automáticamente, no versionar)
+.claude/worktrees/
 .claude/projects/
 .claude/cache/
 *.jsonl
+
+# Corpus — archivos binarios y textos grandes (no versionar, solo estructura)
+corpus/**/*.pdf
+corpus/**/*.txt
+corpus/**/*.html
+corpus/**/*.json
+!corpus/manifiesto.json
+!corpus/ingest-state.json
+corpus/99_logs/
+corpus/00_control/
+
+# Scripts de ingesta masiva (no son parte del código fuente)
+ingestar_ddu_masiva.sh
+ingestar_normativa_masiva.sh

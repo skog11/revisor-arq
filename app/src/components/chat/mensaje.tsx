@@ -1,30 +1,90 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { HardHat, Scale, Microscope, AlertTriangle, ThumbsUp, ThumbsDown, FileDown, Copy, Check } from "lucide-react";
+import { useState } from "react";
+import { HardHat, Scale, Microscope, AlertTriangle, ThumbsUp, ThumbsDown, Download } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { FuentesPanel, type Fuente } from "./fuentes-panel";
-import { ModalExportarPDF } from "./modal-exportar-pdf";
-import type { CruceDetectado } from "@/lib/rag";
 
 export type ModoRespuesta = "arquitecto" | "abogado" | "profundo";
 
 export type { Fuente };
-export type { CruceDetectado };
 
 export interface MensajeData {
   id: string;
   rol: "usuario" | "asistente";
   contenido: string;
-  pregunta?: string;           // pregunta del usuario que originó esta respuesta
   fuentes?: Fuente[];
-  cruces?: CruceDetectado[];   // dominios regulatorios cruzados detectados
   streaming?: boolean;
   error?: boolean;
   modo?: ModoRespuesta;
   consultaId?: string; // ID de la consulta guardada en Supabase para feedback
+}
+
+// ─── Descarga PDF (modo profundo) ────────────────────────────────────────────
+
+function descargarInformePDF(contenido: string) {
+  // Convierte markdown básico a HTML para el informe
+  const mdToHtml = (md: string) =>
+    md
+      .replace(/^## (.+)$/gm, "<h2>$1</h2>")
+      .replace(/^### (.+)$/gm, "<h3>$1</h3>")
+      .replace(/^#### (.+)$/gm, "<h4>$1</h4>")
+      .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+      .replace(/^> (.+)$/gm, "<blockquote>$1</blockquote>")
+      .replace(/^[-–•] (.+)$/gm, "<li>$1</li>")
+      .replace(/(<li>.*<\/li>\n?)+/g, (m) => `<ul>${m}</ul>`)
+      .replace(/\n{2,}/g, "</p><p>")
+      .replace(/^(?!<[hublq])(.+)$/gm, (m) => (m.trim() ? m : ""))
+      .replace(/---/g, "<hr/>")
+      .trim();
+
+  const fecha = new Date().toLocaleDateString("es-CL", {
+    day: "2-digit", month: "long", year: "numeric",
+  });
+
+  const html = `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Informe REVISOR ARQ — ${fecha}</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+    body { font-family: Inter, sans-serif; font-size: 13px; color: #19160f;
+           max-width: 720px; margin: 0 auto; padding: 48px 40px; line-height: 1.65; }
+    h1 { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+    .meta { font-size: 11px; color: #9a907e; margin-bottom: 32px; }
+    h2 { font-size: 15px; font-weight: 600; margin-top: 28px; margin-bottom: 8px;
+         padding-bottom: 4px; border-bottom: 1px solid #e5e0d6; }
+    h3 { font-size: 13px; font-weight: 600; margin-top: 18px; margin-bottom: 6px; }
+    h4 { font-size: 12px; font-weight: 600; margin-top: 14px; color: #6a6358; }
+    p { margin: 8px 0; }
+    ul { margin: 6px 0; padding-left: 20px; }
+    li { margin: 3px 0; }
+    blockquote { border-left: 3px solid #c4bbb0; margin: 12px 0; padding: 4px 14px;
+                 color: #6a6358; font-style: italic; }
+    strong { font-weight: 600; }
+    hr { border: none; border-top: 1px solid #e5e0d6; margin: 20px 0; }
+    .disclaimer { margin-top: 32px; padding: 12px 16px; background: #f6f1e7;
+                  border: 1px solid #e5e0d6; border-radius: 6px;
+                  font-size: 11px; color: #9a907e; }
+    @media print { body { padding: 24px; } }
+  </style>
+</head>
+<body>
+  <h1>Informe de análisis normativo</h1>
+  <p class="meta">REVISOR ARQ · ${fecha} · Modo Análisis Profundo</p>
+  <p>${mdToHtml(contenido)}</p>
+</body>
+</html>`;
+
+  const ventana = window.open("", "_blank");
+  if (!ventana) return;
+  ventana.document.write(html);
+  ventana.document.close();
+  ventana.focus();
+  setTimeout(() => ventana.print(), 400);
 }
 
 // ─── Feedback ─────────────────────────────────────────────────────────────────
@@ -103,7 +163,7 @@ interface ModoCfg {
 }
 
 const MODO_CFG: Record<ModoRespuesta, ModoCfg> = {
-  arquitecto: { Icon: HardHat,    label: "Arquitecto", color: "var(--ra-blue)" },
+  arquitecto: { Icon: HardHat,    label: "Arquitecto", color: "rgb(59,130,246)" },
   abogado:    { Icon: Scale,      label: "Abogado",    color: "var(--terracotta)" },
   profundo:   { Icon: Microscope, label: "Profundo",   color: "var(--ra-green)" },
 };
@@ -127,142 +187,9 @@ function MensajeUsuario({ contenido }: { contenido: string }) {
   );
 }
 
-// ─── Chips de cruce regulatorio ──────────────────────────────────────────────
-
-function CrucesAlert({ cruces }: { cruces: CruceDetectado[] }) {
-  const [expandido, setExpandido] = useState(false);
-
-  if (!cruces.length) return null;
-
-  return (
-    <div
-      className="mb-4 rounded-lg overflow-hidden"
-      style={{
-        border: "1px solid color-mix(in srgb, var(--ra-warn, #c98a1f) 35%, transparent)",
-        background: "var(--ra-warn-soft, rgba(201,138,31,0.07))",
-      }}
-    >
-      {/* Fila de chips siempre visible */}
-      <button
-        onClick={() => setExpandido((v) => !v)}
-        className="w-full flex items-center gap-2 px-3 py-2 text-left"
-        aria-expanded={expandido}
-      >
-        <span className="text-[10px]" aria-hidden>⚠️</span>
-        <span
-          className="text-[10px] font-medium uppercase tracking-wider flex-1"
-          style={{
-            fontFamily: "var(--font-jetbrains-mono)",
-            color: "var(--ra-warn, #c98a1f)",
-          }}
-        >
-          Cruce(s) regulatorio(s) detectado(s)
-        </span>
-        <div className="flex items-center gap-1.5 flex-wrap">
-          {cruces.map((c) => (
-            <span
-              key={c.area}
-              className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium"
-              style={{
-                background: "color-mix(in srgb, var(--ra-warn, #c98a1f) 15%, transparent)",
-                color: "var(--ra-warn, #c98a1f)",
-                fontFamily: "var(--font-jetbrains-mono)",
-              }}
-            >
-              <span aria-hidden>{c.emoji}</span>
-              {c.area}
-            </span>
-          ))}
-        </div>
-        <span
-          className="text-[10px] ml-1 transition-transform duration-200 shrink-0"
-          style={{
-            color: "var(--ink-4, var(--ink-3))",
-            display: "inline-block",
-            transform: expandido ? "rotate(180deg)" : "rotate(0deg)",
-          }}
-          aria-hidden
-        >
-          ▾
-        </span>
-      </button>
-
-      {/* Detalle expandible */}
-      {expandido && (
-        <div
-          className="px-3 pb-3 space-y-2 border-t"
-          style={{ borderColor: "color-mix(in srgb, var(--ra-warn, #c98a1f) 20%, transparent)" }}
-        >
-          {cruces.map((c) => (
-            <div key={c.area} className="pt-2">
-              <p
-                className="text-[11px] font-medium mb-0.5"
-                style={{ color: "var(--ink-2)" }}
-              >
-                {c.emoji} {c.area}
-              </p>
-              <p className="text-[11px]" style={{ color: "var(--ink-3)" }}>
-                <span style={{ color: "var(--ink-3)" }}>Organismo: </span>
-                <span style={{ color: "var(--ink-2)" }}>{c.organismo}</span>
-              </p>
-              <p className="text-[11px]" style={{ color: "var(--ink-3)" }}>
-                <span>Marco probable: </span>
-                <span style={{ color: "var(--ink-2)" }}>{c.norma_probable}</span>
-              </p>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-// ─── Botón de copiar ─────────────────────────────────────────────────────────
-
-function CopyButton({ texto }: { texto: string }) {
-  const [copiado, setCopiado] = useState(false);
-
-  const copiar = useCallback(async () => {
-    try {
-      await navigator.clipboard.writeText(texto);
-      setCopiado(true);
-      setTimeout(() => setCopiado(false), 2000);
-    } catch {
-      // Fallback para entornos sin API clipboard
-      const ta = document.createElement("textarea");
-      ta.value = texto;
-      ta.style.position = "fixed";
-      ta.style.opacity = "0";
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand("copy");
-      document.body.removeChild(ta);
-      setCopiado(true);
-      setTimeout(() => setCopiado(false), 2000);
-    }
-  }, [texto]);
-
-  return (
-    <button
-      onClick={copiar}
-      className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] transition-all hover:bg-foreground/[0.06]"
-      style={{
-        color: copiado ? "var(--ra-green)" : "var(--ink-4, var(--ink-3))",
-        fontFamily: "var(--font-jetbrains-mono)",
-        border: "1px solid var(--rule)",
-      }}
-      title={copiado ? "¡Copiado!" : "Copiar respuesta"}
-    >
-      {copiado ? <Check className="size-3" /> : <Copy className="size-3" />}
-      {copiado ? "¡Copiado!" : "Copiar"}
-    </button>
-  );
-}
-
 // ─── Mensaje asistente ────────────────────────────────────────────────────────
 
 function MensajeAsistente({ mensaje }: { mensaje: MensajeData }) {
-  const [modalPDFAbierto, setModalPDFAbierto] = useState(false);
   const cfg = mensaje.modo ? MODO_CFG[mensaje.modo] : null;
   const accentColor = cfg?.color ?? "var(--ink-4, var(--ink-3))";
 
@@ -281,7 +208,7 @@ function MensajeAsistente({ mensaje }: { mensaje: MensajeData }) {
           <div className="flex items-center gap-1.5 mb-3.5">
             <cfg.Icon className="size-3" style={{ color: accentColor }} />
             <span
-              className="text-[10px] font-medium uppercase"
+              className="text-[9px] font-medium uppercase"
               style={{
                 color: accentColor,
                 fontFamily: "var(--font-jetbrains-mono)",
@@ -296,15 +223,14 @@ function MensajeAsistente({ mensaje }: { mensaje: MensajeData }) {
         {/* Estado de error */}
         {mensaje.error ? (
           <div
-            role="alert"
             className="flex items-start gap-2.5 rounded-lg px-3.5 py-3 text-sm"
             style={{
-              background: "var(--terracotta-soft)",
-              border: "1px solid color-mix(in srgb, var(--terracotta) 25%, transparent)",
-              color: "var(--terracotta)",
+              background: "rgba(239,68,68,0.05)",
+              border: "1px solid rgba(239,68,68,0.15)",
+              color: "rgb(220,50,50)",
             }}
           >
-            <AlertTriangle className="size-4 shrink-0 mt-0.5" aria-hidden="true" />
+            <AlertTriangle className="size-4 shrink-0 mt-0.5" />
             <div className="leading-relaxed space-y-1">
               <p>{mensaje.contenido || "Ocurrió un error al generar la respuesta."}</p>
               <p className="text-xs opacity-70">Si el problema persiste, intente de nuevo en unos segundos.</p>
@@ -312,29 +238,24 @@ function MensajeAsistente({ mensaje }: { mensaje: MensajeData }) {
           </div>
         ) : (
           <>
-            {/* Alertas de cruce regulatorio */}
-            {mensaje.cruces && mensaje.cruces.length > 0 && (
-              <CrucesAlert cruces={mensaje.cruces} />
-            )}
-
             {/* Markdown */}
             <div
               className="
                 prose prose-sm dark:prose-invert max-w-none
                 prose-headings:font-semibold prose-headings:tracking-tight
-                prose-h2:text-base prose-h2:mt-7 prose-h2:mb-3
-                prose-h3:text-[13px] prose-h3:mt-5 prose-h3:mb-2
-                prose-p:leading-[1.75] prose-p:my-3
-                prose-li:leading-[1.7] prose-li:my-1
-                prose-ul:my-3 prose-ol:my-3 prose-ul:space-y-0.5 prose-ol:space-y-0.5
+                prose-h2:text-base prose-h2:mt-5 prose-h2:mb-2
+                prose-h3:text-[13px] prose-h3:mt-4 prose-h3:mb-1.5
+                prose-p:leading-relaxed prose-p:my-2
+                prose-li:leading-relaxed prose-li:my-0.5
+                prose-ul:my-2 prose-ol:my-2
                 prose-blockquote:border-l-2 prose-blockquote:pl-4
                 prose-blockquote:italic prose-blockquote:text-sm
                 prose-blockquote:not-italic
                 prose-code:text-[11px] prose-code:bg-foreground/5
                 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded
                 prose-code:font-mono prose-code:before:content-none prose-code:after:content-none
-                prose-strong:font-bold prose-strong:text-foreground
-                prose-hr:border-foreground/10 prose-hr:my-6
+                prose-strong:font-semibold
+                prose-hr:border-foreground/10 prose-hr:my-4
                 prose-table:text-xs
                 prose-th:font-medium prose-th:py-2
                 prose-td:py-1.5
@@ -363,62 +284,30 @@ function MensajeAsistente({ mensaje }: { mensaje: MensajeData }) {
                 />
               )}
 
-            {/* Feedback + Acciones */}
+            {/* Descarga PDF — solo modo profundo */}
+            {!mensaje.streaming && !mensaje.error && mensaje.modo === "profundo" && mensaje.contenido && (
+              <button
+                onClick={() => descargarInformePDF(mensaje.contenido)}
+                className="flex items-center gap-1.5 mt-3 rounded-md px-2.5 py-1 text-[11px] transition-colors hover:bg-foreground/[0.06]"
+                style={{
+                  border: "1px solid var(--rule)",
+                  color: "var(--ink-4)",
+                  background: "transparent",
+                }}
+                title="Descargar informe como PDF"
+              >
+                <Download className="size-3" />
+                Descargar informe PDF
+              </button>
+            )}
+
+            {/* Feedback */}
             {!mensaje.streaming && !mensaje.error && (
-              <div className="flex items-center justify-between mt-3">
-                <FeedbackBar consultaId={mensaje.consultaId} />
-                <div className="flex items-center gap-1.5">
-                  {/* Botón copiar */}
-                  {mensaje.contenido.length > 10 && (
-                    <CopyButton texto={mensaje.contenido} />
-                  )}
-                  {/* Botón PDF — solo cuando hay contenido suficiente */}
-                  {mensaje.contenido.length > 100 && (
-                    <button
-                      onClick={() => setModalPDFAbierto(true)}
-                      className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] transition-colors hover:bg-foreground/[0.06]"
-                      style={{
-                        color: "var(--ink-4, var(--ink-3))",
-                        fontFamily: "var(--font-jetbrains-mono)",
-                        border: "1px solid var(--rule)",
-                      }}
-                      title="Exportar como informe PDF"
-                    >
-                      <FileDown className="size-3" />
-                      PDF
-                    </button>
-                  )}
-                </div>
-              </div>
+              <FeedbackBar consultaId={mensaje.consultaId} />
             )}
           </>
         )}
       </div>
-
-      {/* Modal PDF */}
-      {modalPDFAbierto && (
-        <ModalExportarPDF
-          datos={{
-            pregunta: mensaje.pregunta ?? "",
-            modo: mensaje.modo ?? "arquitecto",
-            modoLabel: cfg?.label ?? "Arquitecto",
-            contenido: mensaje.contenido,
-            fuentes: mensaje.fuentes?.map((f) => ({
-              norma: f.norma,
-              articulo: f.articulo,
-              norma_titulo: f.norma_titulo,
-              url_fuente: f.url_fuente,
-            })),
-            cruces: mensaje.cruces,
-            fecha: new Date().toLocaleDateString("es-CL", {
-              day: "numeric",
-              month: "long",
-              year: "numeric",
-            }),
-          }}
-          onCerrar={() => setModalPDFAbierto(false)}
-        />
-      )}
     </div>
   );
 }

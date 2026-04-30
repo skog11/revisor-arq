@@ -1,40 +1,139 @@
-# REVISOR ARQ — Contexto del proyecto
+# REVISOR ARQ
+Chat RAG con citas verificables sobre normativa chilena de urbanismo/construcción para arquitectos y abogados.
+**Estado:** MVP funcional · corpus incompleto · deploy pendiente → ver `PROGRESO.md` y `PLAN-IMPLEMENTACION.md`
 
-Aplicación web que permite a arquitectos y abogados hacer consultas sobre normativa chilena de urbanismo y construcción. MVP basado en LGUC, OGUC y DDU normales.
+---
 
 ## Stack
-- Next.js 14 (App Router) + TypeScript + Tailwind + shadcn/ui + Framer Motion
-- Supabase (Postgres con pgvector) para datos
-- Google Gemini 2.5 Flash (gratis) para generación
-- Voyage AI para embeddings
-- Vercel para deploy
+| Capa | Tech |
+|---|---|
+| Frontend | Next.js 16 (App Router) + TypeScript + Tailwind + shadcn/ui + Framer Motion |
+| BD | Supabase Postgres + pgvector HNSW (cosine, 1024 dims) |
+| Embeddings | Voyage AI `voyage-law-2` |
+| Generación | Gemini 2.5 Flash (streaming SSE) |
+| Deploy | Vercel (workflow en `.github/workflows/deploy.yml`) |
 
-## Principios no negociables
-- Toda respuesta al usuario final DEBE incluir citas verificables (tipo norma + artículo + fragmento literal).
-- NUNCA inventar normas, artículos o parámetros.
-- Si no hay respaldo suficiente en los chunks recuperados, declarar explícitamente la falta de respaldo.
-- Disclaimer obligatorio al pie de cada respuesta.
-- Filenames: kebab-case, en español sin tildes.
-- UI en español chileno neutro.
-- Commits atómicos y mensajes en español.
+---
 
-## Dos modos de respuesta
-- **Arquitecto**: parámetros aplicados, ejemplos, referencia al artículo.
-- **Abogado**: texto literal, citas íntegras, contexto normativo.
+## Arquitectura RAG
+```
+query → Voyage embed → Supabase match_chunks RPC (top-8, cosine) → Gemini 2.5 Flash → respuesta con citas
+```
+**Libs clave en `app/src/lib/`:**
+- `voyage.ts` — embed queries
+- `retriever.ts` — llama `match_chunks` en Supabase
+- `clasificador.ts` — detecta tipo proyecto + dominios normativos
+- `grafo.ts` — cruces entre normas (LGUC ↔ OGUC ↔ DDU)
+- `sintetizador.ts` — construye system prompt por modo
+- `rag.ts` — orquesta todo el flujo
+- `validador.ts` — guarda de calidad de respuesta
+- `rate-limit.ts` — throttle por IP
 
-## Subagentes disponibles
-Ver .claude/agents/. Siempre invoca legal-citation-verifier antes de mostrar respuestas al usuario. Invoca ui-design-reviewer al crear componentes. Invoca security-auditor antes de commits.
+---
 
-## Agent teams disponibles
-- quality-gate: antes de merge a main.
-- release-gate: antes de deploy.
-- ingesta-pipeline: al cargar nuevas normas.
+## BD Supabase (tablas principales)
+- **`normas`**: id, tipo, numero, titulo, vigente, dominio, jerarquia_norm, etapas_proyecto[], url_fuente
+- **`chunks`**: id, norma_id, texto, embedding(1024), tokens, orden, metadatos JSONB
+- **`contactos`**: id, nombre, email, tipo_usuario, mensaje
+- **RPC `match_chunks(query_embedding, threshold, count, norma_ids[])`** — búsqueda vectorial
 
-## Skills disponibles en el proyecto
-- rag-legal-chile: reglas de respuesta legal.
-- corpus-normativo-chile: fuentes y parsers.
-- citacion-juridica-chilena: formato de citas.
-- mvp-legal-launch: checklist legal.
+---
 
-## Instrucción para sesiones futuras
-Al iniciar cualquier sesión de Claude Code en este proyecto, lee este archivo completo antes de actuar.
+## Rutas de la app
+| Ruta | Tipo | Notas |
+|---|---|---|
+| `/` | público | Landing |
+| `/chat` | público | Chat RAG (modos arquitecto/abogado/profundo) |
+| `/corpus` | 🔒 admin | Panel de normas cargadas |
+| `/normativa` | 🔒 admin | Gestión normativa |
+| `/pricing` | público | Preparado para Stripe |
+| `/contacto` | público | Formulario |
+| `/api/chat` | POST | Streaming SSE |
+| `/api/corpus/*` | 🔒 admin | ingestar, eliminar, status, vigencia, extraer-texto |
+| `/api/feedback` | POST | thumbs up/down |
+| `/api/stats` | GET | métricas |
+| `/api/healthz` | GET | health check |
+| `/api/admin/login` | POST | cookie HTTP-only `admin_session` |
+
+**Middleware protege:** `/normativa`, `/corpus`, `/api/corpus` con cookie `admin_session = ADMIN_SECRET`
+
+---
+
+## Modos de respuesta
+- **arquitecto** — parámetros aplicados, ejemplos numéricos, referencia al artículo
+- **abogado** — texto literal íntegro, citas completas, contexto normativo
+- **profundo** — análisis de cruces normativos, jerarquía, alertas de conflicto
+
+---
+
+## Reglas no negociables
+1. Toda respuesta → cita verificable: `tipo norma + artículo + fragmento literal`
+2. Sin respaldo en chunks → declarar explícitamente la falta de respaldo
+3. Nunca inventar normas, artículos ni parámetros numéricos
+4. Disclaimer obligatorio al pie (ya en `sintetizador.ts`)
+5. Filenames: kebab-case sin tildes · UI: español chileno neutro · Commits: español, atómicos
+
+---
+
+## Corpus — estado actual
+| Norma | Supabase | Local |
+|---|---|---|
+| LGUC DFL-458 | ✅ ~280 chunks | `corpus/lguc/LGUC.txt` |
+| OGUC DS-47 | ⚠️ parcial | `corpus/oguc/OGUC.txt` |
+| DDU-527→541 (14) | ✅ ~500 chunks | `corpus/ddu/*.txt` |
+| DDU-000→526 (303) | ❌ pendiente | `corpus/12_Tecnica/DDU_Circulares/*.pdf` |
+| DS-60 / DS-61 | ❌ pendiente | `corpus/12_Tecnica/DS_6*/fuente.txt` |
+| Normativa cat.01–11 | ❌ pendiente | `corpus/0X_*/*/fuente.txt` |
+
+Scripts de ingesta masiva en raíz: `ingestar_ddu_masiva.sh` · `ingestar_normativa_masiva.sh`
+
+---
+
+## Variables de entorno (`app/.env.local`)
+```
+NEXT_PUBLIC_SUPABASE_URL
+NEXT_PUBLIC_SUPABASE_ANON_KEY
+SUPABASE_SERVICE_ROLE_KEY
+GEMINI_API_KEY
+VOYAGE_API_KEY
+ADMIN_SECRET
+NEXT_PUBLIC_APP_URL
+```
+
+---
+
+## Comandos frecuentes
+```bash
+cd app && npm run dev              # desarrollo
+cd app && npm run build            # verificar build
+cd app && npm run corpus:ingest    # ingestar normas pendientes
+cd app && npm run eval             # evaluaciones (meta: 7/7)
+bash ingestar_ddu_masiva.sh        # ingesta masiva DDUs (desde raíz)
+bash ingestar_normativa_masiva.sh  # ingesta cat. 01–11 (desde raíz)
+```
+
+---
+
+## Agentes — cuándo invocar
+| Agente | Cuándo |
+|---|---|
+| `legal-citation-verifier` | **SIEMPRE** antes de mostrar respuesta al usuario |
+| `ui-design-reviewer` | Al crear/modificar componentes UI |
+| `security-auditor` | Antes de cada commit con cambios en API o auth |
+| `corpus-ingestion-validator` | Tras ingestar nuevas normas |
+| `prompt-engineer` | Al iterar prompts de sintetizador |
+| `legal-domain-expert` | Dudas sobre jerarquía normativa chilena |
+
+**Teams:** `quality-gate` (antes de merge) · `release-gate` (antes de deploy) · `ingesta-pipeline` (al cargar normas)
+
+**Skills:** `rag-legal-chile` · `corpus-normativo-chile` · `citacion-juridica-chilena` · `mvp-legal-launch`
+
+---
+
+## Prioridades actuales
+1. Git: limpiar 7 worktrees colgantes + commit master
+2. Corregir rutas en `corpus/manifiesto.json` (apuntan a `OBSIDIAN VAULT`)
+3. `npm run build` — verificar que compila
+4. Ingestar OGUC completa + DDUs históricos + normativa cat.01–11
+5. Deploy Vercel + eval 7/7
+→ Detalle completo en `PROGRESO.md`

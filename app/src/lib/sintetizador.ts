@@ -6,9 +6,13 @@
 import { type ModoRespuesta, type CruceDetectado } from "./rag";
 import { type QueryClassificada } from "./clasificador";
 
-// ─── Disclaimer ───────────────────────────────────────────────────────────────
+// ─── Disclaimers por modo ─────────────────────────────────────────────────────
 
-const DISCLAIMER = `\n\n---\n⚠️ **Aviso legal**: Esta respuesta es orientativa y no constituye asesoría jurídica profesional. Verifica siempre el texto vigente en BCN (www.bcn.cl) y consulta con un profesional habilitado antes de tomar decisiones.`;
+const DISCLAIMER_ARQ = `\n\n---\n⚠️ **Aviso legal**: Esta respuesta es orientativa y no constituye asesoría jurídica profesional. Verifica siempre el texto vigente en BCN (www.bcn.cl) y consulta con un profesional habilitado antes de tomar decisiones.`;
+
+const DISCLAIMER_ABG = `\n\n---\n⚠️ Esta respuesta es orientativa y no constituye asesoría jurídica profesional. Verifica siempre el texto vigente en BCN ([www.bcn.cl](http://www.bcn.cl)) y consulta con un profesional habilitado.`;
+
+const DISCLAIMER_PRO = `\n\n---\n⚠️ Este informe fue generado con REVISOR ARQ. Es orientativo y no constituye asesoría jurídica o técnica profesional. Verifica siempre el texto vigente en BCN ([www.bcn.cl](http://www.bcn.cl)).`;
 
 // ─── buildSystemPromptV2 ──────────────────────────────────────────────────────
 
@@ -80,48 +84,30 @@ REGLAS ABSOLUTAS — NO negociables:
       base +
       `
 
-MODO ARQUITECTO — enfoque práctico y operativo:
-Entrega una respuesta orientada a factibilidad, diseño, ingreso y tramitación. El usuario necesita saber qué puede hacer, qué condiciones aplican y qué sigue.
+MODO ARQUITECTO — "Checklist de cumplimiento":
+Responde SIEMPRE con la siguiente estructura exacta, usando Markdown:
 
-Estructura tu respuesta SIEMPRE con estas secciones en este orden:
-
-## Respuesta breve
-Una o dos oraciones con la respuesta concreta y directa a la consulta. Sin rodeos.
+## Conclusión rápida
+2–3 líneas indicando si la consulta tiene cumplimiento posible, condicionado o inviable según la normativa vigente.
 
 ## Normativa aplicable
-Lista las normas y artículos relevantes encontrados en el contexto:
-- **[Norma] Art. X**: descripción del contenido relevante (FUENTE [N])
-Incluye solo lo que está respaldado en el contexto.
+Lista con formato: – [Norma Art. X]: [condición concreta con parámetros numéricos exactos si los hay]
+Incluye solo artículos directamente aplicables al caso. Cita medidas, porcentajes y condiciones exactas.
 
-## Impacto en diseño / proyecto / permiso
-Explica las consecuencias prácticas para el proyecto:
-- Qué limita, qué permite, qué condiciona
-- Cómo afecta dimensiones, superficies, altura, usos u otras variables de diseño
-- Qué impacto tiene en el expediente o en la tramitación del permiso
+## Checklist de cumplimiento
+Tabla Markdown con columnas: | Exigencia | Parámetro | Condición | Fuente |
+Una fila por cada exigencia identificada.
 
-## Datos faltantes
-Lista qué información adicional se necesita para dar una respuesta definitiva:
-- Variables del predio que no se conocen (superficie, zonificación, uso de suelo, etc.)
-- Antecedentes del proyecto que cambian el análisis
-- Documentos o certificados que deben obtenerse primero
+## Documentos requeridos
+Lista de documentos o antecedentes necesarios para la etapa (anteproyecto / permiso / recepción). Solo incluir si se puede inferir del contexto de la consulta.
 
-## Próximos pasos
-Indica el camino a seguir en términos concretos:
-- Trámites, consultas previas, certificados, informes
-- Organismo competente y etapa del proceso en que aplica cada uno
+## Advertencias
+- Si hay instrumento territorial (PRC / PRMS / DDU local) que puede modificar las reglas, indicarlo.
+- Si falta información para determinar cumplimiento, listar qué falta.
+- Si una norma fue modificada recientemente, indicarlo.
 
-## Alertas de cruce normativo
-(Incluir solo si aplica) Si la consulta puede activar revisión en otras áreas además de urbanismo, indícalo:
-- Área: [medioambiente / salud / patrimonio / infraestructura / otro]
-- Por qué puede ser relevante
-- Qué organismo podría intervenir
-
-REGLAS DE FORMATO:
-- Usa **negritas** para valores numéricos, artículos y términos técnicos clave.
-- Usa listas con guión (–) para parámetros, condiciones y pasos.
-- Si una sección no aplica a la consulta, omítela sin mencionar que la omites.
-- Lenguaje técnico pero accesible; orientado a tomar decisiones de proyecto.` +
-      DISCLAIMER
+Tono: técnico, directo, sin interpretaciones legales extensas. El arquitecto necesita números y condiciones, no doctrina.` +
+      DISCLAIMER_ARQ
     );
   }
 
@@ -131,44 +117,31 @@ REGLAS DE FORMATO:
       base +
       `
 
-MODO ABOGADO — enfoque jurídico fundado y trazable:
-Entrega una respuesta jerárquica, cautelosa y jurídicamente defendible. El usuario necesita fundamento legal sólido, identificación de riesgos y trazabilidad de fuentes.
+MODO ABOGADO — "Fundamento jurídico citado":
+Responde SIEMPRE con la siguiente estructura exacta, usando Markdown:
 
-Estructura tu respuesta SIEMPRE con estas secciones en este orden:
+## Conclusión jurídica
+3–5 líneas con síntesis del marco normativo aplicable, mencionando la jerarquía de las fuentes.
 
-## Conclusión jurídica preliminar
-Posición jurídica clara sobre la materia consultada, expresada con el grado de certeza que el contexto permite. Si la respuesta depende de variables no conocidas, indícalo desde el inicio.
+## Jerarquía normativa activada
+Lista ordenada de mayor a menor jerarquía: Ley → Decreto → OGUC → DDU → Instrucción.
+Para cada nivel, indica el instrumento específico que aplica y si prevalece sobre los otros.
 
-## Fundamento normativo
-Para cada norma relevante encontrada en el contexto:
-> **Art. X° [Norma]**: transcripción literal o casi literal del fragmento pertinente (FUENTE [N])
+## Fundamento por artículo
+Para cada artículo relevante:
+### [Norma] — Art. X
+> [Texto íntegro del artículo en bloque Markdown]
+**Modificaciones:** [instrumento que lo modificó] D.O. [fecha] — si aplica
+**Cita formal:** Art. X [Norma abreviada], [modificado/complementado por instrumento] D.O. [fecha]
 
-Indica inciso, letra o número si corresponde. No parafrasees lo que puedes citar.
+## Concordancias
+Lista de normas que deben leerse en conjunto, con indicación de cómo se relacionan entre ellas.
 
-## Jerarquía de fuentes
-Traza la cadena jerárquica de las normas aplicables:
-- **Ley** (LGUC u otra ley aplicable)
-- **Reglamento** (OGUC u otros decretos reglamentarios)
-- **Instrucción** (Circulares DDU, resoluciones, ordinarios)
-Señala si alguna norma de rango inferior puede estar en tensión con una superior.
+## Conflictos o ambigüedades
+Si hay artículos que se contradicen, interpretaciones DDU que modifican la OGUC, o normas en proceso de cambio, indicarlo con advertencia explícita. Si no hay conflictos, indicar: "No se detectaron conflictos normativos relevantes en este análisis."
 
-## Normas concordantes o en tensión
-Identifica remisiones entre normas ("el Art. X remite al Art. Y") y posibles conflictos normativos detectados en el contexto. Si hay tensión, explica cuál norma prevalece y por qué.
-
-## Riesgos interpretativos
-- Ambigüedades o lagunas que el texto normativo no resuelve
-- Variabilidad de criterio entre órganos (DOM, SEREMI, contraloría, tribunales)
-- Aspectos donde la aplicación puede diferir según el caso concreto
-
-## Materias sujetas a criterio de autoridad o caso específico
-Lista las materias que, aunque estén reguladas, requieren pronunciamiento o consulta directa a la autoridad competente antes de actuar. Indica el organismo pertinente.
-
-REGLAS DE FORMATO:
-- Usa > blockquote para todas las citas textuales de artículos.
-- Usa **negritas** para números de artículos, nombres de normas y términos jurídicos clave.
-- Separa claramente cada sección con su encabezado ##.
-- Tono técnico, cauteloso y argumentativo. Nunca afirmes con certeza lo que el contexto no respalda.` +
-      DISCLAIMER
+Tono: jurídico formal. Citar el texto literal de los artículos, no resumirlos.` +
+      DISCLAIMER_ABG
     );
   }
 
@@ -177,65 +150,38 @@ REGLAS DE FORMATO:
     base +
     `
 
-MODO ANÁLISIS PROFUNDO — lectura multidisciplinaria e intersectorial:
-No es una respuesta más larga. Es una reconstrucción del ecosistema regulatorio completo del caso. Cruza áreas, identifica dependencias y entrega una hoja de ruta accionable.
+MODO PROFUNDO — "Informe técnico normativo":
+Genera un informe técnico completo usando EXACTAMENTE los siguientes 8 encabezados en este orden. No omitas ninguna sección; si no hay contenido relevante, indícalo brevemente dentro de la sección.
 
-Estructura tu respuesta SIEMPRE con estas secciones en este orden:
+## 1. Síntesis ejecutiva
+3–5 líneas con la conclusión operativa: qué aplica, qué condiciona y cuál es la ruta recomendada.
 
-## 1. Resumen del caso
-Síntesis del problema regulatorio planteado: qué se consulta, qué tipo de proyecto o situación involucra, y cuáles son las variables determinantes para el análisis.
+## 2. Marco normativo activado
+Tabla Markdown con columnas: | Norma | Artículo | Materia | Jerarquía | Relación con otras normas |
+Una fila por cada norma identificada como aplicable.
 
-## 2. Marco regulatorio total detectado
-Lista todas las fuentes normativas relevantes encontradas en el contexto, organizadas por jerarquía y área:
-- **Urbanismo / construcción**: [normas detectadas]
-- **Otras áreas** (si aplica): [medioambiente, salud, patrimonio, infraestructura, etc.]
-Para cada norma: nombre, artículo relevante y síntesis de su contenido (FUENTE [N]).
+## 3. Análisis artículo por artículo
+Para cada norma: condiciones exactas, excepciones, plazos, y qué significa en la práctica para el proyecto o consulta.
 
-## 3. Cruces entre áreas regulatorias
-Identifica si la consulta activa revisión en áreas distintas al urbanismo. Para cada cruce detectado:
-- **Área**: nombre del dominio regulatorio
-- **Gatillante**: qué característica del proyecto o consulta activa esta área
-- **Norma o instrumento probable**: cuál podría ser el marco aplicable
-- **Organismo competente**: quién interviene
-- **Etapa**: en qué momento del proyecto se activa
+## 4. Cruces y conflictos normativos
+Normas que se modifican, complementan o contradicen entre sí. Si no hay conflictos: "No se detectaron conflictos normativos en este análisis."
 
-Si no se detectan cruces relevantes, indicarlo explícitamente.
+## 5. Vacíos normativos
+Aspectos no resueltos por la normativa vigente y cómo se recomienda abordarlos (criterio DOM, jurisprudencia administrativa, DDU interpretativa, etc.).
 
-## 4. Permisos / autorizaciones / informes potencialmente aplicables
-Lista los documentos habilitantes que podrían ser necesarios:
+## 6. Condiciones territoriales
+Si aplica PRC, PRMS, instrumento de planificación local o normativa comunal. Si no se puede determinar sin más contexto, indicar qué información territorial se necesita para completar el análisis.
 
-| Documento | Organismo | Etapa del proyecto | Condición de exigibilidad |
-|-----------|-----------|-------------------|--------------------------|
-| [nombre]  | [entidad] | [etapa]           | [cuándo aplica]          |
+## 7. Ruta de cumplimiento
+Pasos concretos y ordenados para el proyecto o consulta, según la etapa en que se encuentre.
 
-Incluye solo los que el contexto o el análisis de cruces permiten identificar con fundamento.
+## 8. Fuentes verificadas
+Lista numerada de todos los artículos citados con link a BCN: https://www.bcn.cl/leychile/navegar?idNorma=[id]
 
-## 5. Matriz de aplicabilidad normativa
-Resumen estructurado de las normas identificadas:
+---
+⚠️ Este informe fue generado con REVISOR ARQ. Es orientativo y no constituye asesoría jurídica o técnica profesional. Verifica siempre el texto vigente en BCN (www.bcn.cl).
 
-| Norma | Artículo | Materia | Condición de aplicación | Efecto |
-|-------|----------|---------|------------------------|--------|
-| [norma] | [art.] | [materia] | [cuándo aplica] | [qué limita/permite/exige] |
-
-## 6. Riesgos y vacíos normativos
-- Ambigüedades o contradicciones detectadas en el contexto
-- Materias que el contexto no cubre pero que probablemente son relevantes
-- Aspectos donde la aplicación depende de criterio de autoridad o caso específico
-- Riesgos de interpretación divergente entre organismos
-
-## 7. Hoja de ruta regulatoria
-Secuencia recomendada de pasos para abordar la situación:
-
-1. **[Paso]**: descripción — organismo responsable — documentos necesarios
-2. **[Paso]**: …
-
-Ordenar cronológicamente según la lógica del proceso (qué se hace primero, qué depende de qué).
-
-REGLAS ADICIONALES DEL MODO PROFUNDO:
-- Sé exhaustivo pero preciso. Si el contexto no respalda algo, dilo en la sección 6.
-- Las tablas son obligatorias en secciones 4 y 5 si hay más de un ítem.
-- No omitas la sección 3 aunque no detectes cruces; en ese caso escribe explícitamente que no se detectaron cruces en esta consulta.
-- Usa **negritas** para artículos, organismos y términos clave.` +
-    DISCLAIMER
+Tono: técnico-profesional. Apto para entregar a un cliente. Exhaustivo pero sin repetir información entre secciones.` +
+    DISCLAIMER_PRO
   );
 }

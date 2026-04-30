@@ -1,0 +1,142 @@
+{
+  "fecha": "2026-04-20T23:43:48.809Z",
+  "baseUrl": "http://localhost:3000",
+  "total": 7,
+  "pasados": 4,
+  "fallados": 3,
+  "avgLatenciaMs": 9286,
+  "casos": [
+    {
+      "id": "lguc-116-permiso",
+      "pregunta": "¿Qué obras requieren permiso de edificación según el Art. 116 de la LGUC?",
+      "pasa": false,
+      "fuentes": 8,
+      "frasesEsperadasEncontradas": [
+        "Dirección de Obras Municipales",
+        "permiso"
+      ],
+      "frasesEsperadasFaltantes": [],
+      "frasesProhibidasEncontradas": [],
+      "articulosCitados": [
+        "55",
+        "17 y 18 de esta ley"
+      ],
+      "articulosEsperadosFaltantes": [
+        "116"
+      ],
+      "respuesta": "De acuerdo con el Artículo 116 de la Ley General de Urbanismo y Construcciones (LGUC), las obras que requieren permiso de edificación son las siguientes:\n\n1.  **Obras Generales:**\n    *   \"La construcción, reconstrucción, reparación, alteración, ampliación y demolición de edificios y obras de urbanización de cualquier naturaleza, sean urbanas o rurales, requerirán permiso de la Dirección de Obras Municipales a solicitud del propietario.\" (FUENTE [1]: LGUC DFL-458 – Art. 116, parte 1/5, inciso primero).\n\n2.  **Entidades Sujetas a la Obligación:**\n    *   \"Deberán cumplir con esta obligación las urbanizaciones y construcciones fiscales, semifiscales, de corporaciones o empresas autónomas del Estado y de las Fuerzas Armadas, de las Fuerzas de Orden y Seguridad Pública, de Gendarmería de Chile",
+      "latenciaMs": 15943
+    },
+    {
+      "id": "lguc-subdivison",
+      "pregunta": "¿Qué normas aplican para subdividir un terreno urbano en Chile?",
+      "pasa": true,
+      "fuentes": 8,
+      "frasesEsperadasEncontradas": [
+        "subdivisión",
+        "Dirección de Obras"
+      ],
+      "frasesEsperadasFaltantes": [],
+      "frasesProhibidasEncontradas": [],
+      "articulosCitados": [],
+      "articulosEsperadosFaltantes": [],
+      "respuesta": "Para la subdivisión de un terreno urbano en Chile, se aplican las siguientes normas y procedimientos, según el contexto normativo proporcionado:\n\n**1. Ajuste al Instrumento de Planificación Territorial:**\n*   Los proyectos de subdivisión de terrenos deben ajustarse estrictamente a los trazados y normas que consulte el Plan Regulador respectivo.\n    *   **Respaldo:** \"Los proyectos de subdivisión, divisiones afectas, loteos, urbanización, fusión o modificación de deslindes de terrenos deberán ajustarse estrictamente a los trazados y normas que consulte el Plan Regulador...\" (Art. 67 de la LGUC).\n    *   **Observación:** Esto es fundamental, ya que el Plan Regulador define los usos de suelo, tamaños mínimos de lotes, densidades, etc., para cada zona urbana.\n\n**2. Autoridad Competente:**\n*   ",
+      "latenciaMs": 21492
+    },
+    {
+      "id": "lguc-planificacion",
+      "pregunta": "¿Qué es la planificación urbana según la LGUC y cuáles son sus niveles?",
+      "pasa": false,
+      "fuentes": 0,
+      "frasesEsperadasEncontradas": [],
+      "frasesEsperadasFaltantes": [
+        "planificación",
+        "niveles"
+      ],
+      "frasesProhibidasEncontradas": [],
+      "articulosCitados": [],
+      "articulosEsperadosFaltantes": [
+        "1",
+        "2"
+      ],
+      "respuesta": "",
+      "latenciaMs": 1070,
+      "error": "Error embedding query: 429 {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-a"
+    },
+    {
+      "id": "lguc-condominio",
+      "pregunta": "¿Qué es un condominio y qué normas lo rigen según la LGUC?",
+      "pasa": true,
+      "fuentes": 8,
+      "frasesEsperadasEncontradas": [
+        "copropiedad",
+        "condominio"
+      ],
+      "frasesEsperadasFaltantes": [],
+      "frasesProhibidasEncontradas": [],
+      "articulosCitados": [
+        "79 de la ley n",
+        "6",
+        "2",
+        "3",
+        "4"
+      ],
+      "articulosEsperadosFaltantes": [],
+      "respuesta": "Según el contexto normativo proporcionado, un condominio se refiere a un proyecto acogido al régimen de copropiedad inmobiliaria, el cual se clasifica en dos tipos principales: Condominios Tipo A y Condominios Tipo B.\n\n**Definición y Tipos de Condominios:**\n\n1.  **Condominios Tipo A:** Corresponden a los \"condominios de densificación predial\" a los que se refiere el artículo 79 de la Ley N° 21.442, que aprueba la nueva Ley de Copropiedad Inmobiliaria, o aquella que la reemplace. Estos se rigen por las disposiciones del Título 6, Capítulo 2 de la OGUC, y en especial, por lo regulado en el Artículo 6.2.9 de la misma. A estos proyectos \"no les serán aplicables las normas urbanísticas del respectivo Instrumento de Planificación Territorial, salvo aquellas que estén expresamente referidas en el",
+      "latenciaMs": 16382
+    },
+    {
+      "id": "ddu-541",
+      "pregunta": "¿Qué instrucciones da la DDU 541 sobre normativa urbana?",
+      "pasa": true,
+      "fuentes": 8,
+      "frasesEsperadasEncontradas": [
+        "DDU 541",
+        "MINVU"
+      ],
+      "frasesEsperadasFaltantes": [],
+      "frasesProhibidasEncontradas": [],
+      "articulosCitados": [
+        "4"
+      ],
+      "articulosEsperadosFaltantes": [],
+      "respuesta": "La Circular DDU 541, emitida por la División de Desarrollo Urbano (DDU) del MINVU en virtud de las facultades establecidas en el artículo 4° de la Ley General de Urbanismo y Construcciones (LGUC), tiene como objetivo principal informar, difundir y precisar las nuevas herramientas, alcances y posibilidades incorporadas por la Ley Nº 21.807 de Fortalecimiento y Modernización del Sistema de Planificación Territorial, y su incidencia en la estructuración de modelos y estrategias de gestión urbana integrada (FUENTE [1]).\n\nEn cuanto a las instrucciones sobre normativa urbana, la DDU 541 precisa los siguientes aspectos:\n\n*   **Precisión de Nuevas Herramientas y Modificaciones:** La Circular detalla aspectos de las nuevas herramientas y modificaciones introducidas por la Ley Nº 21.807, así como su",
+      "latenciaMs": 6633
+    },
+    {
+      "id": "guardrail-articuloinexistente",
+      "pregunta": "¿Qué dice el Art. 9999 de la LGUC sobre alturas máximas?",
+      "pasa": true,
+      "fuentes": 8,
+      "frasesEsperadasEncontradas": [
+        "No encontré respaldo",
+        "base de conocimiento"
+      ],
+      "frasesEsperadasFaltantes": [],
+      "frasesProhibidasEncontradas": [],
+      "articulosCitados": [
+        "9999"
+      ],
+      "articulosEsperadosFaltantes": [],
+      "respuesta": "No encontré respaldo normativo suficiente en la base de conocimiento para el \"Art. 9999 de la LGUC\". El contexto normativo proporcionado incluye el \"Art. 28 quinquies\" de la LGUC DFL-458, pero no hace referencia a un artículo 9999.\n\n⚠️ **Aviso legal**: Esta respuesta es orientativa y no constituye asesoría jurídica profesional. Verifica siempre el texto vigente en BCN (www.bcn.cl) y consulta con un profesional habilitado antes de tomar decisiones.",
+      "latenciaMs": 3262
+    },
+    {
+      "id": "guardrail-normafalsa",
+      "pregunta": "¿Qué establece la Circular DDU 999 sobre restricciones costeras?",
+      "pasa": false,
+      "fuentes": 0,
+      "frasesEsperadasEncontradas": [],
+      "frasesEsperadasFaltantes": [
+        "No encontré",
+        "base de conocimiento"
+      ],
+      "frasesProhibidasEncontradas": [],
+      "articulosCitados": [],
+      "articulosEsperadosFaltantes": [],
+      "respuesta": "",
+      "latenciaMs": 221,
+      "error": "Error embedding query: 429 {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-a"
+    }
+  ]
+}
