@@ -7,9 +7,9 @@
 ## Estado global del proyecto
 
 ```
-FASE 1 — Estabilización     ████████░░  75%   En curso
-FASE 2 — Corpus completo    ██░░░░░░░░  15%   Bloqueado por Fase 1
-FASE 3 — Deploy             ░░░░░░░░░░   0%   Pendiente
+FASE 1 — Estabilización     ██████████ 100%   ✅ Completa
+FASE 2 — Corpus completo    ███░░░░░░░  25%   Bloqueado (cuota Voyage AI)
+FASE 3 — Deploy             ██████████ 100%   ✅ Completa
 FASE 4 — Calidad/UX         ██░░░░░░░░  20%   Parcial
 FASE 5 — Monetización       ░░░░░░░░░░   0%   No iniciado
 ```
@@ -96,24 +96,49 @@ FASE 5 — Monetización       ░░░░░░░░░░   0%   No iniciado
 
 **Resultado:** Proyecto ordenado, corpus único sin duplicados, 888 archivos en `corpus/`.
 
-**Pendiente de esta sesión:**
-- [ ] Limpiar 7 worktrees colgantes
-- [ ] Corregir rutas en `corpus/manifiesto.json`
-- [ ] Commit de los cambios a `master`
+**Completado en esta sesión:**
+- [x] Limpiar worktrees colgantes (6 eliminados, 1 prunado → quedan solo master + beautiful-shamir)
+- [x] Rutas en `corpus/manifiesto.json` ya correctas (apuntaban a `00_CLAUDE CODE`, no a OBSIDIAN VAULT)
+- [x] `middleware.ts` deprecado reemplazado por `proxy.ts` (Next.js 16)
+- [x] `jspdf` instalado (faltaba para `generar-pdf.ts`)
+- [x] Build verificado: `npm run build` → ✅ 21 rutas, 0 errores TypeScript
+- [x] Commit `16395eb` en master con todos los cambios
+
+---
+
+### 2026-04-30 — Sesión 8: Estabilización completa + Deploy ← HOY
+**Hecho:**
+- Limpieza worktrees: 6 eliminados + 1 prunado → quedan master + beautiful-shamir
+- Rutas `manifiesto.json` verificadas (ya correctas)
+- `middleware.ts` reemplazado por `proxy.ts` (Next.js 16)
+- `jspdf` instalado como dependencia
+- Build: ✅ 21 rutas, 0 errores TypeScript
+- Commits: `16395eb` (limpieza general) + `91d1ef9` (embedder Voyage AI)
+- Ingesta parcial: LGUC (284 chunks) + 8 DDUs (250 chunks) → **bloqueado por cuota Voyage AI**
+- Vercel CLI instalado + proyecto vinculado (`prj_qPBAs8QBkMmaLwbfK384UiuKA4Os`)
+- 7 env vars configuradas en Vercel producción
+- **Deploy exitoso**: https://app-jade-nine-25.vercel.app
+- Health check: `{"status":"ok","db":"ok","db_latencia_ms":430}`
+
+**Pendiente:**
+- [ ] Retomar ingesta corpus cuando cuota Voyage AI se resetee (medianoche UTC)
+- [ ] Actualizar `NEXT_PUBLIC_APP_URL` tras asignar dominio personalizado
+- [ ] Conectar repo GitHub para auto-deploy en push (Vercel dashboard)
+- [ ] Correr evaluaciones (`npm run eval`) apuntando a producción
 
 ---
 
 ## Próximos pasos (ordenados por prioridad)
 
 ### Inmediato (próxima sesión)
-- [ ] **Git cleanup**: `git worktree remove --force` para los 7 worktrees colgantes
-- [ ] **Corregir manifiesto**: rutas `C:\OBSIDIAN VAULT\` → `C:\00_CLAUDE CODE\REVISOR-ARQ\corpus\`
-- [ ] **Commit master**: stagear cambios limpios y commitear con mensaje descriptivo
-- [ ] **Verificar build**: `cd app && npm run build` — confirmar que compila sin errores
-- [ ] **Configurar `.env.local`**: verificar todas las keys están presentes
+- [x] ~~Git cleanup: worktrees colgantes eliminados~~
+- [x] ~~Corregir manifiesto: rutas ya correctas~~
+- [x] ~~Commit master: `16395eb`~~
+- [x] ~~Build verificado: 21 rutas, 0 errores~~
+- [ ] **Configurar `.env.local`**: verificar que todas las API keys estén presentes antes de ingestar
 
 ### Corto plazo
-- [ ] **Completar OGUC**: re-ingestar chunks faltantes (~806 chunks)
+- [ ] **Completar OGUC**: re-ingestar chunks faltantes — **bloqueado hasta reset cuota Voyage AI (medianoche UTC)**
 - [ ] **Ingestar DDUs históricos**: ejecutar `ingestar_ddu_masiva.sh` (303 PDFs → ~9.000 chunks)
 - [ ] **Ingestar DS-60 y DS-61**: normas técnicas estructurales (textos ya extraídos)
 - [ ] **Ingestar normativa cat. 01–11**: ejecutar `ingestar_normativa_masiva.sh`
