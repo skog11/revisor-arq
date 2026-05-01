@@ -110,6 +110,3 @@ Secrets requeridos en GitHub: `VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_PROJECT_I
 
 Las respuestas de esta herramienta son de carácter informativo y no constituyen asesoría
 jurídica ni profesional. Ver [Términos y condiciones](/terminos) y [Política de privacidad](/privacidad).
-
-> **Revisión pendiente**: Los términos legales deben ser revisados por un abogado antes
-> del lanzamiento público definitivo.
