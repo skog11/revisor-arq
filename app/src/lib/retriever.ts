@@ -8,6 +8,7 @@
 import { ChunkRecuperado } from "./rag";
 import { PlanRecuperacion } from "./router";
 import { embedText, rerankDocuments } from "./voyage";
+import { embedConHyDE } from "./hyde";
 import { getSupabaseServiceClient } from "./supabase";
 
 // ─── Jerarquía normativa ──────────────────────────────────────────────────────
@@ -155,8 +156,9 @@ export async function recuperarPorCapas(
   // Instanciar cliente Supabase una sola vez para ambas capas
   const sb = getSupabaseServiceClient();
 
-  // Generar embedding de la consulta (una sola llamada a Voyage, reutilizada en ambas capas)
-  const embedding = await embedText(pregunta, "query");
+  // Generar embedding HyDE: promedio de [query original] + [texto normativo hipotético]
+  // Falla silencioso → usa solo el embedding de la query si HyDE no está disponible
+  const embedding = await embedConHyDE(pregunta);
 
   // Ampliar counts para tener más candidatos pre-rerank
   const countCapa1 = Math.max(plan.matchCountPorCapa[0] ?? 5, 15);
