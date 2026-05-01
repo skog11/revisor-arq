@@ -9,6 +9,7 @@ import { ChunkRecuperado } from "./rag";
 import { PlanRecuperacion } from "./router";
 import { embedText, rerankDocuments } from "./voyage";
 import { embedConHyDE } from "./hyde";
+import { recuperarMultiQuery } from "./multi-query";
 import { getSupabaseServiceClient } from "./supabase";
 
 // ─── Jerarquía normativa ──────────────────────────────────────────────────────
@@ -184,11 +185,21 @@ export async function recuperarPorCapas(
     pregunta
   );
 
-  // ── Fusión: capa 1 primero, luego capa 2 sin duplicados ───────────────────
+  // ── Capa 3: multi-query RRF — variantes semánticas de la pregunta ─────────
+  // Genera 3 reformulaciones de la query y fusiona los resultados con RRF.
+  // Falla silencioso → devuelve [] si Gemini no está disponible.
+  const capa3 = await recuperarMultiQuery(
+    pregunta,
+    20, // topK de la fusión RRF (se integra como candidatos adicionales)
+    plan.tiposNorma.length > 0 ? plan.tiposNorma : null,
+    plan.filtrarSoloVigentes
+  );
+
+  // ── Fusión: capa 1 (jerarquía alta) → capa 2 (amplia) → capa 3 (multi-query)
   const vistos = new Set<string>();
   const candidatos: ChunkRecuperado[] = [];
 
-  for (const chunk of [...capa1, ...capa2]) {
+  for (const chunk of [...capa1, ...capa2, ...capa3]) {
     if (!vistos.has(chunk.id)) {
       vistos.add(chunk.id);
       candidatos.push(chunk);
