@@ -22,7 +22,7 @@ import {
   detectarCruces,
   type ModoRespuesta,
 } from "@/lib/rag";
-import { streamGemini, MODEL_NAME } from "@/lib/gemini";
+import { streamGemini, MODEL_NAME, MODEL_PRO, MODEL_FLASH } from "@/lib/gemini";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 import { clasificarConsulta } from "@/lib/clasificador";
 import { routear } from "@/lib/router";
@@ -164,8 +164,9 @@ export async function POST(req: NextRequest) {
         const { textoContexto } = construirContexto(chunks);
         const systemPrompt = buildSystemPromptV2(modo as ModoRespuesta, textoContexto, cruces, clasificacion);
 
-        // 5. Streaming Gemini
-        const geminiStream = await streamGemini(systemPrompt, pregunta);
+        // 5. Streaming Gemini — Pro para modo profundo, Flash para los demás
+        const modeloElegido = modo === "profundo" ? MODEL_PRO : MODEL_FLASH;
+        const geminiStream = await streamGemini(systemPrompt, pregunta, modeloElegido);
         let respuestaCompleta = "";
 
         for await (const chunk of geminiStream.stream) {
@@ -201,7 +202,7 @@ export async function POST(req: NextRequest) {
           modo: modo as ModoRespuesta,
           respuesta: respuestaCompleta,
           chunksUsados: chunks,
-          modelo: MODEL_NAME,
+          modelo: modeloElegido,
           latenciaMs,
           userId,
           // Pipeline v2 metadata:

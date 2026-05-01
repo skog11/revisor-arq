@@ -36,10 +36,10 @@ const TIPOS_ALTA_JERARQUIA = ["LGUC", "OGUC", "Ley", "DFL", "DL"];
 // ─── Parámetros de recuperación ──────────────────────────────────────────────
 
 /** Chunks que se pasan al modelo (ventana de contexto final) */
-const MAX_CHUNKS = 16;
+const MAX_CHUNKS = 20;
 
 /** Candidatos pre-rerank (mayor diversidad → mejor reranking) */
-const CANDIDATOS_RERANK = 32;
+const CANDIDATOS_RERANK = 50;
 
 // ─── Mapeo de resultados RPC → ChunkRecuperado ───────────────────────────────
 
@@ -159,8 +159,8 @@ export async function recuperarPorCapas(
   const embedding = await embedText(pregunta, "query");
 
   // Ampliar counts para tener más candidatos pre-rerank
-  const countCapa1 = Math.max(plan.matchCountPorCapa[0] ?? 5, 10);
-  const countCapa2 = Math.max(plan.matchCountPorCapa[1] ?? 8, 18);
+  const countCapa1 = Math.max(plan.matchCountPorCapa[0] ?? 5, 15);
+  const countCapa2 = Math.max(plan.matchCountPorCapa[1] ?? 8, 25);
 
   // ── Capa 1: normas de alta jerarquía ──────────────────────────────────────
   const capa1 = await llamarMatchChunks(

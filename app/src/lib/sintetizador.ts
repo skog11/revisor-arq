@@ -76,7 +76,13 @@ REGLAS ABSOLUTAS — NO negociables:
 2. Si el contexto no contiene respaldo suficiente, dilo explícitamente: "No encontré respaldo normativo suficiente en la base de conocimiento para esta materia".
 3. Toda afirmación técnica o legal DEBE estar respaldada en una fuente del contexto (FUENTE [N]).
 4. Si detectas que la consulta puede activar otras áreas regulatorias (medioambiente, salud, patrimonio, etc.) que no están en el contexto, señálalo explícitamente como alerta de cruce.
-5. El disclaimer legal al final es OBLIGATORIO en toda respuesta.`;
+5. El disclaimer legal al final es OBLIGATORIO en toda respuesta.
+6. CRUCE DE FUENTES — OBLIGATORIO cuando hay múltiples normas en el contexto:
+   a) Identifica explícitamente cómo se relacionan entre sí los artículos recuperados.
+   b) Si una norma de menor jerarquía modifica o complementa una de mayor jerarquía (ej. DDU modifica OGUC), indícalo con "⚡ Modificado por [norma]".
+   c) Si dos artículos parecen contradecirse, analiza cuál prevalece según jerarquía normativa chilena (Ley > Reglamento > Instrucción).
+   d) Nunca trates cada artículo como si fuera independiente — la respuesta debe ser una síntesis integrada de todas las fuentes.
+   e) Si la pregunta activa normas de distintos dominios (urbanismo + medioambiente, o urbanismo + patrimonio), dedica un párrafo a cómo se articulan esos regímenes.`;
 
   // ── MODO ARQUITECTO ───────────────────────────────────────────────────────────
   if (modo === "arquitecto") {

@@ -3,7 +3,9 @@ import {
   type GenerateContentStreamResult,
 } from "@google/generative-ai";
 
-export const MODEL_NAME = "gemini-2.5-flash";
+export const MODEL_FLASH = "gemini-2.5-flash";
+export const MODEL_PRO = "gemini-2.5-pro";
+export const MODEL_NAME = MODEL_FLASH; // alias para backward compat
 
 // Reintentos para errores transitorios de Gemini (503, 429, etc.)
 const MAX_RETRIES = 3;
@@ -21,9 +23,9 @@ function getClient() {
  * permite que Gemini trate las instrucciones del sistema con mayor autoridad
  * y genere respuestas más precisas y consistentes.
  */
-export function getGeminiModel(systemInstruction?: string) {
+export function getGeminiModel(systemInstruction?: string, modelo?: string) {
   const config: Parameters<ReturnType<typeof getClient>["getGenerativeModel"]>[0] = {
-    model: MODEL_NAME,
+    model: modelo ?? MODEL_NAME,
     generationConfig: {
       temperature: 0.15, // Reducido de 0.2 para más determinismo en respuestas legales
       topP: 0.9,
@@ -69,9 +71,10 @@ async function sleep(ms: number) {
 export async function streamGemini(
   systemPrompt: string,
   userMessage: string,
+  modelo?: string,
 ): Promise<GenerateContentStreamResult> {
   // Usar systemInstruction para una separación clara de roles
-  const model = getGeminiModel(systemPrompt);
+  const model = getGeminiModel(systemPrompt, modelo);
   let lastErr: unknown;
 
   for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
@@ -90,11 +93,11 @@ export async function streamGemini(
 export async function generateGemini(
   systemPrompt: string,
   userMessage: string,
-  opts: { temperature?: number; maxOutputTokens?: number } = {},
+  opts: { temperature?: number; maxOutputTokens?: number; modelo?: string } = {},
 ): Promise<string> {
   const model = opts.temperature !== undefined || opts.maxOutputTokens !== undefined
     ? getClient().getGenerativeModel({
-        model: MODEL_NAME,
+        model: opts.modelo ?? MODEL_NAME,
         systemInstruction: systemPrompt,
         generationConfig: {
           temperature: opts.temperature ?? 0.15,
@@ -102,7 +105,7 @@ export async function generateGemini(
           maxOutputTokens: opts.maxOutputTokens ?? 8192,
         },
       })
-    : getGeminiModel(systemPrompt);
+    : getGeminiModel(systemPrompt, opts.modelo);
   let lastErr: unknown;
 
   for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
