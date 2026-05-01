@@ -1,21 +1,28 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { getSupabaseBrowser } from "@/lib/supabase-browser";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
-import type { Metadata } from "next";
 
 // ─── Tipos ────────────────────────────────────────────────────────────────────
 
-type Modo = "login" | "register" | "reset";
+type Modo = "login" | "register" | "reset" | "new-password";
 
-// ─── Componente principal ─────────────────────────────────────────────────────
+// ─── Componente interno (necesita Suspense por useSearchParams) ───────────────
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [modo, setModo] = useState<Modo>("login");
+
+  // Detectar ?modo=new-password al montar (viene del link de reset de contraseña)
+  useEffect(() => {
+    if (searchParams.get("modo") === "new-password") {
+      setModo("new-password");
+    }
+  }, [searchParams]);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [nombre, setNombre] = useState("");
@@ -65,6 +72,16 @@ export default function LoginPage() {
           tipo: "ok",
           texto: "Te enviamos un link para restablecer tu contraseña.",
         });
+
+      } else if (modo === "new-password") {
+        if (password.length < 6) {
+          setMensaje({ tipo: "error", texto: "La contraseña debe tener al menos 6 caracteres." });
+          return;
+        }
+        const { error } = await supabase.auth.updateUser({ password });
+        if (error) throw error;
+        setMensaje({ tipo: "ok", texto: "Contraseña actualizada. Redirigiendo…" });
+        setTimeout(() => router.push("/chat"), 1500);
       }
     } catch (err) {
       const msg = (err as { message?: string }).message ?? "Error desconocido";
@@ -82,9 +99,10 @@ export default function LoginPage() {
   }
 
   const titulos: Record<Modo, string> = {
-    login:    "Ingresar",
-    register: "Crear cuenta",
-    reset:    "Restablecer contraseña",
+    login:         "Ingresar",
+    register:      "Crear cuenta",
+    reset:         "Restablecer contraseña",
+    "new-password": "Nueva contraseña",
   };
 
   return (
@@ -171,7 +189,8 @@ export default function LoginPage() {
               </div>
             )}
 
-            {/* Email */}
+            {/* Email (solo login, register, reset) */}
+            {modo !== "new-password" && (
             <div>
               <label className="block mb-1.5 text-[11px] font-medium uppercase tracking-wide" style={{ color: "var(--ink-3)" }}>
                 Email
@@ -192,9 +211,10 @@ export default function LoginPage() {
                 disabled={cargando}
               />
             </div>
+            )}
 
-            {/* Password (no en reset) */}
-            {modo !== "reset" && (
+            {/* Password (no en reset, sí en new-password) */}
+            {(modo !== "reset") && (
               <div>
                 <label className="block mb-1.5 text-[11px] font-medium uppercase tracking-wide" style={{ color: "var(--ink-3)" }}>
                   Contraseña
@@ -204,7 +224,7 @@ export default function LoginPage() {
                     type={mostrarPass ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder={modo === "register" ? "Mínimo 6 caracteres" : "••••••••"}
+                    placeholder={modo === "login" ? "••••••••" : "Mínimo 6 caracteres"}
                     required
                     minLength={6}
                     autoComplete={modo === "login" ? "current-password" : "new-password"}
@@ -251,9 +271,10 @@ export default function LoginPage() {
               style={{ background: "var(--ink)", color: "var(--paper)" }}
             >
               {cargando && <Loader2 className="size-3.5 animate-spin" />}
-              {modo === "login"    && (cargando ? "Ingresando…"  : "Ingresar")}
-              {modo === "register" && (cargando ? "Creando…"     : "Crear cuenta")}
-              {modo === "reset"    && (cargando ? "Enviando…"    : "Enviar link")}
+              {modo === "login"         && (cargando ? "Ingresando…"    : "Ingresar")}
+              {modo === "register"      && (cargando ? "Creando…"       : "Crear cuenta")}
+              {modo === "reset"         && (cargando ? "Enviando…"      : "Enviar link")}
+              {modo === "new-password"  && (cargando ? "Guardando…"     : "Guardar contraseña")}
             </button>
           </form>
 
@@ -287,5 +308,15 @@ export default function LoginPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+// ─── Page export con Suspense (requerido por useSearchParams) ─────────────────
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
   );
 }
