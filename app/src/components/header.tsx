@@ -103,7 +103,7 @@ export function Header() {
   useEffect(() => {
     const supabase = getSupabaseBrowser();
 
-    supabase.auth.getSession().then(({ data }) => {
+    supabase.auth.getSession().then(({ data }: { data: { session: { user: SupabaseUser } | null } }) => {
       setUser(data.session?.user ?? null);
     });
 
