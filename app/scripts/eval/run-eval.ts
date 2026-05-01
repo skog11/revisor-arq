@@ -88,11 +88,19 @@ async function evalCaso(caso: EvalCase, baseUrl: string, intentos = 3): Promise<
     error = (err as Error).message.slice(0, 100);
   }
 
-    // Retry si es rate limit y quedan intentos
-    const esRateLimit = error && (error.includes("límite") || error.includes("503") || error.includes("429"));
-    if (esRateLimit && intento < intentos) {
-      const espera = intento * 30_000;
-      process.stdout.write(` [rate limit, reintento ${intento}/${intentos - 1} en ${espera / 1000}s] `);
+    // Retry si es error transitorio (rate limit o stream parse error de Gemini)
+    const esTransitorio = error && (
+      error.includes("límite") ||
+      error.includes("503") ||
+      error.includes("429") ||
+      error.includes("parse stream") ||
+      error.includes("Failed to parse") ||
+      error.includes("alta demanda") ||
+      error.includes("overloaded")
+    );
+    if (esTransitorio && intento < intentos) {
+      const espera = intento * 45_000;
+      process.stdout.write(` [transitorio, reintento ${intento}/${intentos - 1} en ${espera / 1000}s] `);
       await new Promise((r) => setTimeout(r, espera));
       continue;
     }
