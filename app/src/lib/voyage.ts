@@ -1,9 +1,11 @@
 export const VOYAGE_MODEL = "voyage-law-2";
+export const RERANK_MODEL = "rerank-2";
 export const EMBEDDING_DIM = 1024;
 const BATCH_SIZE = 128;
 const MAX_RETRIES = 3;
 
 const VOYAGE_API_URL = "https://api.voyageai.com/v1/embeddings";
+const VOYAGE_RERANK_URL = "https://api.voyageai.com/v1/rerank";
 
 /**
  * input_type mejora la calidad de embeddings en voyage-law-2:
@@ -85,4 +87,59 @@ async function withRetry<T>(fn: () => Promise<T>, attempt = 0): Promise<T> {
     await new Promise((r) => setTimeout(r, Math.pow(2, attempt) * 500));
     return withRetry(fn, attempt + 1);
   }
+}
+
+// ─── Reranking ────────────────────────────────────────────────────────────────
+
+export interface RerankResult {
+  index: number;        // Índice original en el array de documentos
+  relevanceScore: number;
+}
+
+/**
+ * Reordena documentos por relevancia usando voyage-rerank-2.
+ * Devuelve los índices originales ordenados de mayor a menor score.
+ *
+ * @param query    Consulta del usuario (ya embebida, pero rerank usa texto)
+ * @param documents Textos de los chunks a reordenar
+ * @param topK     Cuántos devolver (por defecto todos)
+ */
+export async function rerankDocuments(
+  query: string,
+  documents: string[],
+  topK?: number
+): Promise<RerankResult[]> {
+  if (documents.length === 0) return [];
+
+  const body: Record<string, unknown> = {
+    model: RERANK_MODEL,
+    query,
+    documents,
+    return_documents: false,
+  };
+  if (topK !== undefined) body.top_k = topK;
+
+  const res = await fetch(VOYAGE_RERANK_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${getApiKey()}`,
+    },
+    body: JSON.stringify(body),
+    signal: AbortSignal.timeout(10_000),
+  });
+
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`Voyage Rerank error ${res.status}: ${err.slice(0, 200)}`);
+  }
+
+  const json = (await res.json()) as {
+    data: { index: number; relevance_score: number }[];
+  };
+
+  return json.data.map((d) => ({
+    index: d.index,
+    relevanceScore: d.relevance_score,
+  }));
 }

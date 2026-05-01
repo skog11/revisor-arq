@@ -194,9 +194,9 @@ async function main() {
         console.log(`     ✗ Artículos no citados: ${r.articulosEsperadosFaltantes.join(", ")}`);
     }
 
-    // Pausa entre casos — Gemini free tier: 10 RPM, ventana de 60s
-    // Con respuestas de ~25-35s + 90s de pausa = ~1 req/120s → bien bajo el límite
-    await new Promise((r) => setTimeout(r, 90_000));
+    // Pausa entre casos — Gemini free tier: 10 RPM, pero con clasificador = 2 calls/consulta
+    // Con respuestas de ~25-35s + 150s de pausa = ~1 req/180s → margen amplio
+    await new Promise((r) => setTimeout(r, 150_000));
   }
 
   // ── Resumen ──

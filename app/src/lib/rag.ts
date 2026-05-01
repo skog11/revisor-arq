@@ -553,6 +553,7 @@ export async function guardarConsulta(opts: {
   chunksUsados: ChunkRecuperado[];
   modelo: string;
   latenciaMs: number;
+  userId?: string;       // UUID del usuario autenticado (opcional)
   // Nuevos en pipeline v2 (opcionales para retrocompatibilidad)
   clasificacion?: import("./clasificador").QueryClassificada;
   relacionesDetectadas?: number;
@@ -572,6 +573,7 @@ export async function guardarConsulta(opts: {
       })),
       modelo: opts.modelo,
       latencia_ms: opts.latenciaMs,
+      ...(opts.userId ? { user_id: opts.userId } : {}),
       ...(opts.clasificacion ? { clasificacion: opts.clasificacion } : {}),
       ...(opts.relacionesDetectadas !== undefined ? { relaciones_detectadas: opts.relacionesDetectadas } : {}),
       ...(opts.advertenciasValidacion?.length ? { advertencias_validacion: opts.advertenciasValidacion } : {}),

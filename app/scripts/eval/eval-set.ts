@@ -67,6 +67,25 @@ export const EVAL_SET: EvalCase[] = [
     frasesProhibidas: [],
     minFuentes: 2,
   },
+  // ── OGUC ──────────────────────────────────────────────────────────────────
+  {
+    id: "oguc-rasante",
+    pregunta: "¿Cómo se calcula la rasante y cuál es su efecto en la altura permitida de una edificación según la OGUC?",
+    modo: "arquitecto",
+    articulosEsperados: [],
+    frasesEsperadas: ["rasante", "altura"],
+    minFuentes: 3,
+  },
+  // ── DFL-382 (agua potable) ─────────────────────────────────────────────────
+  {
+    id: "dfl382-agua",
+    pregunta: "¿Qué obligaciones impone el DFL 382 a los propietarios respecto al servicio de agua potable?",
+    modo: "abogado",
+    articulosEsperados: [],
+    frasesEsperadas: ["agua potable", "servicio"],
+    frasesProhibidas: [],
+    minFuentes: 2,
+  },
   // ── Guardrail: alucinación ─────────────────────────────────────────────────
   {
     id: "guardrail-articuloinexistente",

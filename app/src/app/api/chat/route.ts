@@ -29,6 +29,7 @@ import { routear } from "@/lib/router";
 import { recuperarPorCapas } from "@/lib/retriever";
 import { buildSystemPromptV2 } from "@/lib/sintetizador";
 import { validarConsistencia } from "@/lib/validador";
+import { createClient } from "@/lib/supabase-server";
 
 // ─── Validación ───────────────────────────────────────────────────────────────
 
@@ -74,6 +75,33 @@ export async function POST(req: NextRequest) {
   }
 
   const { pregunta, modo } = parsed.data;
+
+  // Obtener usuario autenticado (si hay sesión)
+  let userId: string | undefined;
+  try {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) userId = user.id;
+  } catch {
+    // Sin sesión — continuar como anónimo
+  }
+
+  // Verificar y consumir cuota (solo para usuarios autenticados)
+  if (userId) {
+    try {
+      const supabase = await createClient();
+      const { data, error } = await supabase.rpc("check_and_use_quota", {
+        p_user_id: userId,
+      }) as { data: { permitido: boolean; motivo: string } | null; error: unknown };
+
+      if (error || !data?.permitido) {
+        const motivo = data?.motivo ?? "Cuota mensual agotada";
+        return Response.json({ error: motivo }, { status: 429 });
+      }
+    } catch {
+      // Si falla la verificación de cuota, continuar (fail open)
+    }
+  }
 
   // Crear stream SSE
   const encoder = new TextEncoder();
@@ -175,6 +203,7 @@ export async function POST(req: NextRequest) {
           chunksUsados: chunks,
           modelo: MODEL_NAME,
           latenciaMs,
+          userId,
           // Pipeline v2 metadata:
           clasificacion,
           advertenciasValidacion: validacion.advertencias,
