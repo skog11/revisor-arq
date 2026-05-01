@@ -27,7 +27,9 @@ import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 import { clasificarConsulta } from "@/lib/clasificador";
 import { routear } from "@/lib/router";
 import { recuperarPorCapas } from "@/lib/retriever";
+import { recuperarAgenticamente } from "@/lib/agentic-retriever";
 import { buildSystemPromptV2 } from "@/lib/sintetizador";
+import { obtenerRelacionesNormativas, formatearRelaciones } from "@/lib/grafo";
 import { validarConsistencia } from "@/lib/validador";
 import { createClient } from "@/lib/supabase-server";
 
@@ -143,8 +145,11 @@ export async function POST(req: NextRequest) {
         // 1c. Construir plan de recuperación basado en la clasificación
         const plan = routear(clasificacion);
 
-        // 2. Recuperar chunks por capas respetando jerarquía normativa
-        const chunks = await recuperarPorCapas(pregunta, plan);
+        // 2. Recuperar chunks — agentic (2 rondas + análisis de gaps) en modo profundo,
+        //    estándar (HyDE + multi-query + rerank) en arquitecto/abogado
+        const chunks = modo === "profundo"
+          ? await recuperarAgenticamente(pregunta, plan, 20)
+          : await recuperarPorCapas(pregunta, plan);
 
         // 3. Enviar fuentes al cliente (antes de generar)
         send({
@@ -160,9 +165,13 @@ export async function POST(req: NextRequest) {
           })),
         });
 
+        // 3b. Enriquecer con relaciones del grafo normativo
+        const relacionesGrafo = await obtenerRelacionesNormativas(chunks).catch(() => []);
+        const relacionesTexto = formatearRelaciones(relacionesGrafo);
+
         // 4. Construir contexto y sistema (con cruces inyectados)
         const { textoContexto } = construirContexto(chunks);
-        const systemPrompt = buildSystemPromptV2(modo as ModoRespuesta, textoContexto, cruces, clasificacion);
+        const systemPrompt = buildSystemPromptV2(modo as ModoRespuesta, textoContexto, cruces, clasificacion, relacionesTexto);
 
         // 5. Streaming Gemini — Pro para modo profundo, Flash para los demás
         const modeloElegido = modo === "profundo" ? MODEL_PRO : MODEL_FLASH;

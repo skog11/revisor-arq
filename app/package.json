@@ -15,6 +15,7 @@
     "extract:pdfs:dry": "tsx scripts/ingest/extract-pdfs.ts --dry",
     "manifiesto:build": "tsx scripts/ingest/build-manifiesto.ts",
     "manifiesto:build:dry": "tsx scripts/ingest/build-manifiesto.ts --dry",
+    "corpus:referencias": "tsx --env-file=.env.local scripts/ingest/detectar-referencias.ts",
     "eval": "tsx --env-file=.env.local scripts/eval/run-eval.ts"
   },
   "dependencies": {

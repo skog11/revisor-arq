@@ -20,7 +20,8 @@ export function buildSystemPromptV2(
   modo: ModoRespuesta,
   contexto: string,
   cruces: CruceDetectado[],
-  clasificacion?: QueryClassificada
+  clasificacion?: QueryClassificada,
+  relacionesGrafo?: string
 ): string {
   // Bloque de contexto del proyecto detectado (si clasificacion disponible y confianza no baja)
   let proyectoBloque = "";
@@ -67,7 +68,7 @@ IDIOMA Y REGISTRO:
 - Nunca uses "vos", "podés", "hacés" ni ninguna forma verbal rioplatense.
 - Vocabulario técnico-legal propio del derecho chileno: "permiso de edificación", "recepción definitiva", "DOM", "SEREMI MINVU", "resolución de calificación ambiental", "autorización sanitaria", etc.
 - Tono profesional y directo, sin adornos retóricos.
-${proyectoBloque}${crucesBloque}
+${proyectoBloque}${crucesBloque}${relacionesGrafo ?? ""}
 NORMATIVA RECUPERADA DE LA BASE DE CONOCIMIENTO:
 ${contexto}
 
