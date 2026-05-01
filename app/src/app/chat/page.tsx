@@ -319,13 +319,16 @@ export default function ChatPage() {
                     Modo de respuesta
                   </p>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2" role="radiogroup" aria-label="Modo de respuesta">
                     {MODOS.map((key) => {
                       const cfg    = MODO_CFG[key];
                       const active = modo === key;
                       return (
                         <button
                           key={key}
+                          role="radio"
+                          aria-checked={active}
+                          aria-label={`Modo ${cfg.label}: ${cfg.descripcion}`}
                           onClick={() => {
                             setModo(key);
                             setTimeout(() => textareaRef.current?.focus(), 50);
@@ -431,7 +434,7 @@ export default function ChatPage() {
 
             {/* ── Mensajes ── */}
             {hayMensajes && (
-              <div key="mensajes" className="py-4">
+              <div key="mensajes" className="py-4" role="log" aria-live="polite" aria-label="Historial de consultas">
                 <AnimatePresence initial={false}>
                   {mensajes.map((m) => (
                     <motion.div
@@ -451,6 +454,9 @@ export default function ChatPage() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     className="flex items-center gap-3 px-5 py-3"
+                    role="status"
+                    aria-live="polite"
+                    aria-label="Consultando normativa"
                   >
                     <div
                       className="w-[2px] h-4 rounded-full shrink-0"
@@ -580,13 +586,16 @@ export default function ChatPage() {
 
           {/* Selector modo + nueva consulta */}
           <div className="flex items-center justify-between mb-2 gap-2">
-            <div className="flex items-center gap-0.5 overflow-x-auto shrink-0">
+            <div className="flex items-center gap-0.5 overflow-x-auto shrink-0" role="radiogroup" aria-label="Modo de respuesta">
               {MODOS.map((key) => {
                 const cfg    = MODO_CFG[key];
                 const active = modo === key;
                 return (
                   <button
                     key={key}
+                    role="radio"
+                    aria-checked={active}
+                    aria-label={cfg.label}
                     onClick={() => setModo(key)}
                     className={cn(
                       "flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] transition-colors duration-150"
@@ -635,6 +644,8 @@ export default function ChatPage() {
               }}
               onKeyDown={handleKeyDown}
               placeholder="Escribe tu consulta sobre normativa urbana…"
+              aria-label="Consulta sobre normativa urbana"
+              aria-multiline="true"
               className="flex-1 min-h-[40px] resize-none border-0 bg-transparent py-0.5 text-sm focus:outline-none"
               style={{
                 color:      "var(--ink)",
@@ -650,6 +661,7 @@ export default function ChatPage() {
                 onClick={detener}
                 className="shrink-0 size-8 rounded-md flex items-center justify-center transition-colors hover:bg-foreground/[0.06]"
                 title="Detener"
+                aria-label="Detener respuesta"
               >
                 <Square className="size-3.5 fill-current" style={{ color: "var(--ink-3)" }} />
               </button>
@@ -664,6 +676,7 @@ export default function ChatPage() {
                   opacity:    pregunta.trim() ? 1 : 0.4,
                 }}
                 title="Enviar consulta"
+                aria-label="Enviar consulta"
               >
                 <Send className="size-3.5" />
               </button>
