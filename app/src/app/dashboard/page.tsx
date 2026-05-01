@@ -29,7 +29,7 @@ interface ConsultaReciente {
   id: string;
   pregunta: string;
   modo: string;
-  creado_en: string;
+  created_at: string;
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -71,7 +71,7 @@ export default async function DashboardPage() {
   // Últimas 10 consultas
   const { data: consultas } = await supabase
     .from("consultas")
-    .select("id, pregunta, modo, creado_en")
+    .select("id, pregunta, modo, created_at")
     .eq("user_id", user.id)
     .order("creado_en", { ascending: false })
     .limit(10) as { data: ConsultaReciente[] | null };
@@ -184,7 +184,7 @@ export default async function DashboardPage() {
                         {MODO_LABELS[c.modo] ?? c.modo}
                       </span>
                       <span className="text-[10px]" style={{ color: "var(--ink-5)", fontFamily: "var(--font-jetbrains-mono)" }}>
-                        {new Date(c.creado_en).toLocaleDateString("es-CL", {
+                        {new Date(c.created_at).toLocaleDateString("es-CL", {
                           day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit",
                         })}
                       </span>

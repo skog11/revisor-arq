@@ -108,7 +108,7 @@ AS $$
     FROM perfiles p
     LEFT JOIN consultas c
       ON c.user_id = p.id
-      AND date_trunc('month', c.creado_en) = date_trunc('month', now())
+      AND date_trunc('month', c.created_at) = date_trunc('month', now())
     WHERE p.id = p_user_id
     GROUP BY p.plan
   )
@@ -152,7 +152,7 @@ BEGIN
   SELECT COUNT(*) INTO v_uso
   FROM consultas
   WHERE user_id = p_user_id
-    AND date_trunc('month', creado_en) = date_trunc('month', now());
+    AND date_trunc('month', created_at) = date_trunc('month', now());
 
   RETURN v_uso < v_limite;
 END;
