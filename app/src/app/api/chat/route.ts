@@ -89,16 +89,16 @@ export async function POST(req: NextRequest) {
   }
 
   // Verificar y consumir cuota (solo para usuarios autenticados)
+  // check_and_use_quota(uuid) RETURNS boolean — true = permitido, false = cuota agotada
   if (userId) {
     try {
       const supabase = await createClient();
-      const { data, error } = await supabase.rpc("check_and_use_quota", {
+      const { data: permitido, error } = await supabase.rpc("check_and_use_quota", {
         p_user_id: userId,
-      }) as { data: { permitido: boolean; motivo: string } | null; error: unknown };
+      }) as { data: boolean | null; error: unknown };
 
-      if (error || !data?.permitido) {
-        const motivo = data?.motivo ?? "Cuota mensual agotada";
-        return Response.json({ error: motivo }, { status: 429 });
+      if (error || permitido === false) {
+        return Response.json({ error: "Cuota mensual agotada. Actualiza tu plan en /pricing." }, { status: 429 });
       }
     } catch {
       // Si falla la verificación de cuota, continuar (fail open)

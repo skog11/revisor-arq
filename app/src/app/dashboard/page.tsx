@@ -73,7 +73,7 @@ export default async function DashboardPage() {
     .from("consultas")
     .select("id, pregunta, modo, created_at")
     .eq("user_id", user.id)
-    .order("creado_en", { ascending: false })
+    .order("created_at", { ascending: false })
     .limit(10) as { data: ConsultaReciente[] | null };
 
   const mesActual = new Intl.DateTimeFormat("es-CL", { month: "long", year: "numeric" }).format(new Date());
