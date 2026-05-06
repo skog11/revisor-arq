@@ -187,12 +187,14 @@ export async function recuperarPorCapas(
 
   // ── Capa 3: multi-query RRF — variantes semánticas de la pregunta ─────────
   // Genera 3 reformulaciones de la query y fusiona los resultados con RRF.
+  // Pasa el embedding ya computado para evitar una llamada Gemini HyDE duplicada.
   // Falla silencioso → devuelve [] si Gemini no está disponible.
   const capa3 = await recuperarMultiQuery(
     pregunta,
     20, // topK de la fusión RRF (se integra como candidatos adicionales)
     plan.tiposNorma.length > 0 ? plan.tiposNorma : null,
-    plan.filtrarSoloVigentes
+    plan.filtrarSoloVigentes,
+    embedding  // reusar embedding HyDE ya computado → -1 llamada Gemini
   );
 
   // ── Fusión: capa 1 (jerarquía alta) → capa 2 (amplia) → capa 3 (multi-query)

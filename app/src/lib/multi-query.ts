@@ -18,7 +18,7 @@
  */
 
 import { generateGemini, MODEL_FLASH } from "./gemini";
-import { embedConHyDE } from "./hyde";
+import { embedText } from "./voyage";
 import { getSupabaseServiceClient } from "./supabase";
 import { type ChunkRecuperado } from "./rag";
 
@@ -139,34 +139,40 @@ async function buscarConEmbedding(
 
 /**
  * Multi-query retrieval con RRF fusion.
- * Devuelve hasta `topK` chunks fusionados de todas las variantes.
+ *
+ * @param pregunta        Consulta original del usuario
+ * @param topK            Número máximo de chunks a devolver tras fusión RRF
+ * @param filterTipos     Filtro de tipos de norma (null = todos)
+ * @param soloVigentes    Solo normas vigentes
+ * @param embeddingBase   Embedding pre-computado de la query (evita una llamada Gemini extra).
+ *                        Si no se pasa, se genera con embedText directo.
  */
 export async function recuperarMultiQuery(
   pregunta: string,
   topK: number,
   filterTipos: string[] | null,
-  soloVigentes: boolean
+  soloVigentes: boolean,
+  embeddingBase?: number[]
 ): Promise<ChunkRecuperado[]> {
-  // Generar variantes y embedear todo en paralelo
-  const variantesPromise = generarVariantes(pregunta);
-  const embeddingOriginalPromise = embedConHyDE(pregunta);
+  // 1. Generar variantes semánticas con Gemini (1 llamada)
+  const variantes = await generarVariantes(pregunta);
 
-  const [variantes, embeddingOriginal] = await Promise.all([
-    variantesPromise,
-    embeddingOriginalPromise,
-  ]);
+  // 2. Embedding de la query original — reusar el pre-computado si viene del retriever
+  //    Para las variantes usamos embedText directo (sin HyDE): las variantes ya
+  //    son reformulaciones especializadas y no necesitan el hipotético extra.
+  //    Esto reduce de ~5 llamadas Gemini a 0 llamadas adicionales aquí.
+  const embeddingOriginal = embeddingBase ?? await embedText(pregunta, "query");
 
-  // Embedear variantes en paralelo (HyDE para cada una)
   const todasLasQueries = [pregunta, ...variantes];
   const embeddings = await Promise.all(
     todasLasQueries.map((q, i) =>
       i === 0
-        ? Promise.resolve(embeddingOriginal) // ya tenemos el embedding original
-        : embedConHyDE(q)
+        ? Promise.resolve(embeddingOriginal)  // reusar embedding base
+        : embedText(q, "query")               // Voyage AI, sin Gemini
     )
   );
 
-  // Buscar con cada embedding en paralelo
+  // 3. Buscar con cada embedding en paralelo (solo Supabase, sin Gemini)
   const perQuery = Math.max(Math.ceil(topK / todasLasQueries.length) + 5, 10);
   const resultados = await Promise.all(
     embeddings.map((emb) =>
@@ -174,6 +180,6 @@ export async function recuperarMultiQuery(
     )
   );
 
-  // Fusionar con RRF
+  // 4. Fusionar con RRF
   return rrfFusion(resultados, topK);
 }

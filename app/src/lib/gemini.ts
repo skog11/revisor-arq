@@ -8,8 +8,8 @@ export const MODEL_PRO = "gemini-2.5-pro";
 export const MODEL_NAME = MODEL_FLASH; // alias para backward compat
 
 // Reintentos para errores transitorios de Gemini (503, 429, etc.)
-const MAX_RETRIES = 3;
-const RETRY_DELAY_MS = 1500;
+const MAX_RETRIES = 4;
+const RETRY_DELAY_MS = 8_000; // 8s base — backoff: 8s, 16s, 32s, 64s
 
 function getClient() {
   const apiKey = process.env.GEMINI_API_KEY;
@@ -68,6 +68,11 @@ async function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+/** Jitter aleatorio para evitar que múltiples llamadas concurrentes reintenten al mismo tiempo */
+function jitter(baseMs: number): number {
+  return baseMs + Math.random() * baseMs * 0.5; // ±0-50% del delay base
+}
+
 export async function streamGemini(
   systemPrompt: string,
   userMessage: string,
@@ -83,7 +88,7 @@ export async function streamGemini(
     } catch (err) {
       lastErr = err;
       if (!isRetryable(err) || attempt === MAX_RETRIES - 1) break;
-      await sleep(RETRY_DELAY_MS * (attempt + 1)); // backoff: 1.5s, 3s, 4.5s
+      await sleep(jitter(RETRY_DELAY_MS * Math.pow(2, attempt))); // backoff con jitter: ~8s, ~16s, ~32s
     }
   }
 
@@ -115,7 +120,7 @@ export async function generateGemini(
     } catch (err) {
       lastErr = err;
       if (!isRetryable(err) || attempt === MAX_RETRIES - 1) break;
-      await sleep(RETRY_DELAY_MS * (attempt + 1));
+      await sleep(jitter(RETRY_DELAY_MS * Math.pow(2, attempt))); // backoff con jitter: ~8s, ~16s, ~32s
     }
   }
 
