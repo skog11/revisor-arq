@@ -45,21 +45,27 @@ const ChatSchema = z.object({
 export async function POST(req: NextRequest) {
   const t0 = Date.now();
 
-  // Rate limiting: 20 consultas por hora por IP
-  const ip = getClientIp(req);
-  const rl = checkRateLimit(ip, 20, 3_600_000);
-  if (!rl.success) {
-    const minutos = Math.ceil(rl.resetMs / 60_000);
-    return Response.json(
-      { error: `Límite de consultas alcanzado. Intenta en ${minutos} minuto${minutos !== 1 ? "s" : ""}.` },
-      {
-        status: 429,
-        headers: {
-          "Retry-After": String(Math.ceil(rl.resetMs / 1000)),
-          "X-RateLimit-Remaining": "0",
-        },
-      }
-    );
+  // Bypass de rate limit para evaluaciones internas (ADMIN_SECRET)
+  const adminSecret = process.env.ADMIN_SECRET;
+  const isEval = adminSecret && req.headers.get("x-eval-secret") === adminSecret;
+
+  // Rate limiting: 20 consultas por hora por IP (saltado en evals)
+  if (!isEval) {
+    const ip = getClientIp(req);
+    const rl = checkRateLimit(ip, 20, 3_600_000);
+    if (!rl.success) {
+      const minutos = Math.ceil(rl.resetMs / 60_000);
+      return Response.json(
+        { error: `Límite de consultas alcanzado. Intenta en ${minutos} minuto${minutos !== 1 ? "s" : ""}.` },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": String(Math.ceil(rl.resetMs / 1000)),
+            "X-RateLimit-Remaining": "0",
+          },
+        }
+      );
+    }
   }
 
   // Parse body

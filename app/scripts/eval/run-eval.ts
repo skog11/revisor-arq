@@ -54,9 +54,13 @@ async function evalCaso(caso: EvalCase, baseUrl: string, intentos = 3): Promise<
     error = undefined;
 
   try {
+    const evalSecret = process.env.ADMIN_SECRET;
     const res = await fetch(`${baseUrl}/api/chat`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        ...(evalSecret ? { "x-eval-secret": evalSecret } : {}),
+      },
       body: JSON.stringify({ pregunta: caso.pregunta, modo: caso.modo }),
     });
 
