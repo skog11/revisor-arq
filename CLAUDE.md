@@ -130,10 +130,24 @@ bash ingestar_normativa_masiva.sh  # ingesta cat. 01–11 (desde raíz)
 
 ---
 
+## Estado actual (2026-05-06)
+- **Producción**: https://revisor-arq.vercel.app ✅
+- **Pipeline**: 4 llamadas Gemini secuenciales (reducido desde 8); fast-fail en callers con fallback
+- **Retrieval**: excelente (18–20 fuentes por consulta)
+- **Eval histórico**: 6/7 = 86% (2026-04-21), con API key sin rate limit
+- **Bloqueador activo**: Gemini Free Tier 20 RPM agota la cuota durante el eval y en producción
+
 ## Prioridades actuales
-1. Git: limpiar 7 worktrees colgantes + commit master
-2. Corregir rutas en `corpus/manifiesto.json` (apuntan a `OBSIDIAN VAULT`)
-3. `npm run build` — verificar que compila
-4. Ingestar OGUC completa + DDUs históricos + normativa cat.01–11
-5. Deploy Vercel + eval 7/7
-→ Detalle completo en `PROGRESO.md`
+1. **⭐ URGENTE**: Upgrade API key Gemini a tier pagado (Vercel env var `GEMINI_API_KEY`)
+2. Correr eval completo una vez que la cuota esté disponible (meta: ≥ 7/9)
+3. Ingestar OGUC completa + DDUs históricos (303 normas) + normativa cat.01–11
+4. Completar checklist legal para lanzamiento público (ver skill `mvp-legal-launch`)
+5. Limpiar worktrees git huérfanos
+
+→ Detalle técnico en `PROGRESO.md`
+→ Roadmap completo en `PLAN-IMPLEMENTACION.md`
+
+## Gemini — notas de rate limit
+- Free tier: 20 RPM rolling 60s window; Vercel serverless timeout: 60s
+- Commits de fix: `2c63d9e` (8→4 calls), `991e6f9` (maxRetries:1), `71572ea` (streamGemini fast-fail)
+- Para evaluar sin problemas: usar API pagada O correr con cuota limpia con 250s entre casos
