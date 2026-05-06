@@ -109,7 +109,8 @@ export async function clasificarConsulta(
   pregunta: string,
 ): Promise<QueryClassificada> {
   try {
-    const raw = await generateGemini(SYSTEM_PROMPT, pregunta, { temperature: 0, maxOutputTokens: 512 });
+    // maxRetries:1 — el clasificador tiene fallback, no necesita backoff largo
+    const raw = await generateGemini(SYSTEM_PROMPT, pregunta, { temperature: 0, maxOutputTokens: 512, maxRetries: 1 });
     const cleaned = stripMarkdownJson(raw);
     const parsed = JSON.parse(cleaned) as QueryClassificada;
     return parsed;

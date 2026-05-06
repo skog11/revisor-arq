@@ -47,6 +47,7 @@ export async function embedConHyDE(pregunta: string): Promise<number[]> {
 
   try {
     // Generar texto hipotético con Gemini Flash (rápido, barato)
+    // maxRetries:1 — HyDE tiene fallback al embedding directo, no necesita backoff largo
     const hipotetico = await generateGemini(
       HYDE_SYSTEM,
       pregunta,
@@ -54,6 +55,7 @@ export async function embedConHyDE(pregunta: string): Promise<number[]> {
         modelo: MODEL_FLASH,
         temperature: 0.3,       // algo de variedad para cubrir distintos ángulos
         maxOutputTokens: 256,   // ~150 palabras
+        maxRetries: 1,
       }
     );
 

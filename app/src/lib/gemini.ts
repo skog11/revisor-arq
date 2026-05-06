@@ -98,7 +98,18 @@ export async function streamGemini(
 export async function generateGemini(
   systemPrompt: string,
   userMessage: string,
-  opts: { temperature?: number; maxOutputTokens?: number; modelo?: string } = {},
+  opts: {
+    temperature?: number;
+    maxOutputTokens?: number;
+    modelo?: string;
+    /**
+     * Número máximo de reintentos ante errores transitorios (429, 503).
+     * Por defecto usa MAX_RETRIES (4).
+     * Usar 1 para llamadas con fallback (clasificador, HyDE, multi-query)
+     * para evitar que los backoffs consuman el timeout de la función serverless.
+     */
+    maxRetries?: number;
+  } = {},
 ): Promise<string> {
   const model = opts.temperature !== undefined || opts.maxOutputTokens !== undefined
     ? getClient().getGenerativeModel({
@@ -112,14 +123,15 @@ export async function generateGemini(
       })
     : getGeminiModel(systemPrompt, opts.modelo);
   let lastErr: unknown;
+  const retries = opts.maxRetries ?? MAX_RETRIES;
 
-  for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+  for (let attempt = 0; attempt < retries; attempt++) {
     try {
       const result = await model.generateContent(userMessage);
       return result.response.text();
     } catch (err) {
       lastErr = err;
-      if (!isRetryable(err) || attempt === MAX_RETRIES - 1) break;
+      if (!isRetryable(err) || attempt === retries - 1) break;
       await sleep(jitter(RETRY_DELAY_MS * Math.pow(2, attempt))); // backoff con jitter: ~8s, ~16s, ~32s
     }
   }

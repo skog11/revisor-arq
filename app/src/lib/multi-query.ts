@@ -47,10 +47,11 @@ variante3`;
 
 async function generarVariantes(pregunta: string): Promise<string[]> {
   try {
+    // maxRetries:1 — generarVariantes tiene fallback a array vacío, no necesita backoff largo
     const respuesta = await generateGemini(
       MULTI_QUERY_SYSTEM,
       pregunta,
-      { modelo: MODEL_FLASH, temperature: 0.4, maxOutputTokens: 200 }
+      { modelo: MODEL_FLASH, temperature: 0.4, maxOutputTokens: 200, maxRetries: 1 }
     );
 
     const variantes = respuesta
