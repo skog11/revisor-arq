@@ -7,9 +7,17 @@ export const MODEL_FLASH = "gemini-2.5-flash";
 export const MODEL_PRO = "gemini-2.5-pro";
 export const MODEL_NAME = MODEL_FLASH; // alias para backward compat
 
-// Reintentos para errores transitorios de Gemini (503, 429, etc.)
+// Reintentos para llamadas con fallback (clasificador, HyDE, multi-query)
+// Bajo 15 RPM de capa free, fallar rápido y usar fallback libera el presupuesto RPM
+// para el paso crítico (streamGemini), que es el único sin fallback.
 const MAX_RETRIES = 4;
-const RETRY_DELAY_MS = 8_000; // 8s base — backoff: 8s, 16s, 32s, 64s
+const RETRY_DELAY_MS = 8_000; // para generateGemini (anulado por opts.maxRetries)
+
+// Reintentos para streamGemini en funciones serverless con timeout de 60s:
+// 3 intentos × (4s + 8s) = ~12-20s de espera → la función lanza error en <30s
+// → el eval runner puede reintentar el request completo cuando el RPM se haya liberado
+const MAX_RETRIES_STREAM = 3;
+const STREAM_RETRY_DELAY_MS = 4_000; // 4s base — backoff: 4s, 8s
 
 function getClient() {
   const apiKey = process.env.GEMINI_API_KEY;
@@ -82,13 +90,15 @@ export async function streamGemini(
   const model = getGeminiModel(systemPrompt, modelo);
   let lastErr: unknown;
 
-  for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+  // MAX_RETRIES_STREAM=3 con STREAM_RETRY_DELAY_MS=4000: backoff 4s, 8s → máx ~12-20s
+  // Diseñado para fallar dentro del timeout serverless (60s) y dejar al eval runner reintentar
+  for (let attempt = 0; attempt < MAX_RETRIES_STREAM; attempt++) {
     try {
       return await model.generateContentStream(userMessage);
     } catch (err) {
       lastErr = err;
-      if (!isRetryable(err) || attempt === MAX_RETRIES - 1) break;
-      await sleep(jitter(RETRY_DELAY_MS * Math.pow(2, attempt))); // backoff con jitter: ~8s, ~16s, ~32s
+      if (!isRetryable(err) || attempt === MAX_RETRIES_STREAM - 1) break;
+      await sleep(jitter(STREAM_RETRY_DELAY_MS * Math.pow(2, attempt))); // backoff con jitter: ~4s, ~8s
     }
   }
 
