@@ -38,7 +38,8 @@ const TIPOS_ALTA_JERARQUIA = ["LGUC", "OGUC", "Ley", "DFL", "DL"];
 // ─── Parámetros de recuperación ──────────────────────────────────────────────
 
 /** Chunks que se pasan al modelo (ventana de contexto final) */
-const MAX_CHUNKS = 20;
+// HOTFIX: Reducido de 20 a 5 para caber en Groq 6000 TPM (fallback cuando Gemini agota)
+const MAX_CHUNKS = 5;
 
 /** Candidatos pre-rerank (mayor diversidad → mejor reranking) */
 const CANDIDATOS_RERANK = 50;
