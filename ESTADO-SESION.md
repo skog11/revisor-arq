@@ -8,25 +8,20 @@ Completar la ingesta del corpus de normas para mejorar la calidad del RAG:
 ## 📊 Progreso Actual
 
 ### ✅ Completado
-1. **Descarga de corpus**:
-   - LGUC y OGUC: sin cambios (ya tenían versión vigente)
-   - 44 archivos DDU descargados (de ~300 esperados)
-   - Problemas con descarga ESPECIFICA (timeout)
-
-2. **Ingesta en progreso** (background task `bosxn5r1d`):
+1. **Ingesta de corpus** (background task `bosxn5r1d`): ✓ **COMPLETADA**
    - LGUC: ✓ 280 chunks
-   - OGUC: skipped (ya procesada)
-   - DDU-541 a DDU-534: ✓ ~400 chunks
-   - DDU-543: ✓ 333 chunks (more grande)
-   - DDU-542: ✓ 72 chunks
-   - DDU-525: ahora en proceso
-   - Normativas complementarias: ~25 ya procesadas
-   - **Total ingresado hasta ahora**: ~1,500+ chunks
+   - OGUC: ✓ 806 chunks (skipped, ya procesada)
+   - **31 DDUs nuevas**: ✓ ~2,575 chunks
+   - **Normativas complementarias**: ✓ 40 normas (sin cambios, ya procesadas)
+   - **Total ingresado en esta sesión**: 2,575 chunks nuevos
+   - **Total en Supabase**: **9,453 chunks** (8.6x inicial)
+
+2. **Corpus State**:
+   - Supabase tiene todos los chunks correctamente ingestados y embedidos
+   - Últimas normas: DDU-494, LEY-18290, LEY-20283, LEY-19253, **LEY-21442** ✓
 
 ### ⏳ En Progreso
-- Ingesta de 71 normas en manifiesto (procesando DDU-525 y continuando)
-- ETA: 20-30 minutos más para completar
-- Download de DDUs retrying (estancado en ESPECIFICA)
+- Evaluación de calidad RAG (preparándose)
 
 ### ❌ Próximos Pasos Después de Ingesta
 1. **Ejecutar eval completo**: `npm run eval -- --url=https://revisor-arq.vercel.app`
