@@ -1,6 +1,6 @@
 import Groq from "groq-sdk";
 
-export const MODEL_GROQ = "llama-3.1-70b-versatile";
+export const MODEL_GROQ = "llama-3.3-70b-specdec";
 
 const MAX_RETRIES_STREAM = 3;
 const STREAM_RETRY_DELAY_MS = 4_000; // 4s base — backoff: 4s, 8s
