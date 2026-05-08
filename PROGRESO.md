@@ -274,19 +274,20 @@ npm run eval -- --casos=lguc-116-permiso  # Un caso específico
 
 ---
 
-## 4. ESTADO DEL CORPUS (2026-05-06)
+## 4. ESTADO DEL CORPUS (2026-05-07)
 
 ### Normas ingresadas en Supabase
 
 | Norma | Tipo | Chunks | Estado |
 |-------|------|--------|--------|
-| LGUC (DFL-458) | LGUC | ~280 | ✅ Completa |
-| OGUC (DS-47) | OGUC | parcial | ⚠️ Solo inicio (427 pgs total, no todo ingresado) |
+| LGUC (DFL-458) | LGUC | 280 | ✅ Completa |
+| OGUC (DS-47) | OGUC | 806 | ✅ Completa (427 págs) |
 | DDU-527 a DDU-541 | DDU | ~14 normas × ~30 chunks | ✅ Recientes |
-| DDU-527 a DDU-530 | DDU | ingresadas | ✅ |
-| 25 normas complementarias | LEY/DFL/DL/DS | ~ingresadas | ✅ (sesión 9) |
-| DDU-000 a DDU-526 | DDU | 0 | ❌ Pendiente (303 DDUs) |
+| 25 normas complementarias | LEY/DFL/DL/DS | ~ingresadas | ✅ (sesión anterior) |
+| DDU-000 a DDU-526 | DDU | 0 | ⏳ Descargando (304 DDUs encontrados) |
 | Cat. 01-11 (medioambiente, agua, etc.) | LEY/DS/DFL | archivos listos | ❌ No ingresadas |
+
+**Total chunks ingresados: ~1,100+ (LGUC + OGUC + DDUs recientes)**
 
 ### Corpus disponible localmente (listo para ingestar)
 
@@ -462,9 +463,11 @@ npm run manifiesto:build && npm run corpus:ingest
 ## 8. DEUDA TÉCNICA PENDIENTE
 
 ### Crítica (bloquea calidad del producto)
-- [ ] **Upgrade GEMINI_API_KEY a tier pagado** — sin esto el eval falla y producción es inestable
-- [ ] **OGUC completa**: solo el inicio está ingresado; 427 páginas total, ~80% pendiente
-- [ ] **DDU-000 a DDU-527** (303 normas): disponibles localmente en `corpus/ddu/`, no ingresadas
+- [ ] **Upgrade GEMINI_API_KEY a tier pagado** — Groq fallback mitiga, pero Gemini pagado mejora latencia
+- [ ] **DDU-000 a DDU-526** (304 normas): descargando (~30% completada), falta ingestar
+
+### Completada recientemente ✅
+- [x] **OGUC completa**: 806 chunks ingresados en Supabase (2026-05-07)
 
 ### Importante (mejora cobertura)
 - [ ] **Normativa complementaria cat. 01-11**: archivos en `corpus/01_*/`...`corpus/12_*/`, no ingresadas
@@ -491,13 +494,14 @@ npm run manifiesto:build && npm run corpus:ingest
 
 ---
 
-## 10. ESTADO ACTUAL (2026-05-07 — Groq implementado)
+## 10. ESTADO ACTUAL (2026-05-07 — Groq + Corpus)
 
-### ✅ Lo que acaba de cambiar
+### ✅ Implementado hoy
 - **Groq fallback** integrado: `app/src/lib/groq.ts` + streamGemini con wrapper
 - **npm install groq-sdk**: dependencia agregada
-- **Variables de entorno**: GROQ_API_KEY en `.env.example`
-- **Documentación**: CLAUDE.md, PROGRESO.md, PLAN-IMPLEMENTACION.md actualizados
+- **OGUC ingesta completada**: 806 chunks en Supabase ✅
+- **Guardrails mejorados**: distinción explícita entre normas inexistentes vs no en base
+- **Variables de entorno**: GROQ_API_KEY, VOYAGE_API_KEY, Supabase credentials configuradas
 
 ### Cómo funciona el fallback
 ```
