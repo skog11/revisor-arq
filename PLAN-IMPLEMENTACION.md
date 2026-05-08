@@ -7,45 +7,45 @@
 
 ## ESTADO ACTUAL (tl;dr para IA que retoma el proyecto)
 
-**Lo que funciona**: App desplegada en producción, pipeline RAG completo (retrieval excelente: 18-20 fuentes/consulta), 3 modos de respuesta, auth, cuota, PDF, guardrails.
+**Lo que funciona**: App desplegada en producción, pipeline RAG completo (retrieval excelente: 18-20 fuentes/consulta), 3 modos de respuesta, auth, cuota, PDF, guardrails, **fallback automático a Groq** (Mixtral 8x7b) cuando Gemini falla por rate limit.
 
-**Único bloqueador crítico**: GEMINI_API_KEY está en free tier (20 RPM). El eval falla por rate limit. Upgrading a paid tier resuelve todo.
+**Bloqueador mitigado**: GEMINI_API_KEY está en free tier (20 RPM), pero Groq fallback (30 RPM, 1-3s latencia) se activa automáticamente cuando Gemini agota cuota. Solución: upgrade a tier pagado de Gemini para mejor performance, no urgente.
 
 **Lo que falta para estar "completo"**: corpus completo (OGUC + DDUs históricos), calidad al 78%+ en eval, y sistema de pagos para monetizar.
 
 ---
 
-## FASE 1 — DESBLOQUEAR PRODUCCIÓN (URGENTE, ~2 horas)
+## FASE 1 — OPTIMIZAR PRODUCCIÓN (RECOMENDADO, ~1 hora)
 
-### Tarea 1.1 — Upgrade GEMINI_API_KEY ⭐ PRIORIDAD MÁXIMA
+### Tarea 1.1 — Upgrade GEMINI_API_KEY (Recomendado, NO urgente)
 
-**Problema**: La API key actual es free tier con límite de 20 RPM. El pipeline hace 4 llamadas Gemini por request. En eval (con reintentos) o bajo carga real, el rate limit se alcanza constantemente.
+**Contexto**: Groq fallback ya mitiga el rate limit de Gemini free tier (20 RPM). Cuando Gemini agota cuota, la app automáticamente cae a Groq (Mixtral 8x7b, 30 RPM, ~1-3s latencia). 
 
-**Síntoma observable**: `fuentes=20` en todos los casos del eval (retrieval excelente), pero `ERROR: Se alcanzó el límite de consultas por minuto` porque streamGemini falla.
+**Razón para upgrade**: Gemini 2.5 Flash es más rápido y consistente que Mixtral. Si bien Groq cubre bien las consultas, Gemini pagado (1000 RPM) evita el fallback y mejora latencia general.
 
-**Solución**:
+**Procedimiento** (si deseas hacerlo):
 ```
 1. Abrir https://console.cloud.google.com
-2. Seleccionar el proyecto asociado a la API key en GEMINI_API_KEY (.env.local)
+2. Seleccionar el proyecto asociado a GEMINI_API_KEY (.env.local)
 3. Billing → Link a billing account (tarjeta de crédito)
 4. La API key existente pasa a Tier 1 automáticamente: 1000 RPM
 5. En Vercel Dashboard: https://vercel.com → proyecto revisor-arq → Settings → Environment Variables
-6. Editar GEMINI_API_KEY → pegar el mismo valor (o uno nuevo si se creó nueva key)
+6. Editar GEMINI_API_KEY (no cambiar, la key existente ya tiene acceso pagado)
 7. Hacer redeploy: Deployments → más reciente → Redeploy
 ```
+
+**Costo**: Gemini 2.5 Flash = ~$0.075/1M tokens input + $0.30/1M output.
+Pipeline: ~4000 tokens input + ~1500 tokens output ≈ USD $0.00075/consulta.
+1000 consultas/mes ≈ USD $0.75/mes.
 
 **Verificación**: Correr eval completo:
 ```bash
 cd app
 npm run eval -- --url=https://revisor-arq.vercel.app
 ```
-Esperado: ≥6/9 casos pasados (meta: 7/9).
+Meta: ≥7/9 casos pasados (actualmente 6/7, con Groq fallback disponible).
 
-**Costo estimado**: Gemini 2.5 Flash = ~$0.075/1M tokens input + $0.30/1M output.
-Pipeline por consulta: ~4000 tokens input + ~1500 tokens output ≈ $0.00075/consulta.
-1000 consultas/mes ≈ USD $0.75/mes.
-
-### Tarea 1.2 — Verificar eval post-upgrade
+### Tarea 1.2 — Resultados del eval post-upgrade (o post-Groq)
 
 ```bash
 cd app

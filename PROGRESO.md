@@ -39,7 +39,8 @@
 NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
 SUPABASE_SERVICE_ROLE_KEY=eyJ...
-GEMINI_API_KEY=AIza...           # ← BLOQUEADOR: está en free tier (20 RPM)
+GEMINI_API_KEY=AIza...           # Free tier (20 RPM); Groq fallback (30 RPM) mitigado
+GROQ_API_KEY=gsk_...             # Fallback automático cuando Gemini agota cuota
 VOYAGE_API_KEY=pa-...
 ADMIN_SECRET=...                 # Protege /normativa, /corpus y APIs admin
 ```
@@ -102,7 +103,7 @@ POST /api/chat  { pregunta, modo: "arquitecto"|"abogado"|"profundo" }
 | 1 | `clasificarConsulta` | 1 | FALLBACK object |
 | 2 | `embedConHyDE` (hipotético) | 1 | embedding directo (Voyage) |
 | 3 | `generarVariantes` (multi-query) | 1 | array vacío |
-| 4 | `streamGemini` (respuesta final) | 3 (stream) | sin fallback |
+| 4 | `streamGemini` (respuesta final) | 3 (stream) | **Groq Mixtral** (automático en rate limit) |
 
 ### 3.2 Modos de respuesta
 
