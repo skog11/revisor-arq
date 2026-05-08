@@ -170,21 +170,35 @@ npm run eval -- --url=https://revisor-arq.vercel.app
 
 ---
 
-## 📋 RESUMEN EJECUTIVO (2026-05-07)
+## 📋 RESUMEN EJECUTIVO (2026-05-07 → 2026-05-08)
 
 ### ✅ Logros de la Sesión
 | Métrica | Antes | Después | Cambio |
 |---------|-------|---------|--------|
 | **Chunks en Supabase** | 1,100 | 9,453 | +8,353 (+760%) |
 | **Normas procesadas** | ~40 | 71 | +31 |
-| **Retrieval quality** | desconocida | 20/20 fuentes | ✓ excelente |
-| **Eval suite estado** | N/A | 3/9 casos (rate limited) | parcial |
+| **Retrieval quality** | desconocida | 20/20 fuentes | ✓ excelente (validado) |
 | **Corpus status** | incompleto | validado & listo | ✓ |
+| **Eval suite (localhost)** | N/A | 3/9 (rate limit Groq) | parcial |
+| **Eval suite (producción)** | N/A | 0/9 (API 401) | bloqueado |
 
-### ⚠️ Bloqueadores Activos
-1. **Gemini API Key (Vercel)**: dummy/inválida → imposible eval en producción
-2. **Groq Rate Limit (30 RPM)**: insuficiente para eval (27-45 llamadas requeridas)
-3. **Voyage API Key (Vercel)**: devuelve 401 → posiblemente expirada
+### 🔴 BLOQUEADORES CRÍTICOS IDENTIFICADOS (ACCIÓN REQUERIDA)
+
+#### 1. VOYAGE_API_KEY inválida en Vercel (BLOQUEADOR #1)
+- **Error**: `Voyage API error 401: {"detail":"Provided API key is invalid."}`
+- **Impacto**: Eval no puede procesar retrieval en producción (0/9 casos)
+- **Acción requerida**: 
+  1. Obtener VOYAGE_API_KEY válida de https://console.voyageai.com
+  2. Actualizar en Vercel: `vercel env add VOYAGE_API_KEY`
+  3. Re-ejecutar eval
+
+#### 2. GEMINI_API_KEY dummy en localhost (BLOQUEADOR #2)
+- **Error**: Fallback obligatorio a Groq → Groq 30 RPM agotado → cascada 429
+- **Impacto**: Eval en localhost estancada después de 3 casos (2 reintentos exponenciales/caso)
+- **Acción requerida**:
+  1. Obtener GEMINI_API_KEY pagada de Google Cloud Console
+  2. Actualizar en Vercel: `vercel env add GEMINI_API_KEY`
+  3. Re-ejecutar eval en producción (no en localhost)
 
 ### 🎯 Estado del Eval
 - **En progreso**: tarea `bu2jynmqj` (bash background, localhost:3000)
