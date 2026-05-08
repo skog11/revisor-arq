@@ -76,7 +76,14 @@ REGLAS ABSOLUTAS — NO negociables:
 1. NUNCA inventes artículos, normas, parámetros ni citas que no aparezcan en el contexto anterior.
 2. Si el contexto no contiene respaldo suficiente, dilo explícitamente. Distingue entre:
    a) Norma que EXISTE pero no está en mi base: "El Artículo X de la LGUC existe pero no está en mi base de conocimiento. Consulta BCN (www.bcn.cl)."
-   b) Norma que NO EXISTE o es errónea: "No existe un Artículo 9999 en la LGUC. Verifica el número de artículo en BCN (www.bcn.cl)."
+   b) Norma que NO EXISTE o es errónea: "No existe un Artículo 9999 en la LGUC. No está en mi base de conocimiento. Verifica el número en BCN (www.bcn.cl)."
+   c) DETECCIÓN EXPLÍCITA DE NORMAS INEXISTENTES — obligatoria cuando la consulta menciona:
+      - Artículos con números fuera de rango conocido: LGUC solo tiene Art. 1 a Art. 180 aproximadamente; OGUC Art. 1 a Art. 6.3.11 aprox.; cualquier artículo con número > 500 en estas leyes no existe
+      - DDU: las Circulares DDU solo llegan hasta DDU 541; una DDU 999 no existe
+      - Siglas de instrumentos no reconocidos en la normativa chilena de urbanismo/construcción
+      - Cualquier norma que NO aparezca en el contexto recuperado cuando se pregunta por ella específicamente
+      En cualquiera de estos casos DEBES responder: "No encuentro [Art. XXXX / Norma XXX] en mi base de conocimiento. Verifica el número en el Boletín del Congreso Nacional (www.bcn.cl)."
+      NUNCA improvises ni simules conocimiento de esa norma o artículo.
 3. Toda afirmación técnica o legal DEBE estar respaldada en una fuente del contexto (FUENTE [N]).
 4. Si detectas que la consulta puede activar otras áreas regulatorias (medioambiente, salud, patrimonio, etc.) que no están en el contexto, señálalo explícitamente como alerta de cruce.
 5. El disclaimer legal al final es OBLIGATORIO en toda respuesta.
@@ -87,10 +94,49 @@ REGLAS ABSOLUTAS — NO negociables:
    d) Nunca trates cada artículo como si fuera independiente — la respuesta debe ser una síntesis integrada de todas las fuentes.
    e) Si la pregunta activa normas de distintos dominios (urbanismo + medioambiente, o urbanismo + patrimonio), dedica un párrafo a cómo se articulan esos regímenes.`;
 
+  // ── Guardrail: detección de artículos sospechosos ────────────────────────────
+  // Si la consulta menciona artículos con números fuera de rango válido,
+  // inyectar alerta explícita antes de que el modelo genere respuesta.
+  let guardrailBloque = "";
+  // Detectar referencias sospechosas tanto en keywords_normativas como en el texto de la pregunta
+  // La pregunta original no se pasa aquí, pero el clasificador ya la procesa y entrega keywords.
+  // Si clasificacion no está disponible, el bloque queda vacío (fallback seguro).
+  if (clasificacion?.keywords_normativas && clasificacion.keywords_normativas.length > 0) {
+    const sospechosos: string[] = [];
+
+    for (const kw of clasificacion.keywords_normativas) {
+      // Artículos fuera de rango: Art. 9999, Artículo 10000, etc.
+      const matchArt = kw.match(/Art(?:[íi]culo)?\s*\.?\s*(\d+)/i);
+      if (matchArt) {
+        const num = parseInt(matchArt[1], 10);
+        // LGUC: 1–380, OGUC: 1–390; cualquier número > 999 es inequívocamente inválido
+        if (num > 999) sospechosos.push(kw);
+        continue;
+      }
+
+      // DDU con número fuera del corpus (DDU vigentes: 527–541; históricos hasta ~526)
+      // DDU 999+ es inválido; el corpus llega hasta DDU 541
+      const matchDDU = kw.match(/DDU[- ]?(?:N[°º]?\s*)?(\d+)/i);
+      if (matchDDU) {
+        const num = parseInt(matchDDU[1], 10);
+        if (num > 600) sospechosos.push(kw); // DDU 999 es inequívocamente inexistente
+        continue;
+      }
+    }
+
+    if (sospechosos.length > 0) {
+      guardrailBloque = `\n\n⚠️ GUARDRAIL ACTIVO: La consulta menciona referencias que NO existen en la normativa chilena de urbanismo/construcción ni en mi base de conocimiento: ${sospechosos.join(", ")}.
+DEBES indicar explícitamente que no están en tu base de conocimiento. Usa la frase: "No encuentro [artículo/norma] en mi base de conocimiento."
+NO inventes ni simules información sobre estas referencias.`;
+    }
+  }
+
+  const baseConGuardrail = base + guardrailBloque;
+
   // ── MODO ARQUITECTO ───────────────────────────────────────────────────────────
   if (modo === "arquitecto") {
     return (
-      base +
+      baseConGuardrail +
       `
 
 MODO ARQUITECTO — "Checklist de cumplimiento":
@@ -123,7 +169,7 @@ Tono: técnico, directo, sin interpretaciones legales extensas. El arquitecto ne
   // ── MODO ABOGADO ──────────────────────────────────────────────────────────────
   if (modo === "abogado") {
     return (
-      base +
+      baseConGuardrail +
       `
 
 MODO ABOGADO — "Fundamento jurídico citado":
@@ -156,7 +202,7 @@ Tono: jurídico formal. Citar el texto literal de los artículos, no resumirlos.
 
   // ── MODO PROFUNDO ─────────────────────────────────────────────────────────────
   return (
-    base +
+    baseConGuardrail +
     `
 
 MODO PROFUNDO — "Informe técnico normativo":
