@@ -2,6 +2,7 @@ import {
   GoogleGenerativeAI,
   type GenerateContentStreamResult,
 } from "@google/generative-ai";
+import { streamGroq } from "@/lib/groq";
 
 export const MODEL_FLASH = "gemini-2.5-flash";
 export const MODEL_PRO = "gemini-2.5-pro";
@@ -81,6 +82,12 @@ function jitter(baseMs: number): number {
   return baseMs + Math.random() * baseMs * 0.5; // ±0-50% del delay base
 }
 
+/**
+ * Stream wrapper que intenta Gemini primero, y cae a Groq como fallback
+ * si Gemini falla por rate limit o error transitorio.
+ *
+ * Retorna un objeto compatible con GenerateContentStreamResult (tiene .stream que es un iterable)
+ */
 export async function streamGemini(
   systemPrompt: string,
   userMessage: string,
@@ -97,12 +104,49 @@ export async function streamGemini(
       return await model.generateContentStream(userMessage);
     } catch (err) {
       lastErr = err;
+      // Si falla y es error de rate limit, intentar Groq como fallback
+      if (isRetryable(err) && attempt === MAX_RETRIES_STREAM - 1) {
+        console.log("[Fallback] Gemini rate limit detectado. Intentando con Groq...");
+        try {
+          const groqStream = streamGroqAdapter(systemPrompt, userMessage);
+          return groqStream;
+        } catch (groqErr) {
+          // Groq también falló, lanzar error de Gemini (más reciente)
+          console.error("[Fallback] Groq también falló:", groqErr);
+          throw new Error(friendlyError(lastErr));
+        }
+      }
       if (!isRetryable(err) || attempt === MAX_RETRIES_STREAM - 1) break;
       await sleep(jitter(STREAM_RETRY_DELAY_MS * Math.pow(2, attempt))); // backoff con jitter: ~4s, ~8s
     }
   }
 
   throw new Error(friendlyError(lastErr));
+}
+
+/**
+ * Adaptador que convierte streamGroq (AsyncGenerator<string>) al formato
+ * esperado por route.ts que espera GenerateContentStreamResult con .stream iterable
+ */
+function streamGroqAdapter(
+  systemPrompt: string,
+  userMessage: string,
+): GenerateContentStreamResult {
+  // Crear un AsyncIterable que pueda ser consumido por for await
+  const streamAsync = (async function* () {
+    const groqGen = streamGroq(systemPrompt, userMessage);
+    for await (const text of groqGen) {
+      // Emular la estructura de GenerativeAI's chunk.text()
+      yield {
+        text: () => text,
+      };
+    }
+  })();
+
+  // Retornar un objeto compatible con GenerateContentStreamResult
+  return {
+    stream: streamAsync,
+  } as unknown as GenerateContentStreamResult;
 }
 
 export async function generateGemini(

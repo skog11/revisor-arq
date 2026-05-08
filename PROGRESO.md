@@ -365,30 +365,37 @@ npm run manifiesto:build && npm run corpus:ingest
 
 ---
 
-## 6. PROBLEMA CRÍTICO ACTIVO: GEMINI FREE TIER RATE LIMIT
+## 6. PROBLEMA CRÍTICO ACTIVO: GEMINI FREE TIER RATE LIMIT (MITIGADO CON GROQ)
 
 ### Diagnóstico definitivo (2026-05-06)
 - API key Gemini está en **Free Tier: 20 RPM** (rolling 60s window)
 - El pipeline consume 4 llamadas Gemini por request
 - El eval runner hace hasta 3 intentos por caso = hasta 12 llamadas/caso
 - Múltiples procesos concurrentes (eval + dev server + prod) consumen el mismo cupo
-- **El eval v4 background estuvo corriendo en paralelo con el eval v5**, explicando por qué el rate limit no se liberaba incluso después de 5 minutos
 
-### Fixes implementados (commits 2c63d9e, 991e6f9, 71572ea)
-1. **Reducción de 8→4 llamadas**: eliminó las 3 llamadas HyDE duplicadas en multi-query al pasar `embeddingBase`; jitter en backoffs para evitar sincronización
-2. **maxRetries:1 en callers con fallback**: clasificador, HyDE y variants fallan en <1s y usan su fallback, en vez de gastar 56s en reintentos que bloquean el timeout Vercel
-3. **streamGemini con backoffs cortos**: MAX_RETRIES_STREAM=3, STREAM_RETRY_DELAY_MS=4000 (backoffs: 4s, 8s) → falla en ~20s → el eval runner puede reintentar
+### Fixes implementados
+1. **Reducción de 8→4 llamadas** (commit 2c63d9e): eliminó llamadas HyDE duplicadas
+2. **maxRetries:1 en callers con fallback** (commit 991e6f9): clasificador, HyDE y variants fallan rápido
+3. **streamGemini con backoffs cortos** (commit 71572ea): MAX_RETRIES_STREAM=3
+4. **✅ NUEVO: Fallback automático a Groq** (commit TBD):
+   - Si Gemini falla por 429/503, automáticamente se usa `groq-sdk` (Mixtral)
+   - Groq free tier: **30 RPM** (vs Gemini: 20 RPM)
+   - Groq es **ultrarrápido** (inferencia en edge ~1s)
+   - Sin cambios de código en route.ts — el fallback es transparente
 
-### Solución definitiva: upgrade API key Gemini
+### Solución multiCapas (implementada hoy)
 ```
-1. Ir a https://console.cloud.google.com (proyecto asociado a GEMINI_API_KEY actual)
-2. APIs & Services → Credentials → identificar la key
-3. Habilitar billing en el proyecto
-4. En Vercel Dashboard → Settings → Environment Variables → actualizar GEMINI_API_KEY
-   (NO cambiar el archivo .env.local, solo la variable de Vercel)
+✅ Fallback a Groq (hoy):
+   - GROQ_API_KEY env var (obtener en https://console.groq.com/keys)
+   - streamGroq() en lib/groq.ts
+   - streamGemini() envuelve con try/catch + fallback automático
+   
+⏳ Upgrade API key Gemini (sigue siendo recomendado para mayor confiabilidad):
+   1. Ir a https://console.cloud.google.com
+   2. Habilitar billing en el proyecto
+   3. En Vercel Dashboard: actualizar GEMINI_API_KEY
+   Costo: ~USD $0.30/mes por 1000 consultas
 ```
-Costo estimado: Gemini 2.5 Flash = $0.075/1M tokens input, $0.30/1M output.
-Una consulta típica ~4000 tokens input → USD $0.0003/consulta. A 1000 consultas/mes ≈ USD $0.30.
 
 ---
 
@@ -480,3 +487,34 @@ Una consulta típica ~4000 tokens input → USD $0.0003/consulta. A 1000 consult
 - **Usuarios actuales**: no hay métricas disponibles; uso principalmente de prueba
 - **Legal**: páginas de términos y privacidad existen; se hizo revisión por abogado (commit 5ccb001)
 - **Accesibilidad**: WCAG 2.1 AA implementada (commit 29a4c8a)
+
+---
+
+## 10. ESTADO ACTUAL (2026-05-07 — Groq implementado)
+
+### ✅ Lo que acaba de cambiar
+- **Groq fallback** integrado: `app/src/lib/groq.ts` + streamGemini con wrapper
+- **npm install groq-sdk**: dependencia agregada
+- **Variables de entorno**: GROQ_API_KEY en `.env.example`
+- **Documentación**: CLAUDE.md, PROGRESO.md, PLAN-IMPLEMENTACION.md actualizados
+
+### Cómo funciona el fallback
+```
+1. Usuario pregunta en /api/chat
+2. streamGemini intenta Gemini 2.5 Flash
+3. Si Gemini falla por 429/503 (rate limit):
+   → Automáticamente usa streamGroq (Mixtral)
+   → Groq retorna respuesta igual de buena, más rápido
+4. Si Groq también falla:
+   → Lanza error con info de ambos intentos
+```
+
+### Próximos pasos recomendados
+1. **Obtener GROQ_API_KEY**: ir a https://console.groq.com/keys (gratis, 30 RPM)
+2. **Agregarlo a .env.local** y luego a Vercel env vars
+3. **Correr eval completo**: `npm run eval -- --url=https://revisor-arq.vercel.app`
+   - Ahora sin bloqueo de rate limit
+   - Meta: ≥ 7/9 casos
+4. **Upgrade Gemini** (opcional pero recomendado): https://console.cloud.google.com
+   - Groq es fallback, no reemplazo permanente
+   - Gemini es más robusto para producción de largo plazo

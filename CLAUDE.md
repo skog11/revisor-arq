@@ -10,16 +10,19 @@ Chat RAG con citas verificables sobre normativa chilena de urbanismo/construcci�
 | Frontend | Next.js 16 (App Router) + TypeScript + Tailwind + shadcn/ui + Framer Motion |
 | BD | Supabase Postgres + pgvector HNSW (cosine, 1024 dims) |
 | Embeddings | Voyage AI `voyage-law-2` |
-| Generación | Gemini 2.5 Flash (streaming SSE) |
+| Generación | Gemini 2.5 Flash (primary) + Groq Mixtral (fallback auto) |
 | Deploy | Vercel (workflow en `.github/workflows/deploy.yml`) |
 
 ---
 
 ## Arquitectura RAG
 ```
-query → Voyage embed → Supabase match_chunks RPC (top-8, cosine) → Gemini 2.5 Flash → respuesta con citas
+query → Voyage embed → Supabase match_chunks RPC → Gemini 2.5 Flash → respuesta
+  └─ Si Gemini falla (rate limit): fallback automático a Groq Mixtral
 ```
 **Libs clave en `app/src/lib/`:**
+- `gemini.ts` — cliente Gemini + fallback a Groq
+- `groq.ts` — cliente Groq (ultrarrápido, fallback automático)
 - `voyage.ts` — embed queries
 - `retriever.ts` — llama `match_chunks` en Supabase
 - `clasificador.ts` — detecta tipo proyecto + dominios normativos
@@ -94,7 +97,8 @@ Scripts de ingesta masiva en raíz: `ingestar_ddu_masiva.sh` · `ingestar_normat
 NEXT_PUBLIC_SUPABASE_URL
 NEXT_PUBLIC_SUPABASE_ANON_KEY
 SUPABASE_SERVICE_ROLE_KEY
-GEMINI_API_KEY
+GEMINI_API_KEY                 # Primary; si rate limit, fallback a Groq
+GROQ_API_KEY                   # Fallback automático si Gemini falla (https://console.groq.com)
 VOYAGE_API_KEY
 ADMIN_SECRET
 NEXT_PUBLIC_APP_URL
