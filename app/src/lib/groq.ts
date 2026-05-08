@@ -1,6 +1,6 @@
 import Groq from "groq-sdk";
 
-export const MODEL_GROQ = "mixtral-8x7b-32768";
+export const MODEL_GROQ = "gemma-2-9b-it";
 
 const MAX_RETRIES_STREAM = 3;
 const STREAM_RETRY_DELAY_MS = 4_000; // 4s base — backoff: 4s, 8s
