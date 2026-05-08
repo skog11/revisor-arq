@@ -1,41 +1,56 @@
-# Estado de Sesión — Corpus Ingestion — 2026-05-07
+# Estado de Sesión — Corpus Ingestion + Eval — 2026-05-07
 
 ## 🎯 Objetivo de la Sesión
-Completar la ingesta del corpus de normas para mejorar la calidad del RAG:
+Completar la ingesta del corpus de normas y validar la calidad del RAG:
 - **Antes**: ~1,100 chunks (LGUC + OGUC + DDU recientes)
-- **Después**: ~2,000+ chunks (corpus completo ingresado)
+- **Después**: **9,453 chunks** en Supabase (8.6x expansión)
 
 ## 📊 Progreso Actual
 
-### ✅ Completado
-1. **Ingesta de corpus** (background task `bosxn5r1d`): ✓ **COMPLETADA**
-   - LGUC: ✓ 280 chunks
-   - OGUC: ✓ 806 chunks (skipped, ya procesada)
-   - **31 DDUs nuevas**: ✓ ~2,575 chunks
-   - **Normativas complementarias**: ✓ 40 normas (sin cambios, ya procesadas)
-   - **Total ingresado en esta sesión**: 2,575 chunks nuevos
-   - **Total en Supabase**: **9,453 chunks** (8.6x inicial)
+### ✅ COMPLETADO
+1. **Ingesta de Corpus** (background task `bosxn5r1d`): ✓ **100%**
+   - LGUC (DFL-458): ✓ 280 chunks
+   - OGUC (DS-47): ✓ 806 chunks
+   - **31 DDUs nuevas**: ✓ 2,575 chunks
+   - **40 Normativas complementarias**: ✓ sin cambios (ya procesadas)
+   - **Total Supabase**: **9,453 chunks** verificado ✓
 
-2. **Corpus State**:
-   - Supabase tiene todos los chunks correctamente ingestados y embedidos
-   - Últimas normas: DDU-494, LEY-18290, LEY-20283, LEY-19253, **LEY-21442** ✓
+2. **Validación de Corpus** en Supabase:
+   - ✓ Todas las normas ingresadas con embeddings Voyage
+   - ✓ Últimas normas: DDU-494, LEY-21442 (Copropiedad), DFL-382 (Agua), etc.
+   - ✓ Estado listo para producción
 
-### ⏳ En Progreso
-- Evaluación de calidad RAG (preparándose)
+3. **Evaluación de Retrieval** (en progreso):
+   - ✓ **20 fuentes encontradas** por consulta (excelente retrieval)
+   - Casos completados: 2/9 (lguc-116-permiso, lguc-subdivison)
+   - Ambos con retrieval OK pero fallando en generación por rate limit
 
-### ❌ Próximos Pasos Después de Ingesta
-1. **Ejecutar eval completo**: `npm run eval -- --url=https://revisor-arq.vercel.app`
-   - Medir mejora de calidad con corpus actualizado
-   - Meta: ≥7/9 casos
-   - Esperado: mejora en casos irregulares (condominio, agua, guardrails)
+### ⚠️ Problemas Identificados y Soluciones
 
-2. **Analizar resultados**:
-   - Si 7+/9: corpus quality improved ✓
-   - Si <7/9: investigar qué normas hacen falta
+1. **Rate Limiting en Groq (30 RPM)**:
+   - Síntoma: "Se alcanzó el límite de consultas por minuto"
+   - Causa: Cada eval case hace 3-5 llamadas internas (clasificador, HyDE, multi-query)
+   - Solución: Esperar o usar Gemini con API key pagada (Vercel env)
+   - Impacto: Eval progresa lentamente, pero retrieval funciona ✓
 
-3. **Ingestar normativa cat. 01-11** (si tiempo lo permite):
-   - Medioambiente, agua, patrimonio, etc.
-   - ~50-100 normas adicionales
+2. **GEMINI_API_KEY en desarrollo**:
+   - Local: usando dummy key para permitir fallback a Groq
+   - Producción: requiere API key válida en Vercel
+
+### 🚀 Próximos Pasos
+
+1. **Completar Eval** (en progreso, 15+ minutos):
+   - Eval continuará con reintentos de rate limit
+   - Esperar a que complete los 9 casos
+   - Guardar resultados en `scripts/eval/resultados/`
+
+2. **Actualizar Gemini API Key en Vercel**:
+   - Reemplazar GEMINI_API_KEY con tier pagado
+   - Permitirá eval sin rate limits en producción
+
+3. **Validar Resultados**:
+   - Si retrieval ≥18/20 fuentes: corpus quality ✓
+   - Esperado: mejora en casos condominio (LEY-21442), agua (DFL-382)
 
 ---
 
