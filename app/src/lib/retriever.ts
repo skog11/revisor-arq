@@ -38,8 +38,9 @@ const TIPOS_ALTA_JERARQUIA = ["LGUC", "OGUC", "Ley", "DFL", "DL"];
 // ─── Parámetros de recuperación ──────────────────────────────────────────────
 
 /** Chunks que se pasan al modelo (ventana de contexto final) */
-// HOTFIX: Reducido de 20 a 5 para caber en Groq 6000 TPM (fallback cuando Gemini agota)
-const MAX_CHUNKS = 5;
+// Reducido de 20 → 5 → 3 para caber en Groq 6000 TPM (fallback cuando Gemini agota)
+// 3 chunks (~1000 tokens) + system prompt (~1200) = ~2200 total, safe para Groq
+const MAX_CHUNKS = 3;
 
 /** Candidatos pre-rerank (mayor diversidad → mejor reranking) */
 const CANDIDATOS_RERANK = 50;
