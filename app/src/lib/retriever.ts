@@ -38,6 +38,8 @@ const TIPOS_ALTA_JERARQUIA = ["LGUC", "OGUC", "Ley", "DFL", "DL"];
 // ─── Parámetros de recuperación ──────────────────────────────────────────────
 
 /** Chunks que se pasan al modelo (ventana de contexto final) */
+// 10 chunks (~3300 tokens) + system prompt (~1200) + respuesta (~1500) = ~6000 total
+// Compatible con Groq llama-3.1-8b-instant (6000 TPM) y holgado para Cerebras/OpenRouter/Gemini
 const MAX_CHUNKS = 10;
 
 /** Candidatos pre-rerank (mayor diversidad → mejor reranking) */
