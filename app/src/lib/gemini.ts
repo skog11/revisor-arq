@@ -2,6 +2,7 @@ import {
   GoogleGenerativeAI,
   type GenerateContentStreamResult,
 } from "@google/generative-ai";
+import { streamDeepSeek } from "@/lib/deepseek";
 import { streamCerebras } from "@/lib/cerebras";
 import { streamOpenRouter } from "@/lib/openrouter";
 import { streamGroq } from "@/lib/groq";
@@ -90,6 +91,7 @@ function makeFallbackStream(
   userMessage: string,
 ): GenerateContentStreamResult {
   const proveedores: Array<{ nombre: string; gen: () => AsyncGenerator<string, void, unknown> }> = [
+    { nombre: "DeepSeek",    gen: () => streamDeepSeek(systemPrompt, userMessage) },
     { nombre: "Cerebras",    gen: () => streamCerebras(systemPrompt, userMessage) },
     { nombre: "OpenRouter",  gen: () => streamOpenRouter(systemPrompt, userMessage) },
     { nombre: "Groq",        gen: () => streamGroq(systemPrompt, userMessage) },
