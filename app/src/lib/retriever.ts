@@ -38,9 +38,7 @@ const TIPOS_ALTA_JERARQUIA = ["LGUC", "OGUC", "Ley", "DFL", "DL"];
 // ─── Parámetros de recuperación ──────────────────────────────────────────────
 
 /** Chunks que se pasan al modelo (ventana de contexto final) */
-// Reducido de 20 → 5 → 3 para caber en Groq 6000 TPM (fallback cuando Gemini agota)
-// 3 chunks (~1000 tokens) + system prompt (~1200) = ~2200 total, safe para Groq
-const MAX_CHUNKS = 3;
+const MAX_CHUNKS = 10;
 
 /** Candidatos pre-rerank (mayor diversidad → mejor reranking) */
 const CANDIDATOS_RERANK = 50;
@@ -79,12 +77,14 @@ function mapearChunk(r: Record<string, unknown>): ChunkRecuperado {
  * - Referencias a artículos específicos ("Art. 116", "artículo 3°")
  * - Nombres de normas exactos ("DDU 541", "LGUC", "DS-47")
  * - Números de disposiciones
+ *
+ * Exportada para testing unitario.
  */
-function tieneTerminosExactos(pregunta: string): boolean {
+export function tieneTerminosExactos(pregunta: string): boolean {
   return (
     /art[íi]culo[s]?\s+\d+/i.test(pregunta) ||
     /\bart\.\s*\d+/i.test(pregunta) ||
-    /\b(DDU|LGUC|OGUC|DS|DFL|DL)\s*[-–]?\s*\d+/i.test(pregunta) ||
+    /\b(DDU|LGUC|OGUC|DS|DFL|DL|Ley|Circular|Resolución|Res|Decreto)\s*[-–]?\s*\d+/i.test(pregunta) ||
     /\bN[°º]\s*\d+/i.test(pregunta)
   );
 }
@@ -160,8 +160,18 @@ export async function recuperarPorCapas(
   const sb = getSupabaseServiceClient();
 
   // Generar embedding HyDE: promedio de [query original] + [texto normativo hipotético]
-  // Falla silencioso → usa solo el embedding de la query si HyDE no está disponible
-  const embedding = await embedConHyDE(pregunta);
+  // Circuit breaker: si Voyage AI está caído (401/503/timeout), retornar vacío en lugar
+  // de propagar el error — el LLM generará con guardrail "sin información en corpus".
+  let embedding: number[];
+  try {
+    embedding = await embedConHyDE(pregunta);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error("[retriever] Voyage AI no disponible — retrieval abortado:", msg);
+    // Retornar array vacío: Gemini generará con contexto vacío y sus guardrails
+    // declararán explícitamente que no hay información en la base de conocimiento.
+    return [];
+  }
 
   // Ampliar counts para tener más candidatos pre-rerank
   const countCapa1 = Math.max(plan.matchCountPorCapa[0] ?? 5, 15);

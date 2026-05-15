@@ -278,6 +278,31 @@ const S = StyleSheet.create({
     color: "#999",
     lineHeight: 1.6,
   },
+
+  // ── Sección de firmas ──
+  firmasWrapper: {
+    marginTop: 40,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 40,
+  },
+  firmaBloque: {
+    flex: 1,
+    borderTopWidth: 0.5,
+    borderTopColor: C.grisTexto,
+    paddingTop: 8,
+    alignItems: "center",
+  },
+  firmaNombre: {
+    fontSize: 9,
+    fontFamily: "Helvetica-Bold",
+    color: C.grisTexto,
+  },
+  firmaCargo: {
+    fontSize: 8,
+    color: "#666",
+    marginTop: 2,
+  },
 });
 
 // ─── Helpers de parseo Markdown ───────────────────────────────────────────────
@@ -570,6 +595,19 @@ function PaginaCuerpo({ datos, numInforme }: {
       </View>
 
       <RenderContenido contenido={datos.contenido} />
+
+      {/* Sección de firmas */}
+      <View style={S.firmasWrapper}>
+        <View style={S.firmaBloque}>
+          <Text style={S.firmaNombre}>{datos.nombreProfesional}</Text>
+          <Text style={S.firmaCargo}>Firma del Profesional Evaluador</Text>
+          {datos.rutColegiado && <Text style={{ fontSize: 7, color: "#888", marginTop: 1 }}>{datos.rutColegiado}</Text>}
+        </View>
+        <View style={S.firmaBloque}>
+          <Text style={S.firmaNombre}>{datos.nombreCliente || "____________________"}</Text>
+          <Text style={S.firmaCargo}>Firma del Cliente / Receptor</Text>
+        </View>
+      </View>
 
       {/* Pie legal final */}
       <View style={S.pieLegalWrapper}>

@@ -14,10 +14,10 @@
 const VOYAGE_EMBED_URL = "https://api.voyageai.com/v1/embeddings";
 const VOYAGE_MODEL = "voyage-law-2";
 const OUTPUT_DIM = 1024;
-const BATCH_SIZE = 32;          // lotes pequeños para evitar rate limit
-const CALL_INTERVAL_MS = 1_200; // 1.2s entre lotes → ~50 lotes/min (más conservador)
-const MAX_RETRIES = 3;          // 3 intentos: falla rápido si hay quota exhaustion
-const RETRY_BASE_MS = 8_000;    // 8s base → backoff: 8s, 16s, 32s (total: 56s max)
+const BATCH_SIZE = 128;         // Aumentado a 128 (máximo de Voyage)
+const CALL_INTERVAL_MS = 250;   // Reducido a 250ms (aprox 240 RPM, seguro para límite de 300)
+const MAX_RETRIES = 5;          // Más reintentos para mayor resiliencia
+const RETRY_BASE_MS = 2_000;    // Reintentos más rápidos (2s base)
 
 function getApiKey(): string {
   const key = process.env.VOYAGE_API_KEY;

@@ -96,8 +96,11 @@ REGLAS ABSOLUTAS — NO negociables:
 
   // ── Guardrail: detección de artículos sospechosos ────────────────────────────
   // Si la consulta menciona artículos con números fuera de rango válido,
-  // inyectar alerta explícita antes de que el modelo genere respuesta.
+  // inyectar alerta explícita y FORZAR respuesta que declare explícitamente "no encuentro en base de conocimiento"
   let guardrailBloque = "";
+  let hayReferenciaSospechosa = false;
+  let referenciaSospechosaFormato = "";
+
   // Detectar referencias sospechosas tanto en keywords_normativas como en el texto de la pregunta
   // La pregunta original no se pasa aquí, pero el clasificador ya la procesa y entrega keywords.
   // Si clasificacion no está disponible, el bloque queda vacío (fallback seguro).
@@ -110,7 +113,11 @@ REGLAS ABSOLUTAS — NO negociables:
       if (matchArt) {
         const num = parseInt(matchArt[1], 10);
         // LGUC: 1–380, OGUC: 1–390; cualquier número > 999 es inequívocamente inválido
-        if (num > 999) sospechosos.push(kw);
+        if (num > 999) {
+          sospechosos.push(kw);
+          hayReferenciaSospechosa = true;
+          referenciaSospechosaFormato = `Art. ${num}`;
+        }
         continue;
       }
 
@@ -119,15 +126,45 @@ REGLAS ABSOLUTAS — NO negociables:
       const matchDDU = kw.match(/DDU[- ]?(?:N[°º]?\s*)?(\d+)/i);
       if (matchDDU) {
         const num = parseInt(matchDDU[1], 10);
-        if (num > 600) sospechosos.push(kw); // DDU 999 es inequívocamente inexistente
+        if (num > 600) {
+          sospechosos.push(kw); // DDU 999 es inequívocamente inexistente
+          hayReferenciaSospechosa = true;
+          referenciaSospechosaFormato = `DDU ${num}`;
+        }
         continue;
+      }
+
+      // Detectar siglas de instrumentos NO reconocidos (no sean LGUC, OGUC, DDU, etc.)
+      // Palabras clave de instrumentos conocidos
+      const instrumentosValidos = /\b(LGUC|OGUC|DDU|DFL|DS|PRMS|PRC|DOM|SEREMI|RCA)\b/i;
+      const siglasDetectadas = kw.match(/\b[A-Z]{2,}[\s-]?\d*/g);
+      if (siglasDetectadas) {
+        for (const sigla of siglasDetectadas) {
+          if (!instrumentosValidos.test(sigla) && sigla.length <= 4) {
+            // Sigla no reconocida
+            sospechosos.push(kw);
+            hayReferenciaSospechosa = true;
+            referenciaSospechosaFormato = sigla;
+            break;
+          }
+        }
       }
     }
 
     if (sospechosos.length > 0) {
-      guardrailBloque = `\n\n⚠️ GUARDRAIL ACTIVO: La consulta menciona referencias que NO existen en la normativa chilena de urbanismo/construcción ni en mi base de conocimiento: ${sospechosos.join(", ")}.
-DEBES indicar explícitamente que no están en tu base de conocimiento. Usa la frase: "No encuentro [artículo/norma] en mi base de conocimiento."
-NO inventes ni simules información sobre estas referencias.`;
+      // Guardrail MÁS FUERTE: obligar explícitamente que en la respuesta aparezca la frase "base de conocimiento"
+      guardrailBloque = `\n\n🚨 GUARDRAIL CRÍTICO ACTIVO 🚨
+La consulta menciona referencias que DEFINITIVAMENTE NO existen en la normativa chilena ni en mi base de conocimiento:
+${sospechosos.map((s) => `  • ${s}`).join("\n")}
+
+INSTRUCCIÓN OBLIGATORIA:
+Tu respuesta DEBE contener EXPLÍCITAMENTE una de estas frases:
+  1. "No encuentro ${referenciaSospechosaFormato} en mi base de conocimiento."
+  2. "El ${referenciaSospechosaFormato} que mencionas no está en mi base de conocimiento."
+  3. "Esta referencia (${referenciaSospechosaFormato}) no se encuentra en mi base de conocimiento."
+
+NO GENERES respuesta que parezca válida. NO INVENTES contenido sobre esta(s) referencia(s).
+RESPONDE SIEMPRE explicitando que no existe en tu base de conocimiento.`;
     }
   }
 

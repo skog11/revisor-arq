@@ -92,18 +92,21 @@ async function evalCaso(caso: EvalCase, baseUrl: string, intentos = 3): Promise<
     error = (err as Error).message.slice(0, 100);
   }
 
-    // Retry si es error transitorio (rate limit o stream parse error de Gemini)
+    // Retry si es error transitorio (rate limit, TPM limit, o stream parse error)
     const esTransitorio = error && (
       error.includes("límite") ||
       error.includes("503") ||
       error.includes("429") ||
+      error.includes("413") ||
+      error.includes("TPM") ||
       error.includes("parse stream") ||
       error.includes("Failed to parse") ||
       error.includes("alta demanda") ||
-      error.includes("overloaded")
+      error.includes("overloaded") ||
+      error.includes("too large")
     );
     if (esTransitorio && intento < intentos) {
-      const espera = intento * 45_000;
+      const espera = intento * 180_000; // 3 min, 6 min backoff
       process.stdout.write(` [transitorio, reintento ${intento}/${intentos - 1} en ${espera / 1000}s] `);
       await new Promise((r) => setTimeout(r, espera));
       continue;
@@ -206,9 +209,9 @@ async function main() {
         console.log(`     ✗ Artículos no citados: ${r.articulosEsperadosFaltantes.join(", ")}`);
     }
 
-    // Pausa entre casos — Gemini free tier: 10 RPM, pero con clasificador = 2 calls/consulta
-    // Con respuestas de ~25-35s + 150s de pausa = ~1 req/180s → margen amplio
-    await new Promise((r) => setTimeout(r, 150_000));
+    // Pausa entre casos — Gemini Free Tier: 20 RPM
+    // 30s de pausa para ser más conservadores ya que Groq fallback está fallando
+    await new Promise((r) => setTimeout(r, 30_000));
   }
 
   // ── Resumen ──

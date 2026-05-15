@@ -19,7 +19,7 @@ const BodySchema = z.object({
 export async function POST(req: NextRequest) {
   // Límite estricto: 5 intentos por 15 minutos por IP
   const ip = getClientIp(req);
-  const rl = checkRateLimit(`admin_login:${ip}`, 5, 15 * 60 * 1000);
+  const rl = await checkRateLimit(`admin_login:${ip}`, 5, 15 * 60 * 1000);
   if (!rl.success) {
     return NextResponse.json(
       { error: "Demasiados intentos. Espere unos minutos e intente de nuevo." },

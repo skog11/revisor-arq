@@ -1,4 +1,26 @@
-# Estado de Sesión — Corpus Ingestion + Eval — 2026-05-07
+# Estado de Sesión — Ingesta Masiva Local — 2026-05-13
+
+## 🎯 Objetivo de la Sesión
+Resolver el bloqueo de API Keys y completar la ingesta de las 263 normas del corpus.
+
+## 🚀 Logros y Cambios Arquitectónicos
+1. **Nuevo Motor de Embeddings Local**: Se implementó soporte para `Transformers.js` (modelo `BGE-M3`) para eliminar la dependencia de Voyage AI y sus errores 401.
+2. **Optimización de Pipeline**:
+   - Batches aumentados de 32 a 128 (para Voyage).
+   - Intervalos entre normas reducidos de 20s a 1.5s.
+   - Implementación de `--local` y `--ollama` flags en `ingest.ts`.
+3. **Ingesta Masiva Completada**: ~12,000 chunks unificados con Voyage AI tras resolver límites de tokens con sub-chunking (400 tokens/chunk).
+4. **Funcionalidades SaaS Profesionales**:
+   - **Memoria Conversacional**: Chat multi-turno con Standalone Query Rewriting.
+   - **Integración OCR**: LlamaParse configurado para PDFs escaneados (DS 60/61).
+   - **Informes Premium**: PDF con firmas, logos y diseño editorial legal.
+   - **Alertas BCN**: Scraper automático cada lunes para monitoreo legal.
+
+## ⚠️ Notas Críticas
+- **Producción**: Se requiere actualizar manualmente la `VOYAGE_API_KEY` en Vercel.
+- **OCR**: Se requiere `LLAMAPARSE_API_KEY` en `.env.local` para procesar los reglamentos antiguos pendientes.
+
+---
 
 ## 🎯 Objetivo de la Sesión
 Completar la ingesta del corpus de normas y validar la calidad del RAG:

@@ -13,6 +13,11 @@
  *   data: {"type":"error","message":"..."} — error
  */
 
+// Aumentar el timeout máximo a 300s para soportar modo profundo en Vercel Pro.
+// En Vercel Hobby (60s) esta declaración no tiene efecto, pero no causa error.
+// Al hacer upgrade a Vercel Pro, el timeout se aplicará automáticamente.
+export const maxDuration = 300;
+
 import { NextRequest } from "next/server";
 import { z } from "zod";
 import {
@@ -24,7 +29,11 @@ import {
 } from "@/lib/rag";
 import { streamGemini, MODEL_NAME, MODEL_PRO, MODEL_FLASH } from "@/lib/gemini";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
-import { clasificarConsulta } from "@/lib/clasificador";
+import { 
+  procesarEntrada, 
+  type Message, 
+  type QueryClassificada 
+} from "@/lib/clasificador";
 import { routear } from "@/lib/router";
 import { recuperarPorCapas } from "@/lib/retriever";
 import { recuperarAgenticamente } from "@/lib/agentic-retriever";
@@ -35,9 +44,15 @@ import { createClient } from "@/lib/supabase-server";
 
 // ─── Validación ───────────────────────────────────────────────────────────────
 
+const MessageSchema = z.object({
+  role: z.enum(["user", "assistant"]),
+  content: z.string(),
+});
+
 const ChatSchema = z.object({
   pregunta: z.string().min(5, "La pregunta es muy corta").max(2000, "Pregunta demasiado larga"),
   modo: z.enum(["arquitecto", "abogado", "profundo"]).default("arquitecto"),
+  mensajes: z.array(MessageSchema).optional(),
 });
 
 // ─── Handler ──────────────────────────────────────────────────────────────────
@@ -52,7 +67,7 @@ export async function POST(req: NextRequest) {
   // Rate limiting: 20 consultas por hora por IP (saltado en evals)
   if (!isEval) {
     const ip = getClientIp(req);
-    const rl = checkRateLimit(ip, 20, 3_600_000);
+    const rl = await checkRateLimit(ip, 20, 3_600_000);
     if (!rl.success) {
       const minutos = Math.ceil(rl.resetMs / 60_000);
       return Response.json(
@@ -82,21 +97,23 @@ export async function POST(req: NextRequest) {
     return errorResponse(issues[0]?.message ?? "Datos inválidos");
   }
 
-  const { pregunta, modo } = parsed.data;
+  const { pregunta, modo, mensajes } = parsed.data;
 
-  // Obtener usuario autenticado (si hay sesión)
-  let userId: string | undefined;
-  try {
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user) userId = user.id;
-  } catch {
-    // Sin sesión — continuar como anónimo
-  }
+  // ── Helper: obtener usuario y verificar cuota ─────────────────────────────
+  // Se extrae como función para ejecutarse en paralelo con procesarEntrada.
+  async function obtenerUsuarioYVerificarCuota(): Promise<{ userId?: string; cuotaAgotada: boolean }> {
+    let userId: string | undefined;
+    try {
+      const supabase = await createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) userId = user.id;
+    } catch {
+      // Sin sesión — continuar como anónimo
+      return { cuotaAgotada: false };
+    }
 
-  // Verificar y consumir cuota (solo para usuarios autenticados)
-  // check_and_use_quota(uuid) RETURNS boolean — true = permitido, false = cuota agotada
-  if (userId) {
+    if (!userId) return { cuotaAgotada: false };
+
     try {
       const supabase = await createClient();
       const { data: permitido, error } = await supabase.rpc("check_and_use_quota", {
@@ -104,11 +121,30 @@ export async function POST(req: NextRequest) {
       }) as { data: boolean | null; error: unknown };
 
       if (error || permitido === false) {
-        return Response.json({ error: "Cuota mensual agotada. Actualiza tu plan en /pricing." }, { status: 429 });
+        return { userId, cuotaAgotada: true };
       }
     } catch {
       // Si falla la verificación de cuota, continuar (fail open)
     }
+
+    return { userId, cuotaAgotada: false };
+  }
+
+  // 1. Clasificar + reescribir query (Gemini) EN PARALELO con auth+cuota (Supabase).
+  //    procesarEntrada tarda ~3-8s; auth+cuota tarda ~300-600ms.
+  //    Ejecutarlos juntos ahorra ~400-600ms por request.
+  const [entradaResult, authResult] = await Promise.all([
+    procesarEntrada(pregunta, mensajes),
+    obtenerUsuarioYVerificarCuota(),
+  ]);
+
+  const { standalone_query: queryRAG, clasificacion } = entradaResult;
+  const { userId, cuotaAgotada } = authResult;
+
+  console.log(`[Chat] Standalone Query: ${queryRAG}`);
+
+  if (cuotaAgotada) {
+    return Response.json({ error: "Cuota mensual agotada. Actualiza tu plan en /pricing." }, { status: 429 });
   }
 
   // Crear stream SSE
@@ -136,11 +172,10 @@ export async function POST(req: NextRequest) {
         }
 
         // 1. Detectar cruces regulatorios (sincrónico, antes del embedding)
-        const cruces = detectarCruces(pregunta);
+        const cruces = detectarCruces(queryRAG);
         send({ type: "cruces", data: cruces });
 
-        // 1b. Clasificar la consulta para determinar tipo de proyecto y dominios
-        const clasificacion = await clasificarConsulta(pregunta);
+        // 1b. Enviar clasificación (ya procesada arriba)
         send({ type: "clasificacion", data: {
           tipo_proyecto: clasificacion.tipo_proyecto,
           etapa: clasificacion.etapa,
@@ -154,8 +189,8 @@ export async function POST(req: NextRequest) {
         // 2. Recuperar chunks — agentic (2 rondas + análisis de gaps) en modo profundo,
         //    estándar (HyDE + multi-query + rerank) en arquitecto/abogado
         const chunks = modo === "profundo"
-          ? await recuperarAgenticamente(pregunta, plan, 20)
-          : await recuperarPorCapas(pregunta, plan);
+          ? await recuperarAgenticamente(queryRAG, plan, 20)
+          : await recuperarPorCapas(queryRAG, plan);
 
         // 3. Enviar fuentes al cliente (antes de generar)
         send({
@@ -229,7 +264,17 @@ export async function POST(req: NextRequest) {
         send({ type: "done" });
       } catch (err) {
         const message = err instanceof Error ? err.message : "Error desconocido";
-        send({ type: "error", message: message.slice(0, 300) });
+        console.error("[route] Error en pipeline RAG:", err);
+        
+        // Manejo específico cuando fallan ambos LLMs por rate limits o fallos de API
+        if (message.includes("429") || message.includes("503") || message.includes("rate limit") || message.includes("Rate limit")) {
+           send({ 
+             type: "error", 
+             message: "El servicio se encuentra experimentando una alta demanda y no pudo procesar tu consulta en este momento. Por favor, intenta nuevamente en unos minutos." 
+           });
+        } else {
+           send({ type: "error", message: `Ocurrió un error al procesar la respuesta: ${message.slice(0, 200)}` });
+        }
       } finally {
         controller.close();
       }

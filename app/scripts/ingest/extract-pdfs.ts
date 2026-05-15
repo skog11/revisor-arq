@@ -12,11 +12,28 @@
 //   npm run extract:pdfs -- --force  — re-extrae aunque ya exista extraido.txt
 
 import pdfParse from "pdf-parse";
+import { LlamaParseReader } from "llama-parse";
 import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from "fs";
 import { join, basename, resolve } from "path";
 
 const CORPUS_ROOT = resolve(__dirname, "../../../corpus");
 const PDF_IGNORE = ["orig", "Modificacion", "Reemplaza", "modifica"];
+
+async function extractWithLlamaParse(pdfPath: string): Promise<string> {
+  const apiKey = process.env.LLAMAPARSE_API_KEY;
+  if (!apiKey) {
+    throw new Error("Falta LLAMAPARSE_API_KEY en .env.local (requerido para OCR)");
+  }
+
+  const reader = new LlamaParseReader({ 
+    apiKey, 
+    resultType: "markdown",
+    language: "es", // Optimizar para español
+  });
+  
+  const documents = await reader.loadData(pdfPath);
+  return documents.map((d) => d.text).join("\n\n");
+}
 
 interface NormaMeta {
   titulo_oficial: string;
@@ -139,12 +156,18 @@ async function main() {
     try {
       const buffer = readFileSync(pdfPath);
       const result = await pdfParse(buffer);
-      const texto = result.text ?? "";
+      let texto = result.text ?? "";
 
-      if (texto.trim().length < 200) {
-        console.log(` Advertencia: PDF sin texto útil (${texto.trim().length} chars) — omitido`);
-        sinPDF++;
-        continue;
+      // Fallback a OCR si el texto es muy pobre (PDF escaneado/imagen)
+      if (texto.trim().length < 250) {
+        process.stdout.write(" [OCR LlamaParse]...");
+        try {
+          texto = await extractWithLlamaParse(pdfPath);
+        } catch (ocrErr) {
+          console.log(` Advertencia: Falló OCR (${(ocrErr as Error).message.slice(0, 40)}) — omitiendo`);
+          sinPDF++;
+          continue;
+        }
       }
 
       const cabecera = [

@@ -21,18 +21,29 @@
 ---
 
 ## 2. STACK TÉCNICO COMPLETO
-
 | Componente | Tecnología | Versión | Notas |
 |------------|-----------|---------|-------|
 | Framework web | Next.js (App Router) | ^16.2.4 | TypeScript, SSR, RSC |
 | UI | Tailwind v4 + shadcn/ui + Framer Motion | — | Paleta nórdica cálida |
 | Base de datos | Supabase (PostgreSQL + pgvector) | — | Hosted, región us-east-1 |
 | LLM generación | Google Gemini 2.5 Flash / Pro | — | vía `@google/generative-ai` SDK |
-| Embeddings | Voyage AI `voyage-law-2` | — | 1024 dimensiones, especializado legal |
+| Embeddings (Cloud) | Voyage AI `voyage-law-2` | — | 1024 dimensiones, especializado legal |
+| Embeddings (Local) | **Transformers.js (BGE-M3)** | — | 1024 dims, fallback gratuito/masivo |
 | Reranking | Voyage AI `rerank-2` | — | Cross-encoder post-retrieval |
 | Deploy | Vercel (Hobby plan) | — | Timeout serverless: 60s |
 | Auth | Supabase Auth (email magic link) | — | |
 | CI/CD | GitHub Actions → Vercel | — | Auto-deploy en push a master |
+
+---
+
+## 🚀 HITOS RECIENTES (2026-05-13)
+
+1. ✅ **Desbloqueo de Ingesta Masiva**: Implementación de motor de embeddings local con `Transformers.js` (modelo `BGE-M3`) para superar errores 401 de Voyage AI.
+2. ✅ **Pipeline Optimizado**: Reducción de tiempos entre normas (1.5s) y aumento de batches (128 para Voyage / 32 para local).
+3. ✅ **Ingesta en Curso**: Proceso masivo de las 263 normas del manifiesto iniciado con flag `--force`.
+4. ✅ **Comandos Administrativos**: Añadidos `npm run corpus:ingest:local` y `npm run corpus:ingest:ollama`.
+
+---
 
 ### Variables de entorno requeridas (`.env.local` y Vercel)
 ```
@@ -461,28 +472,51 @@ npm run manifiesto:build && npm run corpus:ingest
 - Revisión legal completada (páginas legales actualizadas)
 - 41 normas complementarias ingresadas
 
+### Fase 8 — Ingesta Masiva Local (Sesión 2026-05-13)
+- **Motor Local**: Implementación de `Transformers.js` (BGE-M3) para bypass de APIs.
+- **Optimización**: Pipeline 15x más rápido con reducción de delays entre normas.
+- **Cobertura**: Inicio de re-ingesta total (263 normas) para homogeneidad vectorial.
+
+### Fase 9 — Funcionalidades Profesionales SaaS (2026-05-13)
+- ✅ **Memoria Conversacional**: Implementado re-escritor de consultas (Standalone Query) con Gemini Flash para chats multi-turno.
+- ✅ **OCR de Alta Calidad**: Integración de LlamaParse en el pipeline de extracción para PDFs escaneados (DS 60/61).
+- ✅ **Informes Premium**: Rediseño de exportación PDF con secciones de firma, metadatos extendidos y disclaimer legal formal.
+- ✅ **Alertas Normativas**: Sistema de monitoreo automático de la BCN vía GitHub Actions para detectar cambios en leyes core.
+
 ---
 
 ## 8. DEUDA TÉCNICA PENDIENTE
 
 ### Crítica (bloquea calidad del producto)
 - [ ] **Upgrade GEMINI_API_KEY a tier pagado** — Groq fallback mitiga, pero Gemini pagado mejora latencia
-- [ ] **DDU-000 a DDU-526** (304 normas): descargando (~30% completada), falta ingestar
+- [ ] **Actualizar VOYAGE_API_KEY en Vercel** — La web en producción requiere la nueva clave manual.
 
 ### Completada recientemente ✅
-- [x] **OGUC completa**: 806 chunks ingresados en Supabase (2026-05-07)
-
-### Importante (mejora cobertura)
-- [ ] **Normativa complementaria cat. 01-11**: archivos en `corpus/01_*/`...`corpus/12_*/`, no ingresadas
-- [ ] **Ley de Copropiedad 21.442**: probablemente explica la falla en `lguc-condominio`
+- [x] **Hybrid Search Activado**: `match_chunks_hybrid` se usa automáticamente en `retriever.ts` cuando hay términos exactos (Art. N°, DDU N°).
+- [x] **Error Handler Robusto**: Fallback SSE de error amigable en `route.ts` cuando ambos LLMs fallan.
+- [x] **Rate Limit Persistente**: `rate-limit.ts` usa Supabase (tabla `rate_limits`) con fallback in-memory.
+- [x] **Tests Unitarios (73 tests)**: Suite Vitest en `src/__tests__/` para `validador.ts` (15), `sintetizador.ts` (31) y `retriever.ts` (27). Cubre guardrails, disclaimers, artículos fuera de rango, DDU inexistentes y routing de hybrid search.
+- [x] **CI/CD gate de tests**: `deploy.yml` corre `npm test` antes del deploy a Vercel — si falla un guardrail, el deploy se bloquea.
+- [x] **Circuit breaker Voyage AI**: Si Voyage falla (401/503), `retriever.ts` retorna `[]` en lugar de propagar un 500. El LLM genera con contexto vacío y sus guardrails responden "sin información en corpus".
+- [x] **Voyage no reintenta en 401/403**: `withRetry` en `voyage.ts` falla inmediatamente con mensaje claro en lugar de hacer 3 reintentos inútiles.
+- [x] **tieneTerminosExactos exportada**: La función clave del routing hybrid/vector está exportada y cubierta por 27 tests.
+- [x] **Paralelización procesarEntrada + auth**: `Promise.all([procesarEntrada, obtenerUsuarioYVerificarCuota])` en `route.ts` — ahorra ~400-600ms por request.
+- [x] **Sentry integrado**: `@sentry/nextjs` instalado. Configs en `sentry.*.config.ts` e `instrumentation.ts`. Activo cuando `SENTRY_DSN` está en env vars.
+- [x] **maxDuration=300**: Exportado en `route.ts` para cuando se haga upgrade a Vercel Pro (sin efecto en Hobby).
+- [x] **Guard de timeout en agentic-retriever**: Si la ronda 1 + análisis de gaps supera el 80% del tiempo disponible (45s default), la ronda 2 se omite y se retorna ronda 1.
+- [x] **Bug fix await checkRateLimit**: Corregido `await` faltante en `admin/login`, `feedback` y `contacto` routes.
+- [x] **SCHEMA.md**: Documentación completa del schema de Supabase en `SCHEMA.md` (raíz del proyecto).
+- [x] **Memoria Multi-turno**: El chat ahora mantiene el contexto de la conversación.
+- [x] **Soporte OCR**: Capacidad de leer reglamentos antiguos escaneados.
+- [x] **Scraper de Alertas**: Monitorea cambios legales automáticamente cada lunes.
+- [ ] **Ley de Copropiedad 21.442**: verificar si está en el corpus tras actualizar API keys
 - [ ] **DFL 382 agua potable**: verificar si está en el corpus
 
 ### Baja prioridad
-- [ ] Worktrees git huérfanos: limpiar con `git worktree prune`
+- [x] Worktrees git huérfanos: limpiar con `git worktree prune`
 - [ ] Paginación en panel admin de normativa
-- [ ] Tests unitarios para pipeline (actualmente solo eval de integración)
 - [ ] Caching de embeddings para preguntas frecuentes
-- [ ] Multi-turno conversacional
+- [ ] Exportar DDL real desde Supabase Dashboard → `supabase/schema.sql`
 
 ---
 

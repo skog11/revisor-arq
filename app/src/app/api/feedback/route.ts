@@ -16,7 +16,7 @@ const FeedbackSchema = z.object({
 
 export async function POST(req: NextRequest) {
   const ip = getClientIp(req);
-  const rl = checkRateLimit(`fb:${ip}`, 30, 3_600_000);
+  const rl = await checkRateLimit(`fb:${ip}`, 30, 3_600_000);
   if (!rl.success) return Response.json({ error: "Demasiadas solicitudes" }, { status: 429 });
 
   let body: unknown;

@@ -9,16 +9,12 @@ export const MODEL_PRO = "gemini-2.5-pro";
 export const MODEL_NAME = MODEL_FLASH; // alias para backward compat
 
 // Reintentos para llamadas con fallback (clasificador, HyDE, multi-query)
-// Bajo 15 RPM de capa free, fallar rápido y usar fallback libera el presupuesto RPM
-// para el paso crítico (streamGemini), que es el único sin fallback.
-const MAX_RETRIES = 4;
-const RETRY_DELAY_MS = 8_000; // para generateGemini (anulado por opts.maxRetries)
+const MAX_RETRIES = 6;
+const RETRY_DELAY_MS = 10_000;
 
-// Reintentos para streamGemini en funciones serverless con timeout de 60s:
-// 3 intentos × (4s + 8s) = ~12-20s de espera → la función lanza error en <30s
-// → el eval runner puede reintentar el request completo cuando el RPM se haya liberado
-const MAX_RETRIES_STREAM = 3;
-const STREAM_RETRY_DELAY_MS = 4_000; // 4s base — backoff: 4s, 8s
+// Reintentos para streamGemini:
+const MAX_RETRIES_STREAM = 5;
+const STREAM_RETRY_DELAY_MS = 5_000; // 5s base — backoff: 5s, 10s, 20s, 40s
 
 function getClient() {
   const apiKey = process.env.GEMINI_API_KEY;
@@ -97,14 +93,13 @@ export async function streamGemini(
   const model = getGeminiModel(systemPrompt, modelo);
   let lastErr: unknown;
 
-  // MAX_RETRIES_STREAM=3 con STREAM_RETRY_DELAY_MS=4000: backoff 4s, 8s → máx ~12-20s
-  // Diseñado para fallar dentro del timeout serverless (60s) y dejar al eval runner reintentar
   for (let attempt = 0; attempt < MAX_RETRIES_STREAM; attempt++) {
     try {
       return await model.generateContentStream(userMessage);
     } catch (err) {
       lastErr = err;
-      // Si falla y es error de rate limit, intentar Groq como fallback
+      // Groq fallback deshabilitado por error 401 persistente en claves locales
+      /*
       if (isRetryable(err) && attempt === MAX_RETRIES_STREAM - 1) {
         console.log("[Fallback] Gemini rate limit detectado. Intentando con Groq...");
         try {
@@ -116,8 +111,11 @@ export async function streamGemini(
           throw new Error(friendlyError(lastErr));
         }
       }
+      */
       if (!isRetryable(err) || attempt === MAX_RETRIES_STREAM - 1) break;
-      await sleep(jitter(STREAM_RETRY_DELAY_MS * Math.pow(2, attempt))); // backoff con jitter: ~4s, ~8s
+      const delay = jitter(STREAM_RETRY_DELAY_MS * Math.pow(2, attempt));
+      console.log(`[Gemini] Error reintentable (intento ${attempt + 1}/${MAX_RETRIES_STREAM}), esperando ${Math.round(delay)}ms...`);
+      await sleep(delay);
     }
   }
 

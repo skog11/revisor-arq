@@ -20,7 +20,7 @@ const ContactoSchema = z.object({
 export async function POST(req: Request) {
   // Rate limiting: 10 contactos por hora por IP
   const ip = getClientIp(req);
-  const rl = checkRateLimit(ip, 10, 3_600_000);
+  const rl = await checkRateLimit(ip, 10, 3_600_000);
   if (!rl.success) {
     const minutos = Math.ceil(rl.resetMs / 60_000);
     return NextResponse.json(

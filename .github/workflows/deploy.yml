@@ -32,6 +32,10 @@ jobs:
         working-directory: app
         run: npm ci
 
+      - name: Tests unitarios (guardrails críticos)
+        working-directory: app
+        run: npm run test
+
       - name: Deploy a Vercel (producción)
         working-directory: app
         run: vercel --prod --yes --token=${{ secrets.VERCEL_TOKEN }}

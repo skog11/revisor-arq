@@ -10,27 +10,34 @@
     "corpus:download": "tsx --env-file=.env.local scripts/download/download-all.ts",
     "corpus:verify": "tsx scripts/download/verify-corpus.ts",
     "corpus:ingest": "tsx --env-file=.env.local scripts/ingest/ingest.ts",
+    "corpus:ingest:ollama": "tsx --env-file=.env.local scripts/ingest/ingest.ts --ollama",
+    "corpus:ingest:local": "tsx --env-file=.env.local scripts/ingest/ingest.ts --local",
     "corpus:ingest:dry": "tsx --env-file=.env.local scripts/ingest/ingest.ts --dry",
     "extract:pdfs": "tsx scripts/ingest/extract-pdfs.ts",
     "extract:pdfs:dry": "tsx scripts/ingest/extract-pdfs.ts --dry",
     "manifiesto:build": "tsx scripts/ingest/build-manifiesto.ts",
     "manifiesto:build:dry": "tsx scripts/ingest/build-manifiesto.ts --dry",
     "corpus:referencias": "tsx --env-file=.env.local scripts/ingest/detectar-referencias.ts",
-    "eval": "tsx --env-file=.env.local scripts/eval/run-eval.ts"
+    "eval": "tsx --env-file=.env.local scripts/eval/run-eval.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.0",
     "@google/generative-ai": "^0.24.1",
     "@react-pdf/renderer": "^4.5.1",
+    "@sentry/nextjs": "^10.53.1",
     "@supabase/ssr": "^0.10.2",
     "@supabase/supabase-js": "^2.103.3",
     "@vercel/analytics": "^2.0.1",
+    "@xenova/transformers": "^2.17.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "framer-motion": "^12.38.0",
     "groq-sdk": "^1.1.2",
     "jspdf": "^4.2.1",
+    "llama-parse": "^0.1.0",
     "lucide-react": "^1.8.0",
     "next": "^16.2.4",
     "next-themes": "^0.4.6",
@@ -50,6 +57,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@testing-library/jest-dom": "^6.9.1",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
@@ -61,6 +69,7 @@
     "pg": "^8.20.0",
     "tailwindcss": "^4",
     "tsx": "^4.19.3",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.6"
   }
 }

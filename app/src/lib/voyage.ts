@@ -80,9 +80,21 @@ async function withRetry<T>(fn: () => Promise<T>, attempt = 0): Promise<T> {
   try {
     return await fn();
   } catch (err) {
-    const name = (err as Error).name ?? "";
-    // No reintentar en timeouts o aborts — ya esperamos suficiente
+    const name   = (err as Error).name    ?? "";
+    const message = (err as Error).message ?? "";
+
+    // No reintentar en timeouts/aborts — ya esperamos suficiente
     if (name === "AbortError" || name === "TimeoutError") throw err;
+
+    // No reintentar en errores de autenticación (401/403): reintentar es inútil
+    // y consumiría quota de Gemini sin posibilidad de recuperación.
+    if (message.includes("401") || message.includes("403")) {
+      throw new Error(
+        `[Voyage] API key inválida o sin permisos (${message.slice(0, 120)}). ` +
+        "Verifica VOYAGE_API_KEY en las variables de entorno."
+      );
+    }
+
     if (attempt >= MAX_RETRIES) throw err;
     await new Promise((r) => setTimeout(r, Math.pow(2, attempt) * 500));
     return withRetry(fn, attempt + 1);

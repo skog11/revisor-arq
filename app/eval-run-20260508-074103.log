@@ -1,0 +1,24 @@
+
+> app@0.1.0 eval
+> tsx --env-file=.env.local scripts/eval/run-eval.ts --url=https://revisor-arq.vercel.app
+
+
+🧪 REVISOR ARQ — Evaluaciones
+   URL: https://revisor-arq.vercel.app
+   Casos: 9
+
+  [lguc-116-permiso                ] [31m✗[0m  fuentes=20  32148ms  ERROR: Groq fallback failed: Error: 413 {"error":{"message":"Request too large for model `llama-3.1-8b-instant` in organization `org_01khyxq0gbejsapaxma9rwd6q1` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Req
+  [lguc-subdivison                 ] [31m✗[0m  fuentes=20  31563ms  ERROR: Groq fallback failed: Error: 413 {"error":{"message":"Request too large for model `llama-3.1-8b-instant` in organization `org_01khyxq0gbejsapaxma9rwd6q1` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Req
+  [lguc-planificacion              ] [31m✗[0m  fuentes=5  32497ms  ERROR: Groq fallback failed: Error: 413 {"error":{"message":"Request too large for model `llama-3.1-8b-instant` in organization `org_01khyxq0gbejsapaxma9rwd6q1` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Req
+  [lguc-condominio                 ] [31m✗[0m  fuentes=5  34880ms  ERROR: Groq fallback failed: Error: 413 {"error":{"message":"Request too large for model `llama-3.1-8b-instant` in organization `org_01khyxq0gbejsapaxma9rwd6q1` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Req
+  [ddu-541                         ] [31m✗[0m  fuentes=5  31965ms  ERROR: Groq fallback failed: Error: 413 {"error":{"message":"Request too large for model `llama-3.1-8b-instant` in organization `org_01khyxq0gbejsapaxma9rwd6q1` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Req
+  [oguc-rasante                    ] [31m✗[0m  fuentes=5  34392ms  ERROR: Groq fallback failed: Error: 413 {"error":{"message":"Request too large for model `llama-3.1-8b-instant` in organization `org_01khyxq0gbejsapaxma9rwd6q1` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Req
+  [dfl382-agua                     ] [31m✗[0m  fuentes=3  30489ms  ERROR: Groq fallback failed: Error: 413 {"error":{"message":"Request too large for model `llama-3.1-8b-instant` in organization `org_01khyxq0gbejsapaxma9rwd6q1` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Req
+  [guardrail-articuloinexistente   ] [31m✗[0m  fuentes=3  36005ms  ERROR: Groq fallback failed: Error: 413 {"error":{"message":"Request too large for model `llama-3.1-8b-instant` in organization `org_01khyxq0gbejsapaxma9rwd6q1` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Req
+  [guardrail-normafalsa            ] [31m✗[0m  fuentes=3  33336ms  ERROR: Groq fallback failed: Error: 413 {"error":{"message":"Request too large for model `llama-3.1-8b-instant` in organization `org_01khyxq0gbejsapaxma9rwd6q1` service tier `on_demand` on tokens per minute (TPM): Limit 6000, Req
+
+────────────────────────────────────────────────────────────
+  Resultado: 0/9 pasados  (9 fallados)
+  Latencia promedio: 33031ms
+
+  Resultados guardados en: scripts/eval/resultados/2026-05-08.json

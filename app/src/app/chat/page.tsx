@@ -125,10 +125,22 @@ export default function ChatPage() {
       abortRef.current = ctrl;
 
       try {
+        // Preparar historial para enviar al backend (contexto multi-turno)
+        const historial = mensajes
+          .filter((m) => !m.streaming && !m.error)
+          .map((m) => ({
+            role: m.rol === "usuario" ? "user" : "assistant",
+            content: m.contenido,
+          }));
+
         const res = await fetch("/api/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ pregunta: texto, modo }),
+          body: JSON.stringify({
+            pregunta: texto,
+            modo,
+            mensajes: [...historial, { role: "user", content: texto }],
+          }),
           signal: ctrl.signal,
         });
 

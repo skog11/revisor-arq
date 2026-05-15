@@ -25,9 +25,11 @@ import { parseDDUFile } from "./parsers/ddu";
 import { parseLey } from "./parsers/ley";
 import { chunkearNorma } from "./chunker";
 import { embedTextos } from "./embedder";
+import { embedTextosOllama } from "./embedder-ollama";
+import { embedTextosTransformers } from "./embedder-transformers";
 import type { TipoNorma } from "./types";
 
-const BETWEEN_NORMAS_MS = 20_000; // 20s entre normas para respetar rate limits de embedding
+const BETWEEN_NORMAS_MS = 1_500; // Reducido de 20s a 1.5s (más ágil)
 
 // ─── Supabase ─────────────────────────────────────────────────────────────────
 
@@ -49,6 +51,8 @@ function parsearArgs() {
   return {
     dry: args.includes("--dry"),
     force: args.includes("--force"),
+    ollama: args.includes("--ollama"),
+    local: args.includes("--local"),
     solo: args.find((a) => a.startsWith("--solo="))?.split("=")[1],
   };
 }
@@ -152,7 +156,7 @@ async function insertarChunks(
 
     const rows = batch.map((c, idx) => ({
       norma_id: normaId,
-      texto: c.texto,
+      texto: c.texto.replace(/\u0000/g, ""), // Limpiar caracteres nulos que rompen Postgres
       tokens: c.tokens,
       orden: c.orden,
       embedding: embBatch[idx],
@@ -178,7 +182,7 @@ async function insertarChunks(
 
 async function procesarNorma(
   key: string,
-  opts: { dry: boolean; force: boolean }
+  opts: { dry: boolean; force: boolean; ollama: boolean; local: boolean }
 ): Promise<{ key: string; chunks: number; status: string }> {
   const manifiesto = loadManifiesto();
   const entry = manifiesto[key];
@@ -245,7 +249,13 @@ async function procesarNorma(
   const textos = chunks.map((c) => c.texto);
   let embeddings: number[][];
   try {
-    embeddings = await embedTextos(textos, `[${key}]`);
+    if (opts.local) {
+      embeddings = await embedTextosTransformers(textos, `[${key}]`);
+    } else if (opts.ollama) {
+      embeddings = await embedTextosOllama(textos, `[${key}]`);
+    } else {
+      embeddings = await embedTextos(textos, `[${key}]`);
+    }
   } catch (err) {
     return { key, chunks: 0, status: `error embedding: ${(err as Error).message.slice(0, 80)}` };
   }
@@ -282,11 +292,13 @@ async function procesarNorma(
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
 async function main() {
-  const { dry, force, solo } = parsearArgs();
+  const { dry, force, solo, ollama, local } = parsearArgs();
 
   console.log("\n🚀 Pipeline de ingesta REVISOR ARQ");
   if (dry) console.log("   ⚠  Modo DRY RUN — no se modificará Supabase");
   if (force) console.log("   ⚠  Modo FORCE — reprocesa sin importar cambios");
+  if (local) console.log("   ⚠  Modo LOCAL (Transformers.js) — sin APIs externas");
+  if (ollama) console.log("   ⚠  Modo OLLAMA — local vía Ollama");
 
   const manifiesto = loadManifiesto();
   const keys = Object.keys(manifiesto);
@@ -303,7 +315,7 @@ async function main() {
 
   for (const key of toProcess) {
     process.stdout.write(`\n→ ${key.padEnd(22)} `);
-    const r = await procesarNorma(key, { dry, force });
+    const r = await procesarNorma(key, { dry, force, ollama, local });
     console.log(`[${r.status}]${r.chunks ? ` — ${r.chunks} chunks` : ""}`);
     resultados.push(r);
 

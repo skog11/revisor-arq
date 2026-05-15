@@ -87,27 +87,45 @@ async function scrapeIndexPage(pageUrl: string, tipo: string): Promise<DDUItem[]
 }
 
 async function downloadAndParsePDF(pdfUrl: string): Promise<{ text: string; pages: number } | null> {
-  const res = await fetch(pdfUrl, { headers: { "User-Agent": UA } });
-  if (!res.ok) {
-    console.log(`✗ HTTP ${res.status}`);
-    return null;
+  const MAX_RETRIES = 3;
+  let lastError: Error | null = null;
+
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30_000);
+
+      const res = await fetch(pdfUrl, {
+        headers: { "User-Agent": UA },
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
+
+      const buffer = Buffer.from(await res.arrayBuffer());
+      if (buffer.length < 1_000) {
+        throw new Error(`PDF vacío (${buffer.length} bytes)`);
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const pdfParse = require("pdf-parse") as (buf: Buffer) => Promise<{ text: string; numpages: number }>;
+      const data = await pdfParse(buffer);
+      return { text: data.text, pages: data.numpages };
+    } catch (err) {
+      lastError = err as Error;
+      if (attempt < MAX_RETRIES) {
+        const delay = Math.pow(2, attempt) * 1000;
+        process.stdout.write(`(reintentando ${attempt}/${MAX_RETRIES} en ${delay}ms...) `);
+        await sleep(delay);
+      }
+    }
   }
 
-  const buffer = Buffer.from(await res.arrayBuffer());
-  if (buffer.length < 1_000) {
-    console.log(`✗ PDF vacío (${buffer.length} bytes)`);
-    return null;
-  }
-
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const pdfParse = require("pdf-parse") as (buf: Buffer) => Promise<{ text: string; numpages: number }>;
-    const data = await pdfParse(buffer);
-    return { text: data.text, pages: data.numpages };
-  } catch (err) {
-    console.log(`✗ Error PDF: ${(err as Error).message.slice(0, 60)}`);
-    return null;
-  }
+  console.log(`✗ Error tras ${MAX_RETRIES} intentos: ${lastError?.message.slice(0, 60)}`);
+  return null;
 }
 
 export async function downloadDDUs(
@@ -170,7 +188,13 @@ export async function downloadDDUs(
 
       // Guardar PDF también
       try {
-        const pdfRes = await fetch(item.pdfUrl, { headers: { "User-Agent": UA } });
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 30_000);
+        const pdfRes = await fetch(item.pdfUrl, {
+          headers: { "User-Agent": UA },
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
         if (pdfRes.ok) writeFileSync(pdfPath, Buffer.from(await pdfRes.arrayBuffer()));
         await sleep(RATE_MS);
       } catch { /* PDF opcional */ }

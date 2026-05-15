@@ -123,12 +123,16 @@ ${resumenChunks}
  * @param pregunta       Consulta original del usuario
  * @param plan           Plan de recuperación generado por routear()
  * @param maxChunksFinal Límite total de chunks en el resultado (default 20)
+ * @param timeoutMs      Tiempo máximo total en ms antes de omitir la ronda 2 (default 45s)
  */
 export async function recuperarAgenticamente(
   pregunta: string,
   plan: PlanRecuperacion,
-  maxChunksFinal: number = 20
+  maxChunksFinal: number = 20,
+  timeoutMs: number = 45_000
 ): Promise<ChunkRecuperado[]> {
+  const startedAt = Date.now();
+
   // ── Ronda 1: retrieval estándar ───────────────────────────────────────────
   const ronda1 = await recuperarPorCapas(pregunta, plan);
 
@@ -152,6 +156,17 @@ export async function recuperarAgenticamente(
     analisis.cobertura === "completa" ||
     analisis.gaps.length === 0
   ) {
+    return ronda1;
+  }
+
+  // ── Guard de timeout ──────────────────────────────────────────────────────
+  // Si la ronda 1 + análisis ya consumieron más del 80% del tiempo disponible,
+  // omitir la ronda 2 para no arriesgar un timeout 504 en Vercel.
+  const elapsedMs = Date.now() - startedAt;
+  if (elapsedMs > timeoutMs * 0.8) {
+    console.warn(
+      `[agentic-retriever] Omitiendo ronda 2: ${elapsedMs}ms > ${timeoutMs * 0.8}ms (80% del timeout). Retornando ronda 1.`
+    );
     return ronda1;
   }
 

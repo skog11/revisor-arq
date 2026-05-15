@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { withSentryConfig } from "@sentry/nextjs";
 
 const nextConfig: NextConfig = {
   // pdf-parse usa módulos Node.js nativos; debe ser tratado como external
@@ -41,4 +42,19 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withSentryConfig(nextConfig, {
+  // Organización y proyecto en Sentry (opcionales — se autodetectan si hay SENTRY_AUTH_TOKEN)
+  // org: "tu-org",
+  // project: "revisor-arq",
+
+  // Sin emitir advertencias si no hay auth token
+  silent: true,
+
+  // Ocultar source maps del bundle de cliente
+  sourcemaps: {
+    deleteSourcemapsAfterUpload: true,
+  },
+
+  // Telemetría de Sentry deshabilitada
+  telemetry: false,
+});

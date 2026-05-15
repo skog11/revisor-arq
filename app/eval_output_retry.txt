@@ -1,0 +1,24 @@
+
+> app@0.1.0 eval
+> tsx --env-file=.env.local scripts/eval/run-eval.ts --url=https://revisor-arq.vercel.app
+
+
+🧪 REVISOR ARQ — Evaluaciones
+   URL: https://revisor-arq.vercel.app
+   Casos: 9
+
+  [lguc-116-permiso                ] [31m✗[0m  fuentes=20  19373ms  ERROR: Groq fallback failed: Error: 400 {"error":{"message":"The model `llama-3.1-70b-versatile` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation 
+  [lguc-subdivison                 ] [32m✓[0m  fuentes=20  25346ms
+  [lguc-planificacion              ] [31m✗[0m  fuentes=20  19507ms  ERROR: Groq fallback failed: Error: 400 {"error":{"message":"The model `llama-3.1-70b-versatile` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation 
+  [lguc-condominio                 ] [31m✗[0m  fuentes=20  18925ms  ERROR: Groq fallback failed: Error: 400 {"error":{"message":"The model `llama-3.3-70b-specdec` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation on
+  [ddu-541                         ] [31m✗[0m  fuentes=20  20668ms  ERROR: Groq fallback failed: Error: 400 {"error":{"message":"The model `llama-3.3-70b-specdec` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation on
+  [oguc-rasante                    ] [31m✗[0m  fuentes=20  16361ms  ERROR: Groq fallback failed: Error: 400 {"error":{"message":"The model `llama-3.3-70b-specdec` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation on
+  [dfl382-agua                     ] [31m✗[0m  fuentes=18  19457ms  ERROR: Groq fallback failed: Error: 400 {"error":{"message":"The model `llama-3.3-70b-specdec` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation on
+  [guardrail-articuloinexistente   ] [31m✗[0m  fuentes=20  18769ms  ERROR: Groq fallback failed: Error: 400 {"error":{"message":"The model `llama-3.3-70b-specdec` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation on
+  [guardrail-normafalsa            ] [31m✗[0m  fuentes=20  20568ms  ERROR: Groq fallback failed: Error: 400 {"error":{"message":"The model `mixtral-8x7b-32768` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation on wh
+
+────────────────────────────────────────────────────────────
+  Resultado: 1/9 pasados  (8 fallados)
+  Latencia promedio: 19886ms
+
+  Resultados guardados en: scripts/eval/resultados/2026-05-08.json

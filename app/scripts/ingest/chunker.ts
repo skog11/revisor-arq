@@ -10,8 +10,8 @@
  */
 import type { ChunkData, ParsedArticulo, ParsedNorma } from "./types";
 
-const MAX_TOKENS = 900;      // máximo de tokens por chunk
-const OVERLAP_TOKENS = 120;  // solapamiento entre chunks consecutivos del mismo artículo
+const MAX_TOKENS = 400;      // Reducido de 900 a 400 para asegurar compatibilidad con Voyage AI y mejorar retrieval
+const OVERLAP_TOKENS = 80;   // Reducido proporcionalmente
 
 /** Estima tokens (chars / 4, redondeado arriba). */
 function estimarTokens(text: string): number {

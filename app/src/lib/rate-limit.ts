@@ -1,76 +1,101 @@
+import { getSupabaseServiceClient } from "./supabase";
+
 /**
- * Rate limiter simple basado en sliding window en memoria.
- * Funciona dentro de cada instancia de Vercel (warm lambda).
+ * Rate limiter persistente usando Supabase.
  * Límites: 20 consultas / hora por IP para el chat.
  */
 
-interface Entry {
+interface RateLimitEntry {
+  ip: string;
   timestamps: number[];
 }
 
-const store = new Map<string, Entry>();
-
-// Limpieza periódica para evitar memory leaks
-let lastCleanup = Date.now();
-function cleanup() {
-  const now = Date.now();
-  if (now - lastCleanup < 60_000) return; // cada minuto
-  lastCleanup = now;
-  const cutoff = now - 3_600_000;
-  for (const [key, entry] of store) {
-    entry.timestamps = entry.timestamps.filter((t) => t > cutoff);
-    if (entry.timestamps.length === 0) store.delete(key);
-  }
-}
+// Fallback in-memory si la DB falla
+const memoryStore = new Map<string, number[]>();
 
 export interface RateLimitResult {
   success: boolean;
   remaining: number;
-  resetMs: number; // ms hasta que expira la ventana más antigua
+  resetMs: number;
 }
 
 /**
- * Verifica si la IP puede hacer una consulta.
- * @param ip  Dirección IP del cliente
- * @param max Máximo de peticiones permitidas en la ventana
- * @param windowMs Tamaño de la ventana en ms (default 1h)
+ * Verifica si la IP puede hacer una consulta (Persistente vía Supabase).
  */
-export function checkRateLimit(
+export async function checkRateLimit(
   ip: string,
   max = 20,
   windowMs = 3_600_000
-): RateLimitResult {
-  cleanup();
-
+): Promise<RateLimitResult> {
   const now = Date.now();
   const cutoff = now - windowMs;
 
-  const entry = store.get(ip) ?? { timestamps: [] };
-  // Filtrar timestamps fuera de la ventana
-  entry.timestamps = entry.timestamps.filter((t) => t > cutoff);
-  store.set(ip, entry);
+  try {
+    const supabase = getSupabaseServiceClient();
 
-  const count = entry.timestamps.length;
-  if (count >= max) {
-    const oldest = entry.timestamps[0]!;
+    // 1. Obtener timestamps actuales para la IP
+    const { data, error } = await supabase
+      .from("rate_limits")
+      .select("timestamps")
+      .eq("ip", ip)
+      .maybeSingle();
+
+    let timestamps: number[] = (data?.timestamps as number[]) ?? [];
+
+    // 2. Filtrar timestamps fuera de la ventana
+    timestamps = timestamps.filter((t) => t > cutoff);
+
+    // 3. Verificar límite
+    if (timestamps.length >= max) {
+      const oldest = timestamps[0]!;
+      return {
+        success: false,
+        remaining: 0,
+        resetMs: oldest + windowMs - now,
+      };
+    }
+
+    // 4. Añadir nuevo timestamp y guardar
+    timestamps.push(now);
+    
+    // Upsert (insert or update)
+    const { error: upsertError } = await supabase
+      .from("rate_limits")
+      .upsert({ 
+        ip, 
+        timestamps,
+        updated_at: new Date().toISOString()
+      }, { onConflict: "ip" });
+
+    if (upsertError) throw upsertError;
+
     return {
-      success: false,
-      remaining: 0,
-      resetMs: oldest + windowMs - now,
+      success: true,
+      remaining: max - timestamps.length,
+      resetMs: 0,
     };
-  }
 
-  entry.timestamps.push(now);
-  return {
-    success: true,
-    remaining: max - entry.timestamps.length,
-    resetMs: 0,
-  };
+  } catch (err) {
+    console.error("[rate-limit] Error persistiendo rate limit, usando fallback in-memory:", err);
+    
+    // Fallback in-memory
+    let ts = memoryStore.get(ip) ?? [];
+    ts = ts.filter(t => t > cutoff);
+    
+    if (ts.length >= max) {
+      return { success: false, remaining: 0, resetMs: ts[0]! + windowMs - now };
+    }
+    
+    ts.push(now);
+    memoryStore.set(ip, ts);
+    return { success: true, remaining: max - ts.length, resetMs: 0 };
+  }
 }
 
 /** Extrae la IP real del request (compatible con Vercel y proxies). */
 export function getClientIp(req: Request): string {
   const xff = req.headers.get("x-forwarded-for");
   if (xff) return xff.split(",")[0].trim();
+  // @ts-ignore - x-real-ip might not be in the type but works in Vercel
   return req.headers.get("x-real-ip") ?? "unknown";
 }
