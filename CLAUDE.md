@@ -97,12 +97,20 @@ Scripts de ingesta masiva en raíz: `ingestar_ddu_masiva.sh` · `ingestar_normat
 NEXT_PUBLIC_SUPABASE_URL
 NEXT_PUBLIC_SUPABASE_ANON_KEY
 SUPABASE_SERVICE_ROLE_KEY
-GEMINI_API_KEY                 # Primary; si rate limit, fallback a Groq
-GROQ_API_KEY                   # Fallback automático si Gemini falla (https://console.groq.com)
+GEMINI_API_KEY                 # Primario; si rate limit → cadena de fallback
+CEREBRAS_API_KEY               # Fallback 1 (https://cloud.cerebras.ai) — gratuito, alto TPM
+OPENROUTER_API_KEY             # Fallback 2 (https://openrouter.ai) — gratuito, límite diario
+GROQ_API_KEY                   # Fallback 3 (https://console.groq.com) — gratuito, 6000 TPM
 VOYAGE_API_KEY
 ADMIN_SECRET
 NEXT_PUBLIC_APP_URL
 ```
+
+## Cadena de fallback LLM (lib/gemini.ts → makeFallbackStream)
+```
+Gemini (3 reintentos) → Cerebras llama-3.3-70b → OpenRouter llama-3.3-70b:free → Groq llama-3.1-8b-instant
+```
+`MAX_CHUNKS = 10` — compatible con todos los proveedores (≈4500 tokens input, ≤6000 TPM de Groq)
 
 ---
 

@@ -2,6 +2,8 @@ import {
   GoogleGenerativeAI,
   type GenerateContentStreamResult,
 } from "@google/generative-ai";
+import { streamCerebras } from "@/lib/cerebras";
+import { streamOpenRouter } from "@/lib/openrouter";
 import { streamGroq } from "@/lib/groq";
 
 export const MODEL_FLASH = "gemini-2.5-flash";
@@ -83,70 +85,73 @@ function jitter(baseMs: number): number {
 }
 
 /**
- * Stream wrapper que intenta Gemini primero, y cae a Groq como fallback
- * si Gemini falla por rate limit o error transitorio.
- *
- * Retorna un objeto compatible con GenerateContentStreamResult (tiene .stream que es un iterable)
+ * Cadena de fallback cuando Gemini falla por rate limit.
+ * Intenta Cerebras → OpenRouter → Groq en orden.
+ * Los errores durante iteración también activan el siguiente proveedor.
+ */
+function makeFallbackStream(
+  systemPrompt: string,
+  userMessage: string,
+): GenerateContentStreamResult {
+  const proveedores: Array<{ nombre: string; gen: () => AsyncGenerator<string, void, unknown> }> = [
+    { nombre: "Cerebras",    gen: () => streamCerebras(systemPrompt, userMessage) },
+    { nombre: "OpenRouter",  gen: () => streamOpenRouter(systemPrompt, userMessage) },
+    { nombre: "Groq",        gen: () => streamGroq(systemPrompt, userMessage) },
+  ];
+
+  const streamAsync = (async function* () {
+    for (const { nombre, gen } of proveedores) {
+      try {
+        console.log(`[Fallback] Intentando ${nombre}...`);
+        for await (const text of gen()) {
+          yield { text: () => text };
+        }
+        return; // proveedor exitoso
+      } catch (err) {
+        console.error(`[Fallback] ${nombre} falló:`, String(err).slice(0, 100));
+      }
+    }
+    throw new Error(
+      "El servicio está temporalmente no disponible. Por favor intente de nuevo en unos minutos."
+    );
+  })();
+
+  return { stream: streamAsync } as unknown as GenerateContentStreamResult;
+}
+
+/**
+ * Stream wrapper que intenta Gemini primero y, si falla por rate limit,
+ * activa la cadena de fallback: Cerebras → OpenRouter → Groq.
+ * Los errores durante iteración de cada proveedor activan el siguiente.
  */
 export async function streamGemini(
   systemPrompt: string,
   userMessage: string,
   modelo?: string,
 ): Promise<GenerateContentStreamResult> {
-  // Usar systemInstruction para una separación clara de roles
   const model = getGeminiModel(systemPrompt, modelo);
   let lastErr: unknown;
 
-  // MAX_RETRIES_STREAM=3 con STREAM_RETRY_DELAY_MS=4000: backoff 4s, 8s → máx ~12-20s
-  // Diseñado para fallar dentro del timeout serverless (60s) y dejar al eval runner reintentar
+  // MAX_RETRIES_STREAM=3 con backoffs 4s, 8s → diseñado para fallar en <30s
   for (let attempt = 0; attempt < MAX_RETRIES_STREAM; attempt++) {
     try {
       return await model.generateContentStream(userMessage);
     } catch (err) {
       lastErr = err;
-      // Si falla y es error de rate limit, intentar Groq como fallback
-      if (isRetryable(err) && attempt === MAX_RETRIES_STREAM - 1) {
-        console.log("[Fallback] Gemini rate limit detectado. Intentando con Groq...");
-        try {
-          const groqStream = streamGroqAdapter(systemPrompt, userMessage);
-          return groqStream;
-        } catch (groqErr) {
-          // Groq también falló, lanzar error de Gemini (más reciente)
-          console.error("[Fallback] Groq también falló:", groqErr);
-          throw new Error(friendlyError(lastErr));
-        }
+      if (!isRetryable(err)) break; // error no transitorio: no hay fallback útil
+      if (attempt < MAX_RETRIES_STREAM - 1) {
+        await sleep(jitter(STREAM_RETRY_DELAY_MS * Math.pow(2, attempt)));
       }
-      if (!isRetryable(err) || attempt === MAX_RETRIES_STREAM - 1) break;
-      await sleep(jitter(STREAM_RETRY_DELAY_MS * Math.pow(2, attempt))); // backoff con jitter: ~4s, ~8s
     }
   }
 
+  // Gemini agotado por rate limit → activar cadena de fallback
+  if (isRetryable(lastErr)) {
+    console.log("[Fallback] Gemini agotado, activando cadena Cerebras → OpenRouter → Groq...");
+    return makeFallbackStream(systemPrompt, userMessage);
+  }
+
   throw new Error(friendlyError(lastErr));
-}
-
-/**
- * Adaptador que convierte streamGroq (AsyncGenerator<string>) al formato
- * esperado por route.ts que espera GenerateContentStreamResult con .stream iterable
- */
-function streamGroqAdapter(
-  systemPrompt: string,
-  userMessage: string,
-): GenerateContentStreamResult {
-  // Crear un AsyncIterable que pueda ser consumido por for await
-  const streamAsync = (async function* () {
-    const groqGen = streamGroq(systemPrompt, userMessage);
-    for await (const text of groqGen) {
-      // Emular la estructura de GenerativeAI's chunk.text()
-      yield {
-        text: () => text,
-      };
-    }
-  })();
-
-  // Retornar un objeto compatible con GenerateContentStreamResult
-  return {
-    stream: streamAsync,
-  } as unknown as GenerateContentStreamResult;
 }
 
 export async function generateGemini(
