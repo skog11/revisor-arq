@@ -82,60 +82,27 @@ function jitter(baseMs: number): number {
 }
 
 /**
- * Cadena de fallback cuando Gemini falla por rate limit.
- * Intenta Cerebras → OpenRouter → Groq en orden.
- * Los errores durante iteración también activan el siguiente proveedor.
+ * Convierte el stream nativo de Gemini en un async generator de texto plano,
+ * para que sea intercambiable con los demás proveedores en la cadena.
  */
-function makeFallbackStream(
-  systemPrompt: string,
-  userMessage: string,
-): GenerateContentStreamResult {
-  const proveedores: Array<{ nombre: string; gen: () => AsyncGenerator<string, void, unknown> }> = [
-    { nombre: "DeepSeek",    gen: () => streamDeepSeek(systemPrompt, userMessage) },
-    { nombre: "Cerebras",    gen: () => streamCerebras(systemPrompt, userMessage) },
-    { nombre: "OpenRouter",  gen: () => streamOpenRouter(systemPrompt, userMessage) },
-    { nombre: "Groq",        gen: () => streamGroq(systemPrompt, userMessage) },
-  ];
-
-  const streamAsync = (async function* () {
-    for (const { nombre, gen } of proveedores) {
-      try {
-        console.log(`[Fallback] Intentando ${nombre}...`);
-        for await (const text of gen()) {
-          yield { text: () => text };
-        }
-        return; // proveedor exitoso
-      } catch (err) {
-        console.error(`[Fallback] ${nombre} falló:`, String(err).slice(0, 100));
-      }
-    }
-    throw new Error(
-      "El servicio está temporalmente no disponible. Por favor intente de nuevo en unos minutos."
-    );
-  })();
-
-  return { stream: streamAsync } as unknown as GenerateContentStreamResult;
-}
-
-/**
- * Stream wrapper que intenta Gemini primero y, si falla por rate limit,
- * activa la cadena de fallback: Cerebras → OpenRouter → Groq.
- * Los errores durante iteración de cada proveedor activan el siguiente.
- */
-export async function streamGemini(
+async function* streamGeminiNative(
   systemPrompt: string,
   userMessage: string,
   modelo?: string,
-): Promise<GenerateContentStreamResult> {
+): AsyncGenerator<string, void, unknown> {
   const model = getGeminiModel(systemPrompt, modelo);
   let lastErr: unknown;
 
   for (let attempt = 0; attempt < MAX_RETRIES_STREAM; attempt++) {
     try {
-      return await model.generateContentStream(userMessage);
+      const result = await model.generateContentStream(userMessage);
+      for await (const chunk of result.stream) {
+        yield chunk.text();
+      }
+      return;
     } catch (err) {
       lastErr = err;
-      if (!isRetryable(err)) break; // error no transitorio: no hay fallback útil
+      if (!isRetryable(err)) throw err;
       if (attempt < MAX_RETRIES_STREAM - 1) {
         const delay = jitter(STREAM_RETRY_DELAY_MS * Math.pow(2, attempt));
         console.log(`[Gemini] Error reintentable (intento ${attempt + 1}/${MAX_RETRIES_STREAM}), esperando ${Math.round(delay)}ms...`);
@@ -143,14 +110,71 @@ export async function streamGemini(
       }
     }
   }
+  throw lastErr;
+}
 
-  // Gemini agotado por rate limit → activar cadena de fallback
-  if (isRetryable(lastErr)) {
-    console.log("[Fallback] Gemini agotado, activando cadena Cerebras → OpenRouter → Groq...");
-    return makeFallbackStream(systemPrompt, userMessage);
-  }
+/**
+ * Construye la cadena de proveedores según LLM_PRIMARY.
+ * - "deepseek" (default): DeepSeek → Gemini → Cerebras → OpenRouter → Groq
+ * - "gemini": Gemini → DeepSeek → Cerebras → OpenRouter → Groq
+ *
+ * DeepSeek primario evita el cuello de botella del free tier de Gemini (20 RPM)
+ * y entrega calidad comparable a Gemini 2.5 Flash a costo cero.
+ */
+function buildProviderChain(
+  systemPrompt: string,
+  userMessage: string,
+  modelo?: string,
+): Array<{ nombre: string; gen: () => AsyncGenerator<string, void, unknown> }> {
+  const gemini = { nombre: "Gemini",     gen: () => streamGeminiNative(systemPrompt, userMessage, modelo) };
+  const deepseek = { nombre: "DeepSeek",   gen: () => streamDeepSeek(systemPrompt, userMessage) };
+  const cerebras = { nombre: "Cerebras",   gen: () => streamCerebras(systemPrompt, userMessage) };
+  const openrouter = { nombre: "OpenRouter", gen: () => streamOpenRouter(systemPrompt, userMessage) };
+  const groq = { nombre: "Groq",       gen: () => streamGroq(systemPrompt, userMessage) };
 
-  throw new Error(friendlyError(lastErr));
+  const primary = (process.env.LLM_PRIMARY ?? "deepseek").toLowerCase();
+  return primary === "gemini"
+    ? [gemini, deepseek, cerebras, openrouter, groq]
+    : [deepseek, gemini, cerebras, openrouter, groq];
+}
+
+/**
+ * Stream con cadena de fallback configurable vía LLM_PRIMARY (default: "deepseek").
+ *
+ * Cada proveedor se prueba intentando consumir el primer chunk. Si falla antes de emitir
+ * cualquier token, se pasa al siguiente. Una vez comenzado el streaming, no hay fallback
+ * mid-stream (evita salidas concatenadas inconsistentes).
+ */
+export async function streamGemini(
+  systemPrompt: string,
+  userMessage: string,
+  modelo?: string,
+): Promise<GenerateContentStreamResult> {
+  const cadena = buildProviderChain(systemPrompt, userMessage, modelo);
+
+  const streamAsync = (async function* () {
+    let lastErr: unknown;
+    for (const { nombre, gen } of cadena) {
+      const iter = gen();
+      try {
+        const first = await iter.next();
+        console.log(`[LLM] Usando ${nombre}`);
+        if (!first.done && first.value) {
+          yield { text: () => first.value as string };
+        }
+        for await (const text of iter) {
+          yield { text: () => text };
+        }
+        return;
+      } catch (err) {
+        lastErr = err;
+        console.error(`[LLM] ${nombre} falló antes de emitir tokens:`, String(err).slice(0, 120));
+      }
+    }
+    throw new Error(friendlyError(lastErr));
+  })();
+
+  return { stream: streamAsync } as unknown as GenerateContentStreamResult;
 }
 
 export async function generateGemini(
