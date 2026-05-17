@@ -41,6 +41,8 @@ import { buildSystemPromptV2 } from "@/lib/sintetizador";
 import { obtenerRelacionesNormativas, formatearRelaciones } from "@/lib/grafo";
 import { validarConsistencia } from "@/lib/validador";
 import { createClient } from "@/lib/supabase-server";
+import { buscarEnCache, guardarEnCache } from "@/lib/query-cache";
+import { embedText } from "@/lib/voyage";
 
 // ─── Validación ───────────────────────────────────────────────────────────────
 
@@ -130,12 +132,12 @@ export async function POST(req: NextRequest) {
     return { userId, cuotaAgotada: false };
   }
 
-  // 1. Clasificar + reescribir query (Gemini) EN PARALELO con auth+cuota (Supabase).
-  //    procesarEntrada tarda ~3-8s; auth+cuota tarda ~300-600ms.
-  //    Ejecutarlos juntos ahorra ~400-600ms por request.
-  const [entradaResult, authResult] = await Promise.all([
+  // 1. Clasificar + reescribir query + embed + auth — todo en paralelo.
+  //    procesarEntrada: ~3-8s | embed: ~300ms | auth+cuota: ~300ms
+  const [entradaResult, authResult, embeddingResult] = await Promise.all([
     procesarEntrada(pregunta, mensajes),
     obtenerUsuarioYVerificarCuota(),
+    embedText(pregunta).catch(() => null), // para lookup en caché semántica
   ]);
 
   const { standalone_query: queryRAG, clasificacion } = entradaResult;
@@ -145,6 +147,42 @@ export async function POST(req: NextRequest) {
 
   if (cuotaAgotada) {
     return Response.json({ error: "Cuota mensual agotada. Actualiza tu plan en /pricing." }, { status: 429 });
+  }
+
+  // 1b. Lookup en caché semántica — si hay hit, devolver respuesta cacheada sin LLM.
+  //     Solo para consultas sin historial (no multi-turno) para evitar respuestas fuera de contexto.
+  const sinHistorial = !mensajes || mensajes.filter(m => m.role === "user").length <= 1;
+  if (embeddingResult && sinHistorial) {
+    const cacheHit = await buscarEnCache(embeddingResult, modo);
+    if (cacheHit) {
+      console.log(`[Cache] Hit — similarity: ${cacheHit.similarity.toFixed(4)}, id: ${cacheHit.id}`);
+      const encoder2 = new TextEncoder();
+      const cacheStream = new ReadableStream({
+        start(ctrl) {
+          const send = (e: Record<string, unknown>) =>
+            ctrl.enqueue(encoder2.encode(`data: ${JSON.stringify(e)}\n\n`));
+          send({ type: "fuentes", data: cacheHit.fuentes });
+          send({ type: "cruces", data: [] });
+          // Stream la respuesta cacheada en chunks de ~200 chars para mantener UX fluida
+          const texto = cacheHit.respuesta;
+          for (let i = 0; i < texto.length; i += 200) {
+            send({ type: "chunk", text: texto.slice(i, i + 200) });
+          }
+          send({ type: "meta", consultaId: cacheHit.id, fromCache: true });
+          send({ type: "done" });
+          ctrl.close();
+        },
+      });
+      return new Response(cacheStream, {
+        headers: {
+          "Content-Type": "text/event-stream",
+          "Cache-Control": "no-cache",
+          Connection: "keep-alive",
+          "X-Accel-Buffering": "no",
+          "X-Cache": "HIT",
+        },
+      });
+    }
   }
 
   // Crear stream SSE
@@ -188,6 +226,7 @@ export async function POST(req: NextRequest) {
 
         // 2. Recuperar chunks — agentic (2 rondas + análisis de gaps) en modo profundo,
         //    estándar (HyDE + multi-query + rerank) en arquitecto/abogado
+        send({ type: "etapa", etapa: "recuperando" });
         const chunks = modo === "profundo"
           ? await recuperarAgenticamente(queryRAG, plan, 20)
           : await recuperarPorCapas(queryRAG, plan);
@@ -212,9 +251,10 @@ export async function POST(req: NextRequest) {
 
         // 4. Construir contexto y sistema (con cruces inyectados)
         const { textoContexto } = construirContexto(chunks);
-        const systemPrompt = buildSystemPromptV2(modo as ModoRespuesta, textoContexto, cruces, clasificacion, relacionesTexto);
+        const systemPrompt = buildSystemPromptV2(modo as ModoRespuesta, textoContexto, cruces, clasificacion, relacionesTexto, pregunta);
 
         // 5. Streaming Gemini — Pro para modo profundo, Flash para los demás
+        send({ type: "etapa", etapa: "generando" });
         const modeloElegido = modo === "profundo" ? MODEL_PRO : MODEL_FLASH;
         const geminiStream = await streamGemini(systemPrompt, pregunta, modeloElegido);
         let respuestaCompleta = "";
@@ -241,6 +281,20 @@ export async function POST(req: NextRequest) {
         if (validacion.notasAdicionales) {
           send({ type: "chunk", text: validacion.notasAdicionales });
           respuestaCompleta += validacion.notasAdicionales;
+        }
+
+        // 6b. Guardar en caché semántica (fire-and-forget, solo consultas simples sin historial)
+        if (embeddingResult && sinHistorial && respuestaCompleta.length > 100) {
+          const fuentesParaCache = chunks.map((c) => ({
+            norma: `${c.norma_tipo} ${c.norma_numero}`,
+            articulo: c.articulo,
+            norma_titulo: c.norma_titulo,
+            jerarquia: c.jerarquia,
+            url_fuente: c.url_fuente,
+            similarity: Math.round(c.similarity * 1000) / 1000,
+            texto: c.texto,
+          }));
+          guardarEnCache(embeddingResult, queryRAG, modo, respuestaCompleta, fuentesParaCache as never);
         }
 
         // 7. Guardar consulta y enviar ID al cliente (para feedback)

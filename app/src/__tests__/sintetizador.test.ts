@@ -257,6 +257,68 @@ describe("buildSystemPromptV2 — relaciones normativas", () => {
   });
 });
 
+// ─── Guardrail: contexto vacío ────────────────────────────────────────────────
+
+describe("buildSystemPromptV2 — guardrail contexto vacío", () => {
+  it("activa guardrail SIN CONTEXTO cuando contexto está vacío", () => {
+    const prompt = buildSystemPromptV2("arquitecto", "", [], CLASIFICACION_ALTA);
+    expect(prompt).toContain("SIN CONTEXTO RECUPERADO");
+    expect(prompt).toContain("NUNCA improvises ni inventes");
+  });
+
+  it("activa guardrail SIN CONTEXTO cuando contexto es muy corto (< 80 chars)", () => {
+    const prompt = buildSystemPromptV2("abogado", "solo texto", [], CLASIFICACION_ALTA);
+    expect(prompt).toContain("SIN CONTEXTO RECUPERADO");
+  });
+
+  it("NO activa guardrail de contexto cuando hay contexto suficiente", () => {
+    const prompt = buildPrompt("arquitecto");
+    expect(prompt).not.toContain("SIN CONTEXTO RECUPERADO");
+  });
+});
+
+// ─── Guardrail: detección directa en texto de pregunta ───────────────────────
+
+describe("buildSystemPromptV2 — guardrail desde texto de pregunta", () => {
+  it("activa guardrail cuando Art. 9999 aparece en pregunta (sin keywords_normativas)", () => {
+    const clasificSinKeywords: QueryClassificada = {
+      ...CLASIFICACION_ALTA,
+      keywords_normativas: [], // clasificador no extrajo la referencia
+    };
+    const prompt = buildSystemPromptV2(
+      "abogado", CONTEXTO, [], clasificSinKeywords, undefined,
+      "¿Qué dice el Art. 9999 de la LGUC?"
+    );
+    expect(prompt).toContain("GUARDRAIL CRÍTICO ACTIVO");
+    expect(prompt).toContain("Art. 9999");
+  });
+
+  it("activa guardrail cuando DDU 800 aparece en pregunta (sin keywords_normativas)", () => {
+    const clasificSinKeywords: QueryClassificada = {
+      ...CLASIFICACION_ALTA,
+      keywords_normativas: [],
+    };
+    const prompt = buildSystemPromptV2(
+      "arquitecto", CONTEXTO, [], clasificSinKeywords, undefined,
+      "¿Qué establece la DDU 800?"
+    );
+    expect(prompt).toContain("GUARDRAIL CRÍTICO ACTIVO");
+    expect(prompt).toContain("DDU 800");
+  });
+
+  it("NO activa guardrail cuando Art. 116 aparece en pregunta (válido)", () => {
+    const clasificSinKeywords: QueryClassificada = {
+      ...CLASIFICACION_ALTA,
+      keywords_normativas: [],
+    };
+    const prompt = buildSystemPromptV2(
+      "arquitecto", CONTEXTO, [], clasificSinKeywords, undefined,
+      "¿Qué dice el Art. 116 de la LGUC?"
+    );
+    expect(prompt).not.toContain("GUARDRAIL CRÍTICO ACTIVO");
+  });
+});
+
 // ─── Reglas absolutas (guardrails generales) ──────────────────────────────────
 
 describe("buildSystemPromptV2 — reglas absolutas", () => {

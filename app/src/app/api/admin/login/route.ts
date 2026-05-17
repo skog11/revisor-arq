@@ -2,14 +2,14 @@
  * POST /api/admin/login
  * Body: { key: string; returnTo?: string }
  *
- * Verifica la clave de administrador y establece la cookie admin_session.
- * Usar POST en lugar de GET ?key= para evitar que la clave aparezca en logs
- * del servidor, historial del navegador y cabeceras Referer.
+ * Verifica la clave de administrador, genera un JWT firmado (8h) y lo
+ * establece como cookie HTTP-only. El JWT nunca expone el secreto crudo.
  */
 
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
+import { signAdminJwt, MAX_AGE_SECONDS } from "@/lib/admin-jwt";
 
 const BodySchema = z.object({
   key: z.string().min(1),
@@ -47,19 +47,22 @@ export async function POST(req: NextRequest) {
   const { key, returnTo } = parsed.data;
 
   if (key !== secret) {
-    // Mismo tiempo de respuesta que éxito para evitar timing attacks
+    // Retardo mínimo para mitigar timing attacks
+    await new Promise((r) => setTimeout(r, 200 + Math.random() * 100));
     return NextResponse.json({ error: "Clave incorrecta" }, { status: 401 });
   }
 
   // Ruta de retorno validada: solo rutas relativas internas
   const safeReturn = returnTo?.startsWith("/") ? returnTo : "/normativa";
 
+  const token = await signAdminJwt(secret);
+
   const res = NextResponse.json({ ok: true, redirectTo: safeReturn });
-  res.cookies.set("admin_session", secret, {
+  res.cookies.set("admin_session", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
-    maxAge: 60 * 60 * 8, // 8 horas
+    maxAge: MAX_AGE_SECONDS,
     path: "/",
   });
 

@@ -1,26 +1,35 @@
 # PLAN DE IMPLEMENTACIÓN — REVISOR ARQ
 
 > Documento de continuidad para sesiones de IA. Leer junto con `PROGRESO.md`.  
-> Última actualización: 2026-05-13
+> Última actualización: 2026-05-15
 
 ---
 
-## ESTADO ACTUAL (2026-05-13 — Funcionalidades SaaS Completadas)
+## ESTADO ACTUAL (2026-05-15 — Sistema en producción, corpus completo)
 
-### ✅ COMPLETADO
-- **Corpus unificado**: ~12,000 chunks ingestados con Voyage AI (modelo legal) ✅
+### ✅ COMPLETADO (acumulado)
+- **Corpus 100%**: 12,483 chunks · 358 normas (269 DDU + LGUC + OGUC + 80 Ley/DS/DFL/DL) ✅
+- **Cadena fallback LLM 5 niveles**: Gemini → DeepSeek → Cerebras → OpenRouter → Groq ✅
+- **Indicadores de progreso UI**: "Clasificando… / Recuperando… / Generando…" en tiempo real ✅
+- **Fallback BM25 para Voyage**: `buscarPorFTS` en `retriever.ts` cuando Voyage falla ✅
+- **Schema SQL documentado**: `supabase/schema.sql` con DDL completo ✅
 - **Memoria Multi-turno**: Chat con contexto (reescritura de queries con Gemini Flash) ✅
-- **Integración OCR**: LlamaParse configurado para PDFs antiguos escaneados ✅
-- **Informes Premium**: PDF con firmas, metadatos y diseño profesional formal ✅
-- **Alertas Normativas**: Scraper BCN automático vía GitHub Actions ✅
-- **Optimización Ingesta**: Pipeline 15x más rápido con batches de 128 ✅
-- **Fallback Resiliente**: Gemini -> Groq operativo para alta demanda ✅
+- **Hybrid Search**: `match_chunks_hybrid` activo para consultas con artículos exactos ✅
+- **Rate Limit persistente**: Supabase `rate_limits` (no memory-only) ✅
+- **Sentry integrado**: Monitoreo de errores en producción ✅
+- **79 tests Vitest**: Suite de pruebas para validador, sintetizador y retriever ✅
+- **Caché semántica de queries**: `lib/query-cache.ts` + script migration (tabla `query_cache`) ✅
+- **JWT para auth de admin**: `lib/admin-jwt.ts` HS256, middleware verifica firma ✅
+- **Guardrails de alucinación reforzados**: detección por regex en texto de pregunta ✅
+- **Dashboard de analítica**: `/admin` con KPIs, latencias, distribución por modo/modelo ✅
 
-### 📋 Lo que resta
-1. 🚀 **Producción**: Actualizar `VOYAGE_API_KEY` en Vercel para activar la web.
-2. 🔑 **OCR**: Agregar `LLAMAPARSE_API_KEY` para procesar DS 60/61.
-3. 💰 **Monetización**: Integrar Stripe para cobros y gestión de planes.
-4. 🧹 **Limpiar**: Worktrees git huérfanos.
+### 📋 Lo que resta — acciones manuales externas (en orden)
+1. 🔑 **Habilitar billing Gemini** — Google Cloud Console → habilitar facturación → 1000 RPM automático → Redeploy en Vercel.
+2. 🗄️ **Ejecutar migrations SQL** en Supabase Dashboard:
+   - `supabase/migrations/20260515_query_cache.sql` — activa caché semántica
+   - `supabase/migrations/20260515_subscriptions.sql` — activa gestión de planes
+3. 💰 **Activar Stripe**: configurar `STRIPE_SECRET_KEY` + `STRIPE_WEBHOOK_SECRET` + `NEXT_PUBLIC_STRIPE_PRICE_PRO` en Vercel. Registrar webhook en Stripe Dashboard.
+4. 📊 **Correr eval**: `npm run eval` con API Gemini paga (meta: ≥ 7/9).
 
 ---
 
@@ -47,15 +56,13 @@
 Pipeline: ~4000 tokens input + ~1500 tokens output ≈ USD $0.00075/consulta.
 1000 consultas/mes ≈ USD $0.75/mes.
 
-**Verificación**: Eval completado (2026-05-08):
+**Último eval registrado** (2026-05-08, con 9,453 chunks y 2 proveedores):
 ```
 Resultado: 6/9 pasados (67%)
 Baseline: 2/9 (22%)
-Mejora: +45 puntos porcentuales ✅
-Corpus: 9,453 chunks validados
-Retrieval: 18-20 fuentes por query (excelente)
+3 fallos técnicos por rate limit en Groq — no fallos lógicos
 ```
-Meta alcanzada: Sistema funcional; 3 fallos técnicos (rate limit), no lógicos.
+Estado actual: corpus expandido a 12,483 chunks, 5 proveedores, guardrails reforzados → eval post-mejoras pendiente.
 
 ### Tarea 1.2 — Resultados del eval post-upgrade (o post-Groq)
 
@@ -74,49 +81,17 @@ npm run eval -- --url=https://revisor-arq.vercel.app 2>&1 | tee /tmp/eval-upgrad
 
 ---
 
-## FASE 2 — COMPLETAR EL CORPUS (~4-8 horas)
+## FASE 2 — CALIDAD Y REFINAMIENTO DEL CORPUS
 
-**Contexto**: El retrieval obtiene 18-20 fuentes pero de un corpus incompleto. Para responder correctamente preguntas sobre normativa no ingresada, el modelo dice "no encontré respaldo". Las respuestas mejorarán significativamente con corpus completo.
+**Contexto**: El corpus está completo (358 normas, 12,483 chunks). El foco ahora es asegurar exhaustividad en normas clave y mejorar la precisión del eval.
 
-### Tarea 2.1 — Ingestar OGUC completa
+### Tarea 2.1 — Verificar exhaustividad OGUC ✅ COMPLETADO (2026-05-15)
 
-**Problema**: La OGUC tiene 427 páginas (1.322.489 chars). Solo el inicio está ingresado. Consultas sobre OGUC (rasante, alturas, usos de suelo, etc.) tienen respaldo parcial.
+**Estado**: OGUC re-ingesta completada → 1,210 chunks. El archivo fuente termina en "página 427 de 427"; la cobertura es completa (~44% overlap efectivo). No requiere acción adicional.
 
-**Archivo listo**: `corpus/oguc/OGUC.txt`
+### Tarea 2.2 — DDUs históricos ✅ COMPLETADO (2026-05-15)
 
-```bash
-cd app
-# Ver qué está ingresado actualmente
-npm run corpus:ingest:dry -- --solo=OGUC
-
-# Ingestar OGUC completa (fuerza reproceso)
-npm run corpus:ingest -- --solo=OGUC --force
-```
-
-**Tiempo estimado**: 20-40 minutos (embedding 427 páginas en batches de 32 con Voyage AI).
-**Costo**: ~427 páginas × 500 chars/chunk × 1 call/chunk → ~1000 llamadas a Voyage AI embedding.
-
-### Tarea 2.2 — Ingestar DDUs históricos (303 normas)
-
-**Problema**: Solo hay DDU-527 a DDU-541 ingresadas (14 normas recientes). Las DDUs anteriores (numeración 000-526) son las más consultadas en la práctica, ya que contienen instrucciones técnicas específicas.
-
-**Archivos**: `corpus/ddu/DDU-XXX.txt` (28 archivos descargados localmente, según `ls corpus/ddu/`)
-
-**Nota importante**: Se necesita descargar las DDUs 000-526 antes de ingestarlas. El script de descarga las obtiene desde `https://www.minvu.gob.cl/`.
-
-```bash
-cd app
-# Paso 1: descargar DDUs faltantes (ver manifiesto para identificar cuáles faltan)
-npm run corpus:download
-
-# Paso 2: rebuild del manifiesto para incluir nuevos archivos
-npm run manifiesto:build
-
-# Paso 3: ingestar todo lo nuevo
-npm run corpus:ingest
-```
-
-**Si solo hay 28 DDUs en corpus/ddu/**: ir manualmente a https://www.minvu.gob.cl/circulares-ddu/ y descargar las que falten, guardar como `corpus/ddu/DDU-XXX.txt`.
+**Estado**: 269 DDUs en Supabase. Todas las del manifiesto están ingresadas. No requiere acción.
 
 ### Tarea 2.3 — Verificar normas críticas para el eval
 
@@ -151,21 +126,11 @@ npm run corpus:ingest
 
 ## FASE 3 — ALCANZAR META DE CALIDAD 7/9 (~3-5 horas)
 
-### Tarea 3.1 — Arreglar guardrails de alucinación
+### Tarea 3.1 — Guardrails de alucinación ✅ MEJORADO (2026-05-15)
 
-**Problema**: Los casos `guardrail-articuloinexistente` (Art. 9999 LGUC) y `guardrail-normafalsa` (DDU 999) fallan porque el modelo a veces afirma que el artículo existe o da una respuesta vaga en lugar de decir explícitamente "no encontré en la base de conocimiento".
+**Estado**: `sintetizador.ts` ahora detecta artículos inexistentes directamente por regex en el texto de la pregunta, sin depender del clasificador. También detecta artículos fuera de rango (Art. > 999 en general, Art. > 200 para LGUC, DDU > 600). 6 tests nuevos validan el comportamiento (total: 79 tests).
 
-**Archivo a modificar**: `app/src/lib/sintetizador.ts` → función `buildSystemPromptV2`
-
-**Cambio recomendado**: En las REGLAS ABSOLUTAS, agregar:
-```
-6. Si el usuario pregunta por un artículo o norma específica que NO aparece en ningún FUENTE [N] del contexto, 
-   debes responder OBLIGATORIAMENTE: "No encontré esta norma/artículo en la base de conocimiento disponible."
-   NUNCA inventes contenido para artículos que no estén en las fuentes.
-   NUNCA omitas mencionar que buscaste en "la base de conocimiento".
-```
-
-**Verificación**: 
+**Verificación post-upgrade Gemini**:
 ```bash
 npm run eval -- --casos=guardrail-articuloinexistente,guardrail-normafalsa
 ```
@@ -195,34 +160,40 @@ Si `fuentes` incluye chunks de DDU-541 pero el modelo no menciona "DDU 541" en l
 
 ---
 
-## FASE 4 — MONETIZACIÓN (1-2 semanas)
+## FASE 4 — MONETIZACIÓN ✅ SCAFFOLDING COMPLETO (2026-05-15)
 
-### Tarea 4.1 — Integrar Stripe
+### Estado: código listo, activación pendiente de configuración externa
 
-La página `/pricing` existe y describe "gratuito durante la beta". Para monetizar:
+Todo el código está implementado:
+- **`lib/stripe.ts`**: cliente singleton + definición de planes (free: 50/mes, pro: 500/mes)
+- **`/api/stripe/checkout`**: crea Checkout Session, asocia customer de Stripe al usuario
+- **`/api/stripe/webhook`**: procesa eventos `checkout.session.completed`, `subscription.updated/deleted`; actualiza tabla `subscriptions`
+- **`/api/stripe/portal`**: Customer Portal para que el usuario gestione su suscripción
+- **`supabase/migrations/20260515_subscriptions.sql`**: tabla `subscriptions` + `check_and_use_quota` dinámica (free: 50/mes, pro: 500/mes)
+- **`/pricing`**: página dinámica — muestra plan beta si `NEXT_PUBLIC_STRIPE_PRICE_PRO` no está configurada, o dos planes comparativos si sí está
 
-1. **Crear cuenta Stripe** y un producto "Plan Pro" (~$15-30/mes o por consultas)
-2. **Instalar SDK**: `npm install stripe @stripe/stripe-js`
-3. **Crear checkout API**: `app/src/app/api/billing/checkout/route.ts`
-4. **Webhook Stripe**: `app/src/app/api/billing/webhook/route.ts` → actualiza `perfiles.plan`
-5. **Actualizar cuota**: En `check_and_use_quota` RPC de Supabase, cambiar el límite según `perfiles.plan`
+### Para activar (acciones en Stripe + Vercel)
 
-**Tabla `perfiles` ya tiene**:
-```sql
-plan TEXT DEFAULT 'free',
-consultas_este_mes INTEGER DEFAULT 0,
-consultas_limite INTEGER DEFAULT 50,
+```
+1. Crear cuenta Stripe y un producto "Plan Pro" ($19/mes sugerido)
+2. Obtener price_id del plan Pro → NEXT_PUBLIC_STRIPE_PRICE_PRO
+3. En Vercel Settings → Environment Variables:
+   STRIPE_SECRET_KEY=sk_live_...
+   STRIPE_WEBHOOK_SECRET=whsec_...
+   NEXT_PUBLIC_STRIPE_PRICE_PRO=price_...
+4. Ejecutar migration SQL:
+   supabase/migrations/20260515_subscriptions.sql
+5. Registrar webhook en Stripe Dashboard:
+   URL: https://revisor-arq.vercel.app/api/stripe/webhook
+   Eventos: checkout.session.completed, customer.subscription.*
+6. Hacer Redeploy en Vercel
 ```
 
-Solo cambiar `consultas_limite` según plan al procesar el webhook.
+### Tarea 4.2 — Analytics y monitoreo ✅ COMPLETADO
 
-6. **Actualizar UI**: `/pricing` con botón de checkout real; `/dashboard` mostrando cuota usada
-
-### Tarea 4.2 — Analytics y monitoreo
-
-- La tabla `consultas` ya guarda todas las consultas con latencia, modelo, modo
-- Crear `/api/stats` (ruta ya existe, completar la implementación)
-- Considerar Plausible Analytics o Vercel Analytics (ya instalado `@vercel/analytics`)
+- Dashboard `/admin` con KPIs de consultas, distribución por modo/modelo, latencias P90/avg/max, feedback, sparkline 14 días.
+- `/api/stats` ya existe (con caché 10 min en Vercel).
+- Vercel Analytics instalado (`@vercel/analytics`).
 
 ---
 
@@ -233,19 +204,18 @@ Solo cambiar `consultas_limite` según plan al procesar el webhook.
 **Actual**: 25-55 segundos en modo arquitecto/abogado. Objetivo: <15s.
 
 Oportunidades:
-- **Paralelizar clasificador + HyDE**: actualmente son secuenciales (pueden ir en paralelo ya que son independientes):
+- **Paralelizar clasificador + HyDE** (pendiente): actualmente son secuenciales. Con API key pagada se puede hacer:
   ```typescript
   const [clasificacion, embedding] = await Promise.all([
     clasificarConsulta(pregunta),
     embedConHyDE(pregunta),
   ]);
   ```
-  **Riesgo**: ambas usan Gemini → dobla la carga concurrente por request. Solo hacer con API key pagada.
+  **Riesgo**: ambas usan Gemini → dobla la carga concurrente. Solo hacer con API key pagada.
 
-- **Caché de embeddings**: si la misma pregunta se hace 2 veces, reusar el embedding de Supabase.
-  Tabla sugerida: `query_cache (hash TEXT PK, embedding VECTOR(1024), created_at TIMESTAMPTZ)`
+- ~~**Caché de embeddings**~~ ✅ **IMPLEMENTADO** — `lib/query-cache.ts` con cosine similarity ≥ 0.97. Pendiente: ejecutar migration SQL en Supabase para activar.
 
-- **Streaming visible antes**: actualmente el usuario ve "Buscando..." mientras se recuperan chunks (3-8s) y luego empieza el streaming. Mostrar un spinner con "Recuperando X normas..." mejoraría la percepción de latencia.
+- ~~**Streaming visible antes**~~ ✅ **IMPLEMENTADO** — indicadores de etapa "Clasificando / Recuperando / Generando" en `chat/page.tsx`.
 
 ### Tarea 5.2 — Mejora del retrieval para términos exactos
 
@@ -259,14 +229,9 @@ Oportunidades:
 - Crear un script de análisis: `app/scripts/analysis/consultas-sin-respaldo.ts`
 - Usar esas preguntas para priorizar qué normas ingestar
 
-### Tarea 5.4 — Multi-turno conversacional
+### Tarea 5.4 — Multi-turno conversacional ✅ IMPLEMENTADO
 
-**Estado actual**: Cada pregunta es independiente, sin historial.
-**Para implementar**: 
-1. Guardar `thread_id` en localStorage del cliente
-2. Pasar los últimos 3 pares pregunta/respuesta en el body de `/api/chat`
-3. En el system prompt, incluir el historial como contexto adicional
-4. **Límite de tokens**: el contexto RAG ya es largo; con historial, vigilar que no exceda `maxOutputTokens`
+El chat ya soporta historial multi-turno. El `procesarEntrada` en `lib/clasificador.ts` recibe `mensajes[]` y genera una "standalone query" para que el retriever no necesite el historial. El SSE stream mantiene coherencia conversacional.
 
 ---
 
@@ -333,14 +298,23 @@ git push origin master  # auto-despliega en Vercel
 
 ## REFERENCIA — VARIABLES DE ENTORNO
 
-| Variable | Uso | Dónde cambiar |
-|----------|-----|---------------|
-| `NEXT_PUBLIC_SUPABASE_URL` | URL del proyecto Supabase | .env.local + Vercel |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Clave pública Supabase | .env.local + Vercel |
-| `SUPABASE_SERVICE_ROLE_KEY` | Clave admin Supabase (ingesta, consultas admin) | .env.local + Vercel |
-| `GEMINI_API_KEY` | API key Google Gemini ← UPGRADE URGENTE | .env.local + Vercel |
-| `VOYAGE_API_KEY` | API key Voyage AI (embeddings + rerank) | .env.local + Vercel |
-| `ADMIN_SECRET` | Contraseña panel admin (/normativa, /corpus) | .env.local + Vercel |
+| Variable | Uso | Estado |
+|----------|-----|--------|
+| `NEXT_PUBLIC_SUPABASE_URL` | URL del proyecto Supabase | ✅ Configurada |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Clave pública Supabase | ✅ Configurada |
+| `SUPABASE_SERVICE_ROLE_KEY` | Clave admin Supabase | ✅ Configurada |
+| `GEMINI_API_KEY` | LLM primario — ⚠️ free tier 20 RPM | ✅ Configurada, upgrade pendiente |
+| `VOYAGE_API_KEY` | Embeddings + rerank | ✅ Configurada |
+| `ADMIN_SECRET` | Clave admin (se usa para firmar JWTs) | ✅ Configurada |
+| `DEEPSEEK_API_KEY` | Fallback LLM 1 — DeepSeek-V3 | ⚠️ Verificar en Vercel |
+| `CEREBRAS_API_KEY` | Fallback LLM 2 | ⚠️ Verificar en Vercel |
+| `OPENROUTER_API_KEY` | Fallback LLM 3 | ⚠️ Verificar en Vercel |
+| `GROQ_API_KEY` | Fallback LLM 4 | ⚠️ Verificar en Vercel |
+| `STRIPE_SECRET_KEY` | Stripe — pagos | ❌ No configurada |
+| `STRIPE_WEBHOOK_SECRET` | Stripe — validar webhooks | ❌ No configurada |
+| `NEXT_PUBLIC_STRIPE_PRICE_PRO` | Stripe — activa Plan Pro en /pricing | ❌ No configurada |
+| `SENTRY_DSN` | Monitoreo de errores | ⚠️ Código integrado, valor pendiente |
+| `NEXT_PUBLIC_APP_URL` | URL pública de la app | ✅ Configurada |
 
 ---
 

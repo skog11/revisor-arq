@@ -141,6 +141,55 @@ async function llamarMatchChunks(
   return (data as Record<string, unknown>[]).map(mapearChunk);
 }
 
+// ─── Fallback BM25 (FTS puro) cuando Voyage AI no está disponible ─────────────
+
+/**
+ * Búsqueda full-text sobre la columna `texto` de chunks, sin embeddings.
+ * Se activa como fallback cuando Voyage AI devuelve errores 4xx/5xx.
+ * Usa el índice GIN ya presente en Supabase para `to_tsvector('spanish', texto)`.
+ */
+async function buscarPorFTS(
+  sb: ReturnType<typeof getSupabaseServiceClient>,
+  pregunta: string,
+  count: number
+): Promise<ChunkRecuperado[]> {
+  try {
+    // websearch permite frases entre comillas y operadores AND/OR naturales
+    const { data, error } = await sb
+      .from("chunks")
+      .select("id, texto, metadatos, normas(tipo, numero, titulo, jerarquia_norm, dominio, etapas_proyecto, url_fuente, organo_emisor)")
+      .textSearch("texto", pregunta, { type: "websearch", config: "spanish" })
+      .limit(count);
+
+    if (error || !data?.length) return [];
+
+    return data.map((r: Record<string, unknown>) => {
+      const norma = r.normas as Record<string, unknown> | null ?? {};
+      const meta  = r.metadatos as Record<string, unknown> | null ?? {};
+      return {
+        id:                   r.id as string,
+        texto:                r.texto as string,
+        similarity:           0.5, // FTS no produce score normalizado
+        norma_tipo:           (norma.tipo as string) ?? "",
+        norma_numero:         (norma.numero as string) ?? "",
+        norma_titulo:         (norma.titulo as string) ?? "",
+        articulo:             (meta.articulo as string | null) ?? null,
+        jerarquia:            (meta.jerarquia as string | null) ?? null,
+        url_fuente:           (norma.url_fuente as string) ?? "",
+        fecha_vigencia_desde: null,
+        norma_dominio:        (norma.dominio as string | null) ?? null,
+        norma_organo_emisor:  (norma.organo_emisor as string | null) ?? null,
+        norma_jerarquia_norm: (norma.jerarquia_norm as string | null) ?? null,
+        norma_etapas_proyecto: Array.isArray(norma.etapas_proyecto)
+          ? (norma.etapas_proyecto as string[])
+          : [],
+      };
+    });
+  } catch {
+    return [];
+  }
+}
+
 // ─── Función principal exportada ─────────────────────────────────────────────
 
 /**
@@ -153,6 +202,8 @@ async function llamarMatchChunks(
  *   3. Fusión y dedup (hasta CANDIDATOS_RERANK = 32)
  *   4. Rerank con voyage-rerank-2 (falla silencioso → fallback por similitud)
  *   5. Devolver top MAX_CHUNKS (16)
+ *
+ * Si Voyage AI falla en cualquier punto, activa fallback BM25 (FTS puro en Supabase).
  */
 export async function recuperarPorCapas(
   pregunta: string,
@@ -162,17 +213,15 @@ export async function recuperarPorCapas(
   const sb = getSupabaseServiceClient();
 
   // Generar embedding HyDE: promedio de [query original] + [texto normativo hipotético]
-  // Circuit breaker: si Voyage AI está caído (401/503/timeout), retornar vacío en lugar
-  // de propagar el error — el LLM generará con guardrail "sin información en corpus".
+  // Si Voyage AI está caído (401/503/timeout) → fallback BM25 puro.
   let embedding: number[];
   try {
     embedding = await embedConHyDE(pregunta);
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    console.error("[retriever] Voyage AI no disponible — retrieval abortado:", msg);
-    // Retornar array vacío: Gemini generará con contexto vacío y sus guardrails
-    // declararán explícitamente que no hay información en la base de conocimiento.
-    return [];
+    console.warn("[retriever] Voyage AI no disponible — activando fallback BM25:", msg);
+    // Fallback: búsqueda full-text sin embeddings. Calidad inferior pero funcional.
+    return buscarPorFTS(sb, pregunta, MAX_CHUNKS);
   }
 
   // Ampliar counts para tener más candidatos pre-rerank
@@ -239,7 +288,8 @@ export async function recuperarPorCapas(
       // muestre la relevancia real (0-1 normalizado)
       similarity: Math.round(r.relevanceScore * 1000) / 1000,
     }));
-  } catch {
+  } catch (err) {
+    console.warn("[retriever] Rerank Voyage fallido — ordenando por jerarquía:", err instanceof Error ? err.message : err);
     // Fallback: ordenar por jerarquía + similarity original
     candidatos.sort((a, b) => {
       const jA = indiceJerarquia(a.norma_jerarquia_norm);

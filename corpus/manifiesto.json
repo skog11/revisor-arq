@@ -2816,5 +2816,250 @@
     "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\ddu\\DDU-ESP-003-09.txt",
     "chars": 4596,
     "paginas": 3
+  },
+  "LEY-20920": {
+    "tipo": "LEY",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\01_Medio_Ambiente_e_Institucionalidad_Ambiental\\01_03_Emisiones_Ruido_y_Residuos\\Ley_20920_2016_BCN_Ley_Reciclaje\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=109123",
+    "titulo": "Establece marco para la gestión de residuos, responsabilidad extendida del productor y fomento al reciclaje",
+    "fecha_publicacion": "2016-01-01"
+  },
+  "DS-594": {
+    "tipo": "DS",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\02_Sanitario_Seguridad_y_Residuos_Peligrosos\\02_02_Lugares_de_Trabajo_y_Seguridad_Ocupacional\\DS_594_1999_MINSAL_Condiciones_Sanitarias_Lugares_Trabajo\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=12869",
+    "titulo": "Reglamento sobre condiciones sanitarias y ambientales básicas en los lugares de trabajo",
+    "fecha_publicacion": "1999-01-01"
+  },
+  "LEY-109": {
+    "tipo": "LEY",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\02_Sanitario_Seguridad_y_Residuos_Peligrosos\\02_02_Lugares_de_Trabajo_y_Seguridad_Ocupacional\\D_109_1968_MinTrabajo_Reglamento_Ley_16744\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=6624",
+    "titulo": "Reglamento de la Ley 16.744",
+    "fecha_publicacion": "1968-01-01"
+  },
+  "LEY-16744": {
+    "tipo": "LEY",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\02_Sanitario_Seguridad_y_Residuos_Peligrosos\\02_02_Lugares_de_Trabajo_y_Seguridad_Ocupacional\\Ley_16744_1968_BCN_Accidentes_Trabajo_Enfermedades_Profesionales\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=6623",
+    "titulo": "Establece normas sobre accidentes del trabajo y enfermedades profesionales",
+    "fecha_publicacion": "1968-01-01"
+  },
+  "DFL-1122": {
+    "tipo": "DFL",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\03_Agua_Servicios_Sanitarios_y_Drenaje\\03_01_Recursos_Hidricos\\DFL_1122_1981_MOP_Codigo_de_Aguas\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=6695",
+    "titulo": "Código de Aguas",
+    "fecha_publicacion": "1981-01-01"
+  },
+  "LEY-21586": {
+    "tipo": "LEY",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\03_Agua_Servicios_Sanitarios_y_Drenaje\\03_01_Recursos_Hidricos\\Ley_21586_2023_BCN_Modifica_Ley_21435_Codigo_Aguas\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=119452",
+    "titulo": "Modifica la Ley 21.435 y el Código de Aguas",
+    "fecha_publicacion": "2023-01-01"
+  },
+  "DS-1199": {
+    "tipo": "DS",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\03_Agua_Servicios_Sanitarios_y_Drenaje\\03_02_Servicios_Sanitarios\\DS_1199_2004_MOP_Reglamento_LGSS\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.mop.cl/",
+    "titulo": "Reglamento de la Ley General de Servicios Sanitarios",
+    "fecha_publicacion": "2004-01-01"
+  },
+  "DS-50": {
+    "tipo": "DS",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\03_Agua_Servicios_Sanitarios_y_Drenaje\\03_02_Servicios_Sanitarios\\DS_50_2002_MOP_RIDAA\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.mop.cl/",
+    "titulo": "Reglamento de la Industria de Agua y Alcantarillado (RIDAA)",
+    "fecha_publicacion": "2002-01-01"
+  },
+  "LEY-19525": {
+    "tipo": "LEY",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\03_Agua_Servicios_Sanitarios_y_Drenaje\\03_03_Aguas_Lluvias\\Ley_19525_1997_BCN_Evacuacion_Drenaje_Aguas_Lluvias\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=60674",
+    "titulo": "Sistemas de evacuación y drenaje de aguas lluvias",
+    "fecha_publicacion": "1997-01-01"
+  },
+  "DS-90": {
+    "tipo": "DS",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\03_Agua_Servicios_Sanitarios_y_Drenaje\\03_04_Descargas_Liquidas\\DS_90_2000_Minsegpres_Norma_Emision_Descargas_Liquidas\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://mma.gob.cl/",
+    "titulo": "Norma de emisión para la regulación de contaminantes asociados a las descargas líquidas a las aguas marinas y continentales superficiales",
+    "fecha_publicacion": "2000-01-01"
+  },
+  "DS-484": {
+    "tipo": "DS",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\04_Patrimonio_Arqueologia_y_Hallazgos\\DS_484_1990_MinEducacion_Reglamento_Monumentos_Nacionales\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=29524",
+    "titulo": "Reglamento de la Ley de Monumentos Nacionales",
+    "fecha_publicacion": "1990-01-01"
+  },
+  "DL-701": {
+    "tipo": "DL",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\08_Forestal_y_Bosque_Nativo\\08_02_Regimen_DL_701\\DL_701_1974_BCN_DL_701_Fomento_Forestal\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=6578",
+    "titulo": "Decreto Ley de Fomento Forestal",
+    "fecha_publicacion": "1974-01-01"
+  },
+  "DS-193": {
+    "tipo": "DS",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\08_Forestal_y_Bosque_Nativo\\08_02_Regimen_DL_701\\DS_193_1998_Minagri_Reglamento_DL_701\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.minagri.gob.cl/",
+    "titulo": "Reglamento del DL 701",
+    "fecha_publicacion": "1998-01-01"
+  },
+  "DS-259": {
+    "tipo": "DS",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\08_Forestal_y_Bosque_Nativo\\08_02_Regimen_DL_701\\DS_259_1980_Minagri_Reforestacion_Suelos_Forestales\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.minagri.gob.cl/",
+    "titulo": "Reglamento de reforestación de suelos de aptitud forestal",
+    "fecha_publicacion": "1980-01-01"
+  },
+  "LEY-19561": {
+    "tipo": "LEY",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\08_Forestal_y_Bosque_Nativo\\08_02_Regimen_DL_701\\Ley_19561_1998_BCN_Prorroga_DL_701\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=60674",
+    "titulo": "Prorroga vigencia del DL 701",
+    "fecha_publicacion": "1998-01-01"
+  },
+  "LEY-4677": {
+    "tipo": "LEY",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\10_Vialidad_Caminos_y_Transito\\RES_4677_1999_Vialidad_Instrucciones_Ley_Caminos\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.mop.cl/",
+    "titulo": "Instrucciones para la aplicación de la Ley de Caminos",
+    "fecha_publicacion": "1999-01-01"
+  },
+  "DFL-4": {
+    "tipo": "DFL",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\11_Energia_y_Servidumbres_Electricas\\DFL_4_2007_MINECON_Ley_Gral_Servicios_Electricos\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=27748",
+    "titulo": "Ley General de Servicios Eléctricos",
+    "fecha_publicacion": "2007-01-01"
+  },
+  "DS-60": {
+    "tipo": "DS",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\12_Tecnica_Estructural_y_Normas_Oficializadas\\DS_60_2011_MINVU_OGUC_Cap1\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.minvu.gob.cl/",
+    "titulo": "Ordenanza General de Urbanismo y Construcciones - Capítulo 1",
+    "fecha_publicacion": "2011-01-01"
+  },
+  "DS-61": {
+    "tipo": "DS",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\12_Tecnica_Estructural_y_Normas_Oficializadas\\DS_61_2011_MINVU_OGUC_Cap2\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.minvu.gob.cl/",
+    "titulo": "Ordenanza General de Urbanismo y Construcciones - Capítulo 2",
+    "fecha_publicacion": "2011-01-01"
+  },
+  "DS-109": {
+    "tipo": "DS",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\02_Sanitario_Seguridad_y_Residuos_Peligrosos\\02_02_Lugares_de_Trabajo_y_Seguridad_Ocupacional\\Decreto_109_1968_MTPS_Reglamento_Ley_16744\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=6624",
+    "titulo": "Reglamento para la calificación y evaluación de los accidentes del trabajo y enfermedades profesionales",
+    "fecha_publicacion": "1968-01-01"
+  },
+  "DS-38-2012": {
+    "tipo": "DS",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\01_Medio_Ambiente_e_Institucionalidad_Ambiental\\01_01_Marco_General\\DS_38_2012_MMA_Reglamento_Normas_Calidad\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=1052941",
+    "titulo": "Reglamento para la dictación de normas de calidad ambiental y de emisión",
+    "fecha_publicacion": "2012-01-01"
+  },
+  "DS-109-1968": {
+    "tipo": "DS",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\02_Sanitario_Seguridad_y_Residuos_Peligrosos\\02_02_Lugares_de_Trabajo_y_Seguridad_Ocupacional\\Decreto_109_1968_MTPS_Reglamento_Ley_16744\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=6624",
+    "titulo": "Reglamento para la calificación y evaluación de los accidentes del trabajo y enfermedades profesionales",
+    "fecha_publicacion": "1968-01-01"
+  },
+  "DFL-1122-1981": {
+    "tipo": "DFL",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\03_Agua_Servicios_Sanitarios_y_Drenaje\\03_01_Recursos_Hidricos\\DFL_1122_1981_BCN_Codigo_Aguas\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=6695",
+    "titulo": "Código de Aguas",
+    "fecha_publicacion": "1981-01-01"
+  },
+  "LEY-21586-2023": {
+    "tipo": "LEY",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\03_Agua_Servicios_Sanitarios_y_Drenaje\\03_01_Recursos_Hidricos\\Ley_21586_2023_BCN_Modifica_Codigo_Aguas\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=119452",
+    "titulo": "Modifica la Ley 21.435 y el Código de Aguas",
+    "fecha_publicacion": "2023-01-01"
+  },
+  "DS-1199-2004": {
+    "tipo": "DS",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\03_Agua_Servicios_Sanitarios_y_Drenaje\\03_02_Servicios_Sanitarios\\DS_1199_2004_MOP_Reglamento_Servicios_Sanitarios\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=233488",
+    "titulo": "Reglamento de la Ley General de Servicios Sanitarios",
+    "fecha_publicacion": "2004-01-01"
+  },
+  "DS-50-2002": {
+    "tipo": "DS",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\03_Agua_Servicios_Sanitarios_y_Drenaje\\03_02_Servicios_Sanitarios\\DS_50_2002_MOP_RIDAA\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=206811",
+    "titulo": "Reglamento de Instalaciones Domiciliarias de Agua Potable y de Alcantarillado",
+    "fecha_publicacion": "2002-01-01"
+  },
+  "LEY-19525-1997": {
+    "tipo": "LEY",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\03_Agua_Servicios_Sanitarios_y_Drenaje\\03_03_Aguas_Lluvias\\Ley_19525_1997_BCN_Aguas_Lluvias\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=60674",
+    "titulo": "Sistemas de evacuación y drenaje de aguas lluvias",
+    "fecha_publicacion": "1997-01-01"
+  },
+  "DL-701-1974": {
+    "tipo": "DL",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\08_Forestal_y_Bosque_Nativo\\08_02_Regimen_DL_701\\DL_701_1974_BCN_Fomento_Forestal\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=6578",
+    "titulo": "Decreto Ley de Fomento Forestal",
+    "fecha_publicacion": "1974-01-01"
+  },
+  "DS-193-1998": {
+    "tipo": "DS",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\08_Forestal_y_Bosque_Nativo\\08_02_Regimen_DL_701\\DS_193_1998_Minagri_Reglamento_DL_701\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=125009",
+    "titulo": "Reglamento del DL 701",
+    "fecha_publicacion": "1998-01-01"
+  },
+  "DS-259-1980": {
+    "tipo": "DS",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\08_Forestal_y_Bosque_Nativo\\08_02_Regimen_DL_701\\DS_259_1980_Minagri_Reglamento_Tecnico_DL_701\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=11624",
+    "titulo": "Reglamento de reforestación de suelos de aptitud forestal",
+    "fecha_publicacion": "1980-01-01"
+  },
+  "LEY-19561-1998": {
+    "tipo": "LEY",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\08_Forestal_y_Bosque_Nativo\\08_02_Regimen_DL_701\\Ley_19561_1998_BCN_Modifica_DL701\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=10377",
+    "titulo": "Prórroga vigencia del DL 701",
+    "fecha_publicacion": "1998-01-01"
+  },
+  "LEY-4677-1999": {
+    "tipo": "LEY",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\10_Vialidad_Caminos_y_Transito\\RES_4677_1999_Vialidad_Instrucciones_Ley_Caminos\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.mop.cl/",
+    "titulo": "Instrucciones para la aplicación de la Ley de Caminos",
+    "fecha_publicacion": "1999-01-01"
+  },
+  "DFL-4-2007": {
+    "tipo": "DFL",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\11_Energia_y_Servidumbres_Electricas\\DFL_4_2007_MINECON_Ley_Gral_Servicios_Electricos\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=27748",
+    "titulo": "Ley General de Servicios Eléctricos",
+    "fecha_publicacion": "2007-01-01"
+  },
+  "DS-60-2011": {
+    "tipo": "DS",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\12_Tecnica_Estructural_y_Normas_Oficializadas\\DS_60_2011_MINVU_OGUC_Cap1\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=1033824",
+    "titulo": "Reglamento Hormigón Armado - Cap 1",
+    "fecha_publicacion": "2011-01-01"
+  },
+  "DS-61-2011": {
+    "tipo": "DS",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\12_Tecnica_Estructural_y_Normas_Oficializadas\\DS_61_2011_MINVU_OGUC_Cap2\\01_fuente_oficial\\extraido.txt",
+    "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=1033824",
+    "titulo": "Reglamento Diseño Sísmico - Cap 2",
+    "fecha_publicacion": "2011-01-01"
   }
 }

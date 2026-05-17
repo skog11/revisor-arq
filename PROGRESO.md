@@ -1,7 +1,7 @@
 # PROGRESO — REVISOR ARQ
 
 > Documento vivo para continuidad entre sesiones de IA.  
-> Última actualización: 2026-05-08. Actualizar al terminar cada sesión de trabajo.
+> Última actualización: 2026-05-15.
 
 ---
 
@@ -26,34 +26,72 @@
 | Framework web | Next.js (App Router) | ^16.2.4 | TypeScript, SSR, RSC |
 | UI | Tailwind v4 + shadcn/ui + Framer Motion | — | Paleta nórdica cálida |
 | Base de datos | Supabase (PostgreSQL + pgvector) | — | Hosted, región us-east-1 |
-| LLM generación | Google Gemini 2.5 Flash / Pro | — | vía `@google/generative-ai` SDK |
-| Embeddings (Cloud) | Voyage AI `voyage-law-2` | — | 1024 dimensiones, especializado legal |
-| Embeddings (Local) | **Transformers.js (BGE-M3)** | — | 1024 dims, fallback gratuito/masivo |
+| LLM primario | Google Gemini 2.5 Flash / Pro | — | vía `@google/generative-ai` SDK |
+| LLM fallback 1 | DeepSeek-V3 | — | `lib/deepseek.ts`, calidad comparable a Flash |
+| LLM fallback 2 | Cerebras Llama-3.3-70b | — | `lib/cerebras.ts`, alto TPM gratuito |
+| LLM fallback 3 | OpenRouter Llama-3.3-70b:free | — | `lib/openrouter.ts`, límite diario |
+| LLM fallback 4 | Groq Llama-3.1-8b-instant | — | `lib/groq.ts`, ultrarrápido |
+| Embeddings (Cloud) | Voyage AI `voyage-law-2` | — | 1024 dims, especializado legal |
+| Embeddings (Local) | Transformers.js (BGE-M3) | — | 1024 dims, fallback gratuito/masivo |
 | Reranking | Voyage AI `rerank-2` | — | Cross-encoder post-retrieval |
+| Pagos | Stripe | ^22.1.1 | `lib/stripe.ts`, scaffolding listo |
+| Auth admin | JWT HS256 | — | `lib/admin-jwt.ts`, firmado con ADMIN_SECRET |
 | Deploy | Vercel (Hobby plan) | — | Timeout serverless: 60s |
-| Auth | Supabase Auth (email magic link) | — | |
+| Auth usuarios | Supabase Auth (email magic link) | — | |
 | CI/CD | GitHub Actions → Vercel | — | Auto-deploy en push a master |
+| Tests | Vitest | — | 79 tests en `src/__tests__/` |
+| Monitoreo | Sentry | — | `sentry.*.config.ts`, activo con `SENTRY_DSN` |
 
 ---
 
-## 🚀 HITOS RECIENTES (2026-05-13)
+## 🚀 HITOS RECIENTES (2026-05-15) — rev. 3
+
+1. ✅ **Corpus 100% completo**: **358 normas · 12,483 chunks** en Supabase (269 DDU + LGUC + OGUC + 80 Ley/DS/DFL/DL). Todas las normas del manifiesto ingresadas.
+2. ✅ **Cadena de fallback LLM de 5 proveedores**: Gemini → DeepSeek-V3 → Cerebras Llama-3.3-70b → OpenRouter Llama-3.3-70b → Groq Llama-3.1-8b. DeepSeek añadido como primer fallback (commit `8e95cfd`).
+3. ✅ **Indicadores de progreso en UI**: Chat muestra etapas contextuales ("Clasificando…" / "Recuperando normativa relevante…" / "Generando respuesta…") con ícono animado.
+4. ✅ **Fallback BM25 real para Voyage AI**: `retriever.ts` activa `buscarPorFTS` (FTS puro en Supabase) cuando Voyage falla — servicio sigue operativo con calidad degradada.
+5. ✅ **Schema SQL documentado**: `supabase/schema.sql` con DDL completo (tablas, índices HNSW, RPCs `match_chunks`/`match_chunks_hybrid`, políticas RLS).
+6. ✅ **Auditoría actualizada**: `AUDITORIA.md` corregido — corpus real, cadena fallback, eval score 6/9 (67%).
+7. ✅ **Caché semántica de queries** (`lib/query-cache.ts`): lookup pre-pipeline con cosine ≥ 0.97, TTL 7 días. Migration en `supabase/migrations/20260515_query_cache.sql`. Pendiente: ejecutar en Supabase Dashboard.
+8. ✅ **Guardrails de alucinación reforzados**: `sintetizador.ts` detecta artículos inexistentes también directamente desde el texto de la pregunta (regex), sin depender solo de keywords del clasificador. 6 tests nuevos (73→79).
+9. ✅ **JWT para auth de admin**: `lib/admin-jwt.ts` firma JWTs HS256 válidos 8h. El middleware verifica criptográficamente. Endpoint `/api/admin/logout`. La cookie `admin_session` ya no contiene el secreto crudo.
+10. ✅ **Dashboard de analítica** (`/admin`): Server Component con KPIs, distribución por modo/modelo, latencias P90/avg/max, feedback, últimas 15 consultas, sparkline 14 días y botón de logout.
+11. ✅ **OGUC verificada**: 1,210 chunks cubren las 427 páginas del DS-47 íntegramente (~44% overlap efectivo).
+12. ✅ **Stripe scaffolding completo**: `lib/stripe.ts` + endpoints `/api/stripe/checkout`, `/api/stripe/webhook`, `/api/stripe/portal`. Tabla `subscriptions` en `supabase/migrations/20260515_subscriptions.sql`. Función `check_and_use_quota` dinámica por plan (free: 50/mes, pro: 500/mes). Página `/pricing` muestra planes dinámicamente según `NEXT_PUBLIC_STRIPE_PRICE_PRO`.
+
+## Hitos anteriores (2026-05-13)
 
 1. ✅ **Desbloqueo de Ingesta Masiva**: Implementación de motor de embeddings local con `Transformers.js` (modelo `BGE-M3`) para superar errores 401 de Voyage AI.
 2. ✅ **Pipeline Optimizado**: Reducción de tiempos entre normas (1.5s) y aumento de batches (128 para Voyage / 32 para local).
-3. ✅ **Ingesta en Curso**: Proceso masivo de las 263 normas del manifiesto iniciado con flag `--force`.
+3. ✅ **Ingesta completada**: Proceso masivo de las 298 normas del manifiesto completado.
 4. ✅ **Comandos Administrativos**: Añadidos `npm run corpus:ingest:local` y `npm run corpus:ingest:ollama`.
 
 ---
 
 ### Variables de entorno requeridas (`.env.local` y Vercel)
 ```
+# Core — sin estas no arranca
 NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
 SUPABASE_SERVICE_ROLE_KEY=eyJ...
-GEMINI_API_KEY=AIza...           # Free tier (20 RPM); Groq fallback (30 RPM) mitigado
-GROQ_API_KEY=gsk_...             # Fallback automático cuando Gemini agota cuota
-VOYAGE_API_KEY=pa-...
-ADMIN_SECRET=...                 # Protege /normativa, /corpus y APIs admin
+GEMINI_API_KEY=AIza...           # Primario — ⚠️ free tier 20 RPM, upgrade recomendado
+VOYAGE_API_KEY=pa-...            # Embeddings + rerank
+ADMIN_SECRET=...                 # Clave admin; se usa para firmar JWTs HS256
+
+# Fallback LLM (recomendadas para máxima resiliencia)
+DEEPSEEK_API_KEY=sk-...          # Fallback 1 — DeepSeek-V3
+CEREBRAS_API_KEY=...             # Fallback 2 — Llama-3.3-70b
+OPENROUTER_API_KEY=sk-or-...     # Fallback 3 — Llama-3.3-70b:free
+GROQ_API_KEY=gsk_...             # Fallback 4 — Llama-3.1-8b-instant
+
+# Stripe (scaffolding listo — configurar para activar monetización)
+STRIPE_SECRET_KEY=sk_live_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+NEXT_PUBLIC_STRIPE_PRICE_PRO=price_...
+
+# Opcionales
+NEXT_PUBLIC_APP_URL=https://revisor-arq.vercel.app
+SENTRY_DSN=https://...           # Monitoreo — integrado en código, falta valor en Vercel
 ```
 
 ---
@@ -285,58 +323,34 @@ npm run eval -- --casos=lguc-116-permiso  # Un caso específico
 
 ---
 
-## 4. ESTADO DEL CORPUS (2026-05-08)
+## 4. ESTADO DEL CORPUS (2026-05-15 — COMPLETO)
 
-### Normas ingresadas en Supabase — ✅ COMPLETADO
+### Normas ingresadas en Supabase — ✅ 100% del manifiesto
 
 | Norma | Tipo | Chunks | Estado |
 |-------|------|--------|--------|
-| LGUC (DFL-458) | LGUC | 280 | ✅ Completa |
-| OGUC (DS-47) | OGUC | 806 | ✅ Completa (427 págs) |
-| DDU-527 a DDU-541 | DDU | ~14 normas × ~30 chunks | ✅ Recientes |
-| 25 normas complementarias | LEY/DFL/DL/DS | ~5,792 chunks | ✅ Completadas |
-| DDU históricos (refererencias) | DDU | ~500+ chunks ref | ✅ Detectadas en retrieval |
-| Cat. 01-11 (medioambiente, agua, etc.) | LEY/DS/DFL | ~500+ chunks ref | ✅ Incluidas en ingesta |
+| LGUC (DFL-458) | LGUC | ~280 | ✅ Completa |
+| OGUC (DS-47) | OGUC | **1,210** | ✅ Completa — 427/427 págs verificadas |
+| DDU-001 a DDU-541 | DDU | ~7,500 (269 DDUs) | ✅ Todas las DDUs del manifiesto |
+| 80+ normas complementarias | LEY/DFL/DL/DS | ~3,493 | ✅ Cat. 01-12 ingresadas |
 
-**Total chunks ingresados: 9,453 chunks (760% expansión vs baseline 1,100)** ✅
-**Total normas: 71 normas en corpus**
-**Validación de Supabase**: ✅ pgvector activo, embeddings verificados, retrieval 18-20 fuentes/query
+**Total en Supabase: 12,483 chunks · 358 normas** ✅  
+**Retrieval**: 18-20 fuentes por query (excelente)  
+**pgvector**: HNSW activo (m=16, ef_construction=64), GIN para FTS
 
-### Corpus disponible localmente (listo para ingestar)
+### Notas de calidad
+- **OGUC verificada**: el archivo local termina en "página 427 de 427"; 1,210 chunks con ~44% overlap efectivo.
+- **DDUs**: 269 normas DDU en corpus. Las DDUs 000–526 históricas están ingresadas vía ingesta masiva con Transformers.js local.
+- **Normas complementarias**: 80 Ley/DS/DFL/DL cubriendo dominios de cruce (medioambiente, aguas, patrimonio, vialidad, energía, etc.).
 
-El directorio `C:\00_CLAUDE CODE\REVISOR-ARQ\corpus\` tiene:
-```
-lguc/LGUC.txt            ← 386.001 chars, 124 páginas
-lguc/LGUC.pdf
-oguc/OGUC.txt            ← 1.322.489 chars, 427 páginas  
-oguc/OGUC.pdf
-ddu/DDU-527.txt ... DDU-541.txt   ← 28 archivos DDU
-00_Indice_Maestro/       ← Catálogo completo de normas complementarias
-01_Medio_Ambiente.../    ← Archivos txt listos para ingestar
-02_Sanitario_.../
-03_Agua_.../
-04_Patrimonio_.../
-05_Procedimiento_.../
-06_Bienes_del_Estado_.../
-07_Pueblos_Indigenas_.../
-08_Forestal_.../
-09_Borde_Costero_.../
-10_Vialidad_.../
-11_Energia_.../
-12_Tecnica_Estructural_.../
-```
-
-**Para ingestar una categoría completa:**
+### Comandos de corpus
 ```bash
 cd app
-# Opción 1: una norma específica
-npm run corpus:ingest -- --solo=DDU-535
-
-# Opción 2: todas las pendientes (usa el manifiesto)
-npm run corpus:ingest
-
-# Opción 3: rebuild completo del manifiesto primero
-npm run manifiesto:build && npm run corpus:ingest
+npm run corpus:ingest            # Ingestar todo lo pendiente según manifiesto
+npm run corpus:ingest -- --solo=DDU-535   # Solo una norma
+npm run corpus:ingest -- --force          # Forzar re-ingesta aunque el hash no cambió
+npm run corpus:ingest:dry        # Dry run — sin tocar Supabase
+npm run manifiesto:build         # Reconstruir manifiesto.json desde carpetas
 ```
 
 ---
@@ -381,36 +395,33 @@ npm run manifiesto:build && npm run corpus:ingest
 
 ---
 
-## 6. PROBLEMA CRÍTICO ACTIVO: GEMINI FREE TIER RATE LIMIT (MITIGADO CON GROQ)
+## 6. RESILIENCIA LLM — CADENA DE 5 PROVEEDORES (2026-05-15)
 
-### Diagnóstico definitivo (2026-05-06)
-- API key Gemini está en **Free Tier: 20 RPM** (rolling 60s window)
-- El pipeline consume 4 llamadas Gemini por request
-- El eval runner hace hasta 3 intentos por caso = hasta 12 llamadas/caso
-- Múltiples procesos concurrentes (eval + dev server + prod) consumen el mismo cupo
+### Estado actual
+La cadena de fallback es automática y transparente. El pipeline intenta en orden:
 
-### Fixes implementados
-1. **Reducción de 8→4 llamadas** (commit 2c63d9e): eliminó llamadas HyDE duplicadas
-2. **maxRetries:1 en callers con fallback** (commit 991e6f9): clasificador, HyDE y variants fallan rápido
-3. **streamGemini con backoffs cortos** (commit 71572ea): MAX_RETRIES_STREAM=3
-4. **✅ NUEVO: Fallback automático a Groq** (commit TBD):
-   - Si Gemini falla por 429/503, automáticamente se usa `groq-sdk` (Mixtral)
-   - Groq free tier: **30 RPM** (vs Gemini: 20 RPM)
-   - Groq es **ultrarrápido** (inferencia en edge ~1s)
-   - Sin cambios de código en route.ts — el fallback es transparente
-
-### Solución multiCapas (implementada hoy)
 ```
-✅ Fallback a Groq (hoy):
-   - GROQ_API_KEY env var (obtener en https://console.groq.com/keys)
-   - streamGroq() en lib/groq.ts
-   - streamGemini() envuelve con try/catch + fallback automático
-   
-⏳ Upgrade API key Gemini (sigue siendo recomendado para mayor confiabilidad):
-   1. Ir a https://console.cloud.google.com
-   2. Habilitar billing en el proyecto
-   3. En Vercel Dashboard: actualizar GEMINI_API_KEY
-   Costo: ~USD $0.30/mes por 1000 consultas
+Gemini 2.5 Flash/Pro  (3 reintentos, backoff 4s/8s)
+  → si 429/503: DeepSeek-V3         [lib/deepseek.ts]   — calidad comparable a Flash
+  → si falla:   Cerebras Llama-3.3  [lib/cerebras.ts]   — alto TPM, gratuito
+  → si falla:   OpenRouter Llama-3.3 [lib/openrouter.ts] — límite diario, gratuito
+  → si falla:   Groq Llama-3.1-8b   [lib/groq.ts]       — ultrarrápido, fallback final
+  → si todos fallan: error amigable al usuario
+```
+
+### Diagnóstico del cuello de botella (sigue vigente)
+- Gemini Free Tier: **20 RPM** (rolling 60s window)
+- Pipeline usa 4 llamadas Gemini por request (reducido desde 8 en 2026-05-05)
+- `maxRetries:1` en clasificador, HyDE y variantes → fallan rápido, nunca bloquean
+
+### Solución definitiva pendiente
+```
+1. Ir a https://console.cloud.google.com
+2. Seleccionar proyecto con GEMINI_API_KEY
+3. Billing → Link a billing account
+4. La key existente pasa a Tier 1 automáticamente: 1000 RPM
+5. Redeploy en Vercel (sin cambiar la key)
+Costo: ~USD $0.00075/consulta × 1000 consultas/mes ≈ $0.75/mes
 ```
 
 ---
@@ -485,38 +496,40 @@ npm run manifiesto:build && npm run corpus:ingest
 
 ---
 
-## 8. DEUDA TÉCNICA PENDIENTE
+## 8. DEUDA TÉCNICA Y PENDIENTES
 
-### Crítica (bloquea calidad del producto)
-- [ ] **Upgrade GEMINI_API_KEY a tier pagado** — Groq fallback mitiga, pero Gemini pagado mejora latencia
-- [ ] **Actualizar VOYAGE_API_KEY en Vercel** — La web en producción requiere la nueva clave manual.
+### Pendiente — requiere acción manual externa
+- [ ] **Upgrade GEMINI_API_KEY a tier pagado** — billing en Google Cloud Console
+- [ ] **Ejecutar migrations SQL en Supabase Dashboard**:
+  - `supabase/migrations/20260515_query_cache.sql` — activa caché semántica
+  - `supabase/migrations/20260515_subscriptions.sql` — activa gestión de planes Stripe
+- [ ] **Configurar vars de Stripe en Vercel**: `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `NEXT_PUBLIC_STRIPE_PRICE_PRO`
+- [ ] **Registrar webhook Stripe**: `https://revisor-arq.vercel.app/api/stripe/webhook` en Stripe Dashboard
+- [ ] **Verificar `DEEPSEEK_API_KEY` en Vercel** — el código lo usa pero puede no estar configurado en prod
+- [ ] **Verificar `SENTRY_DSN` en Vercel** — integrado en código, falta el valor
 
-### Completada recientemente ✅
-- [x] **Hybrid Search Activado**: `match_chunks_hybrid` se usa automáticamente en `retriever.ts` cuando hay términos exactos (Art. N°, DDU N°).
-- [x] **Error Handler Robusto**: Fallback SSE de error amigable en `route.ts` cuando ambos LLMs fallan.
-- [x] **Rate Limit Persistente**: `rate-limit.ts` usa Supabase (tabla `rate_limits`) con fallback in-memory.
-- [x] **Tests Unitarios (73 tests)**: Suite Vitest en `src/__tests__/` para `validador.ts` (15), `sintetizador.ts` (31) y `retriever.ts` (27). Cubre guardrails, disclaimers, artículos fuera de rango, DDU inexistentes y routing de hybrid search.
-- [x] **CI/CD gate de tests**: `deploy.yml` corre `npm test` antes del deploy a Vercel — si falla un guardrail, el deploy se bloquea.
-- [x] **Circuit breaker Voyage AI**: Si Voyage falla (401/503), `retriever.ts` retorna `[]` en lugar de propagar un 500. El LLM genera con contexto vacío y sus guardrails responden "sin información en corpus".
-- [x] **Voyage no reintenta en 401/403**: `withRetry` en `voyage.ts` falla inmediatamente con mensaje claro en lugar de hacer 3 reintentos inútiles.
-- [x] **tieneTerminosExactos exportada**: La función clave del routing hybrid/vector está exportada y cubierta por 27 tests.
-- [x] **Paralelización procesarEntrada + auth**: `Promise.all([procesarEntrada, obtenerUsuarioYVerificarCuota])` en `route.ts` — ahorra ~400-600ms por request.
-- [x] **Sentry integrado**: `@sentry/nextjs` instalado. Configs en `sentry.*.config.ts` e `instrumentation.ts`. Activo cuando `SENTRY_DSN` está en env vars.
-- [x] **maxDuration=300**: Exportado en `route.ts` para cuando se haga upgrade a Vercel Pro (sin efecto en Hobby).
-- [x] **Guard de timeout en agentic-retriever**: Si la ronda 1 + análisis de gaps supera el 80% del tiempo disponible (45s default), la ronda 2 se omite y se retorna ronda 1.
-- [x] **Bug fix await checkRateLimit**: Corregido `await` faltante en `admin/login`, `feedback` y `contacto` routes.
-- [x] **SCHEMA.md**: Documentación completa del schema de Supabase en `SCHEMA.md` (raíz del proyecto).
-- [x] **Memoria Multi-turno**: El chat ahora mantiene el contexto de la conversación.
-- [x] **Soporte OCR**: Capacidad de leer reglamentos antiguos escaneados.
-- [x] **Scraper de Alertas**: Monitorea cambios legales automáticamente cada lunes.
-- [ ] **Ley de Copropiedad 21.442**: verificar si está en el corpus tras actualizar API keys
-- [ ] **DFL 382 agua potable**: verificar si está en el corpus
+### Pendiente — siguiente iteración de código
+- [ ] **Correr eval post-mejoras** — `npm run eval` con API Gemini paga
+- [ ] **Verificar Ley 21.442 en corpus** — necesaria para caso `lguc-condominio` del eval
+- [ ] **Paginación en panel `/normativa`** — actualmente carga todas las normas
+- [ ] **Upgrade Vercel a Pro** — necesario para que `maxDuration=300` tenga efecto (modo profundo)
 
-### Baja prioridad
-- [x] Worktrees git huérfanos: limpiar con `git worktree prune`
-- [ ] Paginación en panel admin de normativa
-- [ ] Caching de embeddings para preguntas frecuentes
-- [ ] Exportar DDL real desde Supabase Dashboard → `supabase/schema.sql`
+### Completado ✅ (referencia acumulada)
+- [x] **Tests Vitest (79)**: `validador.ts` + `sintetizador.ts` + `retriever.ts`. Gate en CI/CD.
+- [x] **Hybrid Search**: `match_chunks_hybrid` activo para Art. N°, DDU N°, Ley N°.
+- [x] **Fallback BM25 Voyage**: `buscarPorFTS` en `retriever.ts` cuando Voyage falla (no devuelve vacío).
+- [x] **Rate Limit Persistente**: tabla `rate_limits` en Supabase con fallback in-memory.
+- [x] **Sentry**: `@sentry/nextjs` en `sentry.*.config.ts` + `instrumentation.ts`.
+- [x] **JWT admin**: `lib/admin-jwt.ts` HS256. El middleware verifica firma; la cookie no contiene el secreto crudo.
+- [x] **Dashboard analítica**: `/admin` Server Component con KPIs, latencias, sparkline 14 días, logout.
+- [x] **Caché semántica**: `lib/query-cache.ts` + migration SQL. Pendiente: ejecutar en Supabase.
+- [x] **Guardrails reforzados**: `sintetizador.ts` detecta artículos inexistentes por regex en la pregunta.
+- [x] **Indicadores de progreso UI**: "Clasificando / Recuperando / Generando" en `chat/page.tsx`.
+- [x] **Stripe scaffolding**: `lib/stripe.ts` + `/api/stripe/checkout|webhook|portal`. Pendiente: activar en Vercel.
+- [x] **Schema BD**: `supabase/schema.sql` + `supabase/migrations/`.
+- [x] **Memoria Multi-turno**: reescritura de queries con Gemini Flash (standalone query).
+- [x] **Cadena 5 proveedores**: Gemini → DeepSeek → Cerebras → OpenRouter → Groq.
+- [x] **Corpus 100%**: 358 normas / 12,483 chunks. OGUC verificada (427/427 págs).
 
 ---
 
@@ -531,45 +544,36 @@ npm run manifiesto:build && npm run corpus:ingest
 
 ---
 
-## 10. ESTADO ACTUAL (2026-05-08 — Corpus Validado + Eval Completado)
+## 10. ESTADO ACTUAL (2026-05-15 — Release Candidate)
 
-### ✅ COMPLETADO EN SESIÓN 2026-05-08
-- **Corpus expansion**: 1,100 → 9,453 chunks (+760%) ✅ Verificado en Supabase
-- **Ingesta de normas**: 71 normas totales, todas ingresadas ✅
-- **Evaluación v9**: 6/9 casos pasados (67%), +45pp mejora vs baseline 2/9 ✅
-- **API keys**: VOYAGE_API_KEY + GEMINI_API_KEY ambas validadas en Vercel ✅
-- **Retrieval quality**: 18-20 fuentes por query en 100% de casos ✅
-- **Fallback Groq**: operacional (3 fallos técnicos por rate limit, no lógico) ✅
-- **Deploy en producción**: https://revisor-arq.vercel.app activo ✅
+### Sistema en producción: https://revisor-arq.vercel.app
 
-### Cómo funciona el fallback Gemini → Groq
-```
-1. Usuario pregunta en /api/chat
-2. streamGemini intenta Gemini 2.5 Flash
-3. Si Gemini falla por 429/503 (rate limit):
-   → Automáticamente usa streamGroq (Mixtral)
-   → Groq retorna respuesta igual de buena, más rápido
-4. Si Groq también falla:
-   → Lanza error con info de ambos intentos
-```
+| Área | Estado | Nota |
+|------|--------|------|
+| Deploy | ✅ Activo | Vercel Hobby, auto-deploy en push a master |
+| Corpus | ✅ Completo | 358 normas · 12,483 chunks · OGUC verificada |
+| RAG pipeline | ✅ Operativo | HyDE + Multi-query + RRF + Hybrid search |
+| Fallback LLM | ✅ 5 proveedores | Gemini → DeepSeek → Cerebras → OpenRouter → Groq |
+| Tests | ✅ 79/79 pasando | Gate activo en CI/CD |
+| Auth admin | ✅ JWT HS256 | Cookie no expone secreto crudo |
+| Dashboard | ✅ `/admin` | KPIs, latencias, distribución, logout |
+| Caché semántica | ⚠️ Código listo | Falta ejecutar migration SQL en Supabase |
+| Stripe | ⚠️ Scaffolding listo | Falta configurar vars en Vercel + registrar webhook |
+| Gemini billing | ❌ Free tier | 20 RPM — cuello de botella principal |
+| Eval post-mejoras | ❌ Sin correr | Último resultado: 6/9 (67%) — puede haber mejorado |
 
-### Resultados del eval v9 (2026-05-08)
-**Pasados (6/9)**:
-- lguc-116-permiso ✅ 33.9s (retrieval 20 fuentes, citas art. 116)
-- lguc-subdivison ✅ 55.7s (retrieval 20 fuentes, citas art. 1-3)
-- lguc-planificacion ✅ 24.4s (retrieval 20 fuentes, citas art. 28)
-- lguc-condominio ✅ 46.5s (retrieval 20 fuentes, citas 22 artículos)
-- ddu-541 ✅ 91.9s (retrieval 20 fuentes, cita "DDU 541")
-- dfl382-agua ✅ 205.4s (retrieval 18 fuentes, citas art. 39-57)
+### Últimas mejoras de código (2026-05-15)
+- Caché semántica queries (`lib/query-cache.ts`, cosine ≥ 0.97, TTL 7d)
+- JWT para auth admin (`lib/admin-jwt.ts`, HS256, 8h)
+- Dashboard analítica (`/admin`, Server Component con logout)
+- Guardrails reforzados (regex sobre texto de pregunta, no solo keywords del clasificador)
+- Stripe scaffolding completo (`lib/stripe.ts` + `/api/stripe/{checkout,webhook,portal}`)
+- Migrations SQL (`supabase/migrations/`)
+- 79 tests unitarios (73 → 79)
+- OGUC re-ingesta: 806 → 1,210 chunks
 
-**Fallados (3/9)** — causas técnicas (Groq 30 RPM rate limit tras reintentos), NO lógica:
-- oguc-rasante ❌ 201.7s (Groq rate limit)
-- guardrail-articuloinexistente ❌ 193.5s (Groq rate limit)
-- guardrail-normafalsa ❌ 196.4s (Groq rate limit)
-
-### Próximos pasos (FASE 2 + 3)
-1. ✅ **Corpus completado** — no requiere cambios
-2. ✅ **Eval funcional** — 6/9 pasados, arquitectura RAG validada
-3. ⏳ **Ingestar OGUC completa + DDUs 000-526 + cat. 01-11** (opcional, para cobertura máxima)
-4. ⏳ **Limpiar worktrees huérfanos** (git cleanup)
-5. ✅ **Producción lista** — deploy verificado, QA manual completo en revisor-arq.vercel.app
+### Próximas acciones (en orden de impacto)
+1. **Habilitar billing Gemini** — elimina el cuello de botella principal
+2. **Ejecutar migrations SQL** en Supabase Dashboard (query_cache + subscriptions)
+3. **Configurar Stripe en Vercel** — activa monetización sin cambios de código
+4. **Correr eval** — `npm run eval` con API pagada para medir impacto real de mejoras

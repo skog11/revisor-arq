@@ -21,7 +21,8 @@ export function buildSystemPromptV2(
   contexto: string,
   cruces: CruceDetectado[],
   clasificacion?: QueryClassificada,
-  relacionesGrafo?: string
+  relacionesGrafo?: string,
+  pregunta?: string         // texto original de la consulta para guardrails adicionales
 ): string {
   // Bloque de contexto del proyecto detectado (si clasificacion disponible y confianza no baja)
   let proyectoBloque = "";
@@ -94,81 +95,85 @@ REGLAS ABSOLUTAS — NO negociables:
    d) Nunca trates cada artículo como si fuera independiente — la respuesta debe ser una síntesis integrada de todas las fuentes.
    e) Si la pregunta activa normas de distintos dominios (urbanismo + medioambiente, o urbanismo + patrimonio), dedica un párrafo a cómo se articulan esos regímenes.`;
 
-  // ── Guardrail: detección de artículos sospechosos ────────────────────────────
-  // Si la consulta menciona artículos con números fuera de rango válido,
-  // inyectar alerta explícita y FORZAR respuesta que declare explícitamente "no encuentro en base de conocimiento"
-  let guardrailBloque = "";
-  let hayReferenciaSospechosa = false;
-  let referenciaSospechosaFormato = "";
+  // ── Guardrail A: contexto vacío ──────────────────────────────────────────────
+  // Si no se recuperaron chunks, el modelo no tiene base para responder.
+  const sinContexto = !contexto || contexto.trim().length < 50;
+  const guardrailContextoVacio = sinContexto
+    ? `\n\n🚨 GUARDRAIL — SIN CONTEXTO RECUPERADO 🚨
+No se encontraron fragmentos normativos en la base de conocimiento para esta consulta.
+INSTRUCCIÓN OBLIGATORIA: Informa al usuario explícitamente que no encontraste información sobre este tema en tu base de conocimiento y sugiere consultar BCN (www.bcn.cl) o un profesional.
+NUNCA improvises ni inventes normativa que no esté en el contexto.`
+    : "";
 
-  // Detectar referencias sospechosas tanto en keywords_normativas como en el texto de la pregunta
-  // La pregunta original no se pasa aquí, pero el clasificador ya la procesa y entrega keywords.
-  // Si clasificacion no está disponible, el bloque queda vacío (fallback seguro).
-  if (clasificacion?.keywords_normativas && clasificacion.keywords_normativas.length > 0) {
+  // ── Guardrail B: detección de referencias sospechosas ────────────────────────
+  // Escanea tanto keywords_normativas del clasificador COMO el texto de la pregunta.
+  // Así el guardrail dispara aunque el clasificador no extraiga la keyword exacta.
+
+  function detectarSospechosos(fuentes: string[]): { sospechosos: string[]; referencia: string } {
     const sospechosos: string[] = [];
+    let referencia = "";
 
-    for (const kw of clasificacion.keywords_normativas) {
-      // Artículos fuera de rango: Art. 9999, Artículo 10000, etc.
-      const matchArt = kw.match(/Art(?:[íi]culo)?\s*\.?\s*(\d+)/i);
+    for (const kw of fuentes) {
+      // Artículos fuera de rango inequívoco (> 999 cubre LGUC, OGUC y cualquier ley chilena)
+      const matchArt = kw.match(/Art(?:[íi]culo)?s?\s*\.?\s*(\d+)/i);
       if (matchArt) {
         const num = parseInt(matchArt[1], 10);
-        // LGUC: 1–380, OGUC: 1–390; cualquier número > 999 es inequívocamente inválido
         if (num > 999) {
           sospechosos.push(kw);
-          hayReferenciaSospechosa = true;
-          referenciaSospechosaFormato = `Art. ${num}`;
+          referencia = `Art. ${num}`;
+          continue;
         }
-        continue;
+        // LGUC específico: solo hasta ~180 artículos
+        const mencionaLGUC = /LGUC|DFL.?458/i.test(kw) || /LGUC|DFL.?458/i.test(pregunta ?? "");
+        if (mencionaLGUC && num > 200) {
+          sospechosos.push(kw);
+          referencia = `Art. ${num} LGUC`;
+          continue;
+        }
       }
 
-      // DDU con número fuera del corpus (DDU vigentes: 527–541; históricos hasta ~526)
-      // DDU 999+ es inválido; el corpus llega hasta DDU 541
+      // DDU fuera del corpus (máximo DDU 543 en manifiesto; > 600 es inequívocamente inválido)
       const matchDDU = kw.match(/DDU[- ]?(?:N[°º]?\s*)?(\d+)/i);
       if (matchDDU) {
         const num = parseInt(matchDDU[1], 10);
         if (num > 600) {
-          sospechosos.push(kw); // DDU 999 es inequívocamente inexistente
-          hayReferenciaSospechosa = true;
-          referenciaSospechosaFormato = `DDU ${num}`;
-        }
-        continue;
-      }
-
-      // Detectar siglas de instrumentos NO reconocidos (no sean LGUC, OGUC, DDU, etc.)
-      // Palabras clave de instrumentos conocidos
-      const instrumentosValidos = /\b(LGUC|OGUC|DDU|DFL|DS|PRMS|PRC|DOM|SEREMI|RCA)\b/i;
-      const siglasDetectadas = kw.match(/\b[A-Z]{2,}[\s-]?\d*/g);
-      if (siglasDetectadas) {
-        for (const sigla of siglasDetectadas) {
-          if (!instrumentosValidos.test(sigla) && sigla.length <= 4) {
-            // Sigla no reconocida
-            sospechosos.push(kw);
-            hayReferenciaSospechosa = true;
-            referenciaSospechosaFormato = sigla;
-            break;
-          }
+          sospechosos.push(kw);
+          referencia = `DDU ${num}`;
         }
       }
     }
 
-    if (sospechosos.length > 0) {
-      // Guardrail MÁS FUERTE: obligar explícitamente que en la respuesta aparezca la frase "base de conocimiento"
-      guardrailBloque = `\n\n🚨 GUARDRAIL CRÍTICO ACTIVO 🚨
-La consulta menciona referencias que DEFINITIVAMENTE NO existen en la normativa chilena ni en mi base de conocimiento:
-${sospechosos.map((s) => `  • ${s}`).join("\n")}
-
-INSTRUCCIÓN OBLIGATORIA:
-Tu respuesta DEBE contener EXPLÍCITAMENTE una de estas frases:
-  1. "No encuentro ${referenciaSospechosaFormato} en mi base de conocimiento."
-  2. "El ${referenciaSospechosaFormato} que mencionas no está en mi base de conocimiento."
-  3. "Esta referencia (${referenciaSospechosaFormato}) no se encuentra en mi base de conocimiento."
-
-NO GENERES respuesta que parezca válida. NO INVENTES contenido sobre esta(s) referencia(s).
-RESPONDE SIEMPRE explicitando que no existe en tu base de conocimiento.`;
-    }
+    return { sospechosos, referencia };
   }
 
-  const baseConGuardrail = base + guardrailBloque;
+  // Construir lista de textos a escanear: keywords + palabras clave extraídas de la pregunta
+  const fuentesEscanear: string[] = [
+    ...(clasificacion?.keywords_normativas ?? []),
+  ];
+  // Extraer referencias directamente del texto de pregunta (fallback si clasificador falla)
+  if (pregunta) {
+    const refsEnPregunta = pregunta.match(
+      /(?:Art(?:[íi]culo)?s?\s*\.?\s*\d+|DDU[- ]?(?:N[°º]?\s*)?\d+)/gi
+    ) ?? [];
+    fuentesEscanear.push(...refsEnPregunta);
+  }
+
+  const { sospechosos, referencia: referenciaSospechosa } = detectarSospechosos(fuentesEscanear);
+
+  const guardrailReferencias = sospechosos.length > 0
+    ? `\n\n🚨 GUARDRAIL CRÍTICO ACTIVO 🚨
+La consulta menciona referencias que NO existen en la normativa chilena ni en mi base de conocimiento:
+${sospechosos.map((s) => `  • ${s}`).join("\n")}
+
+INSTRUCCIÓN OBLIGATORIA: Tu respuesta DEBE contener EXPLÍCITAMENTE una de estas frases:
+  1. "No encuentro ${referenciaSospechosa} en mi base de conocimiento."
+  2. "El ${referenciaSospechosa} que mencionas no está en mi base de conocimiento."
+  3. "Esta referencia (${referenciaSospechosa}) no se encuentra en mi base de conocimiento."
+
+NO GENERES respuesta que parezca válida. NO INVENTES contenido sobre esta(s) referencia(s).`
+    : "";
+
+  const baseConGuardrail = base + guardrailContextoVacio + guardrailReferencias;
 
   // ── MODO ARQUITECTO ───────────────────────────────────────────────────────────
   if (modo === "arquitecto") {

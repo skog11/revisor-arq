@@ -1,14 +1,15 @@
 /**
  * middleware.ts
  * 1. Refresca el token de sesión de Supabase en cada request.
- * 2. Protege rutas de administrador (/normativa, /corpus, /api/corpus)
- *    con cookie admin_session = ADMIN_SECRET.
+ * 2. Protege rutas de administrador (/normativa, /corpus, /api/corpus, /admin)
+ *    verificando un JWT firmado en la cookie admin_session.
  */
 
 import { NextRequest, NextResponse } from "next/server";
 import { createMiddlewareClient } from "@/lib/supabase-server";
+import { verifyAdminJwt } from "@/lib/admin-jwt";
 
-const ADMIN_PROTECTED = ["/normativa", "/corpus", "/api/corpus"];
+const ADMIN_PROTECTED = ["/normativa", "/corpus", "/api/corpus", "/admin"];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -30,8 +31,10 @@ export async function middleware(request: NextRequest) {
       }
       // En dev sin secret → pasar
     } else {
-      const cookie = request.cookies.get("admin_session")?.value;
-      if (cookie !== secret) {
+      const token = request.cookies.get("admin_session")?.value;
+      const autorizado = token ? await verifyAdminJwt(token, secret) : false;
+
+      if (!autorizado) {
         if (pathname.startsWith("/api/")) {
           return Response.json(
             { error: "No autorizado. Se requiere clave de administrador." },

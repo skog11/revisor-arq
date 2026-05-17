@@ -2,13 +2,14 @@
 
 import { useRef, useState, useCallback, useEffect } from "react";
 import Link from "next/link";
-import { Send, Square, HardHat, Scale, Microscope, RotateCcw, BookOpen, Info, Plus } from "lucide-react";
+import { Send, Square, HardHat, Scale, Microscope, RotateCcw, BookOpen, Info, Plus, ScanSearch, Database, Sparkles } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { Mensaje, type MensajeData, type Fuente } from "@/components/chat/mensaje";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
 type ModoRespuesta = "arquitecto" | "abogado" | "profundo";
+type EtapaCarga = "clasificando" | "recuperando" | "generando";
 
 // ─── Configuración de modos ─────────────────────────────────────────────────
 // Iteración 2: modo colors apuntan a variables CSS muted (cálidas en dark,
@@ -89,6 +90,7 @@ export default function ChatPage() {
   const [pregunta, setPregunta] = useState("");
   const [modo, setModo]         = useState<ModoRespuesta>("arquitecto");
   const [cargando, setCargando] = useState(false);
+  const [etapaActual, setEtapaActual] = useState<EtapaCarga | null>(null);
 
   const bottomRef   = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -120,6 +122,7 @@ export default function ChatPage() {
       setPregunta("");
       if (textareaRef.current) textareaRef.current.style.height = "auto";
       setCargando(true);
+      setEtapaActual("clasificando");
 
       const ctrl = new AbortController();
       abortRef.current = ctrl;
@@ -170,13 +173,17 @@ export default function ChatPage() {
                 data?: Fuente[];
                 message?: string;
                 consultaId?: string;
+                etapa?: EtapaCarga;
               };
 
-              if (event.type === "fuentes" && event.data) {
+              if (event.type === "etapa" && event.etapa) {
+                setEtapaActual(event.etapa);
+              } else if (event.type === "fuentes" && event.data) {
                 setMensajes((prev) =>
                   prev.map((m) => (m.id === asistId ? { ...m, fuentes: event.data } : m))
                 );
               } else if (event.type === "chunk" && event.text) {
+                setEtapaActual(null);
                 setMensajes((prev) =>
                   prev.map((m) =>
                     m.id === asistId ? { ...m, contenido: m.contenido + event.text } : m
@@ -222,6 +229,7 @@ export default function ChatPage() {
         }
       } finally {
         setCargando(false);
+        setEtapaActual(null);
         abortRef.current = null;
         textareaRef.current?.focus();
       }
@@ -240,8 +248,13 @@ export default function ChatPage() {
 
   const hayMensajes = mensajes.length > 0;
   const modoActivo  = MODO_CFG[modo];
-  const isWaitingFirstChunk =
-    cargando && mensajes.length > 0 && mensajes[mensajes.length - 1]?.contenido === "";
+  const isWaitingFirstChunk = cargando && etapaActual !== null;
+
+  const ETAPA_CFG: Record<EtapaCarga, { label: string; Icon: typeof ScanSearch }> = {
+    clasificando: { label: "Clasificando consulta…",         Icon: ScanSearch },
+    recuperando:  { label: "Recuperando normativa relevante…", Icon: Database  },
+    generando:    { label: "Generando respuesta…",            Icon: Sparkles  },
+  };
 
   const limpiarChat = useCallback(() => {
     abortRef.current?.abort();
@@ -460,38 +473,35 @@ export default function ChatPage() {
                   ))}
                 </AnimatePresence>
 
-                {/* Indicador "consultando" */}
-                {isWaitingFirstChunk && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="flex items-center gap-3 px-5 py-3"
-                    role="status"
-                    aria-live="polite"
-                    aria-label="Consultando normativa"
-                  >
-                    <div
-                      className="w-[2px] h-4 rounded-full shrink-0"
-                      style={{ background: modoActivo.color, opacity: 0.5 }}
-                    />
-                    <div className="flex items-center gap-1">
-                      {[0, 1, 2].map((i) => (
-                        <span
-                          key={i}
-                          className="size-1 rounded-full animate-bounce"
-                          style={{
-                            background:        "var(--ink-4)",
-                            animationDelay:    `${i * 120}ms`,
-                            animationDuration: "1s",
-                          }}
-                        />
-                      ))}
-                    </div>
-                    <span style={{ fontSize: 12, color: "var(--ink-3)" }}>
-                      Consultando normativa…
-                    </span>
-                  </motion.div>
-                )}
+                {/* Indicador de etapa */}
+                {isWaitingFirstChunk && etapaActual && (() => {
+                  const cfg = ETAPA_CFG[etapaActual];
+                  return (
+                    <motion.div
+                      key={etapaActual}
+                      initial={{ opacity: 0, y: 4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.18 }}
+                      className="flex items-center gap-3 px-5 py-3"
+                      role="status"
+                      aria-live="polite"
+                      aria-label={cfg.label}
+                    >
+                      <div
+                        className="w-[2px] h-4 rounded-full shrink-0"
+                        style={{ background: modoActivo.color, opacity: 0.5 }}
+                      />
+                      <cfg.Icon
+                        className="size-3.5 shrink-0 animate-pulse"
+                        style={{ color: modoActivo.color, opacity: 0.7 }}
+                      />
+                      <span style={{ fontSize: 12, color: "var(--ink-3)" }}>
+                        {cfg.label}
+                      </span>
+                    </motion.div>
+                  );
+                })()}
 
                 <div ref={bottomRef} className="h-4" />
               </div>
