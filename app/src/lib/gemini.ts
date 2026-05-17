@@ -89,11 +89,12 @@ async function* streamGeminiNative(
   systemPrompt: string,
   userMessage: string,
   modelo?: string,
+  maxRetries = MAX_RETRIES_STREAM,
 ): AsyncGenerator<string, void, unknown> {
   const model = getGeminiModel(systemPrompt, modelo);
   let lastErr: unknown;
 
-  for (let attempt = 0; attempt < MAX_RETRIES_STREAM; attempt++) {
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
       const result = await model.generateContentStream(userMessage);
       for await (const chunk of result.stream) {
@@ -103,9 +104,9 @@ async function* streamGeminiNative(
     } catch (err) {
       lastErr = err;
       if (!isRetryable(err)) throw err;
-      if (attempt < MAX_RETRIES_STREAM - 1) {
+      if (attempt < maxRetries - 1) {
         const delay = jitter(STREAM_RETRY_DELAY_MS * Math.pow(2, attempt));
-        console.log(`[Gemini] Error reintentable (intento ${attempt + 1}/${MAX_RETRIES_STREAM}), esperando ${Math.round(delay)}ms...`);
+        console.log(`[Gemini] Error reintentable (intento ${attempt + 1}/${maxRetries}), esperando ${Math.round(delay)}ms...`);
         await sleep(delay);
       }
     }
@@ -118,21 +119,23 @@ async function* streamGeminiNative(
  * - "deepseek" (default): DeepSeek → Gemini → Cerebras → OpenRouter → Groq
  * - "gemini": Gemini → DeepSeek → Cerebras → OpenRouter → Groq
  *
- * DeepSeek primario evita el cuello de botella del free tier de Gemini (20 RPM)
- * y entrega calidad comparable a Gemini 2.5 Flash a costo cero.
+ * Cuando Gemini es fallback (no primario), usa maxRetries=1 para no bloquear
+ * el timeout de Vercel (60s) con backoffs exponenciales.
  */
 function buildProviderChain(
   systemPrompt: string,
   userMessage: string,
   modelo?: string,
 ): Array<{ nombre: string; gen: () => AsyncGenerator<string, void, unknown> }> {
-  const gemini = { nombre: "Gemini",     gen: () => streamGeminiNative(systemPrompt, userMessage, modelo) };
+  const primary = (process.env.LLM_PRIMARY ?? "deepseek").toLowerCase();
+  const geminiRetries = primary === "gemini" ? MAX_RETRIES_STREAM : 1;
+
+  const gemini = { nombre: "Gemini",     gen: () => streamGeminiNative(systemPrompt, userMessage, modelo, geminiRetries) };
   const deepseek = { nombre: "DeepSeek",   gen: () => streamDeepSeek(systemPrompt, userMessage) };
   const cerebras = { nombre: "Cerebras",   gen: () => streamCerebras(systemPrompt, userMessage) };
   const openrouter = { nombre: "OpenRouter", gen: () => streamOpenRouter(systemPrompt, userMessage) };
   const groq = { nombre: "Groq",       gen: () => streamGroq(systemPrompt, userMessage) };
 
-  const primary = (process.env.LLM_PRIMARY ?? "deepseek").toLowerCase();
   return primary === "gemini"
     ? [gemini, deepseek, cerebras, openrouter, groq]
     : [deepseek, gemini, cerebras, openrouter, groq];
