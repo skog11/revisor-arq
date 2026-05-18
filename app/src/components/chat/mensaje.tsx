@@ -231,20 +231,35 @@ function MensajeAsistente({ mensaje }: { mensaje: MensajeData }) {
             {/* Descarga PDF — solo modo profundo, respuesta completa */}
             {!mensaje.streaming && !mensaje.error && mensaje.modo === "profundo" && mensaje.contenido && (
               <>
-                <button
-                  onClick={() => setModalPDF(true)}
-                  className="flex items-center gap-1.5 mt-4 rounded-lg px-3 py-1.5 text-[12px] font-medium transition-all hover:-translate-y-px"
+                <div
+                  className="mt-5 rounded-xl p-4 flex items-center justify-between gap-4"
                   style={{
-                    background: "var(--ink)",
-                    color: "var(--paper)",
-                    border: "1px solid var(--ink)",
-                    alignSelf: "flex-end",
+                    background: "color-mix(in srgb, var(--mode-pro, #2c6e49) 8%, var(--paper-2))",
+                    border: "1px solid color-mix(in srgb, var(--mode-pro, #2c6e49) 25%, transparent)",
                   }}
-                  title="Descargar informe técnico como PDF profesional"
                 >
-                  <FileDown className="size-3.5" />
-                  Descargar Informe PDF
-                </button>
+                  <div>
+                    <p style={{ fontSize: 13, fontWeight: 600, color: "var(--ink)", marginBottom: 2 }}>
+                      Informe técnico listo para entregar
+                    </p>
+                    <p style={{ fontSize: 11.5, color: "var(--ink-3)", lineHeight: 1.4 }}>
+                      Genera un PDF firmable con portada profesional, citas normativas y datos del proyecto.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setModalPDF(true)}
+                    className="flex shrink-0 items-center gap-2 rounded-lg px-4 py-2 text-[13px] font-semibold transition-all hover:-translate-y-px hover:shadow-md"
+                    style={{
+                      background: "var(--mode-pro, #2c6e49)",
+                      color: "#fff",
+                      border: "none",
+                    }}
+                    title="Descargar informe técnico como PDF profesional"
+                  >
+                    <FileDown className="size-4" />
+                    Descargar PDF
+                  </button>
+                </div>
 
                 {modalPDF && (
                   <ModalDescargaPDF

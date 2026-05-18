@@ -28,7 +28,7 @@ const MODO_CFG: Record<ModoRespuesta, ModoCfg> = {
   arquitecto: {
     Icon: HardHat,
     label: "Arquitecto",
-    descripcion: "Parámetros técnicos, coeficientes y normas con ejemplos constructivos prácticos.",
+    descripcion: "Tabla de parámetros con cifras exactas: constructibilidad, rasantes, distanciamientos. Para tomar decisiones de proyecto.",
     color: "var(--mode-arq)",
     bgSoft: "var(--mode-arq-soft)",
     border: "var(--mode-arq-border)",
@@ -36,7 +36,7 @@ const MODO_CFG: Record<ModoRespuesta, ModoCfg> = {
   abogado: {
     Icon: Scale,
     label: "Abogado",
-    descripcion: "Texto literal con citas íntegras, cadena normativa y análisis de vacíos legales.",
+    descripcion: "Artículos transcritos íntegramente, con jerarquía de fuentes. Para redactar informes, recursos o certificados.",
     color: "var(--mode-abg)",
     bgSoft: "var(--mode-abg-soft)",
     border: "var(--mode-abg-border)",
@@ -44,7 +44,7 @@ const MODO_CFG: Record<ModoRespuesta, ModoCfg> = {
   profundo: {
     Icon: Microscope,
     label: "Profundo",
-    descripcion: "Análisis multi-norma con remisiones cruzadas y recomendaciones exhaustivas.",
+    descripcion: "Cruces LGUC/OGUC/DDU, qué norma prevalece, vacíos detectados y ruta de cumplimiento. Exportable como informe PDF.",
     color: "var(--mode-pro)",
     bgSoft: "var(--mode-pro-soft)",
     border: "var(--mode-pro-border)",
