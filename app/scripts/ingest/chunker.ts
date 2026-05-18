@@ -10,8 +10,8 @@
  */
 import type { ChunkData, ParsedArticulo, ParsedNorma } from "./types";
 
-const MAX_TOKENS = 400;      // Reducido de 900 a 400 para asegurar compatibilidad con Voyage AI y mejorar retrieval
-const OVERLAP_TOKENS = 80;   // Reducido proporcionalmente
+const MAX_TOKENS = 600;      // 600 tokens (~2400 chars) — mantiene artículos completos con mayor frecuencia
+const OVERLAP_TOKENS = 100;  // Solapamiento proporcional al nuevo tamaño
 
 /** Estima tokens (chars / 4, redondeado arriba). */
 function estimarTokens(text: string): number {
@@ -123,8 +123,10 @@ export function chunkearNorma(norma: ParsedNorma): ChunkData[] {
       const texto = textoChunks[i];
       const sufijo = textoChunks.length > 1 ? ` (parte ${i + 1}/${textoChunks.length})` : "";
 
-      // Prefijo contextual: tipo + número de artículo para facilitar retrieval
-      const prefijo = `[${norma.tipo} ${norma.numero} – Art. ${art.numero}${sufijo}]\n`;
+      // Prefijo contextual enriquecido: jerarquía + título del artículo cuando disponible
+      const jerarquiaParte = jerarquia ? ` › ${jerarquia}` : "";
+      const tituloParte = art.titulo ? `: ${art.titulo}` : "";
+      const prefijo = `[${norma.tipo} ${norma.numero}${jerarquiaParte} – Art. ${art.numero}${tituloParte}${sufijo}]\n`;
       const textoFinal = prefijo + texto;
 
       chunks.push({

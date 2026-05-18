@@ -38,9 +38,9 @@ const TIPOS_ALTA_JERARQUIA = ["LGUC", "OGUC", "Ley", "DFL", "DL"];
 // ─── Parámetros de recuperación ──────────────────────────────────────────────
 
 /** Chunks que se pasan al modelo (ventana de contexto final) */
-// 10 chunks (~3300 tokens) + system prompt (~1200) + respuesta (~1500) = ~6000 total
-// Compatible con Groq llama-3.1-8b-instant (6000 TPM) y holgado para Cerebras/OpenRouter/Gemini
-const MAX_CHUNKS = 10;
+// 18 chunks (~5940 tokens) + system prompt (~1200) + respuesta (~1500) = ~8640 total
+// Compatible con DeepSeek/Gemini/Cerebras/OpenRouter. Groq (5to fallback) puede fallar por TPM.
+const MAX_CHUNKS = 18;
 
 /** Candidatos pre-rerank (mayor diversidad → mejor reranking) */
 const CANDIDATOS_RERANK = 50;

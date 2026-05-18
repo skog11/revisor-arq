@@ -148,7 +148,7 @@ async function insertarChunks(
   chunks: ReturnType<typeof chunkearNorma>,
   embeddings: number[][]
 ) {
-  const BATCH_INSERT = 50;
+  const BATCH_INSERT = 25;
 
   for (let i = 0; i < chunks.length; i += BATCH_INSERT) {
     const batch = chunks.slice(i, i + BATCH_INSERT);
