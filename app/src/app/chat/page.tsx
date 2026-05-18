@@ -310,16 +310,6 @@ export default function ChatPage() {
                     Consulta{" "}
                     <em style={{ fontStyle: "italic" }}>normativa urbana</em>
                   </h1>
-                  <p
-                    style={{
-                      fontSize:   14,
-                      color:      "var(--ink-3)",
-                      lineHeight: 1.55,
-                    }}
-                  >
-                    Respuestas fundamentadas en la LGUC, OGUC, DDU y demás cuerpos normativos.
-                    Citas verificables, sin interpretaciones inventadas.
-                  </p>
                 </motion.section>
 
                 {/* ── 2. Modos — tarjetas planas ──────────────── */}

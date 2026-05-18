@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { motion, type Variants } from "framer-motion";
 
 const CASOS_USO = [
@@ -75,66 +74,6 @@ const fadeUp: Variants = {
   }),
 };
 
-interface Stats {
-  totalNormas: number;
-  totalChunks: number;
-  porTipo: Record<string, number>;
-}
-
-function TrustStrip() {
-  const [stats, setStats] = useState<Stats | null>(null);
-
-  useEffect(() => {
-    fetch("/api/stats")
-      .then((r) => r.json())
-      .then((d: Stats) => setStats(d))
-      .catch(() => {/* silencioso */});
-  }, []);
-
-  const items = [
-    {
-      value: stats ? stats.totalNormas.toLocaleString("es-CL") : "—",
-      label: "normas indexadas",
-    },
-    {
-      value: stats ? stats.totalChunks.toLocaleString("es-CL") : "—",
-      label: "fragmentos vectorizados",
-    },
-    {
-      value: stats ? (stats.porTipo["DDU"] ?? 0).toLocaleString("es-CL") : "—",
-      label: "DDU y circulares",
-    },
-    { value: "voyage-law-2", label: "modelo de embeddings legales" },
-  ];
-
-  return (
-    <div
-      className="border-b"
-      style={{
-        background: "var(--paper-2)",
-        borderColor: "var(--rule)",
-      }}
-    >
-      <div className="mx-auto max-w-5xl px-6 py-4 flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
-        {items.map((item) => (
-          <div key={item.label} className="flex items-baseline gap-1.5">
-            <span
-              style={{
-                fontFamily: "var(--font-jetbrains-mono)",
-                fontSize: 13,
-                fontWeight: 500,
-                color: "var(--ink)",
-              }}
-            >
-              {item.value}
-            </span>
-            <span style={{ fontSize: 11, color: "var(--ink-4)" }}>{item.label}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
 
 export default function HomePage() {
   return (
@@ -434,9 +373,6 @@ export default function HomePage() {
           </motion.div>
         </motion.div>
       </section>
-
-      {/* ── TRUST STRIP ──────────────────────────────────── */}
-      <TrustStrip />
 
       {/* ── FEATURES ─────────────────────────────────────── */}
       <section
