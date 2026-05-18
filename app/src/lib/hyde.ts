@@ -16,7 +16,7 @@
  * el embedding de la query original sin modificar.
  */
 
-import { generateGemini, MODEL_FLASH } from "./gemini";
+import { generateWithFallback, MODEL_FLASH } from "./gemini";
 import { embedText } from "./voyage";
 
 // ─── Prompt para generación hipotética ───────────────────────────────────────
@@ -48,14 +48,13 @@ export async function embedConHyDE(pregunta: string): Promise<number[]> {
   try {
     // Generar texto hipotético con Gemini Flash (rápido, barato)
     // maxRetries:1 — HyDE tiene fallback al embedding directo, no necesita backoff largo
-    const hipotetico = await generateGemini(
+    const hipotetico = await generateWithFallback(
       HYDE_SYSTEM,
       pregunta,
       {
         modelo: MODEL_FLASH,
-        temperature: 0.3,       // algo de variedad para cubrir distintos ángulos
-        maxOutputTokens: 256,   // ~150 palabras
-        maxRetries: 1,
+        temperature: 0.3,
+        maxOutputTokens: 256,
       }
     );
 

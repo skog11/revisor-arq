@@ -1,4 +1,4 @@
-import { generateGemini } from "./gemini";
+import { generateWithFallback } from "./gemini";
 
 export type TipoProyecto =
   | "edificacion_nueva"
@@ -159,10 +159,9 @@ NUEVA PREGUNTA:
 ${pregunta}`;
 
   try {
-    const raw = await generateGemini(SYSTEM_PROMPT_COMBINED, prompt, { 
-      temperature: 0, 
-      maxOutputTokens: 1024, 
-      maxRetries: 1 
+    const raw = await generateWithFallback(SYSTEM_PROMPT_COMBINED, prompt, {
+      temperature: 0,
+      maxOutputTokens: 1024,
     });
     const cleaned = stripMarkdownJson(raw);
     const parsed = JSON.parse(cleaned) as ProcesamientoEntrada;

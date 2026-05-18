@@ -223,3 +223,32 @@ export async function generateGemini(
 
   throw new Error(friendlyError(lastErr));
 }
+
+/**
+ * Variante no-streaming con cadena de fallback idéntica a streamGemini.
+ * Usa para clasificador, HyDE, multi-query y cualquier llamada que necesite
+ * texto completo pero no stream, para que el rate limit de Gemini no bloquee el pipeline.
+ */
+export async function generateWithFallback(
+  systemPrompt: string,
+  userMessage: string,
+  opts: { temperature?: number; maxOutputTokens?: number; modelo?: string } = {},
+): Promise<string> {
+  const cadena = buildProviderChain(systemPrompt, userMessage, opts.modelo);
+  let lastErr: unknown;
+
+  for (const { nombre, gen } of cadena) {
+    try {
+      let text = "";
+      for await (const chunk of gen()) {
+        text += chunk;
+      }
+      console.log(`[LLM:generate] Usando ${nombre}`);
+      return text;
+    } catch (err) {
+      lastErr = err;
+      console.error(`[LLM:generate] ${nombre} falló:`, String(err).slice(0, 120));
+    }
+  }
+  throw new Error(friendlyError(lastErr));
+}

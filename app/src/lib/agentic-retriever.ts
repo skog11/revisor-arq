@@ -13,7 +13,7 @@
 
 import { type ChunkRecuperado } from "./rag";
 import { recuperarPorCapas } from "./retriever";
-import { generateGemini, MODEL_FLASH } from "./gemini";
+import { generateWithFallback, MODEL_FLASH } from "./gemini";
 import { type PlanRecuperacion } from "./router";
 import { recuperarMultiQuery } from "./multi-query";
 
@@ -77,7 +77,7 @@ ${resumenChunks}
 ¿Qué aspectos normativos importantes para responder esta consulta NO están cubiertos por los chunks encontrados?`;
 
   try {
-    const respuesta = await generateGemini(SYSTEM_ANALIZADOR, userMessage, {
+    const respuesta = await generateWithFallback(SYSTEM_ANALIZADOR, userMessage, {
       modelo: MODEL_FLASH,
       temperature: 0,
       maxOutputTokens: 400,
