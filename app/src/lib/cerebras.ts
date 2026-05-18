@@ -6,7 +6,7 @@
  * Registrarse en https://cloud.cerebras.ai para obtener API key gratuita.
  */
 
-export const MODEL_CEREBRAS = "llama3.3-70b";
+export const MODEL_CEREBRAS = "qwen-3-235b-a22b-instruct-2507";
 
 function getApiKey(): string {
   const key = process.env.CEREBRAS_API_KEY;
