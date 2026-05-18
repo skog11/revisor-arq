@@ -49,6 +49,20 @@ export async function GET(req: NextRequest) {
 
     // Probar match_chunks directamente
     const sb = getSupabaseServiceClient();
+
+    // Test 1: sin filtro (todas las normas)
+    const { data: dataTodo, error: errorTodo } = await sb.rpc("match_chunks", {
+      query_embedding: embedding,
+      match_count: 3,
+      filter_tipos: null,
+      solo_vigentes: false,
+    });
+    const tiposEncontrados = (dataTodo as Record<string,unknown>[] ?? []).map(r => r.norma_tipo).join(", ");
+    resultados["supabase_sin_filtro"] = errorTodo
+      ? `ERROR: ${errorTodo.message}`
+      : `OK: ${(dataTodo as unknown[])?.length ?? 0} chunks — tipos: [${tiposEncontrados}]`;
+
+    // Test 2: solo OGUC
     const { data, error } = await sb.rpc("match_chunks", {
       query_embedding: embedding,
       match_count: 5,
@@ -58,8 +72,17 @@ export async function GET(req: NextRequest) {
     if (error) {
       resultados["supabase_match"] = `ERROR RPC: ${error.message}`;
     } else {
-      resultados["supabase_match"] = `OK: ${(data as unknown[])?.length ?? 0} chunks — primer chunk: ${JSON.stringify((data as Record<string,unknown>[])?.[0]?.texto ?? "").slice(0,80)}`;
+      resultados["supabase_match"] = `OGUC: ${(data as unknown[])?.length ?? 0} chunks`;
     }
+
+    // Test 3: contar normas en Supabase por tipo
+    const { data: normas } = await sb.from("normas").select("tipo").limit(200);
+    const conteo: Record<string, number> = {};
+    (normas ?? []).forEach((n: Record<string,unknown>) => {
+      const t = n.tipo as string;
+      conteo[t] = (conteo[t] ?? 0) + 1;
+    });
+    resultados["normas_tipos"] = JSON.stringify(conteo);
   } catch (err) {
     resultados["voyage_embed"] = `ERROR: ${String(err).slice(0, 200)}`;
     resultados["supabase_match"] = "NO EJECUTADO";
