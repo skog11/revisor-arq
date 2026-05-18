@@ -3,6 +3,8 @@ import { streamDeepSeek } from "@/lib/deepseek";
 import { streamCerebras } from "@/lib/cerebras";
 import { streamGroq } from "@/lib/groq";
 import { generateGemini } from "@/lib/gemini";
+import { embedText, rerankDocuments } from "@/lib/voyage";
+import { getSupabaseServiceClient } from "@/lib/supabase";
 
 export const maxDuration = 60;
 
@@ -38,6 +40,29 @@ export async function GET(req: NextRequest) {
     } catch (err) {
       resultados[nombre] = `ERROR: ${String(err).slice(0, 200)}`;
     }
+  }
+
+  // Test Voyage embedding + Supabase match_chunks
+  try {
+    const embedding = await embedText("¿Cómo se calcula la rasante según la OGUC?");
+    resultados["voyage_embed"] = `OK: vector[${embedding.length}] primeros=[${embedding.slice(0,3).map(v=>v.toFixed(3)).join(",")}]`;
+
+    // Probar match_chunks directamente
+    const sb = getSupabaseServiceClient();
+    const { data, error } = await sb.rpc("match_chunks", {
+      query_embedding: embedding,
+      match_count: 5,
+      filter_tipos: ["OGUC"],
+      solo_vigentes: false,
+    });
+    if (error) {
+      resultados["supabase_match"] = `ERROR RPC: ${error.message}`;
+    } else {
+      resultados["supabase_match"] = `OK: ${(data as unknown[])?.length ?? 0} chunks — primer chunk: ${JSON.stringify((data as Record<string,unknown>[])?.[0]?.texto ?? "").slice(0,80)}`;
+    }
+  } catch (err) {
+    resultados["voyage_embed"] = `ERROR: ${String(err).slice(0, 200)}`;
+    resultados["supabase_match"] = "NO EJECUTADO";
   }
 
   // Mostrar env vars presentes (solo si tienen valor)
