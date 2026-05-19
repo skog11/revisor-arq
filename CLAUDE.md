@@ -1,6 +1,6 @@
 # REVISOR ARQ
 Chat RAG con citas verificables sobre normativa chilena de urbanismo/construcción para arquitectos y abogados.
-**Estado:** MVP funcional · corpus incompleto · deploy pendiente → ver `PROGRESO.md` y `PLAN-IMPLEMENTACION.md`
+**Estado:** MVP funcional · corpus completo (326 normas) · en producción ✅
 
 ---
 
@@ -15,22 +15,35 @@ Chat RAG con citas verificables sobre normativa chilena de urbanismo/construcci�
 
 ---
 
-## Arquitectura RAG
+## Arquitectura RAG (Legal-RAG 7 capas)
 ```
-query → Voyage embed → Supabase match_chunks RPC → Cerebras qwen-3-235b → respuesta
-  └─ Si falla: Gemini Flash (1 retry) → OpenRouter → Groq  [todos gratuitos]
+query → extractor-hechos → motor-reglas → Voyage HyDE embed
+      → match_chunks_hybrid (50 candidatos) → rerank-2 (top 18)
+      → mergear chunks obligatorios (reglas-gatillo)
+      → detector-conflictos → compuerta normativa
+      → buildSystemPromptV2 → Cerebras qwen-3-235b → verificarCoherencia → respuesta
+  └─ Si falla: DeepSeek → Gemini Flash → OpenRouter → Groq  [todos gratuitos]
 ```
 **Libs clave en `app/src/lib/`:**
 - `gemini.ts` — orquesta la cadena de fallback LLM (todos gratuitos)
 - `cerebras.ts` — proveedor primario (qwen-3-235b, gratuito, alto TPM)
 - `groq.ts` — último fallback (llama-3.3-70b, gratuito)
-- `voyage.ts` — embed queries
-- `retriever.ts` — llama `match_chunks` en Supabase
+- `voyage.ts` — embed queries + rerank-2
+- `hyde.ts` — HyDE (Hypothetical Document Embedding) para mejor recall
+- `multi-query.ts` — variantes semánticas + fusión RRF
+- `retriever.ts` — pipeline de recuperación por capas (HyDE + hybrid + multiquery + rerank)
 - `clasificador.ts` — detecta tipo proyecto + dominios normativos
+- `router.ts` — plan de recuperación basado en clasificación
 - `grafo.ts` — cruces entre normas (LGUC ↔ OGUC ↔ DDU)
-- `sintetizador.ts` — construye system prompt por modo
-- `rag.ts` — orquesta todo el flujo
-- `validador.ts` — guarda de calidad de respuesta
+- `sintetizador.ts` — construye system prompt por modo (buildSystemPromptV2)
+- `rag.ts` — tipos compartidos + buildSystemPrompt legacy
+- `motor-reglas.ts` — 14 reglas-gatillo curadas (norma especial > general)
+- `detector-conflictos.ts` — detecta "no procede", "improcedente", etc. en chunks
+- `fetcher-normas-obligatorias.ts` — recupera chunks forzados por reglas
+- `extractor-hechos.ts` — extrae AccionSolicitada, EstadoObra, TipoZona (regex, sin LLM)
+- `validador.ts` — disclaimer + coherencia restrictiva post-síntesis
+- `agentic-retriever.ts` — recuperación agéntica 2 rondas (modo profundo)
+- `query-cache.ts` — caché semántica (bypass para reglas-gatillo)
 - `rate-limit.ts` — throttle por IP
 - `motor-reglas.ts` — compuerta normativa: reglas-gatillo que fuerzan normas especiales (DDU 161, Art. 55 LGUC, etc.) cuando la consulta cumple condiciones
 - `detector-conflictos.ts` — detecta patrones restrictivos ("no procede", "improcedencia") en chunks recuperados
@@ -118,7 +131,7 @@ NEXT_PUBLIC_APP_URL
 Cerebras qwen-3-235b → DeepSeek* → Gemini 2.5 Flash (1 retry) → OpenRouter llama-3.3-70b:free → Groq llama-3.3-70b
 (*) Solo si DEEPSEEK_API_KEY está definida
 ```
-`MAX_CHUNKS = 10` — compatible con todos los proveedores (≈4500 tokens input, ≤6000 TPM de Groq)
+`MAX_CHUNKS = 18` · `CANDIDATOS_RERANK = 50` — retriever trae 50, rerank-2 selecciona top 18
 
 ---
 
@@ -152,16 +165,26 @@ cd app && npm run eval                                   # evaluaciones (meta: �
 ## Estado actual (2026-05-19)
 - **Producción**: https://revisor-arq.vercel.app ✅
 - **LLM**: Cerebras primario (gratuito) → DeepSeek* → Gemini fast-fail → OpenRouter → Groq
-- **Retrieval**: excelente (10 fuentes por consulta, latencia ~1.7s promedio)
+- **Retrieval**: 50 candidatos → rerank-2 top 18 · HyDE + multi-query + hybrid BM25+vector
 - **Corpus**: 326 normas · ~21.500 chunks · sin duplicados ✅
-- **Eval**: **19/19 + 5/5 traps = 24/24** (2026-05-19) ✅ — incluye compuertas normativas (DDU 161, Art. 55, DDU 519, ampliación, cambio uso suelo)
+- **Eval**: **24/24** (2026-05-19) ✅ — 19 casos base + 5 traps norma especial/general
+
+### Pipeline Legal-RAG implementado
+| Fase | Módulo | Estado |
+|------|--------|--------|
+| 0+1 | Compuerta normativa (motor-reglas, detector-conflictos, fetcher-normas-obligatorias) | ✅ |
+| 2 | Reranking voyage-rerank-2 (50 → top 18) + HyDE + multi-query | ✅ |
+| 3 | Verificador coherencia post-síntesis (validador.ts) | ✅ |
+| 4 | Extractor hechos jurídicos (extractor-hechos.ts, regex) | ✅ |
+| 5 | Hybrid BM25+vector (match_chunks_hybrid en retriever, fallback automático) | ✅ |
+| 6 | CGR dictámenes como capa interpretativa | ⏳ largo plazo |
+| 7 | Expansión catálogo reglas-gatillo (14 reglas activas) | ✅ |
 
 ## Prioridades actuales
-1. **Verificar CEREBRAS_API_KEY en Vercel** env vars (confirmar que producción usa Cerebras como primario)
-2. DDUs históricos 000–526 (303 PDFs) — pendiente largo plazo
-3. Stripe / plan de pago — baja prioridad
-3. Checklist legal para lanzamiento público (ver skill `mvp-legal-launch`)
-4. Stripe / monetización cuando el producto esté listo
+1. **Checklist legal para lanzamiento público** (ver skill `mvp-legal-launch`)
+2. Stripe / monetización — baja prioridad
+3. CGR dictámenes como corpus separado — largo plazo
+4. DDUs históricos 000–453 — largo plazo
 
 → Detalle técnico en `PROGRESO.md`
 → Roadmap completo en `PLAN-IMPLEMENTACION.md`
