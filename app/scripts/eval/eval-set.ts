@@ -229,4 +229,86 @@ export const EVAL_SET: EvalCase[] = [
     ],
     minFuentes: 0,
   },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // TRAP CASES — conflictos norma general / norma especial.
+  // El sistema debe detectar la regla restrictiva (DDU 161, Art. 55 LGUC, etc.)
+  // y NO responder según la regla general permisiva.
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  // ── Trap 1: Conjunto armónico + recepción definitiva (DDU 161) ─────────────
+  {
+    id: "trap-conjunto-armonico-recepcion",
+    pregunta: "¿Puedo acoger a conjunto armónico un proyecto que ya tiene edificaciones con recepción municipal?",
+    modo: "arquitecto",
+    articulosEsperados: [],
+    // Debe mencionar DDU 161 o el criterio de improcedencia
+    frasesEsperadas: ["DDU 161"],
+    // NO puede afirmar procedencia directa con la regla general OGUC
+    frasesProhibidas: [
+      "sí es posible acoger",
+      "sí, es posible acoger",
+      "sí puede acogerse",
+      "sí, puede acogerse",
+    ],
+    minFuentes: 2,
+  },
+
+  // ── Trap 2: Loteo en zona rural (Art. 55 LGUC) ──────────────────────────────
+  {
+    id: "trap-loteo-rural-art55",
+    pregunta: "¿Puedo subdividir un terreno en zona rural sin más trámite que el de la municipalidad?",
+    modo: "arquitecto",
+    articulosEsperados: ["55"],
+    frasesEsperadas: ["SEREMI"],
+    frasesProhibidas: [
+      "solo se requiere la municipalidad",
+      "basta con la municipalidad",
+      "basta la dom",
+    ],
+    minFuentes: 2,
+  },
+
+  // ── Trap 3: DDU 490 derogada por DDU 519 ────────────────────────────────────
+  {
+    id: "trap-ddu-490-vigencia",
+    pregunta: "¿Qué establece la DDU 490 sobre complejos fronterizos y permisos de edificación?",
+    modo: "abogado",
+    articulosEsperados: [],
+    // El sistema debe advertir explícitamente la derogación
+    frasesEsperadas: ["DDU 519"],
+    frasesProhibidas: [],
+    minFuentes: 2,
+  },
+
+  // ── Trap 4: Ampliación de obra ya recepcionada ──────────────────────────────
+  {
+    id: "trap-ampliacion-obra-recepcionada",
+    pregunta: "¿Puedo ampliar una obra que ya tiene recepción definitiva como una modificación del permiso original?",
+    modo: "arquitecto",
+    articulosEsperados: [],
+    // Debe responder que requiere NUEVO permiso, no modificación
+    frasesEsperadas: ["nuevo permiso"],
+    frasesProhibidas: [
+      "como modificación del permiso original es posible",
+      "basta con modificar el permiso original",
+    ],
+    minFuentes: 2,
+  },
+
+  // ── Trap 5: Cambio de uso suelo rural a urbano ──────────────────────────────
+  {
+    id: "trap-cambio-uso-rural-urbano",
+    pregunta: "¿Puedo cambiar el uso de suelo de un terreno rural a urbano solicitándolo a la SEREMI MINVU?",
+    modo: "arquitecto",
+    articulosEsperados: [],
+    // Debe mencionar IPT / PRC / modificación instrumento de planificación
+    frasesEsperadas: ["plan regulador"],
+    frasesProhibidas: [
+      "basta solicitarlo a la seremi",
+      "solo requiere autorización seremi",
+      "es un trámite directo ante seremi",
+    ],
+    minFuentes: 2,
+  },
 ];

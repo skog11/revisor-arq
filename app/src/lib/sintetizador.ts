@@ -22,7 +22,8 @@ export function buildSystemPromptV2(
   cruces: CruceDetectado[],
   clasificacion?: QueryClassificada,
   relacionesGrafo?: string,
-  pregunta?: string         // texto original de la consulta para guardrails adicionales
+  pregunta?: string,        // texto original de la consulta para guardrails adicionales
+  compuertaNormativa?: string  // reglas-gatillo + restricciones detectadas (motor-reglas + detector-conflictos)
 ): string {
   // Bloque de contexto del proyecto detectado (si clasificacion disponible y confianza no baja)
   let proyectoBloque = "";
@@ -84,7 +85,7 @@ Ejemplo incorrecto: "según el artículo 116 de la LGUC el permiso lo otorga la 
 
 REGLA DE ORO — ARTÍCULOS:
 En cada párrafo que contenga una afirmación normativa, el número de artículo DEBE aparecer explícitamente en el formato (Norma, Art. X). No basta mencionar la norma sin el artículo. No basta parafrasear sin citar. Si no conoces el artículo exacto a partir del contexto recuperado, escribe "(artículo no disponible en base — verificar en BCN)" en lugar de omitirlo.
-${proyectoBloque}${crucesBloque}${relacionesGrafo ?? ""}
+${proyectoBloque}${crucesBloque}${relacionesGrafo ?? ""}${compuertaNormativa ?? ""}
 NORMATIVA RECUPERADA DE LA BASE DE CONOCIMIENTO:
 ${contexto}
 

@@ -39,6 +39,9 @@ import { recuperarPorCapas } from "@/lib/retriever";
 import { recuperarAgenticamente } from "@/lib/agentic-retriever";
 import { buildSystemPromptV2 } from "@/lib/sintetizador";
 import { obtenerRelacionesNormativas, formatearRelaciones } from "@/lib/grafo";
+import { aplicarReglas, formatearReglasActivas } from "@/lib/motor-reglas";
+import { detectarRestricciones, formatearRestricciones } from "@/lib/detector-conflictos";
+import { fetchChunksObligatorios, mergearChunks } from "@/lib/fetcher-normas-obligatorias";
 import { validarConsistencia } from "@/lib/validador";
 import { createClient } from "@/lib/supabase-server";
 import { buscarEnCache, guardarEnCache } from "@/lib/query-cache";
@@ -227,9 +230,31 @@ export async function POST(req: NextRequest) {
         // 2. Recuperar chunks — agentic (2 rondas + análisis de gaps) en modo profundo,
         //    estándar (HyDE + multi-query + rerank) en arquitecto/abogado
         send({ type: "etapa", etapa: "recuperando" });
-        const chunks = modo === "profundo"
+        const chunksRecuperados = modo === "profundo"
           ? await recuperarAgenticamente(queryRAG, plan, 20)
           : await recuperarPorCapas(queryRAG, plan);
+
+        // 2b. COMPUERTA NORMATIVA — aplicar reglas-gatillo sobre la consulta original.
+        //     Si match, recuperar chunks obligatorios de normas restrictivas (DDU 161, etc.)
+        //     y mergearlos al inicio del paquete.
+        const reglasActivas = aplicarReglas(pregunta);
+        let chunks = chunksRecuperados;
+        if (reglasActivas.length > 0) {
+          const clavesObligatorias = Array.from(
+            new Set(reglasActivas.flatMap((r) => r.regla.forzar_normas))
+          );
+          const chunksObligatorios = await fetchChunksObligatorios(clavesObligatorias, 3).catch(() => []);
+          if (chunksObligatorios.length > 0) {
+            chunks = mergearChunks(chunksObligatorios, chunksRecuperados);
+            console.log(
+              `[Compuerta] Reglas activas: ${reglasActivas.map(r => r.regla.id).join(", ")}. ` +
+              `Chunks forzados: ${chunksObligatorios.length}.`
+            );
+          }
+        }
+
+        // 2c. Detectar restricciones / conflictos en el paquete final
+        const restricciones = detectarRestricciones(chunks);
 
         // 3. Enviar fuentes al cliente (antes de generar)
         send({
@@ -249,9 +274,21 @@ export async function POST(req: NextRequest) {
         const relacionesGrafo = await obtenerRelacionesNormativas(chunks).catch(() => []);
         const relacionesTexto = formatearRelaciones(relacionesGrafo);
 
-        // 4. Construir contexto y sistema (con cruces inyectados)
+        // 3c. Construir bloque de compuerta normativa (reglas + restricciones)
+        const compuertaNormativa =
+          formatearReglasActivas(reglasActivas) + formatearRestricciones(restricciones);
+
+        // 4. Construir contexto y sistema (con cruces + compuerta normativa inyectados)
         const { textoContexto } = construirContexto(chunks);
-        const systemPrompt = buildSystemPromptV2(modo as ModoRespuesta, textoContexto, cruces, clasificacion, relacionesTexto, pregunta);
+        const systemPrompt = buildSystemPromptV2(
+          modo as ModoRespuesta,
+          textoContexto,
+          cruces,
+          clasificacion,
+          relacionesTexto,
+          pregunta,
+          compuertaNormativa
+        );
 
         // 5. Streaming Gemini — Pro para modo profundo, Flash para los demás
         send({ type: "etapa", etapa: "generando" });
