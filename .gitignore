@@ -44,3 +44,4 @@ corpus/00_control/
 # Scripts de ingesta masiva (no son parte del código fuente)
 ingestar_ddu_masiva.sh
 ingestar_normativa_masiva.sh
+NORMAS/
