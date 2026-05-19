@@ -2827,9 +2827,12 @@
   "DS-594": {
     "tipo": "DS",
     "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\02_Sanitario_Seguridad_y_Residuos_Peligrosos\\02_02_Lugares_de_Trabajo_y_Seguridad_Ocupacional\\DS_594_1999_MINSAL_Condiciones_Sanitarias_Lugares_Trabajo\\01_fuente_oficial\\extraido.txt",
-    "url_fuente": "https://www.bcn.cl/leychile/Navegar?idNorma=167766",
-    "titulo": "Reglamento sobre condiciones sanitarias y ambientales básicas en los lugares de trabajo",
-    "fecha_publicacion": "1999-01-01"
+    "url_fuente": "https://www.bcn.cl/leychile/navegar?idNorma=167766",
+    "titulo": "Reglamento sobre Condiciones Sanitarias y Ambientales Básicas en los Lugares de Trabajo",
+    "fecha_publicacion": "1999-01-15",
+    "numero": "594",
+    "hash": "f7abeb28fa7e5dc2ba2d22bd7fb9d89e61419fa81251d6fc0832fa082ee51071",
+    "chars": 98295
   },
   "LEY-109": {
     "tipo": "LEY",
@@ -2939,16 +2942,22 @@
   "DS-60": {
     "tipo": "DS",
     "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\12_Tecnica_Estructural_y_Normas_Oficializadas\\DS_60_2011_MINVU_OGUC_Cap1\\01_fuente_oficial\\extraido.txt",
-    "url_fuente": "https://www.bcn.cl/leychile/Navegar?idNorma=1034100",
-    "titulo": "Ordenanza General de Urbanismo y Construcciones - Capítulo 1",
-    "fecha_publicacion": "2011-01-01"
+    "url_fuente": "https://www.bcn.cl/leychile/navegar?idNorma=1031405",
+    "titulo": "Reglamento de Diseño y Cálculo para el Hormigón Armado (ACI 318S-08 adaptado)",
+    "fecha_publicacion": "2011-12-13",
+    "numero": "60",
+    "hash": "915c6ad35f4130847129a1fe4c3da3bf8df2bdb37b27a99455eb133ca5fe8302",
+    "chars": 9831
   },
   "DS-61": {
     "tipo": "DS",
     "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\12_Tecnica_Estructural_y_Normas_Oficializadas\\DS_61_2011_MINVU_OGUC_Cap2\\01_fuente_oficial\\extraido.txt",
-    "url_fuente": "https://www.bcn.cl/leychile/Navegar?idNorma=1034101",
-    "titulo": "Ordenanza General de Urbanismo y Construcciones - Capítulo 2",
-    "fecha_publicacion": "2011-01-01"
+    "url_fuente": "https://www.bcn.cl/leychile/navegar?idNorma=1031406",
+    "titulo": "Reglamento de Diseño Sísmico de Edificios (NCh433 Of.2009)",
+    "fecha_publicacion": "2011-12-13",
+    "numero": "61",
+    "hash": "5f764b6ee608f4fc96711242f928448a05726603720c16d50f91ec10b4b6298f",
+    "chars": 18786
   },
   "DS-109": {
     "tipo": "DS",
@@ -3061,5 +3070,148 @@
     "url_fuente": "https://www.bcn.cl/leychile/navega?idNorma=1033824",
     "titulo": "Reglamento Diseño Sísmico - Cap 2",
     "fecha_publicacion": "2011-01-01"
+  },
+  "LEY-20936": {
+    "tipo": "LEY",
+    "numero": "20936",
+    "titulo": "Establece un Nuevo Sistema de Transmisión Eléctrica y crea Organismo Coordinador",
+    "url_fuente": "https://www.bcn.cl/leychile/navegar?idNorma=1091349",
+    "fecha_descarga": "2026-05-19T15:29:03.788Z",
+    "fecha_publicacion": "2016-07-20",
+    "hash": "b29bd1e928c4ba75529656b41ff7d32981aa0f0c92a3462a13237c0c50363262",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\13_Nuevas_Normas_2026\\Ley_20936_Transmision_Electrica.txt",
+    "chars": 110614
+  },
+  "DS-10-MINVU": {
+    "tipo": "DS",
+    "numero": "10",
+    "titulo": "Reglamento del Sistema Integrado de Subsidio Habitacional (Viviendas Económicas DFL-2)",
+    "url_fuente": "https://www.bcn.cl/leychile/navegar?idNorma=1077508",
+    "fecha_descarga": "2026-05-19T15:29:03.791Z",
+    "fecha_publicacion": "2015-08-19",
+    "hash": "cbd5567dd33e8467f21c20766a7753ac986dd13fc304b39ad46c14e374e44d8b",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\13_Nuevas_Normas_2026\\DS-10_MINVU_Viviendas_Economicas_DFL2.txt",
+    "chars": 143845
+  },
+  "DS-8-SEC": {
+    "tipo": "DS",
+    "numero": "8",
+    "titulo": "Reglamento de Seguridad de las Instalaciones de Consumo de Energía Eléctrica (SEC)",
+    "url_fuente": "https://www.bcn.cl/leychile/navegar?idNorma=1138489",
+    "fecha_descarga": "2026-05-19T15:29:03.792Z",
+    "fecha_publicacion": "2020-03-05",
+    "hash": "f83dd674e9c8edf5beb52f19ca1268b69ec439ea64406b6051a3d36e7d293a6f",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\13_Nuevas_Normas_2026\\DS-8_Instalaciones_Electricas_SEC.txt",
+    "chars": 21032
+  },
+  "DS-66-GAS": {
+    "tipo": "DS",
+    "numero": "66",
+    "titulo": "Reglamento de Instalaciones Interiores y Medidores de Gas",
+    "url_fuente": "https://www.bcn.cl/leychile/navegar?idNorma=257983",
+    "fecha_descarga": "2026-05-19T15:29:03.794Z",
+    "fecha_publicacion": "2007-12-20",
+    "hash": "944388a11add375a7825841f0553b1ab523f252073a6683a244f18e5479cdc14",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\13_Nuevas_Normas_2026\\DS-66_Reglamento_Gas.txt",
+    "chars": 242816
+  },
+  "DS-977": {
+    "tipo": "DS",
+    "numero": "977",
+    "titulo": "Reglamento Sanitario de los Alimentos",
+    "url_fuente": "https://www.bcn.cl/leychile/navegar?idNorma=167354",
+    "fecha_descarga": "2026-05-19T15:29:03.796Z",
+    "fecha_publicacion": "1997-03-13",
+    "hash": "1c412bb7fe2980d945aa2a7bd8aaa1f409ea13576d2bfa4fafba875c876334e2",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\13_Nuevas_Normas_2026\\DS-977_Reglamento_Sanitario_Alimentos.txt",
+    "chars": 334099
+  },
+  "NCH-1079": {
+    "tipo": "DS",
+    "numero": "1079",
+    "titulo": "NCh 1079 Of.77 - Zonificación climático-habitacional para Chile",
+    "url_fuente": "https://www.bcn.cl/leychile/navegar?idNorma=1027009",
+    "fecha_descarga": "2026-05-19T15:29:03.797Z",
+    "fecha_publicacion": "2021-01-01",
+    "hash": "be2bc570d31910f90ebae8f8aac1ae236d246b12a6fe86baaa6f39728e76030f",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\13_Nuevas_Normas_2026\\NCh1079_Zonificacion_Climatica.txt",
+    "chars": 23431
+  },
+  "LEY-19537": {
+    "tipo": "LEY",
+    "numero": "19537",
+    "titulo": "Sobre Copropiedad Inmobiliaria (derogada por Ley 21.442)",
+    "url_fuente": "https://www.bcn.cl/leychile/navegar?idNorma=109650",
+    "fecha_descarga": "2026-05-19T15:29:03.799Z",
+    "fecha_publicacion": "1997-12-16",
+    "hash": "2990b29ef798db617e8d5cd2c10354ede26c9c326c6a067fa9db4260287ea890",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\13_Nuevas_Normas_2026\\Ley_19537_Copropiedad_Inmobiliaria.txt",
+    "chars": 81821
+  },
+  "DL-3516": {
+    "tipo": "DL",
+    "numero": "3516",
+    "titulo": "Establece normas sobre división de predios rústicos",
+    "url_fuente": "https://www.bcn.cl/leychile/navegar?idNorma=6991",
+    "fecha_descarga": "2026-05-19T15:29:03.800Z",
+    "fecha_publicacion": "1980-12-01",
+    "hash": "3225c91e0bc354387810bb74cc093118d841bc4b02bed5252275f7d2555232b7",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\13_Nuevas_Normas_2026\\DL-3516_Subdivision_Predios_Rusticos.txt",
+    "chars": 12355
+  },
+  "LEY-18168": {
+    "tipo": "LEY",
+    "numero": "18168",
+    "titulo": "Ley General de Telecomunicaciones",
+    "url_fuente": "https://www.bcn.cl/leychile/navegar?idNorma=29591",
+    "fecha_descarga": "2026-05-19T15:29:03.802Z",
+    "fecha_publicacion": "1982-10-02",
+    "hash": "dd09fe219fc0072d1de08c714ace1b2b41deba5b6590860025b3fe350da2ab25",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\13_Nuevas_Normas_2026\\Ley_18168_Telecomunicaciones.txt",
+    "chars": 216090
+  },
+  "LEY-20780": {
+    "tipo": "LEY",
+    "numero": "20780",
+    "titulo": "Reforma Tributaria que modifica el sistema de tributación de la renta e introduce otros ajustes",
+    "url_fuente": "https://www.bcn.cl/leychile/navegar?idNorma=1067194",
+    "fecha_descarga": "2026-05-19T15:29:03.806Z",
+    "fecha_publicacion": "2014-09-29",
+    "hash": "b2af6ecbbb945144fef2a6192947ab5e2e691fb220b47012c024e2ed7183d719",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\13_Nuevas_Normas_2026\\Ley_20780_Reforma_Tributaria.txt",
+    "chars": 724684
+  },
+  "LEY-21210": {
+    "tipo": "LEY",
+    "numero": "21210",
+    "titulo": "Moderniza la Legislación Tributaria",
+    "url_fuente": "https://www.bcn.cl/leychile/navegar?idNorma=1142667",
+    "fecha_descarga": "2026-05-19T15:29:03.808Z",
+    "fecha_publicacion": "2020-02-24",
+    "hash": "19a46ed7489b95029e3f3583253b576dcd0fec2e3a8fa785325d01ecdd191d5c",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\13_Nuevas_Normas_2026\\Ley_21210_Reforma_Tributaria.txt",
+    "chars": 302489
+  },
+  "LEY-19175": {
+    "tipo": "LEY",
+    "numero": "19175",
+    "titulo": "Ley Orgánica Constitucional sobre Gobierno y Administración Regional",
+    "url_fuente": "https://www.bcn.cl/leychile/navegar?idNorma=30568",
+    "fecha_descarga": "2026-05-19T15:29:03.810Z",
+    "fecha_publicacion": "1992-11-11",
+    "hash": "57b4aec8ef0306f8fcd64a4323f3925ee92ac8151678c5040788fce94c742956",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\13_Nuevas_Normas_2026\\Ley_19175_Gobierno_Regional.txt",
+    "chars": 269653
+  },
+  "LEY-18695": {
+    "tipo": "LEY",
+    "numero": "18695",
+    "titulo": "Ley Orgánica Constitucional de Municipalidades",
+    "url_fuente": "https://www.bcn.cl/leychile/navegar?idNorma=251693",
+    "fecha_descarga": "2026-05-19T15:29:03.811Z",
+    "fecha_publicacion": "1988-12-31",
+    "hash": "76b321cb67267d019e73c079eba13c537d692cef067c63abe05c89de0e226da8",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\13_Nuevas_Normas_2026\\Ley_18695_Municipalidades.txt",
+    "chars": 300932
   }
 }
