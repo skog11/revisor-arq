@@ -28,10 +28,57 @@ const RE_PARRAFO = /^\s{0,8}P[ÁA]RRAFO\s+(\d+[°\s].*?)$/im;
 const RE_BCN_HEADER = /^(?:Ley Chile|Biblioteca del Congreso Nacional).*$/gm;
 const RE_PAGE_NUM = /^\s*\d+\s*$/gm;
 
+// Texto de navegación SPA de BCN LeyChile (aparece al inicio cuando se extrae con headless browser)
+const BCN_NAV_KEYWORDS = new Set([
+  "Ocultar notas", "Texto", "Versiones", "Jurisprudencia", "Escuchar",
+  "Proyectos de Ley", "Historia de la Ley", "Inicio", "Búsqueda", "Autores",
+]);
+
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
+/**
+ * Si el archivo fue guardado como JSON string (literal \n en lugar de saltos reales),
+ * lo decodifica. Esto ocurre cuando el scraper BCN guarda el resultado como JSON.
+ */
+function decodeIfJsonEncoded(raw: string): string {
+  const trimmed = raw.trim();
+  if (trimmed.startsWith('"') && trimmed.includes("\\n")) {
+    try {
+      return JSON.parse(trimmed) as string;
+    } catch {
+      // fallback manual: reemplazar secuencias de escape comunes
+      return trimmed
+        .slice(trimmed.startsWith('"') ? 1 : 0, trimmed.endsWith('"') ? -1 : undefined)
+        .replace(/\\n/g, "\n")
+        .replace(/\\t/g, "\t")
+        .replace(/\\r/g, "")
+        .replace(/\\"/g, '"');
+    }
+  }
+  return raw;
+}
+
+/**
+ * Elimina el encabezado de navegación SPA de BCN (primeras líneas antes del texto legal).
+ */
+function stripBCNNavHeader(t: string): string {
+  const lines = t.split("\n");
+  let start = 0;
+  while (start < Math.min(25, lines.length)) {
+    const line = lines[start].trim();
+    if (line === "" || BCN_NAV_KEYWORDS.has(line)) {
+      start++;
+    } else {
+      break;
+    }
+  }
+  return start > 0 ? lines.slice(start).join("\n") : t;
+}
+
 function cleanText(t: string): string {
-  return t
+  const decoded = decodeIfJsonEncoded(t);
+  const noNav = stripBCNNavHeader(decoded);
+  return noNav
     .replace(RE_BCN_HEADER, "")
     .replace(/\r\n/g, "\n")
     .replace(/\t/g, " ")
