@@ -1,8 +1,9 @@
 /**
  * cerebras.ts — Cliente Cerebras Inference (API OpenAI-compatible)
  *
- * Segundo proveedor en la cadena de fallback: Gemini → Cerebras → OpenRouter → Groq
- * Ventaja sobre Groq: TPM mucho más alto, permite pasar más chunks al contexto.
+ * Proveedor PRIMARIO en la cadena: Cerebras → Gemini → OpenRouter → Groq
+ * Modelo: qwen-3-235b-a22b — 235B parámetros, gratuito, altísimo TPM.
+ * Ventajas: hardware dedicado Cerebras CS-3, latencia muy baja, sin límite de RPM agresivo.
  * Registrarse en https://cloud.cerebras.ai para obtener API key gratuita.
  */
 

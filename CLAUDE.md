@@ -10,19 +10,20 @@ Chat RAG con citas verificables sobre normativa chilena de urbanismo/construcci�
 | Frontend | Next.js 16 (App Router) + TypeScript + Tailwind + shadcn/ui + Framer Motion |
 | BD | Supabase Postgres + pgvector HNSW (cosine, 1024 dims) |
 | Embeddings | Voyage AI `voyage-law-2` |
-| Generación | Gemini 2.5 Flash (primary) + Groq Mixtral (fallback auto) |
+| Generación | Cerebras qwen-3-235b (primario, gratis) + Gemini Flash / OpenRouter / Groq (fallbacks, gratis) |
 | Deploy | Vercel (workflow en `.github/workflows/deploy.yml`) |
 
 ---
 
 ## Arquitectura RAG
 ```
-query → Voyage embed → Supabase match_chunks RPC → Gemini 2.5 Flash → respuesta
-  └─ Si Gemini falla (rate limit): fallback automático a Groq Mixtral
+query → Voyage embed → Supabase match_chunks RPC → Cerebras qwen-3-235b → respuesta
+  └─ Si falla: Gemini Flash (1 retry) → OpenRouter → Groq  [todos gratuitos]
 ```
 **Libs clave en `app/src/lib/`:**
-- `gemini.ts` — cliente Gemini + fallback a Groq
-- `groq.ts` — cliente Groq (ultrarrápido, fallback automático)
+- `gemini.ts` — orquesta la cadena de fallback LLM (todos gratuitos)
+- `cerebras.ts` — proveedor primario (qwen-3-235b, gratuito, alto TPM)
+- `groq.ts` — último fallback (llama-3.3-70b, gratuito)
 - `voyage.ts` — embed queries
 - `retriever.ts` — llama `match_chunks` en Supabase
 - `clasificador.ts` — detecta tipo proyecto + dominios normativos
@@ -97,18 +98,20 @@ Scripts de ingesta masiva en raíz: `ingestar_ddu_masiva.sh` · `ingestar_normat
 NEXT_PUBLIC_SUPABASE_URL
 NEXT_PUBLIC_SUPABASE_ANON_KEY
 SUPABASE_SERVICE_ROLE_KEY
-GEMINI_API_KEY                 # Primario; si rate limit → cadena de fallback
-CEREBRAS_API_KEY               # Fallback 1 (https://cloud.cerebras.ai) — gratuito, alto TPM
-OPENROUTER_API_KEY             # Fallback 2 (https://openrouter.ai) — gratuito, límite diario
-GROQ_API_KEY                   # Fallback 3 (https://console.groq.com) — gratuito, 6000 TPM
+CEREBRAS_API_KEY               # Primario — gratuito (https://cloud.cerebras.ai) · qwen-3-235b
+GEMINI_API_KEY                 # Fallback 1 — gratuito free tier, 15 RPM (fast-fail en la cadena)
+OPENROUTER_API_KEY             # Fallback 2 — gratuito (https://openrouter.ai) · límite diario
+GROQ_API_KEY                   # Fallback 3 — gratuito (https://console.groq.com) · 30 RPM
 VOYAGE_API_KEY
 ADMIN_SECRET
 NEXT_PUBLIC_APP_URL
 ```
+> ⚠️ Política: **todos los LLM son gratuitos**. No usar planes de pago. Si un proveedor
+> introduce límites, buscar alternativa gratuita y actualizar la cadena.
 
-## Cadena de fallback LLM (lib/gemini.ts → makeFallbackStream)
+## Cadena de LLM (lib/gemini.ts — todos gratuitos)
 ```
-Gemini (3 reintentos) → Cerebras llama-3.3-70b → OpenRouter llama-3.3-70b:free → Groq llama-3.1-8b-instant
+Cerebras qwen-3-235b → Gemini 2.5 Flash (1 retry) → OpenRouter llama-3.3-70b:free → Groq llama-3.3-70b
 ```
 `MAX_CHUNKS = 10` — compatible con todos los proveedores (≈4500 tokens input, ≤6000 TPM de Groq)
 
@@ -142,24 +145,25 @@ bash ingestar_normativa_masiva.sh  # ingesta cat. 01–11 (desde raíz)
 
 ---
 
-## Estado actual (2026-05-06)
+## Estado actual (2026-05-19)
 - **Producción**: https://revisor-arq.vercel.app ✅
-- **Pipeline**: 4 llamadas Gemini secuenciales (reducido desde 8); fast-fail en callers con fallback
+- **LLM**: Cerebras primario (gratuito) → Gemini fast-fail → OpenRouter → Groq
 - **Retrieval**: excelente (18–20 fuentes por consulta)
-- **Eval histórico**: 6/7 = 86% (2026-04-21), con API key sin rate limit
-- **Bloqueador activo**: Gemini Free Tier 20 RPM agota la cuota durante el eval y en producción
+- **Corpus**: 288 normas con contenido real · ~8500 chunks en Supabase
+- **Eval histórico**: 6/7 = 86% (2026-04-21) — repetir tras mejoras de corpus
 
 ## Prioridades actuales
-1. **⭐ URGENTE**: Upgrade API key Gemini a tier pagado (Vercel env var `GEMINI_API_KEY`)
-2. Correr eval completo una vez que la cuota esté disponible (meta: ≥ 7/9)
-3. Ingestar OGUC completa + DDUs históricos (303 normas) + normativa cat.01–11
+1. Correr eval completo con Cerebras como primario (meta: ≥ 7/9)
+2. Arreglar 8 stubs duplicados con año-sufijo (copiar contenido de norma principal)
+3. Ingestar OGUC completa + DDUs históricos (303 normas en PDF)
 4. Completar checklist legal para lanzamiento público (ver skill `mvp-legal-launch`)
-5. Limpiar worktrees git huérfanos
 
 → Detalle técnico en `PROGRESO.md`
 → Roadmap completo en `PLAN-IMPLEMENTACION.md`
 
-## Gemini — notas de rate limit
-- Free tier: 20 RPM rolling 60s window; Vercel serverless timeout: 60s
-- Commits de fix: `2c63d9e` (8→4 calls), `991e6f9` (maxRetries:1), `71572ea` (streamGemini fast-fail)
-- Para evaluar sin problemas: usar API pagada O correr con cuota limpia con 250s entre casos
+## LLM — notas de proveedores gratuitos
+- **Cerebras**: sin RPM agresivo, hardware dedicado CS-3, qwen-3-235b (235B params)
+- **Gemini free**: 15 RPM rolling; usar como fallback con maxRetries=1 para fast-fail
+- **OpenRouter**: modelos `:free` sin costo, límite diario de tokens
+- **Groq**: 30 RPM free, llama-3.3-70b-versatile; último recurso
+- Política: nunca usar plan de pago en ningún proveedor LLM
