@@ -122,6 +122,170 @@ export const REGLAS_INICIALES: ReglaGatillo[] = [
       "lo que requiere proceso formal de modificación del IPT con aprobación municipal y/o del CORE según corresponda. " +
       "La respuesta debe explicar este proceso y no sugerir trámite directo ante SEREMI MINVU como vía única.",
   },
+
+  // ── Reglas adicionales — zona costera / borde costero ─────────────────────
+
+  {
+    id: "borde-costero-concesion",
+    descripcion:
+      "Construcciones y usos en el borde costero requieren concesión marítima de la Armada/DIRECTEMAR y no solo permiso municipal.",
+    cuando: {
+      co_ocurrencia: ["borde costero"],
+      excepciones: ["dentro del predio", "alejado del borde"],
+    },
+    forzar_normas: ["LGUC"],
+    efecto: "requerir_revision",
+    mensaje_experto:
+      "Las construcciones o usos sobre bienes nacionales de uso público en el borde costero (playa, ribera del mar) " +
+      "requieren concesión marítima otorgada por la Armada de Chile (DIRECTEMAR), además del permiso de edificación. " +
+      "El plan regulador comunal puede fijar restricciones adicionales en la franja costera. " +
+      "La respuesta no debe limitarse al permiso municipal.",
+  },
+
+  // ── Reglas — monumentos nacionales y zonas típicas ──────────────────────────
+
+  {
+    id: "zona-tipica-intervencion",
+    descripcion:
+      "Cualquier intervención en inmuebles dentro de una Zona Típica o Pintoresca requiere autorización del CMN (Ley 17.288), adicional al permiso DOM.",
+    cuando: {
+      co_ocurrencia: ["zona típica"],
+      excepciones: [],
+    },
+    forzar_normas: ["LEY-17288"],
+    efecto: "requerir_revision",
+    mensaje_experto:
+      "Las obras en inmuebles ubicados en Zonas Típicas o Pintorescas declaradas por el CMN (Art. 29 y 30, Ley 17.288) " +
+      "requieren autorización previa del Consejo de Monumentos Nacionales, además del permiso de edificación de la DOM. " +
+      "La respuesta debe mencionar ambos trámites y no presentar solo el permiso DOM como suficiente.",
+  },
+
+  {
+    id: "monumento-historico-intervencion",
+    descripcion:
+      "Intervenciones en Monumentos Históricos (Ley 17.288): requieren autorización CMN y estudio de valor patrimonial.",
+    cuando: {
+      co_ocurrencia: ["monumento histórico"],
+      excepciones: [],
+    },
+    forzar_normas: ["LEY-17288"],
+    efecto: "requerir_revision",
+    mensaje_experto:
+      "Los Monumentos Históricos están protegidos por la Ley 17.288. Cualquier obra de conservación, restauración, " +
+      "modificación o demolición parcial requiere autorización expresa del Consejo de Monumentos Nacionales (CMN). " +
+      "Sin esta autorización, la DOM no puede otorgar permiso de edificación.",
+  },
+
+  // ── Reglas — impacto ambiental ──────────────────────────────────────────────
+
+  {
+    id: "eia-seia-obligatorio",
+    descripcion:
+      "Proyectos que superan los umbrales del Art. 10 Ley 19.300 deben ingresar al SEIA antes del permiso de edificación.",
+    cuando: {
+      co_ocurrencia: ["impacto ambiental", "permiso"],
+      excepciones: ["ya tiene rca", "con rca", "rca aprobada"],
+    },
+    forzar_normas: ["LEY-19300"],
+    efecto: "requerir_revision",
+    mensaje_experto:
+      "Conforme a la Ley 19.300 (Art. 10) y el DS 40/2012 (RSEIA), los proyectos que por su naturaleza o envergadura " +
+      "figuren en el listado del Art. 10 deben obtener la Resolución de Calificación Ambiental (RCA) del SEA " +
+      "ANTES de iniciar construcción. Sin RCA, la DOM no puede otorgar permiso de edificación (Art. 116 bis LGUC). " +
+      "La respuesta debe verificar si el proyecto está en algún tipo del Art. 10.",
+  },
+
+  // ── Reglas — regularización ─────────────────────────────────────────────────
+
+  {
+    id: "regularizacion-sin-planos",
+    descripcion:
+      "La regularización de obras antiguas sin permiso requiere levantamiento topográfico y planos de arquitectura firmados por arquitecto, no solo declaración del propietario.",
+    cuando: {
+      co_ocurrencia: ["regularizar", "sin permiso"],
+      excepciones: [],
+    },
+    forzar_normas: ["OGUC"],
+    efecto: "requerir_revision",
+    mensaje_experto:
+      "La regularización de obras ejecutadas sin permiso de edificación (Art. 167 y siguientes, OGUC) requiere " +
+      "proyecto de arquitectura firmado por arquitecto habilitado, memoria de cálculo estructural (si aplica), " +
+      "y cumplimiento de las normas vigentes a la fecha de la regularización o a la de construcción (Art. 167 OGUC). " +
+      "La simple declaración del propietario no es suficiente.",
+  },
+
+  // ── Reglas — servidumbres y propiedades adyacentes ──────────────────────────
+
+  {
+    id: "servidumbre-medianero",
+    descripcion:
+      "La construcción en el deslinde de un predio activa normas de medianería y distancias mínimas de la OGUC.",
+    cuando: {
+      co_ocurrencia: ["medianero", "deslinde"],
+      excepciones: [],
+    },
+    forzar_normas: ["OGUC"],
+    efecto: "requerir_revision",
+    mensaje_experto:
+      "La construcción en o junto al deslinde con predios vecinos activa las normas de medianería del Código Civil " +
+      "y las distancias y rasantes de la OGUC (Art. 2.6.1 y siguientes). Deben verificarse los derechos del vecino " +
+      "y las exigencias del plan regulador respecto a adosamientos permitidos.",
+  },
+
+  // ── Reglas — obras en inmuebles arrendados / copropiedad ───────────────────
+
+  {
+    id: "obras-en-copropiedad",
+    descripcion:
+      "Obras en bienes comunes de condominios (Ley 21.442) requieren acuerdo de asamblea, no solo decisión del administrador.",
+    cuando: {
+      co_ocurrencia: ["condominio", "obra"],
+      excepciones: ["bien exclusivo", "propiedad exclusiva"],
+    },
+    forzar_normas: ["LEY-21442"],
+    efecto: "requerir_revision",
+    mensaje_experto:
+      "La Ley 21.442 (Copropiedad Inmobiliaria) establece que las obras que afecten bienes comunes de un condominio " +
+      "requieren acuerdo de la asamblea de copropietarios (con quórum según el tipo de obra). " +
+      "El administrador por sí solo no tiene atribuciones para autorizar obras en bienes comunes. " +
+      "La respuesta debe distinguir entre bienes exclusivos y bienes comunes.",
+  },
+
+  // ── Reglas — obras en suelo con restricciones especiales ───────────────────
+
+  {
+    id: "zona-inundacion-caudalosa",
+    descripcion:
+      "Proyectos en zonas de riesgo de inundación o en riberas de ríos requieren informe de la DGA y cumplimiento de la Política de Riberas.",
+    cuando: {
+      co_ocurrencia: ["inundación", "permiso"],
+      excepciones: [],
+    },
+    forzar_normas: ["LGUC"],
+    efecto: "requerir_revision",
+    mensaje_experto:
+      "Las zonas de riesgo de inundación están reguladas tanto por el PRC como por la DGA (Dirección General de Aguas). " +
+      "Los proyectos en estas zonas pueden requerir informe de la DGA sobre cotas de inundación. " +
+      "El Art. 60 LGUC permite a los planes reguladores limitar o prohibir construcciones en estas áreas. " +
+      "La respuesta debe señalar la verificación de la zonificación del PRC y la consulta a la DGA.",
+  },
+
+  {
+    id: "area-verde-publica",
+    descripcion:
+      "Las áreas verdes públicas no pueden ser edificadas salvo por excepción legal expresa; el propietario no puede construir sobre ellas.",
+    cuando: {
+      co_ocurrencia: ["área verde", "construir"],
+      excepciones: ["ceñido a la norma", "infraestructura permitida"],
+    },
+    forzar_normas: ["LGUC"],
+    efecto: "bloquear_positiva",
+    mensaje_experto:
+      "Las áreas verdes de uso público (parques, plazas, pasajes peatonales) son bienes nacionales de uso público " +
+      "y no pueden ser objeto de permisos de edificación privados. Su modificación solo es posible mediante " +
+      "modificación del instrumento de planificación territorial (IPT) con los quórum legales correspondientes. " +
+      "La respuesta NO puede afirmar que es posible construir en área verde pública.",
+  },
 ];
 
 // ─── Lógica de aplicación ────────────────────────────────────────────────────
