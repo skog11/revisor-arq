@@ -3,6 +3,7 @@ import {
   type GenerateContentStreamResult,
 } from "@google/generative-ai";
 import { streamCerebras } from "@/lib/cerebras";
+import { streamDeepSeek } from "@/lib/deepseek";
 import { streamOpenRouter } from "@/lib/openrouter";
 import { streamGroq } from "@/lib/groq";
 
@@ -11,12 +12,13 @@ export const MODEL_PRO = "gemini-2.5-pro";
 export const MODEL_NAME = MODEL_FLASH; // alias para backward compat
 
 /**
- * Cadena de proveedores LLM — todos gratuitos:
- *   Cerebras (primario, alto TPM) → Gemini Flash (free tier, 1 retry) → OpenRouter (free) → Groq (free)
+ * Cadena de proveedores LLM:
+ *   Cerebras (primario, gratis) → DeepSeek (si hay key) → Gemini Flash (1 retry) → OpenRouter → Groq
  *
- * Gemini usa maxRetries=1 para hacer fast-fail cuando hay rate limit (20 RPM free tier).
- * DeepSeek es de pago y no forma parte de la cadena. Si se define LLM_PRIMARY=gemini,
- * Gemini pasa al frente con reintentos completos.
+ * DeepSeek es pay-per-use pero muy barato y de alta calidad; se incluye automáticamente
+ * si DEEPSEEK_API_KEY está definida (créditos iniciales o plan activo).
+ * Gemini usa maxRetries=1 para fast-fail en rate limit del free tier (15 RPM).
+ * Si LLM_PRIMARY=gemini, Gemini va al frente con reintentos completos.
  */
 
 // Reintentos para llamadas no-stream con fallback (clasificador, HyDE, multi-query)
@@ -123,13 +125,12 @@ async function* streamGeminiNative(
 }
 
 /**
- * Construye la cadena de proveedores gratuitos según LLM_PRIMARY.
- * - "cerebras" (default): Cerebras → Gemini (1 retry) → OpenRouter → Groq
- * - "gemini": Gemini (reintentos completos) → Cerebras → OpenRouter → Groq
+ * Construye la cadena de proveedores según LLM_PRIMARY.
+ * - "cerebras" (default): Cerebras → DeepSeek* → Gemini (1 retry) → OpenRouter → Groq
+ * - "gemini": Gemini (reintentos completos) → Cerebras → DeepSeek* → OpenRouter → Groq
  *
- * Todos los proveedores en la cadena son gratuitos.
- * Gemini en posición de fallback usa maxRetries=1 para no bloquear el pipeline
- * con backoffs cuando hay rate limit en el free tier (20 RPM).
+ * (*) DeepSeek se incluye solo si DEEPSEEK_API_KEY está definida.
+ * Gemini en posición de fallback usa maxRetries=1 para fast-fail ante rate limit.
  */
 function buildProviderChain(
   systemPrompt: string,
@@ -139,14 +140,19 @@ function buildProviderChain(
   const primary = (process.env.LLM_PRIMARY ?? "cerebras").toLowerCase();
   const geminiRetries = primary === "gemini" ? MAX_RETRIES_STREAM : 1;
 
-  const gemini    = { nombre: "Gemini",     gen: () => streamGeminiNative(systemPrompt, userMessage, modelo, geminiRetries) };
-  const cerebras  = { nombre: "Cerebras",   gen: () => streamCerebras(systemPrompt, userMessage) };
+  const gemini     = { nombre: "Gemini",     gen: () => streamGeminiNative(systemPrompt, userMessage, modelo, geminiRetries) };
+  const cerebras   = { nombre: "Cerebras",   gen: () => streamCerebras(systemPrompt, userMessage) };
+  const deepseek   = { nombre: "DeepSeek",   gen: () => streamDeepSeek(systemPrompt, userMessage) };
   const openrouter = { nombre: "OpenRouter", gen: () => streamOpenRouter(systemPrompt, userMessage) };
-  const groq      = { nombre: "Groq",       gen: () => streamGroq(systemPrompt, userMessage) };
+  const groq       = { nombre: "Groq",       gen: () => streamGroq(systemPrompt, userMessage) };
 
-  return primary === "gemini"
-    ? [gemini, cerebras, openrouter, groq]
-    : [cerebras, gemini, openrouter, groq];
+  // DeepSeek solo entra en la cadena si la API key está configurada
+  const hasDeepSeek = !!process.env.DEEPSEEK_API_KEY;
+
+  if (primary === "gemini") {
+    return [gemini, cerebras, ...(hasDeepSeek ? [deepseek] : []), openrouter, groq];
+  }
+  return [cerebras, ...(hasDeepSeek ? [deepseek] : []), gemini, openrouter, groq];
 }
 
 /**

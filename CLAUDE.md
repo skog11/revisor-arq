@@ -99,9 +99,10 @@ NEXT_PUBLIC_SUPABASE_URL
 NEXT_PUBLIC_SUPABASE_ANON_KEY
 SUPABASE_SERVICE_ROLE_KEY
 CEREBRAS_API_KEY               # Primario — gratuito (https://cloud.cerebras.ai) · qwen-3-235b
-GEMINI_API_KEY                 # Fallback 1 — gratuito free tier, 15 RPM (fast-fail en la cadena)
-OPENROUTER_API_KEY             # Fallback 2 — gratuito (https://openrouter.ai) · límite diario
-GROQ_API_KEY                   # Fallback 3 — gratuito (https://console.groq.com) · 30 RPM
+DEEPSEEK_API_KEY               # Fallback opcional — pay-per-use muy barato (https://platform.deepseek.com)
+GEMINI_API_KEY                 # Fallback — free tier 15 RPM, fast-fail en la cadena
+OPENROUTER_API_KEY             # Fallback — gratuito (https://openrouter.ai) · límite diario
+GROQ_API_KEY                   # Último fallback — gratuito (https://console.groq.com) · 30 RPM
 VOYAGE_API_KEY
 ADMIN_SECRET
 NEXT_PUBLIC_APP_URL
@@ -109,9 +110,10 @@ NEXT_PUBLIC_APP_URL
 > ⚠️ Política: **todos los LLM son gratuitos**. No usar planes de pago. Si un proveedor
 > introduce límites, buscar alternativa gratuita y actualizar la cadena.
 
-## Cadena de LLM (lib/gemini.ts — todos gratuitos)
+## Cadena de LLM (lib/gemini.ts)
 ```
-Cerebras qwen-3-235b → Gemini 2.5 Flash (1 retry) → OpenRouter llama-3.3-70b:free → Groq llama-3.3-70b
+Cerebras qwen-3-235b → DeepSeek* → Gemini 2.5 Flash (1 retry) → OpenRouter llama-3.3-70b:free → Groq llama-3.3-70b
+(*) Solo si DEEPSEEK_API_KEY está definida
 ```
 `MAX_CHUNKS = 10` — compatible con todos los proveedores (≈4500 tokens input, ≤6000 TPM de Groq)
 
