@@ -42,6 +42,7 @@ import { obtenerRelacionesNormativas, formatearRelaciones } from "@/lib/grafo";
 import { aplicarReglas, formatearReglasActivas } from "@/lib/motor-reglas";
 import { detectarRestricciones, formatearRestricciones } from "@/lib/detector-conflictos";
 import { fetchChunksObligatorios, mergearChunks } from "@/lib/fetcher-normas-obligatorias";
+import { extraerHechos, formatearHechos } from "@/lib/extractor-hechos";
 import { validarConsistencia, verificarCoherenciaRestrictiva } from "@/lib/validador";
 import { createClient } from "@/lib/supabase-server";
 import { buscarEnCache, guardarEnCache } from "@/lib/query-cache";
@@ -158,7 +159,9 @@ export async function POST(req: NextRequest) {
   //     cacheadas pre-compuerta pueden contener conclusiones contradictorias con la nueva lógica.
   const sinHistorial = !mensajes || mensajes.filter(m => m.role === "user").length <= 1;
   const reglasGatilloDetectadas = aplicarReglas(pregunta);
-  const bypassCache = reglasGatilloDetectadas.length > 0;
+  // Bypass caché también si la consulta es sobre obra recepcionada (contexto sensible)
+  const hechosPreCache = extraerHechos(pregunta);
+  const bypassCache = reglasGatilloDetectadas.length > 0 || hechosPreCache.sobre_obra_recepcionada;
   if (bypassCache) {
     console.log(`[Cache] BYPASS — reglas activas: ${reglasGatilloDetectadas.map(r => r.regla.id).join(", ")}`);
   }
@@ -281,9 +284,13 @@ export async function POST(req: NextRequest) {
         const relacionesGrafo = await obtenerRelacionesNormativas(chunks).catch(() => []);
         const relacionesTexto = formatearRelaciones(relacionesGrafo);
 
-        // 3c. Construir bloque de compuerta normativa (reglas + restricciones)
+        // 3c. Construir bloque de compuerta normativa (reglas + restricciones + hechos jurídicos)
+        const hechosJuridicos = extraerHechos(pregunta);
+        const hechosBloque = formatearHechos(hechosJuridicos);
         const compuertaNormativa =
-          formatearReglasActivas(reglasActivas) + formatearRestricciones(restricciones);
+          formatearReglasActivas(reglasActivas) +
+          formatearRestricciones(restricciones) +
+          hechosBloque;
 
         // 4. Construir contexto y sistema (con cruces + compuerta normativa inyectados)
         const { textoContexto } = construirContexto(chunks);
