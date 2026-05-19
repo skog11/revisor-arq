@@ -79,17 +79,17 @@ query → Voyage embed → Supabase match_chunks RPC → Cerebras qwen-3-235b �
 
 ---
 
-## Corpus — estado actual
-| Norma | Supabase | Local |
-|---|---|---|
-| LGUC DFL-458 | ✅ ~280 chunks | `corpus/lguc/LGUC.txt` |
-| OGUC DS-47 | ⚠️ parcial | `corpus/oguc/OGUC.txt` |
-| DDU-527→541 (14) | ✅ ~500 chunks | `corpus/ddu/*.txt` |
-| DDU-000→526 (303) | ❌ pendiente | `corpus/12_Tecnica/DDU_Circulares/*.pdf` |
-| DS-60 / DS-61 | ❌ pendiente | `corpus/12_Tecnica/DS_6*/fuente.txt` |
-| Normativa cat.01–11 | ❌ pendiente | `corpus/0X_*/*/fuente.txt` |
+## Corpus — estado actual (2026-05-19)
+| Categoría | Normas | Chunks | Estado |
+|---|---|---|---|
+| LGUC / OGUC / DDUs activos | ~320 | ~5.000 | ✅ completo |
+| Normativa cat.01–11 (ambiental, sanitaria, agua, patrimonio…) | 258 | ~5.500 | ✅ completo |
+| DS-60 / DS-61 (sísmico) | 2 | 39 | ✅ completo |
+| DFL-4 (Ley Eléctrica) | 1 | 566 | ✅ completo |
+| **TOTAL** | **298/298** | **~11.500** | **✅ 100%** |
 
-Scripts de ingesta masiva en raíz: `ingestar_ddu_masiva.sh` · `ingestar_normativa_masiva.sh`
+> Ingesta masiva: `cd app && npm run corpus:ingest`
+> Re-ingestar una norma: `npm run corpus:ingest -- --solo=CLAVE --force`
 
 ---
 
@@ -121,12 +121,11 @@ Cerebras qwen-3-235b → DeepSeek* → Gemini 2.5 Flash (1 retry) → OpenRouter
 
 ## Comandos frecuentes
 ```bash
-cd app && npm run dev              # desarrollo
-cd app && npm run build            # verificar build
-cd app && npm run corpus:ingest    # ingestar normas pendientes
-cd app && npm run eval             # evaluaciones (meta: 7/7)
-bash ingestar_ddu_masiva.sh        # ingesta masiva DDUs (desde raíz)
-bash ingestar_normativa_masiva.sh  # ingesta cat. 01–11 (desde raíz)
+cd app && npm run dev                                    # desarrollo
+cd app && npm run build                                  # verificar build
+cd app && npm run corpus:ingest                          # ingestar normas (detecta cambios por hash)
+cd app && npm run corpus:ingest -- --solo=CLAVE --force  # re-ingestar norma específica
+cd app && npm run eval                                   # evaluaciones (meta: ≥7/9)
 ```
 
 ---
@@ -149,16 +148,16 @@ bash ingestar_normativa_masiva.sh  # ingesta cat. 01–11 (desde raíz)
 
 ## Estado actual (2026-05-19)
 - **Producción**: https://revisor-arq.vercel.app ✅
-- **LLM**: Cerebras primario (gratuito) → Gemini fast-fail → OpenRouter → Groq
+- **LLM**: Cerebras primario (gratuito) → DeepSeek* → Gemini fast-fail → OpenRouter → Groq
 - **Retrieval**: excelente (18–20 fuentes por consulta)
-- **Corpus**: 288 normas con contenido real · ~8500 chunks en Supabase
-- **Eval histórico**: 6/7 = 86% (2026-04-21) — repetir tras mejoras de corpus
+- **Corpus**: 298/298 normas ✅ · ~11.500 chunks en Supabase
+- **Eval histórico**: 6/7 = 86% (2026-04-21) — pendiente repetir
 
 ## Prioridades actuales
-1. Correr eval completo con Cerebras como primario (meta: ≥ 7/9)
-2. Arreglar 8 stubs duplicados con año-sufijo (copiar contenido de norma principal)
-3. Ingestar OGUC completa + DDUs históricos (303 normas en PDF)
-4. Completar checklist legal para lanzamiento público (ver skill `mvp-legal-launch`)
+1. Correr eval completo (meta: ≥ 7/9) — corpus mejorado debería subir el score
+2. OGUC completa — actualmente parcial, falta el grueso de artículos
+3. Checklist legal para lanzamiento público (ver skill `mvp-legal-launch`)
+4. Stripe / monetización cuando el producto esté listo
 
 → Detalle técnico en `PROGRESO.md`
 → Roadmap completo en `PLAN-IMPLEMENTACION.md`
