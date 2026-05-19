@@ -1,10 +1,12 @@
 /**
- * validador.ts — validarConsistencia
- * Valida que la respuesta generada cumpla los guardrails mínimos
- * y que los artículos citados estén respaldados en el corpus recuperado.
+ * validador.ts — validarConsistencia + verificarCoherenciaRestrictiva
+ * Valida que la respuesta generada cumpla los guardrails mínimos,
+ * que los artículos citados estén respaldados en el corpus recuperado,
+ * y que las conclusiones no contradigan normas restrictivas detectadas.
  */
 
 import { type ChunkRecuperado } from "./rag";
+import { type ResultadoDetector } from "./detector-conflictos";
 
 // ─── Tipos ────────────────────────────────────────────────────────────────────
 
@@ -69,4 +71,72 @@ export function validarConsistencia(
       : "";
 
   return { valida: true, advertencias, notasAdicionales };
+}
+
+// ─── Verificador de coherencia restrictiva (Fase 3) ───────────────────────────
+
+/**
+ * Patrones de conclusión afirmativa/permisiva en la respuesta del LLM.
+ * Todos llevan el prefijo "sí" o "sí," para minimizar falsos positivos:
+ * p.ej. "Para que sea posible..." NO activa esto, pero "Sí es posible" SÍ.
+ */
+const PATRONES_PERMISIVOS: RegExp[] = [
+  /\bsí[,]?\s+es\s+posible\b/i,           // "Sí es posible", "Sí, es posible"
+  /\bsí[,]?\s+puede\b/i,                   // "Sí puede acogerse", "Sí, puede..."
+  /\bsí[,]?\s+procede\b/i,                 // "Sí procede"
+  /\bsí[,]?\s+se\s+puede\b/i,              // "Sí se puede"
+  /\bsí[,]?\s+es\s+factible\b/i,           // "Sí es factible"
+  /\bno\s+existe\s+impedimento\b/i,         // "No existe impedimento"
+  /\bno\s+hay\s+impedimento\b/i,            // "No hay impedimento"
+];
+
+export interface ResultadoCoherencia {
+  hayContradiccion: boolean;
+  /** Bloque de advertencia a añadir al final de la respuesta (ya formateado en Markdown) */
+  advertencia?: string;
+}
+
+/**
+ * Verifica que la respuesta generada no contradiga normas restrictivas detectadas
+ * en los chunks de contexto.
+ *
+ * Solo se activa si:
+ *   1. Los chunks contienen lenguaje restrictivo (`restricciones.hayConflicto = true`)
+ *   2. La respuesta generada contiene lenguaje afirmativo/permisivo específico
+ *
+ * Cuando hay contradicción, retorna un bloque de advertencia en Markdown para
+ * añadir al final del stream sin modificar la respuesta principal.
+ *
+ * Diseño conservador: si hay duda, NO activa la advertencia (mejor falso negativo
+ * que advertir innecesariamente en respuestas correctas).
+ */
+export function verificarCoherenciaRestrictiva(
+  respuesta: string,
+  restricciones: ResultadoDetector
+): ResultadoCoherencia {
+  // Nada restrictivo en el corpus → no hay nada que verificar
+  if (!restricciones.hayConflicto) return { hayContradiccion: false };
+
+  // Buscar lenguaje permisivo en la respuesta
+  const patronActivo = PATRONES_PERMISIVOS.find((p) => p.test(respuesta));
+  if (!patronActivo) return { hayContradiccion: false };
+
+  // Construir lista de normas restrictivas encontradas (máx. 3 para la advertencia)
+  const normasRestrictivas = [
+    ...new Set(
+      restricciones.patronesDetectados.slice(0, 3).map(
+        (p) => `${p.norma} ("${p.patron}")`
+      )
+    ),
+  ].join("; ");
+
+  const advertencia = [
+    "",
+    "",
+    "> ⚠️ **Verificación automática de coherencia**: Esta respuesta contiene lenguaje afirmativo,",
+    `> pero el corpus recuperado incluye disposiciones restrictivas: ${normasRestrictivas}.`,
+    "> Antes de actuar sobre esta conclusión, confirma directamente con la DOM o autoridad competente.",
+  ].join("\n");
+
+  return { hayContradiccion: true, advertencia };
 }

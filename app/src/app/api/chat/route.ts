@@ -42,7 +42,7 @@ import { obtenerRelacionesNormativas, formatearRelaciones } from "@/lib/grafo";
 import { aplicarReglas, formatearReglasActivas } from "@/lib/motor-reglas";
 import { detectarRestricciones, formatearRestricciones } from "@/lib/detector-conflictos";
 import { fetchChunksObligatorios, mergearChunks } from "@/lib/fetcher-normas-obligatorias";
-import { validarConsistencia } from "@/lib/validador";
+import { validarConsistencia, verificarCoherenciaRestrictiva } from "@/lib/validador";
 import { createClient } from "@/lib/supabase-server";
 import { buscarEnCache, guardarEnCache } from "@/lib/query-cache";
 import { embedText } from "@/lib/voyage";
@@ -327,7 +327,16 @@ export async function POST(req: NextRequest) {
           respuestaCompleta += validacion.notasAdicionales;
         }
 
-        // 6b. Guardar en caché semántica (fire-and-forget, solo consultas simples sin historial).
+        // 6b. Verificar coherencia con restricciones (Fase 3): si la respuesta dice "Sí es posible"
+        //     pero los chunks contienen "no procede", añadir advertencia automática.
+        const coherencia = verificarCoherenciaRestrictiva(respuestaCompleta, restricciones);
+        if (coherencia.hayContradiccion && coherencia.advertencia) {
+          console.warn("[Coherencia] Contradicción detectada — añadiendo advertencia de verificación.");
+          send({ type: "chunk", text: coherencia.advertencia });
+          respuestaCompleta += coherencia.advertencia;
+        }
+
+        // 6c. Guardar en caché semántica (fire-and-forget, solo consultas simples sin historial).
         //     NO cachear consultas con reglas-gatillo activas: el contexto restrictivo puede
         //     cambiar si la regla se actualiza y queremos evaluar siempre con la versión vigente.
         if (embeddingResult && sinHistorial && !bypassCache && respuestaCompleta.length > 100) {
