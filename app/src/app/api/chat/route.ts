@@ -154,8 +154,15 @@ export async function POST(req: NextRequest) {
 
   // 1b. Lookup en caché semántica — si hay hit, devolver respuesta cacheada sin LLM.
   //     Solo para consultas sin historial (no multi-turno) para evitar respuestas fuera de contexto.
+  //     BYPASS del caché si la consulta activa una regla-gatillo (motor-reglas): las respuestas
+  //     cacheadas pre-compuerta pueden contener conclusiones contradictorias con la nueva lógica.
   const sinHistorial = !mensajes || mensajes.filter(m => m.role === "user").length <= 1;
-  if (embeddingResult && sinHistorial) {
+  const reglasGatilloDetectadas = aplicarReglas(pregunta);
+  const bypassCache = reglasGatilloDetectadas.length > 0;
+  if (bypassCache) {
+    console.log(`[Cache] BYPASS — reglas activas: ${reglasGatilloDetectadas.map(r => r.regla.id).join(", ")}`);
+  }
+  if (embeddingResult && sinHistorial && !bypassCache) {
     const cacheHit = await buscarEnCache(embeddingResult, modo);
     if (cacheHit) {
       console.log(`[Cache] Hit — similarity: ${cacheHit.similarity.toFixed(4)}, id: ${cacheHit.id}`);
@@ -320,8 +327,10 @@ export async function POST(req: NextRequest) {
           respuestaCompleta += validacion.notasAdicionales;
         }
 
-        // 6b. Guardar en caché semántica (fire-and-forget, solo consultas simples sin historial)
-        if (embeddingResult && sinHistorial && respuestaCompleta.length > 100) {
+        // 6b. Guardar en caché semántica (fire-and-forget, solo consultas simples sin historial).
+        //     NO cachear consultas con reglas-gatillo activas: el contexto restrictivo puede
+        //     cambiar si la regla se actualiza y queremos evaluar siempre con la versión vigente.
+        if (embeddingResult && sinHistorial && !bypassCache && respuestaCompleta.length > 100) {
           const fuentesParaCache = chunks.map((c) => ({
             norma: `${c.norma_tipo} ${c.norma_numero}`,
             articulo: c.articulo,
