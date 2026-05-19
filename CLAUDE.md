@@ -32,6 +32,9 @@ query → Voyage embed → Supabase match_chunks RPC → Cerebras qwen-3-235b �
 - `rag.ts` — orquesta todo el flujo
 - `validador.ts` — guarda de calidad de respuesta
 - `rate-limit.ts` — throttle por IP
+- `motor-reglas.ts` — compuerta normativa: reglas-gatillo que fuerzan normas especiales (DDU 161, Art. 55 LGUC, etc.) cuando la consulta cumple condiciones
+- `detector-conflictos.ts` — detecta patrones restrictivos ("no procede", "improcedencia") en chunks recuperados
+- `fetcher-normas-obligatorias.ts` — recupera chunks de normas forzadas por reglas-gatillo
 
 ---
 
@@ -151,7 +154,7 @@ cd app && npm run eval                                   # evaluaciones (meta: �
 - **LLM**: Cerebras primario (gratuito) → DeepSeek* → Gemini fast-fail → OpenRouter → Groq
 - **Retrieval**: excelente (10 fuentes por consulta, latencia ~1.7s promedio)
 - **Corpus**: 326 normas · ~21.500 chunks · sin duplicados ✅
-- **Eval**: **19/19 = 100%** (2026-05-19) ✅ — nueva línea base expandida
+- **Eval**: **19/19 + 5/5 traps = 24/24** (2026-05-19) ✅ — incluye compuertas normativas (DDU 161, Art. 55, DDU 519, ampliación, cambio uso suelo)
 
 ## Prioridades actuales
 1. **Verificar CEREBRAS_API_KEY en Vercel** env vars (confirmar que producción usa Cerebras como primario)
