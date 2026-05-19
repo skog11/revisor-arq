@@ -13,7 +13,7 @@
 **URL de producción**: https://revisor-arq.vercel.app
 **Repositorio**: `C:\00_CLAUDE CODE\REVISOR-ARQ\` (Git branch: `master`)
 **App Next.js**: `C:\00_CLAUDE CODE\REVISOR-ARQ\app\`
-**Último commit**: `763c727` — feat: cadena LLM gratuita, corpus limpio, páginas legales actualizadas
+**Último commit**: `7470f10` — feat: cron alertas BCN, eval 18 casos, páginas legales, docs actualizados
 
 ---
 
@@ -273,17 +273,19 @@ consultas (id, pregunta, modo, respuesta, chunks_usados, modelo, latencia_ms, ..
 | Tarea | Resultado |
 |---|---|
 | Eval set expandido | ✅ 18 casos listos en `eval-set.ts` (+9 sectoriales) |
-| Cron alertas BCN | ✅ `/api/cron/check-vigencia/route.ts` + `vercel.json` + migration SQL |
+| Cron alertas BCN | ✅ Implementado, testeado, funcionando en producción (4 normas, 0.4s) |
+| CRON_SECRET en Vercel | ✅ Configurado y activo |
+| cron_state SQL ejecutado | ✅ Tabla creada en Supabase |
+| Baselines BCN establecidos | ✅ LGUC=437438, OGUC=4516693, LEY-19300=43579, LEY-21442=25189 |
+| revisor-arq.vercel.app | ✅ Apunta al código actual (GitHub auto-deploy) |
 | Análisis DDUs históricos | ✅ Diagnóstico completo (ver sección DDUs abajo) |
 
 ### ⏳ Pendiente
 
 | Tarea | Prioridad | Detalle |
 |---|---|---|
-| Correr eval expandido (18 casos) | 🔴 Alta | `npm run eval -- --url=https://revisor-arq.vercel.app` |
-| Ejecutar `20260519_cron_state.sql` en Supabase | 🔴 Alta | Supabase Dashboard → SQL Editor |
-| Agregar `CRON_SECRET` en Vercel env vars | 🔴 Alta | Genera con `openssl rand -hex 32` |
-| Redeploy después del CRON_SECRET | 🔴 Alta | `cd app && vercel --prod` |
+| Correr eval expandido (18 casos) | 🔴 Alta | En progreso — se están ejecutando ahora |
+| Verificar eval ≥ 16/19 | 🔴 Alta | Meta ajustada (19 casos, antes 18) |
 | Quitar banners "Versión beta" | 🟡 Media | Cuando haya revisión legal |
 | Revisión legal formal por abogado | 🟡 Media | Antes de lanzamiento público |
 | Stripe / monetización | 🟢 Baja | Scaffolding ya existe |
@@ -333,12 +335,30 @@ consultas (id, pregunta, modo, respuesta, chunks_usados, modelo, latencia_ms, ..
 | LEY-19300 (Ambiental) | 30006 |
 | LEY-21442 (Copropiedad) | 250481 |
 
-**Activación** (requiere acciones manuales):
-1. Ejecutar `supabase/migrations/20260519_cron_state.sql` en Supabase Dashboard
-2. Agregar `CRON_SECRET=$(openssl rand -hex 32)` en Vercel env vars
-3. Redeploy: `cd app && vercel --prod`
+**Estado**: ✅ Completamente activo en producción.
 
-⚠️ **Nota**: Vercel Cron Jobs con schedules personalizados requieren plan Pro. En Hobby solo se puede `0 * * * *` (cada hora). Considerar upgrade cuando el cron sea crítico.
+**Cómo funciona**:
+- BCN es SPA Angular → no se puede parsear HTML. En su lugar: HEAD request al endpoint de exportación PDF.
+- URL: `nuevo.leychile.cl/servicios/Consulta/Exportar?...&hddResultadoExportar={id}.{fecha}.0.0#`
+- Compara `Content-Length` (bytes del PDF): si cambia > 500 bytes → posible nueva versión → alerta en logs.
+- Baselines almacenados en `cron_state` de Supabase.
+- Checks en paralelo (`Promise.allSettled`), timeout 25s, maxDuration 60s.
+
+**Baselines confirmados (2026-05-19)**:
+| Norma | Content-Length |
+|---|---|
+| LGUC (13560, fecha=2026-03-29) | 437.438 bytes |
+| OGUC (8201, fecha=2026-03-16) | 4.516.693 bytes |
+| LEY-19300 (30006, fecha=2026-05-19) | 43.579 bytes |
+| LEY-21442 (250481, fecha=2026-05-19) | 25.189 bytes |
+
+**Probar manualmente**:
+```bash
+curl -H "Authorization: Bearer $(grep CRON_SECRET app/.env.local | cut -d= -f2)" \
+  https://revisor-arq.vercel.app/api/cron/check-vigencia
+```
+
+⚠️ **Nota**: Vercel Cron Jobs con schedules personalizados (`0 9 * * 1`) requieren plan Pro. En Hobby solo corre con `0 * * * *` (cada hora). El endpoint existe y funciona — se puede disparar manualmente.
 
 ---
 
