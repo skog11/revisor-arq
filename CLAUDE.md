@@ -84,9 +84,9 @@ query → Voyage embed → Supabase match_chunks RPC → Cerebras qwen-3-235b �
 |---|---|---|---|
 | LGUC (DFL-458) | 1 | 330 | ✅ completo |
 | OGUC (DS-47) | 1 | 1.003 | ✅ completo |
-| DDUs activos (527–541 + históricos) | 269 | ~12.000 | ✅ completo |
-| Normativa cat.01–11 (ambiental, sanitaria, agua…) | ~60 | ~4.500 | ✅ completo |
-| **TOTAL** | **333 normas** | **17.852 chunks** | **✅ limpio (sin duplicados)** |
+| DDUs activos (454–541 + históricos) | 284 | ~12.500 | ✅ completo |
+| Normativa cat.01–11 (ambiental, sanitaria, agua…) | ~73 | ~7.700 | ✅ completo |
+| **TOTAL** | **326 normas** | **~21.500 chunks** | **✅ limpio (sin duplicados)** |
 
 > Ingesta masiva: `cd app && npm run corpus:ingest`
 > Re-ingestar una norma: `npm run corpus:ingest -- --solo=CLAVE --force`
@@ -150,8 +150,8 @@ cd app && npm run eval                                   # evaluaciones (meta: �
 - **Producción**: https://revisor-arq.vercel.app ✅
 - **LLM**: Cerebras primario (gratuito) → DeepSeek* → Gemini fast-fail → OpenRouter → Groq
 - **Retrieval**: excelente (10 fuentes por consulta, latencia ~1.7s promedio)
-- **Corpus**: 333 normas · 17.852 chunks · sin duplicados ✅
-- **Eval**: **9/9 = 100%** (2026-05-19) ✅ — nueva línea base
+- **Corpus**: 326 normas · ~21.500 chunks · sin duplicados ✅
+- **Eval**: **19/19 = 100%** (2026-05-19) ✅ — nueva línea base expandida
 
 ## Prioridades actuales
 1. **Verificar CEREBRAS_API_KEY en Vercel** env vars (confirmar que producción usa Cerebras como primario)
