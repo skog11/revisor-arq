@@ -20,7 +20,8 @@
     "corpus:referencias": "tsx --env-file=.env.local scripts/ingest/detectar-referencias.ts",
     "eval": "tsx --env-file=.env.local scripts/eval/run-eval.ts",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "deploy:prod": "vercel --prod"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.0",

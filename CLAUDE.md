@@ -82,11 +82,11 @@ query → Voyage embed → Supabase match_chunks RPC → Cerebras qwen-3-235b �
 ## Corpus — estado actual (2026-05-19)
 | Categoría | Normas | Chunks | Estado |
 |---|---|---|---|
-| LGUC / OGUC / DDUs activos | ~320 | ~5.000 | ✅ completo |
-| Normativa cat.01–11 (ambiental, sanitaria, agua, patrimonio…) | 258 | ~5.500 | ✅ completo |
-| DS-60 / DS-61 (sísmico) | 2 | 39 | ✅ completo |
-| DFL-4 (Ley Eléctrica) | 1 | 566 | ✅ completo |
-| **TOTAL** | **298/298** | **~11.500** | **✅ 100%** |
+| LGUC (DFL-458) | 1 | 330 | ✅ completo |
+| OGUC (DS-47) | 1 | 1.003 | ✅ completo |
+| DDUs activos (527–541 + históricos) | 269 | ~12.000 | ✅ completo |
+| Normativa cat.01–11 (ambiental, sanitaria, agua…) | ~60 | ~4.500 | ✅ completo |
+| **TOTAL** | **333 normas** | **17.852 chunks** | **✅ limpio (sin duplicados)** |
 
 > Ingesta masiva: `cd app && npm run corpus:ingest`
 > Re-ingestar una norma: `npm run corpus:ingest -- --solo=CLAVE --force`
@@ -149,13 +149,14 @@ cd app && npm run eval                                   # evaluaciones (meta: �
 ## Estado actual (2026-05-19)
 - **Producción**: https://revisor-arq.vercel.app ✅
 - **LLM**: Cerebras primario (gratuito) → DeepSeek* → Gemini fast-fail → OpenRouter → Groq
-- **Retrieval**: excelente (18–20 fuentes por consulta)
-- **Corpus**: 298/298 normas ✅ · ~11.500 chunks en Supabase
-- **Eval histórico**: 6/7 = 86% (2026-04-21) — pendiente repetir
+- **Retrieval**: excelente (10 fuentes por consulta, latencia ~1.7s promedio)
+- **Corpus**: 333 normas · 17.852 chunks · sin duplicados ✅
+- **Eval**: **9/9 = 100%** (2026-05-19) ✅ — nueva línea base
 
 ## Prioridades actuales
-1. Correr eval completo (meta: ≥ 7/9) — corpus mejorado debería subir el score
-2. OGUC completa — actualmente parcial, falta el grueso de artículos
+1. **Verificar CEREBRAS_API_KEY en Vercel** env vars (confirmar que producción usa Cerebras como primario)
+2. DDUs históricos 000–526 (303 PDFs) — pendiente largo plazo
+3. Stripe / plan de pago — baja prioridad
 3. Checklist legal para lanzamiento público (ver skill `mvp-legal-launch`)
 4. Stripe / monetización cuando el producto esté listo
 

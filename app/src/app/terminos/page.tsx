@@ -75,7 +75,8 @@ export default function TerminosPage() {
         <p>
           REVISOR ARQ es una herramienta informática de consulta que utiliza inteligencia
           artificial para responder preguntas sobre normativa chilena de urbanismo y
-          construcción (LGUC, OGUC y Circulares DDU del MINVU).
+          construcción. Su base de conocimiento incluye la LGUC, OGUC, Circulares DDU del
+          MINVU, y otras leyes y reglamentos sectoriales relevantes.
         </p>
         <p>
           Las respuestas generadas son de carácter <strong>exclusivamente informativo</strong>.
@@ -125,9 +126,11 @@ export default function TerminosPage() {
 
       <Seccion titulo="4. Propiedad intelectual">
         <p>
-          Los textos normativos procesados por REVISOR ARQ (LGUC, OGUC, Circulares DDU)
-          son obras de dominio público bajo la legislación chilena, publicadas por el
-          Ministerio de la Vivienda y Urbanismo (MINVU) y la Biblioteca del Congreso Nacional.
+          Los textos normativos procesados por REVISOR ARQ (LGUC, OGUC, Circulares DDU,
+          DFL, DS, Leyes y otros cuerpos normativos) son obras de dominio público bajo la
+          legislación chilena, publicadas por organismos estatales como el Ministerio de
+          la Vivienda y Urbanismo (MINVU), la Biblioteca del Congreso Nacional y otros
+          ministerios competentes.
         </p>
         <p>
           El código fuente, diseño y arquitectura de REVISOR ARQ son propiedad del
@@ -139,8 +142,9 @@ export default function TerminosPage() {
 
       <Seccion titulo="5. Exactitud y actualización de la normativa">
         <p>
-          REVISOR ARQ opera sobre una base de conocimiento normativa que incluye versiones
-          de la LGUC, OGUC y determinadas Circulares DDU disponibles a la fecha indicada
+          REVISOR ARQ opera sobre una base de conocimiento normativa que incluye la LGUC,
+          OGUC, Circulares DDU, y una selección de leyes, DFL, DS y reglamentos sectoriales
+          disponibles a la fecha indicada
           en la sección{" "}
           <Link
             href="/normativa"

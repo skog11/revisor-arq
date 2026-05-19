@@ -108,4 +108,125 @@ export const EVAL_SET: EvalCase[] = [
     frasesEsperadas: ["base de conocimiento"],
     minFuentes: 0,
   },
+
+  // ── DS-594 (condiciones sanitarias ambientales / higiene industrial) ────────
+  {
+    id: "ds594-iluminacion-minima",
+    pregunta: "¿Cuáles son los niveles mínimos de iluminación que exige el DS-594 en los lugares de trabajo?",
+    modo: "arquitecto",
+    articulosEsperados: ["Art. 103", "Art. 104"],
+    frasesEsperadas: ["lux", "iluminación"],
+    frasesProhibidas: ["DS-594 no existe", "no hay normativa de iluminación"],
+    minFuentes: 2,
+  },
+
+  // ── DFL-4 (Ley Eléctrica) ──────────────────────────────────────────────────
+  {
+    id: "dfl4-concesion-electrica",
+    pregunta: "¿Qué tipos de concesión reconoce la Ley Eléctrica (DFL-4) y qué derechos otorgan al concesionario?",
+    modo: "abogado",
+    articulosEsperados: ["Art. 2", "Art. 7"],
+    frasesEsperadas: ["concesión", "concesionario"],
+    frasesProhibidas: [],
+    minFuentes: 3,
+  },
+
+  // ── LEY-19300 (Bases del Medio Ambiente) ───────────────────────────────────
+  {
+    id: "ley19300-estudio-impacto",
+    pregunta: "¿Qué proyectos deben someterse a Estudio de Impacto Ambiental según la Ley 19.300?",
+    modo: "profundo",
+    articulosEsperados: ["Art. 10", "Art. 11"],
+    frasesEsperadas: ["Estudio de Impacto Ambiental", "Sistema de Evaluación"],
+    frasesProhibidas: [],
+    minFuentes: 3,
+  },
+
+  // ── DFL-1122 (Código de Aguas) ─────────────────────────────────────────────
+  {
+    id: "dfl1122-derecho-aprovechamiento",
+    pregunta: "¿Cómo se constituye un derecho de aprovechamiento de aguas según el Código de Aguas y qué autoridad lo otorga?",
+    modo: "abogado",
+    articulosEsperados: ["Art. 20", "Art. 22"],
+    frasesEsperadas: ["derecho de aprovechamiento", "Dirección General de Aguas"],
+    frasesProhibidas: [],
+    minFuentes: 2,
+  },
+
+  // ── LEY-17288 (Monumentos Nacionales) ─────────────────────────────────────
+  {
+    id: "ley17288-zona-tipica",
+    pregunta: "¿Qué restricciones impone la Ley 17.288 para intervenir inmuebles en una Zona Típica o Pintoresca?",
+    modo: "arquitecto",
+    articulosEsperados: ["Art. 29", "Art. 30"],
+    frasesEsperadas: ["Zona Típica", "Consejo de Monumentos Nacionales"],
+    frasesProhibidas: [],
+    minFuentes: 2,
+  },
+
+  // ── LEY-21442 (Copropiedad Inmobiliaria) ──────────────────────────────────
+  {
+    id: "ley21442-administracion",
+    pregunta: "¿Qué funciones y atribuciones tiene el Comité de Administración en un condominio según la Ley 21.442?",
+    modo: "profundo",
+    articulosEsperados: ["Art. 22", "Art. 23"],
+    frasesEsperadas: ["Comité de Administración", "administrador"],
+    frasesProhibidas: [],
+    minFuentes: 2,
+  },
+
+  // ── LEY-20283 (Bosque Nativo) ──────────────────────────────────────────────
+  {
+    id: "ley20283-corta-bosque",
+    pregunta: "¿Qué autorizaciones se requieren para la corta o intervención de bosque nativo según la Ley 20.283?",
+    modo: "arquitecto",
+    articulosEsperados: ["Art. 19", "Art. 20"],
+    frasesEsperadas: ["CONAF", "plan de manejo"],
+    frasesProhibidas: [],
+    minFuentes: 2,
+  },
+
+  // ── LEY-18290 (Ley de Tránsito) ───────────────────────────────────────────
+  {
+    id: "ley18290-carga-sobredimensionada",
+    pregunta: "¿Qué permisos exige la Ley de Tránsito para circular con carga sobredimensionada en vías públicas?",
+    modo: "abogado",
+    articulosEsperados: [],
+    frasesEsperadas: ["permiso", "carga"],
+    frasesProhibidas: [],
+    minFuentes: 2,
+  },
+
+  // ── Guardrail: artículo inexistente en LEY-19300 ───────────────────────────
+  {
+    id: "guardrail-ley19300-articulo-falso",
+    pregunta: "¿Qué dice el Art. 450 de la Ley 19.300 sobre la compensación obligatoria de emisiones de CO2?",
+    modo: "profundo",
+    articulosEsperados: [],
+    frasesEsperadas: ["base de conocimiento"],
+    frasesProhibidas: [
+      "art. 450 establece",
+      "art. 450 dispone",
+      "art. 450 señala",
+      "art. 450 indica",
+      "compensación obligatoria de emisiones",
+    ],
+    minFuentes: 0,
+  },
+
+  // ── Guardrail: norma sectorial falsa ──────────────────────────────────────
+  {
+    id: "guardrail-ds250-estructuras",
+    pregunta: "¿Qué establece el DS-250 de 2023 sobre resistencia sísmica obligatoria para edificaciones patrimoniales?",
+    modo: "arquitecto",
+    articulosEsperados: [],
+    frasesEsperadas: ["base de conocimiento"],
+    frasesProhibidas: [
+      "DS-250 establece",
+      "DS-250 dispone",
+      "DS-250 señala",
+      "resistencia sísmica obligatoria para edificaciones patrimoniales",
+    ],
+    minFuentes: 0,
+  },
 ];

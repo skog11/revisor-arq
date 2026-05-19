@@ -200,17 +200,19 @@ export default function PrivacidadPage() {
           >
             Supabase
           </a>{" "}
-          (infraestructura en AWS). Las consultas son procesadas por la API de{" "}
+          (infraestructura en AWS). Las consultas son procesadas por servicios de
+          inteligencia artificial de terceros para generar respuestas. Los embeddings
+          de búsqueda son generados mediante la API de{" "}
           <a
-            href="https://ai.google.dev"
+            href="https://www.voyageai.com"
             target="_blank"
             rel="noopener noreferrer"
             className="underline underline-offset-2 hover:opacity-70 transition-opacity"
             style={{ color: "var(--terracotta)" }}
           >
-            Google Gemini
-          </a>{" "}
-          para generar respuestas y embeddings.
+            Voyage AI
+          </a>
+          . Ninguno de estos proveedores recibe datos personales identificables.
         </p>
         <p>
           <strong style={{ color: "var(--ink)" }}>No se venden ni ceden datos</strong> a
