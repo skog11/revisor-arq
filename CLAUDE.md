@@ -141,7 +141,8 @@ cd app && npm run dev                                    # desarrollo
 cd app && npm run build                                  # verificar build
 cd app && npm run corpus:ingest                          # ingestar normas (detecta cambios por hash)
 cd app && npm run corpus:ingest -- --solo=CLAVE --force  # re-ingestar norma específica
-cd app && npm run eval                                   # evaluaciones (meta: ≥7/9)
+cd app && npm run eval                                   # evaluaciones contra localhost:3000
+cd app && npm run eval:prod                              # evaluaciones contra producción (https://revisor-arq.vercel.app)
 ```
 
 ---

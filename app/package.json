@@ -19,6 +19,7 @@
     "manifiesto:build:dry": "tsx scripts/ingest/build-manifiesto.ts --dry",
     "corpus:referencias": "tsx --env-file=.env.local scripts/ingest/detectar-referencias.ts",
     "eval": "tsx --env-file=.env.local scripts/eval/run-eval.ts",
+    "eval:prod": "tsx --env-file=.env.local scripts/eval/run-eval.ts --url=https://revisor-arq.vercel.app",
     "test": "vitest run",
     "test:watch": "vitest",
     "deploy:prod": "vercel --prod"
