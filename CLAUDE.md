@@ -37,7 +37,7 @@ query → extractor-hechos → motor-reglas → Voyage HyDE embed
 - `grafo.ts` — cruces entre normas (LGUC ↔ OGUC ↔ DDU)
 - `sintetizador.ts` — construye system prompt por modo (buildSystemPromptV2)
 - `rag.ts` — tipos compartidos + buildSystemPrompt legacy
-- `motor-reglas.ts` — 14 reglas-gatillo curadas (norma especial > general)
+- `motor-reglas.ts` — 18 reglas-gatillo curadas (norma especial > general)
 - `detector-conflictos.ts` — detecta "no procede", "improcedente", etc. en chunks
 - `fetcher-normas-obligatorias.ts` — recupera chunks forzados por reglas
 - `extractor-hechos.ts` — extrae AccionSolicitada, EstadoObra, TipoZona (regex, sin LLM)
@@ -167,7 +167,7 @@ cd app && npm run eval                                   # evaluaciones (meta: �
 - **LLM**: Cerebras primario (gratuito) → DeepSeek* → Gemini fast-fail → OpenRouter → Groq
 - **Retrieval**: 50 candidatos → rerank-2 top 18 · HyDE + multi-query + hybrid BM25+vector
 - **Corpus**: 326 normas · ~21.500 chunks · sin duplicados ✅
-- **Eval**: **24/24** (2026-05-19) ✅ — 19 casos base + 5 traps norma especial/general
+- **Eval**: **29 casos** (19 base + 5 traps originales + 5 traps nuevos) — pendiente resultado
 
 ### Pipeline Legal-RAG implementado
 | Fase | Módulo | Estado |
@@ -178,7 +178,7 @@ cd app && npm run eval                                   # evaluaciones (meta: �
 | 4 | Extractor hechos jurídicos (extractor-hechos.ts, regex) | ✅ |
 | 5 | Hybrid BM25+vector (match_chunks_hybrid en retriever, fallback automático) | ✅ |
 | 6 | CGR dictámenes como capa interpretativa | ⏳ largo plazo |
-| 7 | Expansión catálogo reglas-gatillo (14 reglas activas) | ✅ |
+| 7 | Expansión catálogo reglas-gatillo (18 reglas activas) | ✅ |
 
 ## Prioridades actuales
 1. **Checklist legal para lanzamiento público** (ver skill `mvp-legal-launch`)

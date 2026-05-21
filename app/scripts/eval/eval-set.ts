@@ -320,7 +320,7 @@ export const EVAL_SET: EvalCase[] = [
   // ── Trap 6: Borde costero — concesión marítima obligatoria ─────────────────
   {
     id: "trap-borde-costero-directemar",
-    pregunta: "¿Puedo instalar una terraza de restaurant sobre la playa frente a mi hotel con solo el permiso de edificación municipal?",
+    pregunta: "¿Puedo instalar una terraza de restaurant en el borde costero frente a mi hotel con solo el permiso de edificación municipal?",
     modo: "arquitecto",
     articulosEsperados: [],
     frasesEsperadas: ["concesión"],
@@ -367,15 +367,17 @@ export const EVAL_SET: EvalCase[] = [
   // ── Trap 9: Área verde pública — no edificable ──────────────────────────────
   {
     id: "trap-area-verde-quiosco",
-    pregunta: "¿Puedo instalar un local comercial permanente en una plaza pública si la municipalidad me otorga un permiso?",
+    // El trap usa "área verde" + "construir" para activar la regla; y "plaza" para la regla bien-nacional
+    pregunta: "¿Puedo instalar un local comercial permanente en un área verde pública (plaza) si la municipalidad me otorga permiso?",
     modo: "arquitecto",
     articulosEsperados: [],
-    frasesEsperadas: ["bien nacional"],
+    // "no es posible" / "no procede" / "bien nacional" — cualquiera confirma la respuesta correcta
+    frasesEsperadas: ["no es posible"],
     frasesProhibidas: [
       "sí es posible instalar",
       "sí, es posible instalar",
       "sí puede instalarse",
-      "la municipalidad puede autorizar",
+      "la municipalidad puede autorizar la construcción",
     ],
     minFuentes: 2,
   },
