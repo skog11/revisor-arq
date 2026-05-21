@@ -168,7 +168,7 @@ cd app && npm run eval:prod                              # evaluaciones contra p
 - **LLM**: Cerebras primario (gratuito) → DeepSeek* → Gemini fast-fail → OpenRouter → Groq
 - **Retrieval**: 50 candidatos → rerank-2 top 18 · HyDE + multi-query + hybrid BM25+vector
 - **Corpus**: 326 normas · ~21.500 chunks · sin duplicados ✅
-- **Eval**: **29 casos** (19 base + 5 traps originales + 5 traps nuevos) — pendiente resultado
+- **Eval**: **29/29** (2026-05-20) ✅ — 19 casos base + 5 traps originales + 5 traps nuevos
 
 ### Pipeline Legal-RAG implementado
 | Fase | Módulo | Estado |
