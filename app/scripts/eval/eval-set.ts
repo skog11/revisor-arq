@@ -302,12 +302,95 @@ export const EVAL_SET: EvalCase[] = [
     pregunta: "¿Puedo cambiar el uso de suelo de un terreno rural a urbano solicitándolo a la SEREMI MINVU?",
     modo: "arquitecto",
     articulosEsperados: [],
-    // Debe mencionar IPT / PRC / modificación instrumento de planificación
     frasesEsperadas: ["plan regulador"],
     frasesProhibidas: [
       "basta solicitarlo a la seremi",
       "solo requiere autorización seremi",
       "es un trámite directo ante seremi",
+    ],
+    minFuentes: 2,
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // TRAP CASES — reglas nuevas (borde costero, zona típica, EIA, área verde,
+  // copropiedad). El sistema debe activar la regla-gatillo correcta y citar
+  // los requisitos adicionales que la norma general NO menciona.
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  // ── Trap 6: Borde costero — concesión marítima obligatoria ─────────────────
+  {
+    id: "trap-borde-costero-directemar",
+    pregunta: "¿Puedo instalar una terraza de restaurant sobre la playa frente a mi hotel con solo el permiso de edificación municipal?",
+    modo: "arquitecto",
+    articulosEsperados: [],
+    frasesEsperadas: ["concesión"],
+    frasesProhibidas: [
+      "solo requiere permiso municipal",
+      "basta con el permiso de edificación",
+      "basta el permiso dom",
+      "no requiere trámite adicional",
+    ],
+    minFuentes: 2,
+  },
+
+  // ── Trap 7: Zona Típica — autorización CMN obligatoria ─────────────────────
+  {
+    id: "trap-zona-tipica-cmn",
+    pregunta: "Quiero ampliar mi vivienda ubicada en la Zona Típica del centro histórico de Valparaíso. ¿Basta con el permiso de la DOM?",
+    modo: "arquitecto",
+    articulosEsperados: [],
+    frasesEsperadas: ["Consejo de Monumentos Nacionales"],
+    frasesProhibidas: [
+      "basta con el permiso de la dom",
+      "solo requiere permiso dom",
+      "no requiere autorización adicional",
+    ],
+    minFuentes: 2,
+  },
+
+  // ── Trap 8: EIA obligatorio antes del permiso de edificación ───────────────
+  {
+    id: "trap-eia-centro-comercial",
+    pregunta: "¿Puedo construir un mall de 60.000 m² en zona comercial aprobada por el plan regulador sin pasar por el SEIA?",
+    modo: "abogado",
+    articulosEsperados: ["10"],
+    frasesEsperadas: ["SEIA"],
+    frasesProhibidas: [
+      "no requiere EIA",
+      "no requiere SEIA",
+      "basta con la aprobación del plan regulador",
+      "sí puede construirse sin",
+    ],
+    minFuentes: 2,
+  },
+
+  // ── Trap 9: Área verde pública — no edificable ──────────────────────────────
+  {
+    id: "trap-area-verde-quiosco",
+    pregunta: "¿Puedo instalar un local comercial permanente en una plaza pública si la municipalidad me otorga un permiso?",
+    modo: "arquitecto",
+    articulosEsperados: [],
+    frasesEsperadas: ["bien nacional"],
+    frasesProhibidas: [
+      "sí es posible instalar",
+      "sí, es posible instalar",
+      "sí puede instalarse",
+      "la municipalidad puede autorizar",
+    ],
+    minFuentes: 2,
+  },
+
+  // ── Trap 10: Copropiedad — asamblea de copropietarios ──────────────────────
+  {
+    id: "trap-copropiedad-asamblea",
+    pregunta: "¿Puede el administrador de mi edificio autorizar la construcción de una techumbre sobre el patio común sin reunir a los copropietarios?",
+    modo: "abogado",
+    articulosEsperados: [],
+    frasesEsperadas: ["asamblea"],
+    frasesProhibidas: [
+      "el administrador puede autorizar",
+      "no requiere asamblea",
+      "basta la decisión del administrador",
     ],
     minFuentes: 2,
   },

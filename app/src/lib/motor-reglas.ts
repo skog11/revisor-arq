@@ -286,6 +286,80 @@ export const REGLAS_INICIALES: ReglaGatillo[] = [
       "modificación del instrumento de planificación territorial (IPT) con los quórum legales correspondientes. " +
       "La respuesta NO puede afirmar que es posible construir en área verde pública.",
   },
+
+  // ── Regla: plaza pública / bien nacional de uso público ─────────────────────
+
+  {
+    id: "bien-nacional-uso-publico",
+    descripcion:
+      "Las plazas, playas y calles son bienes nacionales de uso público y no admiten permisos de edificación privados permanentes.",
+    cuando: {
+      co_ocurrencia: ["plaza", "instalar"],
+      excepciones: ["contiguo a la plaza", "frente a la plaza"],
+    },
+    forzar_normas: ["LGUC"],
+    efecto: "bloquear_positiva",
+    mensaje_experto:
+      "Las plazas y parques públicos son bienes nacionales de uso público (Art. 589 Código Civil; Art. 4 LGUC). " +
+      "Ningún particular puede obtener permiso de edificación permanente sobre ellos. " +
+      "Una autorización municipal de uso temporal (ferias, eventos) no habilita construcción permanente. " +
+      "La respuesta NO puede concluir que la instalación permanente es posible.",
+  },
+
+  // ── Regla: permiso de demolición previo ────────────────────────────────────
+
+  {
+    id: "permiso-demolicion-previo",
+    descripcion:
+      "Antes de construir sobre un predio con edificaciones existentes se requiere permiso de demolición de la DOM, no basta el permiso de edificación nuevo.",
+    cuando: {
+      co_ocurrencia: ["demoler", "construir"],
+      excepciones: ["ya demolido", "sitio eriazo", "terreno limpio"],
+    },
+    forzar_normas: ["OGUC"],
+    efecto: "requerir_revision",
+    mensaje_experto:
+      "La demolición de edificaciones existentes requiere un permiso de demolición independiente otorgado por la DOM (Art. 1.4.19 OGUC). " +
+      "El permiso de edificación para la nueva construcción no incluye ni autoriza la demolición de lo existente. " +
+      "La respuesta debe mencionar el permiso de demolición como trámite previo necesario.",
+  },
+
+  // ── Regla: certificado de informaciones previas ────────────────────────────
+
+  {
+    id: "cip-antes-del-permiso",
+    descripcion:
+      "El Certificado de Informaciones Previas (CIP) es el primer trámite antes de diseñar y solicitar permiso: informa sobre las normas urbanísticas del predio.",
+    cuando: {
+      co_ocurrencia: ["certificado de informaciones previas"],
+      excepciones: [],
+    },
+    forzar_normas: ["LGUC", "OGUC"],
+    efecto: "requerir_revision",
+    mensaje_experto:
+      "El Certificado de Informaciones Previas (CIP) es emitido por la DOM y certifica las normas urbanísticas aplicables al predio: " +
+      "uso de suelo, coeficientes de constructibilidad y ocupación, altura, distanciamientos, rasante y sistema de agrupamiento. " +
+      "Es el documento base para el diseño del proyecto. Sin CIP, el arquitecto diseña sin conocer las restricciones aplicables. " +
+      "La respuesta debe situar el CIP como primer paso del proceso.",
+  },
+
+  // ── Regla: obras en faja de servidumbre eléctrica ─────────────────────────
+
+  {
+    id: "servidumbre-electrica",
+    descripcion:
+      "Las obras en la faja de servidumbre de tendidos eléctricos de alta tensión requieren autorización de la empresa concesionaria y de la SEC.",
+    cuando: {
+      co_ocurrencia: ["tendido eléctrico", "construir"],
+      excepciones: [],
+    },
+    forzar_normas: ["DFL-4"],
+    efecto: "requerir_revision",
+    mensaje_experto:
+      "Los tendidos de alta tensión establecen servidumbres de electroducto que impiden edificar en la faja de seguridad " +
+      "definida en el DFL-4 (Ley Eléctrica). La empresa concesionaria y la SEC deben autorizar cualquier obra en esa franja. " +
+      "La respuesta debe advertir sobre esta restricción y la necesidad de verificar la faja con la empresa distribuidora.",
+  },
 ];
 
 // ─── Lógica de aplicación ────────────────────────────────────────────────────
