@@ -182,7 +182,7 @@ cd app && npm run eval:prod                              # evaluaciones contra p
 | 7 | Expansión catálogo reglas-gatillo (18 reglas activas) | ✅ |
 
 ## Prioridades actuales
-1. **Checklist legal para lanzamiento público** (ver skill `mvp-legal-launch`)
+1. **Lanzamiento público** — bloqueadores despejados ✅ (eval 29/29, sin banners beta, revisión legal completada 2026-05-23)
 2. Stripe / monetización — baja prioridad
 3. CGR dictámenes como corpus separado — largo plazo
 4. DDUs históricos 000–453 — largo plazo

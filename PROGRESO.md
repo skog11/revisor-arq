@@ -297,7 +297,7 @@ consultas (id, pregunta, modo, respuesta, chunks_usados, modelo, latencia_ms, ..
 
 | Tarea | Prioridad | Detalle |
 |---|---|---|
-| Revisión legal formal por abogado | 🟡 Media | Antes de promoción/marketing activo |
+| Revisión legal formal por abogado | ✅ Completada 2026-05-23 | T&C y privacidad revisados y aprobados |
 | Stripe / monetización | 🟢 Baja | Scaffolding ya existe |
 | Scraper BCN para DDUs históricos faltantes | 🟢 Baja | Ver análisis abajo — bajo valor normativo |
 | CGR dictámenes como corpus separado | ⏳ Largo plazo | — |
@@ -406,4 +406,4 @@ cd app && vercel env ls
 | 2026-05-19 | Cerebras como primario, corpus limpio (326 normas), eval 9/9 = 100%, deploy |
 | 2026-05-19 | Motor-reglas v1 (compuerta normativa), extractor-hechos, verificador coherencia |
 | 2026-05-20 | +5 traps nuevos eval-set, 4 reglas-gatillo adicionales, eval 29/29 producción |
-| **2026-05-23** | **Banners beta eliminados, T&C y privacidad actualizados, listo para lanzamiento** |
+| **2026-05-23** | **Banners beta eliminados, T&C y privacidad actualizados, revisión legal completada — lanzamiento público desbloqueado** |
