@@ -302,9 +302,8 @@ function LoginForm() {
           </div>
         </div>
 
-        {/* Nota beta */}
         <p className="mt-6 text-center text-[11px]" style={{ color: "var(--ink-5)", fontFamily: "var(--font-jetbrains-mono)" }}>
-          Beta abierta — 50 consultas / mes gratis
+          Acceso gratuito — sin tarjeta de crédito
         </p>
       </div>
     </div>

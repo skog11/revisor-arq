@@ -44,18 +44,18 @@ export default function PricingPage() {
               border: "1px solid rgba(201,138,31,0.2)",
             }}
           >
-            {stripeConfigurado ? "Planes disponibles" : "Beta abierta"}
+            {stripeConfigurado ? "Planes disponibles" : "Acceso gratuito"}
           </span>
           <h1
             className="mt-3 text-4xl font-normal"
             style={{ fontFamily: "var(--font-instrument-serif)", color: "var(--ink)" }}
           >
-            {stripeConfigurado ? "Elige tu plan" : "Gratuito durante la beta"}
+            {stripeConfigurado ? "Elige tu plan" : "Sin costo durante el lanzamiento"}
           </h1>
           <p className="mt-4 text-sm leading-relaxed" style={{ color: "var(--ink-3)" }}>
             {stripeConfigurado
               ? "Accede a normativa urbanística chilena con citas verificables. Cancela cuando quieras."
-              : "Mientras REVISOR ARQ está en beta pública, el acceso es completamente gratuito. Los usuarios beta tendrán condiciones preferentes cuando lancemos planes de pago."}
+              : "REVISOR ARQ es completamente gratuito. No se requiere tarjeta de crédito ni registro previo. Cuando lancemos planes de pago, los usuarios actuales tendrán condiciones preferentes."}
           </p>
         </div>
 

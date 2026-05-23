@@ -64,7 +64,7 @@ export default function OgImage() {
                 borderLeft: "1px solid rgba(22,19,16,0.2)",
               }}
             >
-              beta
+              LGUC · OGUC · DDU
             </span>
           </div>
 

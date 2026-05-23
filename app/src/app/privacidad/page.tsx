@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: "Política de privacidad y tratamiento de datos personales de REVISOR ARQ.",
 };
 
-const FECHA_VIGENCIA = "20 de abril de 2026";
+const FECHA_VIGENCIA = "23 de mayo de 2026";
 
 function Seccion({ titulo, children }: { titulo: string; children: React.ReactNode }) {
   return (
@@ -56,20 +56,6 @@ export default function PrivacidadPage() {
       <p className="mb-8 text-sm" style={{ color: "var(--ink-3)" }}>
         Vigente desde el {FECHA_VIGENCIA}
       </p>
-
-      {/* Aviso beta */}
-      <div
-        className="mb-10 rounded-lg px-4 py-3 text-sm leading-relaxed"
-        style={{
-          background: "var(--ra-warn-soft, rgba(201,138,31,0.10))",
-          border: "1px solid var(--ra-warn, #c98a1f)",
-          color: "var(--ink-2)",
-        }}
-      >
-        <strong style={{ color: "var(--ink)" }}>Versión beta.</strong> Esta política está
-        sujeta a revisión antes del lanzamiento público. En etapa beta no se recopilan
-        datos personales identificables.
-      </div>
 
       <Seccion titulo="1. Responsable del tratamiento">
         <p>

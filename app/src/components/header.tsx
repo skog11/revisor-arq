@@ -141,12 +141,6 @@ export function Header() {
             <span style={{ fontFamily: "var(--font-instrument-serif)", fontSize: 15, letterSpacing: "0.01em", color: "var(--ink)" }}>
               REVISOR ARQ
             </span>
-            <span
-              className="hidden sm:inline"
-              style={{ fontFamily: "var(--font-jetbrains-mono)", fontSize: 8.5, letterSpacing: "0.10em", textTransform: "uppercase", color: "var(--ink-5)", paddingLeft: 10, borderLeft: "1px solid var(--rule-2)" }}
-            >
-              beta
-            </span>
           </div>
         </Link>
 

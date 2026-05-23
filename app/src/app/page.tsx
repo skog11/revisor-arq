@@ -533,7 +533,7 @@ export default function HomePage() {
           {[
             { step: "1", title: "Escribe tu consulta", desc: "En lenguaje natural, como se lo contaría a un colega." },
             { step: "2", title: "Se busca en la normativa", desc: "Voyage AI voyage-law-2 encuentra los artículos más relevantes por similitud semántica legal." },
-            { step: "3", title: "Gemini redacta", desc: "Genera la respuesta usando solo los fragmentos recuperados, sin inventar." },
+            { step: "3", title: "El modelo redacta", desc: "Genera la respuesta usando solo los fragmentos recuperados, sin inventar." },
             { step: "4", title: "Revisa las fuentes", desc: "Cada cita es verificable. Haz clic en cualquier referencia para ver el artículo completo." },
           ].map((item, i) => (
             <motion.div
@@ -601,7 +601,7 @@ export default function HomePage() {
               letterSpacing: "1.5px",
             }}
           >
-            Beta abierta — sin registro
+            Acceso gratuito — sin registro
           </p>
           <h2
             className="mb-4"
@@ -621,7 +621,7 @@ export default function HomePage() {
             className="mb-8 text-sm leading-relaxed"
             style={{ color: "var(--ink-3)", maxWidth: 400, margin: "0 auto 2rem" }}
           >
-            Sin registro, sin tarjeta de crédito. Hasta 20 consultas por hora durante la beta.
+            Sin registro, sin tarjeta de crédito. Hasta 20 consultas por hora.
           </p>
           <Link
             href="/chat"
