@@ -242,8 +242,8 @@ export const EVAL_SET: EvalCase[] = [
     pregunta: "¿Puedo acoger a conjunto armónico un proyecto que ya tiene edificaciones con recepción municipal?",
     modo: "arquitecto",
     articulosEsperados: [],
-    // El LLM debe indicar improcedencia (DDU 161 + CGR 8518/2006 son los respaldos)
-    frasesEsperadas: ["improcede"],
+    // El LLM debe indicar improcedencia; "no procede" es la forma más común en derecho administrativo
+    frasesEsperadas: ["no procede"],
     // NO puede afirmar procedencia directa con la regla general OGUC
     frasesProhibidas: [
       "sí es posible acoger",

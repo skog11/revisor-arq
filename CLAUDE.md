@@ -163,12 +163,12 @@ cd app && npm run eval:prod                              # evaluaciones contra p
 
 ---
 
-## Estado actual (2026-05-19)
+## Estado actual (2026-05-24)
 - **Producción**: https://revisor-arq.vercel.app ✅
 - **LLM**: Cerebras primario (gratuito) → DeepSeek* → Gemini fast-fail → OpenRouter → Groq
 - **Retrieval**: 50 candidatos → rerank-2 top 18 · HyDE + multi-query + hybrid BM25+vector
-- **Corpus**: 326 normas · ~21.500 chunks · sin duplicados ✅
-- **Eval**: **29/29** (2026-05-20) ✅ — 19 casos base + 5 traps originales + 5 traps nuevos
+- **Corpus**: 328 normas · ~21.525 chunks · sin duplicados ✅ (incluye 2 dictámenes CGR)
+- **Eval**: **34/34** (2026-05-24) ✅ — 19 casos base + 5 traps originales + 5 traps nuevos + 5 sectoriales
 
 ### Pipeline Legal-RAG implementado
 | Fase | Módulo | Estado |
