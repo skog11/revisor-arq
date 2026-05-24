@@ -23,6 +23,7 @@ import { loadManifiesto, CORPUS_ROOT } from "../download/manifiesto";
 import { parseLGUCFile, parseOGUCFile } from "./parsers/lguc-oguc";
 import { parseDDUFile } from "./parsers/ddu";
 import { parseLey } from "./parsers/ley";
+import { parseCGRDictamen } from "./parsers/cgr";
 import { chunkearNorma } from "./chunker";
 import { embedTextos } from "./embedder";
 import { embedTextosOllama } from "./embedder-ollama";
@@ -71,6 +72,7 @@ function tipoNormaDeKey(key: string): TipoNorma {
   if (key.startsWith("DFL-")) return "DFL";
   if (key.startsWith("DL-")) return "DL";
   if (key.startsWith("DS-")) return "DS";
+  if (key.startsWith("CGR-")) return "CGR";
   return "DDU"; // fallback
 }
 
@@ -221,6 +223,17 @@ async function procesarNorma(
         titulo: entry.titulo ?? key,
         url_fuente: entry.url_fuente,
         fecha_publicacion: entry.fecha_publicacion,
+      });
+    } else if (tipo === "CGR") {
+      // Key format: "CGR-{NUMERO}-{ANIO}" (ej. "CGR-8518-2006")
+      const partes = key.split("-");
+      const anio = partes[partes.length - 1];
+      const numero = partes.slice(1, -1).join("-");
+      norma = parseCGRDictamen(entry.archivo, {
+        numero,
+        anio,
+        titulo: entry.titulo ?? key,
+        urlFuente: entry.url_fuente,
       });
     } else {
       norma = parseDDUFile(entry.archivo, entry.url_fuente, key, tipo);

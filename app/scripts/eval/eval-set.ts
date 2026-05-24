@@ -396,4 +396,76 @@ export const EVAL_SET: EvalCase[] = [
     ],
     minFuentes: 2,
   },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // NUEVOS CASOS — Accesibilidad DS-50 · Patrimonio LEY-17288 · Copropiedad
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  // ── DS-50: rampas ──────────────────────────────────────────────────────────
+  {
+    id: "ds50-rampa-pendiente",
+    pregunta: "¿Cuál es la pendiente máxima permitida para rampas de acceso a edificios según el DS-50 de accesibilidad universal?",
+    modo: "arquitecto",
+    articulosEsperados: [],
+    frasesEsperadas: ["pendiente", "rampa"],
+    frasesProhibidas: [
+      "DS-50 no existe",
+      "no hay normativa de accesibilidad",
+    ],
+    minFuentes: 2,
+  },
+
+  // ── DS-50: estacionamientos para personas con discapacidad ─────────────────
+  {
+    id: "ds50-estacionamiento-discapacidad",
+    pregunta: "¿Qué exige el DS-50 respecto a los estacionamientos reservados para personas con discapacidad en edificios de uso público?",
+    modo: "arquitecto",
+    articulosEsperados: [],
+    frasesEsperadas: ["discapacidad", "estacionamiento"],
+    frasesProhibidas: [
+      "no existe obligación",
+      "no hay normativa al respecto",
+    ],
+    minFuentes: 2,
+  },
+
+  // ── LEY-17288: Monumento Histórico (vs Zona Típica) ────────────────────────
+  {
+    id: "ley17288-monumento-historico",
+    pregunta: "¿Qué restricciones impone la Ley 17.288 para intervenir un inmueble declarado Monumento Histórico? ¿Es lo mismo que una Zona Típica?",
+    modo: "abogado",
+    articulosEsperados: ["9"],
+    frasesEsperadas: ["Monumento Histórico", "Consejo de Monumentos Nacionales"],
+    frasesProhibidas: [
+      "es lo mismo que zona típica",
+      "no existe diferencia",
+    ],
+    minFuentes: 2,
+  },
+
+  // ── LEY-21442: gastos comunes ──────────────────────────────────────────────
+  {
+    id: "ley21442-gastos-comunes",
+    pregunta: "¿Cómo se calculan y distribuyen los gastos comunes entre los copropietarios según la Ley 21.442?",
+    modo: "abogado",
+    articulosEsperados: [],
+    frasesEsperadas: ["gastos comunes", "prorrata"],
+    frasesProhibidas: [],
+    minFuentes: 2,
+  },
+
+  // ── Trap 11: DS-50 obligatorio en obra pública — no basta OGUC ─────────────
+  {
+    id: "trap-accesibilidad-solo-oguc",
+    pregunta: "Voy a construir un edificio de oficinas de uso público. ¿Basta con cumplir la OGUC para satisfacer los requisitos de accesibilidad?",
+    modo: "arquitecto",
+    articulosEsperados: [],
+    frasesEsperadas: ["DS-50"],
+    frasesProhibidas: [
+      "basta con cumplir la oguc",
+      "la oguc es suficiente",
+      "no se requiere normativa adicional",
+    ],
+    minFuentes: 2,
+  },
 ];

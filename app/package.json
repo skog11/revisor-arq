@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "corpus:download": "tsx --env-file=.env.local scripts/download/download-all.ts",
+    "corpus:cgr": "tsx --env-file=.env.local scripts/download/download-cgr.ts",
     "corpus:verify": "tsx scripts/download/verify-corpus.ts",
     "corpus:ingest": "tsx --env-file=.env.local scripts/ingest/ingest.ts",
     "corpus:ingest:ollama": "tsx --env-file=.env.local scripts/ingest/ingest.ts --ollama",

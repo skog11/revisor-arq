@@ -29,7 +29,9 @@
       "Bash(wmic process *)",
       "Bash(Get-Content \"C:\\\\00_CLAUDE CODE\\\\REVISOR-ARQ\\\\NORMATIVA\\\\normativa_chile\\\\99_logs\\\\ingesta_masiva.log\" -Tail 40)",
       "Bash(bash ingestar_ddu_masiva.sh)",
-      "Bash(echo \"PID: $!\")"
+      "Bash(echo \"PID: $!\")",
+      "Bash(grep -r \"CGR\\\\|cgr\\\\|contraloria\\\\|Contraloria\\\\|contraloría\" app/src --include=\"*.ts\" -l)",
+      "Bash(grep -r \"CGR\\\\|cgr\" app/scripts --include=\"*.ts\" -l)"
     ]
   }
 }

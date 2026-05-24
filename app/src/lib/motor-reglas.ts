@@ -54,7 +54,7 @@ export const REGLAS_INICIALES: ReglaGatillo[] = [
       co_ocurrencia: ["conjunto armónico", "recepción"],
       excepciones: ["sin recepción", "no recepcionada", "previo a la recepción"],
     },
-    forzar_normas: ["DDU-161"],
+    forzar_normas: ["DDU-161", "CGR-8518-2006"],
     efecto: "bloquear_positiva",
     mensaje_experto:
       "La DDU 161 (MINVU) establece la IMPROCEDENCIA de acoger a conjunto armónico una obra que ya cuenta con recepción definitiva. " +
@@ -85,7 +85,7 @@ export const REGLAS_INICIALES: ReglaGatillo[] = [
       co_ocurrencia: ["ddu 490"],
       excepciones: ["antes de la ddu 519", "histórica", "derogada"],
     },
-    forzar_normas: ["DDU-519"],
+    forzar_normas: ["DDU-519", "CGR-E14360-2025"],
     efecto: "requerir_revision",
     mensaje_experto:
       "La DDU 490 fue DEJADA SIN EFECTO por la DDU 519 del 06.02.2025. Si la consulta se refiere a la DDU 490 vigente, " +

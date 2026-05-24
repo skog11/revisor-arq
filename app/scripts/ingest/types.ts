@@ -8,7 +8,8 @@ export type TipoNorma =
   | "LEY"      // Leyes ordinarias (Ley 19.300, 17.288, etc.)
   | "DFL"      // Decretos con Fuerza de Ley (DFL 725, DFL 382, etc.)
   | "DL"       // Decretos Ley (DL 2695)
-  | "DS";      // Decretos Supremos reglamentarios (DS-40, DS-594, etc.)
+  | "DS"       // Decretos Supremos reglamentarios (DS-40, DS-594, etc.)
+  | "CGR";     // Dictámenes Contraloría General de la República (capa interpretativa)
 
 export interface ParsedArticulo {
   numero: string;          // "116", "2.6.3", "3.1" (DDU sección)

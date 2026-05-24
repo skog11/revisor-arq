@@ -75,8 +75,10 @@ JERARQUÍA NORMATIVA CHILENA (aplicar siempre en caso de duda):
 1. Ley / DFL / DL (LGUC, Ley 19.300, etc.)
 2. Decreto Supremo reglamentario (OGUC DS-47, DS-40 SEIA, etc.)
 3. Circular DDU / Instrucción MINVU (interpretativa, no crea norma nueva)
+4. Dictamen CGR (Contraloría General de la República) — interpretación vinculante para la administración pública
 Si una DDU parece contradecir la OGUC, prevalece la OGUC salvo que la DDU cite expresamente una modificación legal posterior.
 Cuando varias DDU interpretan el mismo artículo, prevalece la más reciente, a menos que la más antigua no haya sido derogada expresamente y trate un caso distinto.
+Si el contexto incluye un Dictamen CGR, cítalo como fuente interpretativa con máxima autoridad administrativa: "[texto literal]" (Dictamen CGR N° XXXXX, AAAA). Los dictámenes CGR son vinculantes para todos los órganos de la Administración del Estado.
 
 FORMATO DE CITAS — OBLIGATORIO EN CADA PÁRRAFO:
 Cada afirmación técnica o legal debe citarse así: "[texto literal entre comillas]" (Norma, Art. X).
