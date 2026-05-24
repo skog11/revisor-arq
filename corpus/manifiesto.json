@@ -3375,5 +3375,25 @@
     "hash": "79d37de5c6f522948a0fcb8312741e0f28a887b590a62c894128569996547ef6",
     "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\NORMAS\\DDU\\DDU-490.md",
     "chars": 13067
+  },
+  "CGR-8518-2006": {
+    "tipo": "CGR",
+    "numero": "8518-2006",
+    "titulo": "Conjunto armónico: improcedencia en obras con recepción definitiva municipal",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/113D86498B8800A4842571BD004AB3FF",
+    "fecha_descarga": "2026-05-24",
+    "hash": "57338c218cc3d4e80e1dbc241f128708d92e7588f0bf9f1d9e8a5a0b80387d99",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\8518_2006.txt",
+    "chars": 7131
+  },
+  "CGR-E14360-2025": {
+    "tipo": "CGR",
+    "numero": "E14360-2025",
+    "titulo": "DDU 490 dejada sin efecto — complejos fronterizos (DDU 519 vigente)",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/37DA7FC946F1DCED84258C23004A4F6E",
+    "fecha_descarga": "2026-05-24",
+    "hash": "f9dc639b457b7a93a0a07403026a1af91d42e09792f8287b22ca7626b39648c4",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\E14360_2025.txt",
+    "chars": 9273
   }
 }
