@@ -164,12 +164,27 @@ cd app && npm run eval:prod                              # evaluaciones contra p
 ---
 
 ## Estado actual (2026-06-02)
-- **Producción**: https://revisor-arq.vercel.app ✅
+- **Producción**: https://revisor-arq.vercel.app ✅ (deploy CI exitoso, último commit `2696c29`)
 - **LLM**: Cerebras primario (gratuito) → DeepSeek* → Gemini fast-fail → OpenRouter → Groq
 - **Retrieval**: 50 candidatos → rerank-2 top 18 · HyDE + multi-query + hybrid BM25+vector
-- **Corpus**: ~384 normas · ~22.500+ chunks · sin duplicados ✅ — incluye **60 dictámenes CGR** (de 2 → 60 en 2026-06-02)
-- **Motor-reglas**: **24 reglas-gatillo activas** (de 18 → 24 en 2026-06-02)
+- **Corpus**: ~384 normas · ~22.500+ chunks · sin duplicados ✅ — incluye **60 dictámenes CGR**
+- **Motor-reglas**: **24 reglas-gatillo activas**
 - **Eval**: **34/34** (2026-06-02) ✅
+
+### Features v2 en producción
+| Feature | Archivo | Estado |
+|---------|---------|--------|
+| BCN deep-links | `lib/bcn-links.ts` + `fuentes-panel.tsx` | ✅ prod |
+| Indicador de confianza | `lib/confianza.ts` + badge en `mensaje.tsx` | ✅ prod |
+| PWA | `public/manifest.webmanifest` + `public/sw.js` | ✅ prod |
+| Upload documentos multimodal | `api/parse-doc` con Gemini Flash | ✅ prod |
+| Extracción estructurada (AI SDK) | `extraer-parametros/vacios/cronologia` | ✅ prod |
+| Calculadoras interactivas | `calc-constructibilidad`, `calc-estacionamientos` | ✅ prod |
+| Guías temáticas | `/guias` + 3 páginas SSG con contenido técnico | ✅ prod |
+| Newsletter | `api/newsletter/subscribe` + SQL migration + form conectado | ✅ prod |
+| Playwright E2E | `playwright.config.ts` + `e2e/chat.spec.ts` | ✅ local |
+| Playwright en CI | `deploy.yml` instala chromium + smoke tests post-deploy | ✅ CI |
+| Active Prompting | chat baja confianza → solicita contexto antes de responder | ✅ prod |
 
 ### Pipeline Legal-RAG implementado
 | Fase | Módulo | Estado |
@@ -186,11 +201,10 @@ cd app && npm run eval:prod                              # evaluaciones contra p
 **No usar `bash &` para paralelizar `npm run corpus:ingest`**: bypasea el delay interno `BETWEEN_NORMAS_MS=1500ms` y causa race conditions en Voyage AI + Supabase. Usar siempre `--solo=KEY` de a uno o en lotes pequeños secuenciales.
 
 ## Prioridades actuales
-1. **Newsletter backend** — form UI listo, falta `/api/newsletter/subscribe` + migración SQL + `RESEND_API_KEY`
-2. **Guías: contenido editorial** — 3 guías con scaffold; falta contenido MDX completo
-3. **Deploy a producción** — build local limpio, pendiente push + Vercel deploy
-4. Stripe / monetización — baja prioridad, `/pricing` preparado
-5. DDUs históricos 000–453 — largo plazo
+1. **`RESEND_API_KEY`** — agregar en Vercel dashboard para activar emails de confirmación de newsletter (backend ya listo)
+2. **Guías: más contenido** — expandir a 7 guías y agregar páginas individuales con más detalle
+3. Stripe / monetización — baja prioridad, `/pricing` preparado
+4. DDUs históricos 000–453 — largo plazo
 
 → Detalle técnico en `PROGRESO.md`
 → Roadmap completo en `PLAN-IMPLEMENTACION.md`

@@ -286,44 +286,45 @@ consultas (id, pregunta, modo, respuesta, chunks_usados, modelo, latencia_ms, ..
 
 ## 8. ESTADO ACTUAL Y PRÓXIMOS PASOS (2026-06-02)
 
-### ✅ Completado y funcionando
+### ✅ Completado y en producción (2026-06-02)
 
 | Área | Estado |
 |---|---|
-| Deploy producción | ✅ https://revisor-arq.vercel.app |
+| Deploy producción | ✅ https://revisor-arq.vercel.app · commit `2696c29` |
+| CI/CD GitHub Actions | ✅ Auto-deploy en push a master · vitest 79/79 · Playwright chromium |
 | Cadena LLM gratuita | ✅ Cerebras → DeepSeek → Gemini → OpenRouter → Groq |
-| Todas las env vars en Vercel | ✅ Verificadas 2026-05-19 |
 | Corpus | ✅ ~384 normas · ~22.500+ chunks · 60 dictámenes CGR |
-| Eval | ✅ 34/34 = 100% (2026-06-02, verificado en producción) |
-| Pipeline Legal-RAG 7 capas | ✅ motor-reglas (24 reglas), extractor-hechos, verificador, hybrid, rerank |
-| Páginas legales | ✅ T&C y privacidad vigentes desde 2026-05-23 |
-| PDF modo profundo | ✅ Descargable con portada profesional |
-| Feedback thumbs up/down | ✅ Guardado en Supabase |
-| Panel admin corpus | ✅ `/corpus` (protegido) |
-| Cookie banner | ✅ Activo |
-| Health check | ✅ `/api/healthz` |
-| Cron alertas BCN | ✅ Endpoint activo — 4 normas monitoreadas |
-| BCN deep-links | ✅ Chips de fuentes son links a BCN/MINVU (`bcn-links.ts`) |
-| Indicador de confianza | ✅ Badge post-retrieval en cada respuesta (`confianza.ts`) |
-| PWA | ✅ `manifest.webmanifest` + `sw.js` + página offline + `RegisterSW` |
-| Upload de documentos (multimodal) | ✅ `/api/parse-doc` con Gemini Flash multimodal — PDF, imagen, TXT (max 5MB) |
-| Tests E2E | ✅ Playwright configurado (`playwright.config.ts`, `e2e/chat.spec.ts`) |
-| Extracción estructurada (AI SDK) | ✅ `extraer-parametros/vacios/cronologia`, `detector-calculadoras` via `@ai-sdk/google` |
-| Calculadoras interactivas | ✅ `calc-constructibilidad.tsx`, `calc-estacionamientos.tsx` |
-| Guías temáticas | ✅ `/guias` con 3 guías (constructibilidad, rasantes, defensas DOM) — link en header |
-| Newsletter form | ✅ `newsletter-form.tsx` en landing — UI completa, backend pendiente (TODO Resend/Supabase) |
+| Eval | ✅ 34/34 = 100% |
+| Pipeline Legal-RAG 7 capas | ✅ motor-reglas 24 reglas, extractor-hechos, verificador, hybrid, rerank |
+| BCN deep-links | ✅ Chips fuentes → BCN/MINVU |
+| Indicador de confianza | ✅ Badge post-retrieval |
+| PWA | ✅ manifest + sw.js + offline + RegisterSW |
+| Upload documentos multimodal | ✅ `/api/parse-doc` Gemini Flash (PDF/imagen/TXT, max 5MB) |
+| Extracción estructurada AI SDK | ✅ parametros/vacios/cronologia/calculadora via @ai-sdk/google |
+| Calculadoras interactivas | ✅ constructibilidad + estacionamientos |
+| Línea de tiempo normativa | ✅ CronologiaCard en modo profundo |
+| Vacíos normativos | ✅ VaciosCard en modo profundo |
+| Tabla de parámetros | ✅ ParametrosCard en modo arquitecto |
+| Active Prompting | ✅ Consultas baja confianza → pide contexto |
+| Guías temáticas | ✅ `/guias` + 3 páginas SSG con contenido técnico real |
+| Newsletter | ✅ SQL migration · POST subscribe (rate limit) · GET unsubscribe · form conectado |
+| Tests E2E | ✅ Playwright config + spec + CI smoke tests post-deploy |
+| Páginas legales | ✅ T&C y privacidad vigentes |
+| PDF modo profundo | ✅ Descargable |
+| Feedback thumbs up/down | ✅ En Supabase |
+| Panel admin corpus | ✅ `/corpus` protegido |
+| Cron alertas BCN | ✅ 4 normas monitoreadas |
+| Health check | ✅ `/api/healthz` ~375ms |
 
 ### ⏳ Pendiente
 
 | Tarea | Prioridad | Detalle |
 |---|---|---|
-| Stripe / monetización | 🟢 Baja | Scaffolding ya existe en `/pricing` |
-| Desplegar features v2 a Vercel | 🟡 Media | Build local pasa; falta push+deploy |
-| Playwright: instalar browsers en CI | 🟡 Media | `npx playwright install --with-deps chromium` |
-| Newsletter API + migración SQL | 🟡 Media | Form UI listo; falta `/api/newsletter/subscribe`, migración SQL `newsletter_suscripciones`, `RESEND_API_KEY` |
-| Guías temáticas: contenido editorial | 🟡 Media | 3 guías con scaffold; falta contenido MDX completo de cada guía + más guías |
-| DDUs históricos 000–453 | 🟢 Baja | No están digitalizados en MINVU |
-| SENTRY_DSN en Vercel | 🟢 Baja | Sentry config ya existe; solo falta env var |
+| `RESEND_API_KEY` en Vercel | 🟡 Media | Agregar en dashboard Vercel → activa emails de confirmación newsletter |
+| Guías: más contenido | 🟡 Media | Expandir a 7 guías con páginas individuales más detalladas |
+| Stripe / monetización | 🟢 Baja | Scaffolding existe, `/pricing` preparado |
+| SENTRY_DSN en Vercel | 🟢 Baja | `sentry.*.config.ts` existe; solo falta env var |
+| DDUs históricos 000–453 | 🟢 Largo plazo | No digitalizados en MINVU |
 
 ---
 
@@ -431,4 +432,5 @@ cd app && vercel env ls
 | 2026-05-20 | +5 traps nuevos eval-set, 4 reglas-gatillo adicionales, eval 29/29 producción |
 | 2026-05-23 | Banners beta eliminados, T&C y privacidad actualizados, revisión legal completada — lanzamiento público desbloqueado |
 | 2026-05-24 | +5 casos eval (accesibilidad DS-50, patrimonio), eval 34/34, CGR 2 dictámenes base |
-| **2026-06-02** | **Corpus CGR 2→60 dictámenes, motor-reglas 18→24, eval 34/34 mantenido, features v2 (PWA, E2E, parse-doc, AI SDK extractors, BCN links, confianza)** |
+| 2026-06-02 (mañana) | Corpus CGR 2→60 dictámenes, motor-reglas 18→24, eval 34/34 mantenido, features v2 (PWA, E2E, parse-doc, AI SDK extractors, BCN links, confianza) |
+| **2026-06-02 (tarde)** | **Newsletter backend completo (SQL+API+form), guías 3 páginas SSG, Playwright en CI, deploy producción ✅ — `2696c29`** |
