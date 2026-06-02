@@ -70,7 +70,7 @@ export const REGLAS_INICIALES: ReglaGatillo[] = [
       co_ocurrencia: ["zona rural", "subdivid"],
       excepciones: [],
     },
-    forzar_normas: ["LGUC", "CGR-9443-2000", "CGR-2663-2003", "CGR-30457-2016", "CGR-E422376-2023"],
+    forzar_normas: ["LGUC", "CGR-9443-2000", "CGR-2663-2003", "CGR-30457-2016", "CGR-E422376-2023", "CGR-9102-2017", "CGR-E472530-2024"],
     efecto: "requerir_revision",
     mensaje_experto:
       "El Art. 55 de la LGUC restringe la subdivisión y edificación en zonas rurales: requiere autorización previa de SEREMI MINVU " +
@@ -304,6 +304,26 @@ export const REGLAS_INICIALES: ReglaGatillo[] = [
       "Ningún particular puede obtener permiso de edificación permanente sobre ellos. " +
       "Una autorización municipal de uso temporal (ferias, eventos) no habilita construcción permanente. " +
       "La respuesta NO puede concluir que la instalación permanente es posible.",
+  },
+
+  // ── Regla: DOM — competencia restringida a normas urbanísticas ────────────
+
+  {
+    id: "dom-competencia-normas-urbanisticas",
+    descripcion:
+      "La DOM solo puede rechazar permisos o recepciones por incumplimiento de normas urbanísticas (LGUC/OGUC/IPT); no puede rechazar por accesibilidad, estructura, medioambiente u otras normas técnicas.",
+    cuando: {
+      co_ocurrencia: ["dom", "rechazar"],
+      excepciones: [],
+    },
+    forzar_normas: ["LGUC", "CGR-4490-2016", "CGR-E10529-2025"],
+    efecto: "requerir_revision",
+    mensaje_experto:
+      "Conforme al Art. 116 LGUC y Dictamen CGR N° 4.490/2016 (DDU N° 644), la DOM solo está habilitada para revisar y exigir " +
+      "el cumplimiento de normas urbanísticas (LGUC, OGUC, plan regulador) al otorgar permisos o recepciones. " +
+      "No puede rechazar solicitudes fundándose en incumplimientos de accesibilidad universal (Dictamen E10529/2025), " +
+      "resistencia estructural, normas de higiene u otras normas técnicas que son competencia de otros organismos. " +
+      "Si detecta infracciones a esas normas, debe denunciarlas ante el organismo competente (JPL, SEREMI Salud, etc.).",
   },
 
   // ── Regla: probidad — funcionario público actuando ante DOM ───────────────

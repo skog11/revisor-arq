@@ -3635,5 +3635,145 @@
     "hash": "a4edfb9cd60f056d041a26294e3498663391845bbf28a66ea687dbacaad0e83b",
     "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\E111407_2025.txt",
     "chars": 26999
+  },
+  "CGR-4490-2016": {
+    "tipo": "CGR",
+    "numero": "4490-2016",
+    "titulo": "Al otorgar permisos la DOM revisa solo normas urbanísticas (Art. 116 LGUC) — juridicidad DDU N° 644 (circular 278/2014)",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/4FC5C944A165132A03257F41006A564E",
+    "fecha_descarga": "2026-06-02",
+    "hash": "57a01ac18655f4e63985442847c51c041b3c21ce62015274e4d32fb832e16113",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\4490_2016.txt",
+    "chars": 9441
+  },
+  "CGR-E10529-2025": {
+    "tipo": "CGR",
+    "numero": "E10529-2025",
+    "titulo": "Falta de accesibilidad universal no habilita a la DOM para rechazar permisos o recepciones — debe denunciar ante JPL",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/931CCE99A1EB4F3984258C1B004EAEA3",
+    "fecha_descarga": "2026-06-02",
+    "hash": "91d3e3443f17db3660cc5ced6a757a6f720fb7401cbed7ba2b26071633bc8dd7",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\E10529_2025.txt",
+    "chars": 14130
+  },
+  "CGR-36050-2008": {
+    "tipo": "CGR",
+    "numero": "36050-2008",
+    "titulo": "CGR devuelve resolución SII por planos que infringen la OGUC en licitación pública — control de legalidad urbanística en contratos públicos",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/464660A0CDA931AC8425749E0056039E",
+    "fecha_descarga": "2026-06-02",
+    "hash": "a0c67db6d9d162ad9bc87e368f92390fd8c4d06ba981a6fbbf3ab582a298a23a",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\36050_2008.txt",
+    "chars": 3932
+  },
+  "CGR-E533509-2024": {
+    "tipo": "CGR",
+    "numero": "E533509-2024",
+    "titulo": "Bienes Nacionales y certificación de garantías de urbanización al transferir terrenos fiscales singularizados (DL 1.939 + LGUC)",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/5DE522403B546FD784258B8900564A39",
+    "fecha_descarga": "2026-06-02",
+    "hash": "0299aee116f3aca974df08a6abc6acd6150200aa017c5460576cda8c7ca74d6d",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\E533509_2024.txt",
+    "chars": 7610
+  },
+  "CGR-90359-2016": {
+    "tipo": "CGR",
+    "numero": "90359-2016",
+    "titulo": "Rechazo de regularización por incumplimiento de norma del plan regulador comunal — coherencia normativa entre IPT y permisos",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/F57D581D16B80A70032580910068103F",
+    "fecha_descarga": "2026-06-02",
+    "hash": "26fd70d4fb77a6257f29be0f27fe2165dfb4541262b2c026b483a3a09342444f",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\90359_2016.txt",
+    "chars": 4800
+  },
+  "CGR-47417-2008": {
+    "tipo": "CGR",
+    "numero": "47417-2008",
+    "titulo": "Planes reguladores no pueden prohibir usos de suelo de forma genérica sin seguir la lógica de zonas y subzonas de la OGUC Art. 2.1.10",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/A81CA72CBEACE50D842574E30055D24A",
+    "fecha_descarga": "2026-06-02",
+    "hash": "7e76d594347dc656caeb3845938293dd6bafdd58edad491d0bb56fd05dff1d79",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\47417_2008.txt",
+    "chars": 23015
+  },
+  "CGR-31416-2009": {
+    "tipo": "CGR",
+    "numero": "31416-2009",
+    "titulo": "Plan regulador comunal de Loncoche: prohibiciones genéricas de usos de suelo son contrarias a la OGUC — deben tipificarse por zona",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/6171DB900818071F842575D90059C999",
+    "fecha_descarga": "2026-06-02",
+    "hash": "33814e778e5d44239f8300caca8e777deea2db728e33105b32062f6615047f9b",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\31416_2009.txt",
+    "chars": 24848
+  },
+  "CGR-9102-2017": {
+    "tipo": "CGR",
+    "numero": "9102-2017",
+    "titulo": "SEREMI Metropolitana no se ajustó a derecho al certificar subdivisiones prediales en área rural fuera del marco del Art. 55 LGUC",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/1DAA08E3D1F39F69032580EA004AAD6D",
+    "fecha_descarga": "2026-06-02",
+    "hash": "2d2c2e031ae15c2016218728ac91d59c89b4187e33b0ff9aa94e5b320a6a2e8b",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\9102_2017.txt",
+    "chars": 6584
+  },
+  "CGR-35681-2009": {
+    "tipo": "CGR",
+    "numero": "35681-2009",
+    "titulo": "Para construir en Área Restringida o Excluida al Desarrollo Urbano la inscripción del lote debe ser anterior al instrumento de planificación que establece la restricción",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/F5D28930754D59A3842575EE0047D480",
+    "fecha_descarga": "2026-06-02",
+    "hash": "422232d04adb0a2f999c036d8f08e319b51801da211ce32f65d63dcd2a0970b4",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\35681_2009.txt",
+    "chars": 13737
+  },
+  "CGR-E148827-2021": {
+    "tipo": "CGR",
+    "numero": "E148827-2021",
+    "titulo": "Interpretación de SEREMI Metropolitana sobre áreas de preservación ecológica y Art. 55 LGUC — previo al debate del dictamen E281581/2022",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/560B43743433528A84258776005138A2",
+    "fecha_descarga": "2026-06-02",
+    "hash": "20f45b1be4bc4b84f1e4a9f527fee3015708df45299fab56c877b12b8581f93b",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\E148827_2021.txt",
+    "chars": 10794
+  },
+  "CGR-E472530-2024": {
+    "tipo": "CGR",
+    "numero": "E472530-2024",
+    "titulo": "Aclara dictamen 42.084/2017: aplicación del DL 2.695/1979 (regularización pequeña propiedad raíz) y su relación con Art. 55 LGUC",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/28064EB17DD18E4484258AFC0072226F",
+    "fecha_descarga": "2026-06-02",
+    "hash": "1ffcd850604b78ee3d7785d06b45a3210156a9da889c4eb8c512f0e9120f3cfb",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\E472530_2024.txt",
+    "chars": 15347
+  },
+  "CGR-42064-2010": {
+    "tipo": "CGR",
+    "numero": "42064-2010",
+    "titulo": "Sanción aplicada en virtud del Art. 64 Ley 19.300 a Central Hidroeléctrica Guayacán — potestad fiscalizadora y sancionadora en el SEIA",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/D3379F2E5A253F5084257770005907FB",
+    "fecha_descarga": "2026-06-02",
+    "hash": "dfc26b85380fafb1c96f2f705f2c88f3123e77aada0f99c4fc037dc6024bb1c2",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\42064_2010.txt",
+    "chars": 6640
+  },
+  "CGR-1248-2018": {
+    "tipo": "CGR",
+    "numero": "1248-2018",
+    "titulo": "Zona de protección por cauces naturales y valor paisajístico en el Plan Regulador Intercomunal de Valparaíso — restricciones urbanísticas",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/3926CF1C2346AEFD032582190054A1E8",
+    "fecha_descarga": "2026-06-02",
+    "hash": "5aa30b0131aa72a2615ace9240ddd60d3d93ec353106bec4dc38644b9e8abad8",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\1248_2018.txt",
+    "chars": 11367
+  },
+  "CGR-12758-2018": {
+    "tipo": "CGR",
+    "numero": "12758-2018",
+    "titulo": "Procedimiento de recepción de obra hidráulica de central hidroeléctrica — demoras DGA y aspectos jurídicos de la recepción sectorial",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/38DB95D52BCC2A7684258298005930CE",
+    "fecha_descarga": "2026-06-02",
+    "hash": "20252a30a144b6195625f1ad653b98873fda8236762f2943b40ea87d71c6ce67",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\12758_2018.txt",
+    "chars": 12044
   }
 }

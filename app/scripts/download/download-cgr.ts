@@ -231,6 +231,106 @@ export const CGR_DICTAMENES: CGRDictamenMeta[] = [
     titulo: "DOM debe pronunciarse en el plazo de 30 días del Art. 1.4.10 OGUC — juridicidad de ordenanza municipal sobre requisitos y plazos para proyectos",
     materia: "OGUC",
   },
+
+  // ── DOM — competencia restringida a normas urbanísticas ───────────────────
+  {
+    numero: "4490",
+    anio: "2016",
+    titulo: "Al otorgar permisos la DOM revisa solo normas urbanísticas (Art. 116 LGUC) — juridicidad DDU N° 644 (circular 278/2014)",
+    materia: "LGUC",
+  },
+  {
+    numero: "E10529",
+    anio: "2025",
+    titulo: "Falta de accesibilidad universal no habilita a la DOM para rechazar permisos o recepciones — debe denunciar ante JPL",
+    materia: "LGUC",
+  },
+
+  // ── OGUC — planos en licitaciones públicas (SII) ──────────────────────────
+  {
+    numero: "36050",
+    anio: "2008",
+    titulo: "CGR devuelve resolución SII por planos que infringen la OGUC en licitación pública — control de legalidad urbanística en contratos públicos",
+    materia: "OGUC",
+  },
+
+  // ── Terrenos fiscales — certificación urbanización (DL 1.939 + LGUC) ──────
+  {
+    numero: "E533509",
+    anio: "2024",
+    titulo: "Bienes Nacionales y certificación de garantías de urbanización al transferir terrenos fiscales singularizados (DL 1.939 + LGUC)",
+    materia: "LGUC",
+  },
+
+  // ── Plan regulador — usos de suelo y OGUC Art. 2.1.10 ────────────────────
+  {
+    numero: "90359",
+    anio: "2016",
+    titulo: "Rechazo de regularización por incumplimiento de norma del plan regulador comunal — coherencia normativa entre IPT y permisos",
+    materia: "LGUC",
+  },
+  {
+    numero: "47417",
+    anio: "2008",
+    titulo: "Planes reguladores no pueden prohibir usos de suelo de forma genérica sin seguir la lógica de zonas y subzonas de la OGUC Art. 2.1.10",
+    materia: "OGUC",
+  },
+  {
+    numero: "31416",
+    anio: "2009",
+    titulo: "Plan regulador comunal de Loncoche: prohibiciones genéricas de usos de suelo son contrarias a la OGUC — deben tipificarse por zona",
+    materia: "OGUC",
+  },
+
+  // ── Art. 55 LGUC — cadena ruralidad (2007–2021) ───────────────────────────
+  {
+    numero: "9102",
+    anio: "2017",
+    titulo: "SEREMI Metropolitana no se ajustó a derecho al certificar subdivisiones prediales en área rural fuera del marco del Art. 55 LGUC",
+    materia: "LGUC",
+  },
+  {
+    numero: "35681",
+    anio: "2009",
+    titulo: "Para construir en Área Restringida o Excluida al Desarrollo Urbano la inscripción del lote debe ser anterior al instrumento de planificación que establece la restricción",
+    materia: "LGUC",
+  },
+  {
+    numero: "E148827",
+    anio: "2021",
+    titulo: "Interpretación de SEREMI Metropolitana sobre áreas de preservación ecológica y Art. 55 LGUC — previo al debate del dictamen E281581/2022",
+    materia: "LGUC",
+  },
+  {
+    numero: "E472530",
+    anio: "2024",
+    titulo: "Aclara dictamen 42.084/2017: aplicación del DL 2.695/1979 (regularización pequeña propiedad raíz) y su relación con Art. 55 LGUC",
+    materia: "LGUC",
+  },
+
+  // ── Ley 19.300 — sanción bajo Art. 64 (CHG Guayacán) ─────────────────────
+  {
+    numero: "42064",
+    anio: "2010",
+    titulo: "Sanción aplicada en virtud del Art. 64 Ley 19.300 a Central Hidroeléctrica Guayacán — potestad fiscalizadora y sancionadora en el SEIA",
+    materia: "LEY-19300",
+  },
+
+  // ── Cauces y urbanismo — zona de protección ──────────────────────────────
+  {
+    numero: "1248",
+    anio: "2018",
+    titulo: "Zona de protección por cauces naturales y valor paisajístico en el Plan Regulador Intercomunal de Valparaíso — restricciones urbanísticas",
+    materia: "LGUC",
+  },
+
+  // ── Recepción de obras hidráulicas ────────────────────────────────────────
+  {
+    numero: "12758",
+    anio: "2018",
+    titulo: "Procedimiento de recepción de obra hidráulica de central hidroeléctrica — demoras DGA y aspectos jurídicos de la recepción sectorial",
+    materia: "LEY-19300",
+  },
 ];
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
