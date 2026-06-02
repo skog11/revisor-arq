@@ -239,3 +239,13 @@
         -webkit-font-smoothing: antialiased;
     }
 }
+
+/* Guías: estilos para contenido HTML dinámico */
+.guia-content p { margin-bottom: 0.75rem; }
+.guia-content ul, .guia-content ol { padding-left: 1.25rem; margin-bottom: 0.75rem; }
+.guia-content ul { list-style-type: disc; }
+.guia-content ol { list-style-type: decimal; }
+.guia-content li { margin-bottom: 0.4rem; }
+.guia-content strong { color: var(--ink); font-weight: 600; }
+.guia-content pre { border-radius: 8px; overflow-x: auto; font-size: 12px; line-height: 1.5; }
+.guia-content a { color: var(--terracotta); text-decoration: underline; text-underline-offset: 2px; }

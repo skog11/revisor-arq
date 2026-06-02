@@ -9,6 +9,7 @@ export const metadata = {
 const GUIAS = [
   {
     id: "calculo-constructibilidad",
+    href: "/guias/calculo-constructibilidad",
     title: "Cómo calcular el Coeficiente de Constructibilidad",
     description: "Guía paso a paso según el Art. 1.1.2 de la OGUC. Qué áreas se descuentan y cómo justificarlo.",
     icon: <FileText className="size-5" />,
@@ -17,6 +18,7 @@ const GUIAS = [
   },
   {
     id: "rasantes-distanciamientos",
+    href: "/guias/rasantes-distanciamientos",
     title: "Rasantes y Distanciamientos: Casos de Borde",
     description: "Aplicación de rasantes en terrenos con pendiente y medianeros irregulares.",
     icon: <CheckCircle className="size-5" />,
@@ -25,6 +27,7 @@ const GUIAS = [
   },
   {
     id: "defensas-dom",
+    href: "/guias/defensas-dom",
     title: "Cómo responder a observaciones de la DOM",
     description: "Técnicas de redacción legal administrativa para fundamentar apelaciones y reconsideraciones.",
     icon: <BookOpen className="size-5" />,
@@ -57,9 +60,9 @@ export default function GuiasPage() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {GUIAS.map((g) => (
-          <Link 
-            key={g.id} 
-            href={`#`} // Por ahora #, después será /guias/[id]
+          <Link
+            key={g.id}
+            href={g.href}
             className="group p-6 rounded-2xl border transition-all hover:-translate-y-1 hover:shadow-md"
             style={{ borderColor: "var(--rule)", background: "var(--paper-2)" }}
           >
