@@ -2,9 +2,10 @@
 
 import { useRef, useState, useCallback, useEffect } from "react";
 import Link from "next/link";
-import { Send, Square, HardHat, Scale, Microscope, RotateCcw, BookOpen, Info, Plus, ScanSearch, Database, Sparkles, Paperclip, FileText, X } from "lucide-react";
+import { Send, Square, HardHat, Scale, Microscope, RotateCcw, BookOpen, Info, Plus, ScanSearch, Database, Sparkles, Paperclip, FileText, X, SlidersHorizontal } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { Mensaje, type MensajeData, type Fuente } from "@/components/chat/mensaje";
+import { ContextoModal, type ContextoProyecto, CONTEXTO_INICIAL } from "@/components/chat/contexto-modal";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -95,6 +96,9 @@ export default function ChatPage() {
   const [documentoContexto, setDocumentoContexto] = useState<string | null>(null);
   const [nombreDocumento, setNombreDocumento] = useState<string | null>(null);
   const [cargandoDoc, setCargandoDoc] = useState(false);
+  
+  const [contextoProyecto, setContextoProyecto] = useState<ContextoProyecto>(CONTEXTO_INICIAL);
+  const [modalContextoOpen, setModalContextoOpen] = useState(false);
 
   const bottomRef   = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -184,6 +188,7 @@ export default function ChatPage() {
           body: JSON.stringify({
             pregunta: textoFinal,
             modo,
+            contextoProyecto,
             mensajes: [...historial, { role: "user", content: textoFinal }],
           }),
           signal: ctrl.signal,
@@ -682,11 +687,30 @@ export default function ChatPage() {
                       fontWeight: active ? 500 : 400,
                     }}
                   >
-                    <cfg.Icon className="size-3" />
+                    <cfg.Icon className="size-3 shrink-0" />
                     {cfg.label}
                   </button>
                 );
               })}
+              
+              <div className="w-px h-4 mx-1 shrink-0" style={{ background: "var(--rule)" }} />
+              
+              <button 
+                onClick={() => setModalContextoOpen(true)}
+                className={cn(
+                  "flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-medium transition-colors shrink-0"
+                )}
+                style={{
+                  background: (contextoProyecto.zonaSuelo || contextoProyecto.destino) ? "var(--terracotta-soft)" : "transparent",
+                  color: (contextoProyecto.zonaSuelo || contextoProyecto.destino) ? "var(--terracotta)" : "var(--ink-4)",
+                }}
+              >
+                <SlidersHorizontal className="size-3 shrink-0" />
+                Contexto
+                {(contextoProyecto.zonaSuelo || contextoProyecto.destino) && (
+                  <span className="flex h-1.5 w-1.5 rounded-full" style={{ background: "var(--terracotta)" }} />
+                )}
+              </button>
             </div>
 
             {hayMensajes && (
@@ -825,6 +849,12 @@ export default function ChatPage() {
         </div>
       </div>
 
+      <ContextoModal
+        isOpen={modalContextoOpen} 
+        onClose={() => setModalContextoOpen(false)} 
+        contexto={contextoProyecto}
+        onGuardar={setContextoProyecto}
+      />
     </div>
   );
 }

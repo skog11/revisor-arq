@@ -38,6 +38,7 @@ import { routear } from "@/lib/router";
 import { recuperarPorCapas } from "@/lib/retriever";
 import { recuperarAgenticamente } from "@/lib/agentic-retriever";
 import { buildSystemPromptV2 } from "@/lib/sintetizador";
+import { type ContextoProyecto } from "@/components/chat/contexto-modal";
 import { obtenerRelacionesNormativas, formatearRelaciones } from "@/lib/grafo";
 import { aplicarReglas, formatearReglasActivas } from "@/lib/motor-reglas";
 import { detectarRestricciones, formatearRestricciones } from "@/lib/detector-conflictos";
@@ -65,6 +66,12 @@ const ChatSchema = z.object({
   pregunta: z.string().min(5, "La pregunta es muy corta").max(2000, "Pregunta demasiado larga"),
   modo: z.enum(["arquitecto", "abogado", "profundo"]).default("arquitecto"),
   mensajes: z.array(MessageSchema).optional(),
+  contextoProyecto: z.object({
+    zonaSuelo: z.string().optional(),
+    destino: z.string().optional(),
+    anoOriginal: z.string().optional(),
+    leyEspecial: z.string().optional(),
+  }).optional(),
 });
 
 // ─── Handler ──────────────────────────────────────────────────────────────────
@@ -109,7 +116,7 @@ export async function POST(req: NextRequest) {
     return errorResponse(issues[0]?.message ?? "Datos inválidos");
   }
 
-  const { pregunta, modo, mensajes } = parsed.data;
+  const { pregunta, modo, mensajes, contextoProyecto } = parsed.data;
 
   // ── Helper: obtener usuario y verificar cuota ─────────────────────────────
   // Se extrae como función para ejecutarse en paralelo con procesarEntrada.
@@ -312,7 +319,8 @@ export async function POST(req: NextRequest) {
           clasificacion,
           relacionesTexto,
           pregunta,
-          compuertaNormativa
+          compuertaNormativa,
+          contextoProyecto as ContextoProyecto | undefined
         );
 
         // 5. Streaming Gemini — Pro para modo profundo, Flash para los demás
