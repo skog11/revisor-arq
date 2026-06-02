@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { motion, type Variants } from "framer-motion";
-import { NewsletterForm } from "@/components/newsletter-form";
 
 const CASOS_USO = [
   {
@@ -576,41 +575,6 @@ export default function HomePage() {
             </motion.div>
           ))}
         </div>
-      </section>
-
-      {/* ── NEWSLETTER ───────────────────────────────────── */}
-      <section 
-        className="px-5 py-12 sm:px-8 lg:px-16 lg:py-16 text-center" 
-        style={{ borderTop: "1px solid var(--rule)", background: "var(--paper)" }}
-      >
-        <motion.div 
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="mx-auto max-w-xl"
-        >
-          <div 
-            className="mb-3 flex items-center justify-center gap-2"
-            style={{ fontFamily: "var(--font-jetbrains-mono)", fontSize: 11, color: "var(--terracotta)", textTransform: "uppercase", letterSpacing: "1.5px" }}
-          >
-            <span className="inline-block rounded-full" style={{ width: 6, height: 6, background: "var(--terracotta)" }} />
-            Alertas Normativas
-          </div>
-          <h2 
-            className="mb-4"
-            style={{ fontFamily: "var(--font-instrument-serif)", fontSize: "clamp(28px, 4vw, 40px)", lineHeight: 1.05, letterSpacing: "-1px", color: "var(--ink)" }}
-          >
-            No te pierdas ninguna <em style={{ fontStyle: "italic", color: "var(--terracotta)" }}>actualización</em>
-          </h2>
-          <p 
-            className="mb-8 text-sm leading-relaxed"
-            style={{ color: "var(--ink-3)", maxWidth: 400, margin: "0 auto 2rem" }}
-          >
-            Recibe un resumen mensual con los dictámenes de Contraloría y circulares MINVU que impactan directamente tus proyectos.
-          </p>
-          <NewsletterForm />
-        </motion.div>
       </section>
 
       {/* ── CTA FINAL ────────────────────────────────────── */}
