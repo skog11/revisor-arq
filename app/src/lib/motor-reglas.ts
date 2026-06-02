@@ -70,7 +70,7 @@ export const REGLAS_INICIALES: ReglaGatillo[] = [
       co_ocurrencia: ["zona rural", "subdivid"],
       excepciones: [],
     },
-    forzar_normas: ["LGUC"],
+    forzar_normas: ["LGUC", "CGR-9443-2000", "CGR-2663-2003", "CGR-30457-2016"],
     efecto: "requerir_revision",
     mensaje_experto:
       "El Art. 55 de la LGUC restringe la subdivisión y edificación en zonas rurales: requiere autorización previa de SEREMI MINVU " +
@@ -115,7 +115,7 @@ export const REGLAS_INICIALES: ReglaGatillo[] = [
       co_ocurrencia: ["cambio de uso", "rural"],
       excepciones: [],
     },
-    forzar_normas: ["LGUC"],
+    forzar_normas: ["LGUC", "CGR-2663-2003"],
     efecto: "requerir_revision",
     mensaje_experto:
       "El cambio de uso de suelo rural a urbano implica modificar el Plan Regulador Comunal (PRC) o Intercomunal (PRI), " +
@@ -152,7 +152,7 @@ export const REGLAS_INICIALES: ReglaGatillo[] = [
       co_ocurrencia: ["zona típica"],
       excepciones: [],
     },
-    forzar_normas: ["LEY-17288"],
+    forzar_normas: ["LEY-17288", "CGR-3272-2020"],
     efecto: "requerir_revision",
     mensaje_experto:
       "Las obras en inmuebles ubicados en Zonas Típicas o Pintorescas declaradas por el CMN (Art. 29 y 30, Ley 17.288) " +
@@ -186,7 +186,7 @@ export const REGLAS_INICIALES: ReglaGatillo[] = [
       co_ocurrencia: ["impacto ambiental", "permiso"],
       excepciones: ["ya tiene rca", "con rca", "rca aprobada"],
     },
-    forzar_normas: ["LEY-19300"],
+    forzar_normas: ["LEY-19300", "CGR-23683-2017", "CGR-E39766-2020"],
     efecto: "requerir_revision",
     mensaje_experto:
       "Conforme a la Ley 19.300 (Art. 10) y el DS 40/2012 (RSEIA), los proyectos que por su naturaleza o envergadura " +
@@ -316,7 +316,7 @@ export const REGLAS_INICIALES: ReglaGatillo[] = [
       co_ocurrencia: ["demoler", "construir"],
       excepciones: ["ya demolido", "sitio eriazo", "terreno limpio"],
     },
-    forzar_normas: ["OGUC"],
+    forzar_normas: ["OGUC", "CGR-27507-2009"],
     efecto: "requerir_revision",
     mensaje_experto:
       "La demolición de edificaciones existentes requiere un permiso de demolición independiente otorgado por la DOM (Art. 1.4.19 OGUC). " +

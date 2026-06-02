@@ -45,7 +45,60 @@ export const CGR_DICTAMENES: CGRDictamenMeta[] = [
     titulo: "DDU 490 dejada sin efecto — complejos fronterizos (DDU 519 vigente)",
     materia: "DDU",
   },
-  // ── Agregar más dictámenes aquí según prioridad ──────────────────────────
+
+  // ── Art. 55 LGUC — loteo y subdivisión rural ─────────────────────────────
+  {
+    numero: "9443",
+    anio: "2000",
+    titulo: "DOM sin competencia para autorizar subdivisiones de predios rurales — Art. 55 LGUC",
+    materia: "LGUC",
+  },
+  {
+    numero: "2663",
+    anio: "2003",
+    titulo: "DOM sin atribución para cambio de uso de suelo en terrenos rurales — Art. 55 LGUC",
+    materia: "LGUC",
+  },
+
+  // ── OGUC — demolición ────────────────────────────────────────────────────
+  {
+    numero: "27507",
+    anio: "2009",
+    titulo: "Permiso de demolición requerido, salvo que esté incluido en el permiso de edificación del nuevo proyecto",
+    materia: "OGUC",
+  },
+
+  // ── Ley 19.300 — SEIA y recepción definitiva ─────────────────────────────
+  {
+    numero: "23683",
+    anio: "2017",
+    titulo: "Municipalidades deben exigir RCA favorable para otorgar recepción definitiva",
+    materia: "LEY-19300",
+  },
+
+  // ── Ley 17.288 — Zona Típica ─────────────────────────────────────────────
+  {
+    numero: "3272",
+    anio: "2020",
+    titulo: "Obra nueva fuera de zona típica y pintoresca no requiere autorización del CMN",
+    materia: "LEY-17288",
+  },
+
+  // ── Art. 55 LGUC — organismo competente para informe rural ───────────────
+  {
+    numero: "30457",
+    anio: "2016",
+    titulo: "Organismo competente para emitir informe previo favorable en construcciones rurales — Art. 55 inc. final LGUC",
+    materia: "LGUC",
+  },
+
+  // ── Ley 19.300 — SEIA en áreas de preservación ecológica (IPT) ──────────
+  {
+    numero: "E39766",
+    anio: "2020",
+    titulo: "Áreas de preservación ecológica en IPT constituyen áreas bajo protección oficial para efectos del SEIA (Art. 10 letra p Ley 19.300)",
+    materia: "LEY-19300",
+  },
 ];
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────

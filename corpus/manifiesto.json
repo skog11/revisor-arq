@@ -3395,5 +3395,75 @@
     "hash": "f9dc639b457b7a93a0a07403026a1af91d42e09792f8287b22ca7626b39648c4",
     "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\E14360_2025.txt",
     "chars": 9273
+  },
+  "CGR-9443-2000": {
+    "tipo": "CGR",
+    "numero": "9443-2000",
+    "titulo": "DOM sin competencia para autorizar subdivisiones de predios rurales — Art. 55 LGUC",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/5566970965D36296842571BD004AE1EA",
+    "fecha_descarga": "2026-06-02",
+    "hash": "ca341c131d3c8d64a802f4e45c8151ddbe9897838ef705a52af50d3685065b41",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\9443_2000.txt",
+    "chars": 5752
+  },
+  "CGR-2663-2003": {
+    "tipo": "CGR",
+    "numero": "2663-2003",
+    "titulo": "DOM sin atribución para cambio de uso de suelo en terrenos rurales — Art. 55 LGUC",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/335D1698FB52DFBE842571BD004960D5",
+    "fecha_descarga": "2026-06-02",
+    "hash": "7aec9ce7f9585fb152baf6359fa2d4895db24dc40abec2a3e76c4b2ec50e858b",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\2663_2003.txt",
+    "chars": 4834
+  },
+  "CGR-27507-2009": {
+    "tipo": "CGR",
+    "numero": "27507-2009",
+    "titulo": "Permiso de demolición requerido, salvo que esté incluido en el permiso de edificación del nuevo proyecto",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/1631A284DD17091C842575C500734520",
+    "fecha_descarga": "2026-06-02",
+    "hash": "163f0956852bc23fd70c1f33cd42e53b7ccd9e025062cf1dff81d3f742917d06",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\27507_2009.txt",
+    "chars": 1533
+  },
+  "CGR-23683-2017": {
+    "tipo": "CGR",
+    "numero": "23683-2017",
+    "titulo": "Municipalidades deben exigir RCA favorable para otorgar recepción definitiva",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/04114E61EAED704184258152004F6533",
+    "fecha_descarga": "2026-06-02",
+    "hash": "0870957029316e75c4616122a7a049391c8ef011dc6324a7be278eb28e02ba4d",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\23683_2017.txt",
+    "chars": 8377
+  },
+  "CGR-3272-2020": {
+    "tipo": "CGR",
+    "numero": "3272-2020",
+    "titulo": "Obra nueva fuera de zona típica y pintoresca no requiere autorización del CMN",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/AEF5078AF13885DF842585070053DD45",
+    "fecha_descarga": "2026-06-02",
+    "hash": "7718d1c685085bb2b057660c0748696fd9dbcb34e790032131c2769e1c541591",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\3272_2020.txt",
+    "chars": 7052
+  },
+  "CGR-30457-2016": {
+    "tipo": "CGR",
+    "numero": "30457-2016",
+    "titulo": "Organismo competente para emitir informe previo favorable en construcciones rurales — Art. 55 inc. final LGUC",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/CE891F819E63099003257FA2006D3CB8",
+    "fecha_descarga": "2026-06-02",
+    "hash": "94d5a601fedee3ea24f0132a9db462232a115e6c6aa1d69fa31d3671878944ea",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\30457_2016.txt",
+    "chars": 10219
+  },
+  "CGR-E39766-2020": {
+    "tipo": "CGR",
+    "numero": "E39766-2020",
+    "titulo": "Áreas de preservación ecológica en IPT constituyen áreas bajo protección oficial para efectos del SEIA (Art. 10 letra p Ley 19.300)",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/287D38817E674CA9842585F5006242F7",
+    "fecha_descarga": "2026-06-02",
+    "hash": "8ccb7ba4a365c6ba7f1cae8b1067b0870a6063298f26c611e44814c210160bb4",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\E39766_2020.txt",
+    "chars": 19857
   }
 }
