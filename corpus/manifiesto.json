@@ -3785,5 +3785,185 @@
     "hash": "8baa392d598082455f51a0f5b40ab94fbf45dc9b2053b4cde8d294dca6cdf039",
     "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\E58945_2020.txt",
     "chars": 34204
+  },
+  "CGR-E160316-2021": {
+    "tipo": "CGR",
+    "numero": "E160316-2021",
+    "titulo": "Corporaciones municipales sujetas a leyes de probidad y transparencia — relevante para proyectos ejecutados vía corporaciones municipales",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/E1E48F8FEBC7EFAE8425879C0079861D",
+    "fecha_descarga": "2026-06-02",
+    "hash": "a50ac086c8f0a12a928e9cc4e6c4c7948bd891f2161fb53198a4a282bd1de181",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\E160316_2021.txt",
+    "chars": 14916
+  },
+  "CGR-17942-2008": {
+    "tipo": "CGR",
+    "numero": "17942-2008",
+    "titulo": "Observaciones a PRC de Temuco: materias complejas y recurrentes en usos de suelo y actividades productivas (LGUC/OGUC)",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/52134346539D7CDE84257434006C1B99",
+    "fecha_descarga": "2026-06-02",
+    "hash": "4f1f66cb379222eafcbca8396243ab5f06e9d93a512d9a9abd963f2e2f5d7d76",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\17942_2008.txt",
+    "chars": 13672
+  },
+  "CGR-24978-2008": {
+    "tipo": "CGR",
+    "numero": "24978-2008",
+    "titulo": "Devolución resolución GR Coquimbo que actualiza PRC de Illapel — criterios unificados para toma de razón de planes comunales",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/B0DEEC8D55D969618425745E00523A72",
+    "fecha_descarga": "2026-06-02",
+    "hash": "2fe6e0b0bdf2f7b6b6421c8120488b5e65e276d1d40a70eda58b2abbbfa93432",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\24978_2008.txt",
+    "chars": 7211
+  },
+  "CGR-26523-2008": {
+    "tipo": "CGR",
+    "numero": "26523-2008",
+    "titulo": "Devolución decreto que modifica PRC de Tocopilla — discordancia entre Ordenanza Local y planos reguladores (zonificación, usos de suelo)",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/97FB5D866A359C99842574670058F310",
+    "fecha_descarga": "2026-06-02",
+    "hash": "459cd3b31c364af881812737fc4ff87aac311fa5d0dc14bac755e92f0140eeb3",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\26523_2008.txt",
+    "chars": 2134
+  },
+  "CGR-28001-2008": {
+    "tipo": "CGR",
+    "numero": "28001-2008",
+    "titulo": "Devolución resolución GR Araucanía que promulga PRC — observaciones a cuadros de usos, alturas y parámetros urbanísticos",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/190A46C7D61748918425746D006F0F30",
+    "fecha_descarga": "2026-06-02",
+    "hash": "63d2858f605d68d6d897c753c91eef81ce81c771f9cfed7a289b3ba773c4789a",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\28001_2008.txt",
+    "chars": 5562
+  },
+  "CGR-31927-2008": {
+    "tipo": "CGR",
+    "numero": "31927-2008",
+    "titulo": "Devolución resolución GR Arica y Parinacota que promulga PRC — jurisprudencia recurrente sobre errores en instrumentos comunales",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/E39262DF21B7F7728425748600510CDF",
+    "fecha_descarga": "2026-06-02",
+    "hash": "78a052f7457211fd1b901252346730fd414f6fbfa188b60802fdb00b3448e279",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\31927_2008.txt",
+    "chars": 9669
+  },
+  "CGR-34419-2008": {
+    "tipo": "CGR",
+    "numero": "34419-2008",
+    "titulo": "Devolución resolución GR Araucanía que promulga PRC de Tolhuaca — legalidad de disposiciones de planes comunales",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/B578FF8AE7CC63CA84257494005B125F",
+    "fecha_descarga": "2026-06-02",
+    "hash": "d5974b82f0c595208626a5eeff860c3a844fd4548398ca9e36d1fb325d1f6883",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\34419_2008.txt",
+    "chars": 10488
+  },
+  "CGR-40372-2008": {
+    "tipo": "CGR",
+    "numero": "40372-2008",
+    "titulo": "Resolución GR que promulga modificación de PRC — observaciones en zonificación y compatibilidad con OGUC",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/624DEB10437F7DC2842574B4005B5006",
+    "fecha_descarga": "2026-06-02",
+    "hash": "a34e31ea662c55958313adb84f1a870c0e401ec2fc64f58e9f559edc9c1340a3",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\40372_2008.txt",
+    "chars": 8701
+  },
+  "CGR-44023-2008": {
+    "tipo": "CGR",
+    "numero": "44023-2008",
+    "titulo": "Devolución decreto MINVU que modifica PRC de Huechuraba conforme Art. 50 LGUC — ajuste de instrumentos comunales a normativa legal",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/FB14662F0C80E34A842574CD006B7D23",
+    "fecha_descarga": "2026-06-02",
+    "hash": "f168e475dfb6a59699831b5b9bdf67c85430164f1033c34ea35babf2e443acdd",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\44023_2008.txt",
+    "chars": 3363
+  },
+  "CGR-1765-2014": {
+    "tipo": "CGR",
+    "numero": "1765-2014",
+    "titulo": "Atiende oficio Contraloría Regional del Maule sobre aprobación de PRC — criterios actualizados para toma de razón de instrumentos comunales",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/FA442C9B49E1E14684257C6000642956",
+    "fecha_descarga": "2026-06-02",
+    "hash": "41867a016261d17e6137bf19e7895719ea6e67fd742947e063c0ccb789aee307",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\1765_2014.txt",
+    "chars": 11079
+  },
+  "CGR-1766-2014": {
+    "tipo": "CGR",
+    "numero": "1766-2014",
+    "titulo": "Representa decreto que modifica PRC de La Florida (MINVU) — criterios de Contraloría en toma de razón de instrumentos comunales",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/09901213E9BBAF3784257C6000649B79",
+    "fecha_descarga": "2026-06-02",
+    "hash": "3e96ac736e77238aae92ea5958097b84e14fdc85908e97a9a48c0f415ceb7a67",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\1766_2014.txt",
+    "chars": 2839
+  },
+  "CGR-11429-2014": {
+    "tipo": "CGR",
+    "numero": "11429-2014",
+    "titulo": "Oficio Contraloría Regional del Maule sobre aprobación de PRC — observaciones complejas a ordenanzas y planos reguladores comunales",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/17A07D1751E5776A84257C82006DED55",
+    "fecha_descarga": "2026-06-02",
+    "hash": "9ee667c08fbc21c1a4902fa25146641aa06f17c227a93159130f4f0e44eb3ade",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\11429_2014.txt",
+    "chars": 11142
+  },
+  "CGR-14462-2014": {
+    "tipo": "CGR",
+    "numero": "14462-2014",
+    "titulo": "Oficio Contraloría Regional de Los Ríos sobre resolución que aprueba PRC — usos de suelo, definiciones reglamentarias y competencias municipales",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/4F573070B3C8E54284257C8C0077C3EA",
+    "fecha_descarga": "2026-06-02",
+    "hash": "aef25de5583254431da426341fc51a4f1a843350a53e6211a9b84c8a7cd04804",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\14462_2014.txt",
+    "chars": 22931
+  },
+  "CGR-54958-2009": {
+    "tipo": "CGR",
+    "numero": "54958-2009",
+    "titulo": "Modificación PRC de La Serena (La Florida, Las Compañías): los planes reguladores comunales no pueden establecer beneficios urbanísticos ilegales",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/6CDD95CAB80483488425764900719CD0",
+    "fecha_descarga": "2026-06-02",
+    "hash": "7c308e4a87bdef615e476279661fcc4b93548eade477b67d496147828f8cb6c0",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\54958_2009.txt",
+    "chars": 31016
+  },
+  "CGR-76619-2013": {
+    "tipo": "CGR",
+    "numero": "76619-2013",
+    "titulo": "Plan regulador intercomunal O'Higgins — ámbito de acción de instrumentos intercomunales en áreas urbanas y rurales",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/8C807CF86CB5572F84257C3100470900",
+    "fecha_descarga": "2026-06-02",
+    "hash": "8da779ad61d84c3bae20f3c04a765be3140105b5545e0eddbc2b44d30cbd6630",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\76619_2013.txt",
+    "chars": 20481
+  },
+  "CGR-18353-2014": {
+    "tipo": "CGR",
+    "numero": "18353-2014",
+    "titulo": "Cursa con alcances resolución GR de Valparaíso — aspectos de competencia y contenido de planes reguladores intercomunales/metropolitanos",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/D68318C09B36871203257C9F005729DB",
+    "fecha_descarga": "2026-06-02",
+    "hash": "1fd64bfacf563a0b0d6a0f31e75f88e701b881b347e39a4180d97fee40ddc3a1",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\18353_2014.txt",
+    "chars": 2233
+  },
+  "CGR-21573-2012": {
+    "tipo": "CGR",
+    "numero": "21573-2012",
+    "titulo": "Plan Regional de Desarrollo Urbano de Atacama (PRDU) — coherencia con LGUC/OGUC y observaciones recurrentes a instrumentos regionales",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/778C411A24652B00842579E3006E1D93",
+    "fecha_descarga": "2026-06-02",
+    "hash": "b6c5b488108cb563514d2dc386cdabcc1a1e1f7e0bffcbd172c49b6d6911f5fe",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\21573_2012.txt",
+    "chars": 9469
+  },
+  "CGR-78906-2012": {
+    "tipo": "CGR",
+    "numero": "78906-2012",
+    "titulo": "Plan Regional de Desarrollo Urbano de Arica y Parinacota (PRDU) — observaciones a instrumentos regionales de planificación",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/4E2FBA90E24B567B84257ADE004FF22D",
+    "fecha_descarga": "2026-06-02",
+    "hash": "7f9f8ec4cafd80b59107bd05c2d479fa2c19072ea351243e068b1da4deaf3e45",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\78906_2012.txt",
+    "chars": 5275
   }
 }

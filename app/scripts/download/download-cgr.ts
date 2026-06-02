@@ -339,6 +339,122 @@ export const CGR_DICTAMENES: CGRDictamenMeta[] = [
     titulo: "Procedimiento de recepción de obra hidráulica de central hidroeléctrica — demoras DGA y aspectos jurídicos de la recepción sectorial",
     materia: "LEY-19300",
   },
+
+  // ── Probidad — corporaciones municipales ──────────────────────────────────
+  {
+    numero: "E160316",
+    anio: "2021",
+    titulo: "Corporaciones municipales sujetas a leyes de probidad y transparencia — relevante para proyectos ejecutados vía corporaciones municipales",
+    materia: "LGUC",
+  },
+
+  // ── Planes Reguladores Comunales (PRC) — toma de razón y observaciones ───
+  {
+    numero: "17942",
+    anio: "2008",
+    titulo: "Observaciones a PRC de Temuco: materias complejas y recurrentes en usos de suelo y actividades productivas (LGUC/OGUC)",
+    materia: "LGUC",
+  },
+  {
+    numero: "24978",
+    anio: "2008",
+    titulo: "Devolución resolución GR Coquimbo que actualiza PRC de Illapel — criterios unificados para toma de razón de planes comunales",
+    materia: "LGUC",
+  },
+  {
+    numero: "26523",
+    anio: "2008",
+    titulo: "Devolución decreto que modifica PRC de Tocopilla — discordancia entre Ordenanza Local y planos reguladores (zonificación, usos de suelo)",
+    materia: "LGUC",
+  },
+  {
+    numero: "28001",
+    anio: "2008",
+    titulo: "Devolución resolución GR Araucanía que promulga PRC — observaciones a cuadros de usos, alturas y parámetros urbanísticos",
+    materia: "LGUC",
+  },
+  {
+    numero: "31927",
+    anio: "2008",
+    titulo: "Devolución resolución GR Arica y Parinacota que promulga PRC — jurisprudencia recurrente sobre errores en instrumentos comunales",
+    materia: "LGUC",
+  },
+  {
+    numero: "34419",
+    anio: "2008",
+    titulo: "Devolución resolución GR Araucanía que promulga PRC de Tolhuaca — legalidad de disposiciones de planes comunales",
+    materia: "LGUC",
+  },
+  {
+    numero: "40372",
+    anio: "2008",
+    titulo: "Resolución GR que promulga modificación de PRC — observaciones en zonificación y compatibilidad con OGUC",
+    materia: "LGUC",
+  },
+  {
+    numero: "44023",
+    anio: "2008",
+    titulo: "Devolución decreto MINVU que modifica PRC de Huechuraba conforme Art. 50 LGUC — ajuste de instrumentos comunales a normativa legal",
+    materia: "LGUC",
+  },
+  {
+    numero: "1765",
+    anio: "2014",
+    titulo: "Atiende oficio Contraloría Regional del Maule sobre aprobación de PRC — criterios actualizados para toma de razón de instrumentos comunales",
+    materia: "LGUC",
+  },
+  {
+    numero: "1766",
+    anio: "2014",
+    titulo: "Representa decreto que modifica PRC de La Florida (MINVU) — criterios de Contraloría en toma de razón de instrumentos comunales",
+    materia: "LGUC",
+  },
+  {
+    numero: "11429",
+    anio: "2014",
+    titulo: "Oficio Contraloría Regional del Maule sobre aprobación de PRC — observaciones complejas a ordenanzas y planos reguladores comunales",
+    materia: "LGUC",
+  },
+  {
+    numero: "14462",
+    anio: "2014",
+    titulo: "Oficio Contraloría Regional de Los Ríos sobre resolución que aprueba PRC — usos de suelo, definiciones reglamentarias y competencias municipales",
+    materia: "LGUC",
+  },
+  {
+    numero: "54958",
+    anio: "2009",
+    titulo: "Modificación PRC de La Serena (La Florida, Las Compañías): los planes reguladores comunales no pueden establecer beneficios urbanísticos ilegales",
+    materia: "LGUC",
+  },
+
+  // ── Planes Reguladores Intercomunales/Metropolitanos ──────────────────────
+  {
+    numero: "76619",
+    anio: "2013",
+    titulo: "Plan regulador intercomunal O'Higgins — ámbito de acción de instrumentos intercomunales en áreas urbanas y rurales",
+    materia: "LGUC",
+  },
+  {
+    numero: "18353",
+    anio: "2014",
+    titulo: "Cursa con alcances resolución GR de Valparaíso — aspectos de competencia y contenido de planes reguladores intercomunales/metropolitanos",
+    materia: "LGUC",
+  },
+
+  // ── Planes Regionales de Desarrollo Urbano (PRDU) ────────────────────────
+  {
+    numero: "21573",
+    anio: "2012",
+    titulo: "Plan Regional de Desarrollo Urbano de Atacama (PRDU) — coherencia con LGUC/OGUC y observaciones recurrentes a instrumentos regionales",
+    materia: "LGUC",
+  },
+  {
+    numero: "78906",
+    anio: "2012",
+    titulo: "Plan Regional de Desarrollo Urbano de Arica y Parinacota (PRDU) — observaciones a instrumentos regionales de planificación",
+    materia: "LGUC",
+  },
 ];
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
