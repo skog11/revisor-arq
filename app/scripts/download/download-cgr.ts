@@ -232,6 +232,14 @@ export const CGR_DICTAMENES: CGRDictamenMeta[] = [
     materia: "OGUC",
   },
 
+  // ── LGUC — permiso edificación Las Condes PE-37/2018 (identificación profesionales) ─
+  {
+    numero: "E58945",
+    anio: "2020",
+    titulo: "Permiso N° 37/2018 de la DOM de Las Condes no se ajusta a derecho — identificación de profesionales y cumplimiento LGUC/OGUC",
+    materia: "LGUC",
+  },
+
   // ── DOM — competencia restringida a normas urbanísticas ───────────────────
   {
     numero: "4490",

@@ -3775,5 +3775,15 @@
     "hash": "20252a30a144b6195625f1ad653b98873fda8236762f2943b40ea87d71c6ce67",
     "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\12758_2018.txt",
     "chars": 12044
+  },
+  "CGR-E58945-2020": {
+    "tipo": "CGR",
+    "numero": "E58945-2020",
+    "titulo": "Permiso N° 37/2018 de la DOM de Las Condes no se ajusta a derecho — identificación de profesionales y cumplimiento LGUC/OGUC",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/77C9E047F02569678425863F0064EF55",
+    "fecha_descarga": "2026-06-02",
+    "hash": "8baa392d598082455f51a0f5b40ab94fbf45dc9b2053b4cde8d294dca6cdf039",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\E58945_2020.txt",
+    "chars": 34204
   }
 }
