@@ -3545,5 +3545,95 @@
     "hash": "6d5c488ba238b05ae887dcaf2a1c6597ea0fed726e16d853d1b530bc21389073",
     "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\E61450_2020.txt",
     "chars": 10485
+  },
+  "CGR-2797-2009": {
+    "tipo": "CGR",
+    "numero": "2797-2009",
+    "titulo": "Irregularidades en complejo turístico Termas del Flaco: construcciones sin permisos de edificación y deber de fiscalización municipal",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/91E10569FE25A9E1842575460069FD7C",
+    "fecha_descarga": "2026-06-02",
+    "hash": "5e48163012906012383a0bb7b725eb713baa22663e4b8278a0b73fc4823ef44f",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\2797_2009.txt",
+    "chars": 13935
+  },
+  "CGR-31573-2000": {
+    "tipo": "CGR",
+    "numero": "31573-2000",
+    "titulo": "Las municipalidades pueden otorgar permisos de edificación antes de que la CONAMA/COREMA dicte la RCA — criterio histórico, matizan dictámenes posteriores",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/EF425A08CFEEE9B0842571BD004F8B55",
+    "fecha_descarga": "2026-06-02",
+    "hash": "c7c9801dbaf63752164cc58f82b3f216cb78577873f113321715434bb37f2044",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\31573_2000.txt",
+    "chars": 5438
+  },
+  "CGR-25690-2019": {
+    "tipo": "CGR",
+    "numero": "25690-2019",
+    "titulo": "Objeta DDU 407 (circular 244/2018) sobre fusión de predios con permisos de edificación vigentes — vigencia retroactiva y Art. 3.1.3 OGUC",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/3DB7C9E015AC91B884258486006FCBFB",
+    "fecha_descarga": "2026-06-02",
+    "hash": "ba55cf497dcf2e5701a9810e5c18d9dda3ab9a4065a17ff4840a2b3bc7e325b9",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\25690_2019.txt",
+    "chars": 8555
+  },
+  "CGR-40981-2015": {
+    "tipo": "CGR",
+    "numero": "40981-2015",
+    "titulo": "Cumplimiento del dictamen 95.979/2014 sobre vigencia del permiso de edificación — facultades de la Administración para declarar caducidad",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/E1677BD2A0DD391403257E510050E6E8",
+    "fecha_descarga": "2026-06-02",
+    "hash": "4594407459e455cf4adde5fe143fafdce94d2132774dd70815504344c5dedf08",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\40981_2015.txt",
+    "chars": 7232
+  },
+  "CGR-42084-2017": {
+    "tipo": "CGR",
+    "numero": "42084-2017",
+    "titulo": "No procede aplicar el DL 2.695/1979 en la situación de los inmuebles de que se trata — regularización de pequeña propiedad raíz y Art. 55 LGUC",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/1D846B56EE7933D7032581ED004C0BAC",
+    "fecha_descarga": "2026-06-02",
+    "hash": "144ea88c3b89f0672f411fdfd20c43eee5e97435c4b95b7f2c91840ab08d7426",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\42084_2017.txt",
+    "chars": 11028
+  },
+  "CGR-4771-1999": {
+    "tipo": "CGR",
+    "numero": "4771-1999",
+    "titulo": "Funcionarios de desarrollo urbano e infraestructura de SEREMI MINVU no pueden quedar liberados del principio de probidad — primer dictamen fundacional",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/5BB62B15D37A803D842571BD0049D797",
+    "fecha_descarga": "2026-06-02",
+    "hash": "d073203f849a1c2d23e0bf3aaff95b83d544356ed6a3e9f73ff54f03dd02bac8",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\4771_1999.txt",
+    "chars": 2454
+  },
+  "CGR-28417-1999": {
+    "tipo": "CGR",
+    "numero": "28417-1999",
+    "titulo": "Arquitecto SEREMI MINVU no puede ser socio de empresa que ejecuta proyectos de construcción — incompatibilidad con el principio de probidad",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/CC7D2BFC74D00E72842571BD004EE03D",
+    "fecha_descarga": "2026-06-02",
+    "hash": "879b6f5feb5007f40badae082a7ceb7c9f53b3877b1cdf20db75fbae0d829c63",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\28417_1999.txt",
+    "chars": 2167
+  },
+  "CGR-50952-2015": {
+    "tipo": "CGR",
+    "numero": "50952-2015",
+    "titulo": "Es incompatible con el cargo el ejercicio privado de la profesión en materias que deba analizar, informar o resolver el funcionario o su organismo",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/E3E3554147CE05E303257E740053FD97",
+    "fecha_descarga": "2026-06-02",
+    "hash": "5597b6e9a8bcf0014466f5983a97ad21933050657fea73ea45f2691717f601ab",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\50952_2015.txt",
+    "chars": 6954
+  },
+  "CGR-E111407-2025": {
+    "tipo": "CGR",
+    "numero": "E111407-2025",
+    "titulo": "DOM debe pronunciarse en el plazo de 30 días del Art. 1.4.10 OGUC — juridicidad de ordenanza municipal sobre requisitos y plazos para proyectos",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/8A3A4DD10011978784258CC3004DF905",
+    "fecha_descarga": "2026-06-02",
+    "hash": "a4edfb9cd60f056d041a26294e3498663391845bbf28a66ea687dbacaad0e83b",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\E111407_2025.txt",
+    "chars": 26999
   }
 }

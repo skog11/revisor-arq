@@ -306,6 +306,63 @@ export const REGLAS_INICIALES: ReglaGatillo[] = [
       "La respuesta NO puede concluir que la instalación permanente es posible.",
   },
 
+  // ── Regla: probidad — funcionario público actuando ante DOM ───────────────
+
+  {
+    id: "probidad-funcionario-dom",
+    descripcion:
+      "Funcionarios de SEREMI MINVU u otras entidades con atribuciones urbanísticas no pueden ejercer privadamente ante la DOM ni ser socios de empresas que ejecutan proyectos en su área de competencia.",
+    cuando: {
+      co_ocurrencia: ["seremi", "ejercicio privado"],
+      excepciones: [],
+    },
+    forzar_normas: ["CGR-4771-1999", "CGR-28417-1999", "CGR-50952-2015", "CGR-E61450-2020"],
+    efecto: "requerir_revision",
+    mensaje_experto:
+      "Los funcionarios de SEREMI MINVU y unidades de desarrollo urbano están sujetos al principio de probidad (Ley 18.575). " +
+      "No pueden ejercer actividades profesionales privadas en materias que su organismo deba analizar, informar o resolver " +
+      "(Dictámenes CGR N°s 4.771/1999, 28.417/1999, 50.952/2015 y E61450/2020). " +
+      "Un permiso tramitado con participación de funcionario inhabilitado puede ser anulado por nulidad de derecho público.",
+  },
+
+  // ── Regla: caducidad del permiso de edificación ───────────────────────────
+
+  {
+    id: "caducidad-permiso-edificacion",
+    descripcion:
+      "Los permisos de edificación caducan si la obra no se inicia o no se concluye dentro de los plazos legales; la Administración puede declarar la caducidad.",
+    cuando: {
+      co_ocurrencia: ["permiso", "caducidad"],
+      excepciones: ["anteproyecto"],
+    },
+    forzar_normas: ["LGUC", "OGUC", "CGR-40981-2015"],
+    efecto: "requerir_revision",
+    mensaje_experto:
+      "El permiso de edificación tiene una vigencia limitada conforme a la LGUC y OGUC. " +
+      "Conforme al Dictamen CGR N° 40.981/2015, la Administración (DOM, SEREMI MINVU) tiene facultades para declarar " +
+      "la caducidad del permiso si no se han iniciado o concluido las obras en los plazos establecidos. " +
+      "La respuesta debe revisar los plazos de vigencia del permiso y los efectos de la caducidad sobre obras en curso.",
+  },
+
+  // ── Regla: plazo de la DOM para pronunciarse ──────────────────────────────
+
+  {
+    id: "plazo-dom-pronunciamiento",
+    descripcion:
+      "La DOM debe pronunciarse sobre solicitudes de permiso en el plazo de 30 días del Art. 1.4.10 OGUC; ordenanzas municipales no pueden ampliar este plazo.",
+    cuando: {
+      co_ocurrencia: ["plazo", "dom"],
+      excepciones: [],
+    },
+    forzar_normas: ["LGUC", "OGUC", "CGR-E111407-2025"],
+    efecto: "requerir_revision",
+    mensaje_experto:
+      "El Art. 1.4.10 de la OGUC fija un plazo de 30 días hábiles para que la DOM se pronuncie sobre solicitudes de permiso. " +
+      "Conforme al Dictamen CGR N° E111407/2025, las ordenanzas municipales no pueden establecer requisitos ni plazos " +
+      "distintos a los previstos en la LGUC y OGUC. El vencimiento del plazo sin pronunciamiento puede generar silencio " +
+      "administrativo positivo o dar lugar a recursos ante la SEREMI MINVU.",
+  },
+
   // ── Regla: ITO obligatorio en edificios de uso público ────────────────────
 
   {

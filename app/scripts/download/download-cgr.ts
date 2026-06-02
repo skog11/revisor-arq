@@ -163,6 +163,74 @@ export const CGR_DICTAMENES: CGRDictamenMeta[] = [
     titulo: "Funcionario SEREMI Vivienda no puede ejercer privadamente ante la DOM: actividades de patrocinio de solicitudes ante DOM son contrarias a derecho (probidad)",
     materia: "LGUC",
   },
+
+  // ── Fiscalización DOM — obras sin permiso (caso Termas del Flaco) ─────────
+  {
+    numero: "2797",
+    anio: "2009",
+    titulo: "Irregularidades en complejo turístico Termas del Flaco: construcciones sin permisos de edificación y deber de fiscalización municipal",
+    materia: "LGUC",
+  },
+
+  // ── Permisos edificación + SEIA — dictamen histórico (año 2000) ───────────
+  {
+    numero: "31573",
+    anio: "2000",
+    titulo: "Las municipalidades pueden otorgar permisos de edificación antes de que la CONAMA/COREMA dicte la RCA — criterio histórico, matizan dictámenes posteriores",
+    materia: "LEY-19300",
+  },
+
+  // ── OGUC Art. 3.1.3 — fusión de predios con permisos vigentes (DDU 407) ──
+  {
+    numero: "25690",
+    anio: "2019",
+    titulo: "Objeta DDU 407 (circular 244/2018) sobre fusión de predios con permisos de edificación vigentes — vigencia retroactiva y Art. 3.1.3 OGUC",
+    materia: "OGUC",
+  },
+
+  // ── LGUC Art. 116 — caducidad y vigencia de permisos de edificación ───────
+  {
+    numero: "40981",
+    anio: "2015",
+    titulo: "Cumplimiento del dictamen 95.979/2014 sobre vigencia del permiso de edificación — facultades de la Administración para declarar caducidad",
+    materia: "LGUC",
+  },
+
+  // ── DL 2.695 — regularización pequeña propiedad vs Art. 55 LGUC ──────────
+  {
+    numero: "42084",
+    anio: "2017",
+    titulo: "No procede aplicar el DL 2.695/1979 en la situación de los inmuebles de que se trata — regularización de pequeña propiedad raíz y Art. 55 LGUC",
+    materia: "LGUC",
+  },
+
+  // ── Probidad cadena (1999–2015) ───────────────────────────────────────────
+  {
+    numero: "4771",
+    anio: "1999",
+    titulo: "Funcionarios de desarrollo urbano e infraestructura de SEREMI MINVU no pueden quedar liberados del principio de probidad — primer dictamen fundacional",
+    materia: "LGUC",
+  },
+  {
+    numero: "28417",
+    anio: "1999",
+    titulo: "Arquitecto SEREMI MINVU no puede ser socio de empresa que ejecuta proyectos de construcción — incompatibilidad con el principio de probidad",
+    materia: "LGUC",
+  },
+  {
+    numero: "50952",
+    anio: "2015",
+    titulo: "Es incompatible con el cargo el ejercicio privado de la profesión en materias que deba analizar, informar o resolver el funcionario o su organismo",
+    materia: "LGUC",
+  },
+
+  // ── DOM — plazo de pronunciamiento (Art. 1.4.10 OGUC) ────────────────────
+  {
+    numero: "E111407",
+    anio: "2025",
+    titulo: "DOM debe pronunciarse en el plazo de 30 días del Art. 1.4.10 OGUC — juridicidad de ordenanza municipal sobre requisitos y plazos para proyectos",
+    materia: "OGUC",
+  },
 ];
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
