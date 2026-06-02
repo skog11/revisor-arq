@@ -3515,5 +3515,35 @@
     "hash": "3b8c349e8d115b734dd1c9a6a4976a3b97aa34c068705e0b95074622214eb068",
     "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\29101_2006.txt",
     "chars": 5076
+  },
+  "CGR-E126162-2021": {
+    "tipo": "CGR",
+    "numero": "E126162-2021",
+    "titulo": "DDU N° 443 (circular 411/2020): no corresponde que la DOM exija solicitudes de pertinencia SEIA — coordinación entre permisos urbanísticos y calificación ambiental",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/712FB671F5801C1484258726006CC389",
+    "fecha_descarga": "2026-06-02",
+    "hash": "266579107ff7ad7ac529bf305d6d31280d427f907d8ba82593414e087a23e60f",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\E126162_2021.txt",
+    "chars": 8367
+  },
+  "CGR-9972-2018": {
+    "tipo": "CGR",
+    "numero": "9972-2018",
+    "titulo": "No se ajustó a derecho el permiso de edificación otorgado por DOM de Las Condes sin requerir informe de revisor independiente de obras de construcción",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/29B9FA2648FF561E0325827400542231",
+    "fecha_descarga": "2026-06-02",
+    "hash": "8a2fea2bd34bdecc4ab9c897c620074705cf87b145e8efdee9038b67589e5f09",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\9972_2018.txt",
+    "chars": 9755
+  },
+  "CGR-E61450-2020": {
+    "tipo": "CGR",
+    "numero": "E61450-2020",
+    "titulo": "Funcionario SEREMI Vivienda no puede ejercer privadamente ante la DOM: actividades de patrocinio de solicitudes ante DOM son contrarias a derecho (probidad)",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/39DB64A5C539B9D58425864500508E8B",
+    "fecha_descarga": "2026-06-02",
+    "hash": "6d5c488ba238b05ae887dcaf2a1c6597ea0fed726e16d853d1b530bc21389073",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\E61450_2020.txt",
+    "chars": 10485
   }
 }

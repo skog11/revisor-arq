@@ -186,7 +186,7 @@ export const REGLAS_INICIALES: ReglaGatillo[] = [
       co_ocurrencia: ["impacto ambiental", "permiso"],
       excepciones: ["ya tiene rca", "con rca", "rca aprobada"],
     },
-    forzar_normas: ["LEY-19300", "CGR-23683-2017", "CGR-E39766-2020"],
+    forzar_normas: ["LEY-19300", "CGR-23683-2017", "CGR-E39766-2020", "CGR-E126162-2021"],
     efecto: "requerir_revision",
     mensaje_experto:
       "Conforme a la Ley 19.300 (Art. 10) y el DS 40/2012 (RSEIA), los proyectos que por su naturaleza o envergadura " +
@@ -316,7 +316,7 @@ export const REGLAS_INICIALES: ReglaGatillo[] = [
       co_ocurrencia: ["inspector técnico", "uso público"],
       excepciones: [],
     },
-    forzar_normas: ["LGUC", "CGR-32846-2019"],
+    forzar_normas: ["LGUC", "CGR-32846-2019", "CGR-9972-2018"],
     efecto: "requerir_revision",
     mensaje_experto:
       "Conforme al Dictamen CGR N° 32.846/2019, el ITO (Inspector Técnico de Obras) es obligatorio en edificaciones de uso público. " +

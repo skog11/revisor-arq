@@ -139,6 +139,30 @@ export const CGR_DICTAMENES: CGRDictamenMeta[] = [
     titulo: "Campamentos provisorios con contenedores habitacionales constituyen 'recintos habitables' según OGUC y requieren permiso de edificación y derechos municipales",
     materia: "LGUC",
   },
+
+  // ── Ley 19.300 — DDU 443 y solicitudes de pertinencia SEIA ante DOM ──────
+  {
+    numero: "E126162",
+    anio: "2021",
+    titulo: "DDU N° 443 (circular 411/2020): no corresponde que la DOM exija solicitudes de pertinencia SEIA — coordinación entre permisos urbanísticos y calificación ambiental",
+    materia: "LEY-19300",
+  },
+
+  // ── LGUC — revisor independiente obligatorio en permisos de edificación ───
+  {
+    numero: "9972",
+    anio: "2018",
+    titulo: "No se ajustó a derecho el permiso de edificación otorgado por DOM de Las Condes sin requerir informe de revisor independiente de obras de construcción",
+    materia: "LGUC",
+  },
+
+  // ── Probidad — funcionario SEREMI MINVU actuando ante DOM en ejercicio privado
+  {
+    numero: "E61450",
+    anio: "2020",
+    titulo: "Funcionario SEREMI Vivienda no puede ejercer privadamente ante la DOM: actividades de patrocinio de solicitudes ante DOM son contrarias a derecho (probidad)",
+    materia: "LGUC",
+  },
 ];
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
