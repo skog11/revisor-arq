@@ -1,0 +1,33 @@
+{
+  "name": "REVISOR ARQ — Normativa urbana chilena",
+  "short_name": "REVISOR ARQ",
+  "description": "Consulta LGUC, OGUC y DDU con respuestas verificables que citan el artículo exacto.",
+  "start_url": "/chat",
+  "display": "standalone",
+  "background_color": "#f6f1e7",
+  "theme_color": "#19160f",
+  "orientation": "portrait-primary",
+  "lang": "es-CL",
+  "icons": [
+    {
+      "src": "/icon",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/apple-icon",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Consulta rápida",
+      "url": "/chat",
+      "description": "Ir al chat normativo"
+    }
+  ],
+  "categories": ["utilities", "productivity"]
+}

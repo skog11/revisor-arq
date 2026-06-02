@@ -1,6 +1,6 @@
 # REVISOR ARQ
 Chat RAG con citas verificables sobre normativa chilena de urbanismo/construcción para arquitectos y abogados.
-**Estado:** MVP funcional · corpus completo (326 normas) · en producción ✅
+**Estado:** MVP funcional · corpus completo (~384 normas + 60 dictámenes CGR) · en producción ✅
 
 ---
 
@@ -163,12 +163,13 @@ cd app && npm run eval:prod                              # evaluaciones contra p
 
 ---
 
-## Estado actual (2026-05-24)
+## Estado actual (2026-06-02)
 - **Producción**: https://revisor-arq.vercel.app ✅
 - **LLM**: Cerebras primario (gratuito) → DeepSeek* → Gemini fast-fail → OpenRouter → Groq
 - **Retrieval**: 50 candidatos → rerank-2 top 18 · HyDE + multi-query + hybrid BM25+vector
-- **Corpus**: 328 normas · ~21.525 chunks · sin duplicados ✅ (incluye 2 dictámenes CGR)
-- **Eval**: **34/34** (2026-05-24) ✅ — 19 casos base + 5 traps originales + 5 traps nuevos + 5 sectoriales
+- **Corpus**: ~384 normas · ~22.500+ chunks · sin duplicados ✅ — incluye **60 dictámenes CGR** (de 2 → 60 en 2026-06-02)
+- **Motor-reglas**: **24 reglas-gatillo activas** (de 18 → 24 en 2026-06-02)
+- **Eval**: **34/34** (2026-06-02) ✅
 
 ### Pipeline Legal-RAG implementado
 | Fase | Módulo | Estado |
@@ -178,14 +179,16 @@ cd app && npm run eval:prod                              # evaluaciones contra p
 | 3 | Verificador coherencia post-síntesis (validador.ts) | ✅ |
 | 4 | Extractor hechos jurídicos (extractor-hechos.ts, regex) | ✅ |
 | 5 | Hybrid BM25+vector (match_chunks_hybrid en retriever, fallback automático) | ✅ |
-| 6 | CGR dictámenes como capa interpretativa | ⏳ largo plazo |
-| 7 | Expansión catálogo reglas-gatillo (18 reglas activas) | ✅ |
+| 6 | CGR dictámenes como capa interpretativa | ✅ 60 dictámenes, 24 reglas-gatillo |
+| 7 | Expansión catálogo reglas-gatillo | ✅ 24 activas |
+
+### Ingesta CGR — advertencia técnica
+**No usar `bash &` para paralelizar `npm run corpus:ingest`**: bypasea el delay interno `BETWEEN_NORMAS_MS=1500ms` y causa race conditions en Voyage AI + Supabase. Usar siempre `--solo=KEY` de a uno o en lotes pequeños secuenciales.
 
 ## Prioridades actuales
-1. **Lanzamiento público** — bloqueadores despejados ✅ (eval 29/29, sin banners beta, revisión legal completada 2026-05-23)
-2. Stripe / monetización — baja prioridad
-3. CGR dictámenes como corpus separado — largo plazo
-4. DDUs históricos 000–453 — largo plazo
+1. **Features UX v2** (doc 2026-06-02): deep-links BCN, indicador confianza, PWA, tests E2E
+2. Stripe / monetización — baja prioridad, `/pricing` preparado
+3. DDUs históricos 000–453 — largo plazo
 
 → Detalle técnico en `PROGRESO.md`
 → Roadmap completo en `PLAN-IMPLEMENTACION.md`

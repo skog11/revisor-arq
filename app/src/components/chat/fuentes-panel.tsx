@@ -11,6 +11,7 @@ export interface Fuente {
   norma_titulo: string;
   jerarquia: string | null;
   url_fuente: string;
+  url_bcn?: string;
   similarity: number;
   texto?: string;
 }
@@ -138,9 +139,9 @@ function ArticuloDrawer({
           </div>
 
           <div className="flex items-center gap-1 shrink-0">
-            {fuente.url_fuente && (
+            {(fuente.url_bcn || fuente.url_fuente) && (
               <a
-                href={fuente.url_fuente}
+                href={fuente.url_bcn || fuente.url_fuente}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-1.5 rounded-lg transition-colors hover:bg-foreground/[0.06]"
@@ -198,9 +199,9 @@ function ArticuloDrawer({
           >
             Fragmento recuperado por similitud semántica. Verifica el texto
             completo vigente en{" "}
-            {fuente.url_fuente ? (
+            {(fuente.url_bcn || fuente.url_fuente) ? (
               <a
-                href={fuente.url_fuente}
+                href={fuente.url_bcn || fuente.url_fuente}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="underline underline-offset-2 hover:opacity-70 transition-opacity"
@@ -359,9 +360,9 @@ export function FuentesPanel({ fuentes, className, initialVisible = 3 }: Fuentes
                           <FileText className="size-3" />
                         </span>
                       )}
-                      {f.url_fuente && (
+                      {(f.url_bcn || f.url_fuente) && (
                         <a
-                          href={f.url_fuente}
+                          href={f.url_bcn || f.url_fuente}
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}

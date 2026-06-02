@@ -47,6 +47,12 @@ import { validarConsistencia, verificarCoherenciaRestrictiva } from "@/lib/valid
 import { createClient } from "@/lib/supabase-server";
 import { buscarEnCache, guardarEnCache } from "@/lib/query-cache";
 import { embedText } from "@/lib/voyage";
+import { buildBCNUrl } from "@/lib/bcn-links";
+import { calcularConfianza } from "@/lib/confianza";
+import { extraerParametros } from "@/lib/extraer-parametros";
+import { extraerVacios } from "@/lib/extraer-vacios";
+import { extraerCronologia } from "@/lib/extraer-cronologia";
+import { detectarCalculadora } from "@/lib/detector-calculadoras";
 
 // ─── Validación ───────────────────────────────────────────────────────────────
 
@@ -266,6 +272,10 @@ export async function POST(req: NextRequest) {
         // 2c. Detectar restricciones / conflictos en el paquete final
         const restricciones = detectarRestricciones(chunks);
 
+        // 2d. Calcular confianza de la respuesta
+        const confianzaResult = calcularConfianza(chunks, modo as ModoRespuesta, reglasActivas.length > 0);
+        send({ type: "confianza", data: confianzaResult });
+
         // 3. Enviar fuentes al cliente (antes de generar)
         send({
           type: "fuentes",
@@ -275,6 +285,7 @@ export async function POST(req: NextRequest) {
             norma_titulo: c.norma_titulo,
             jerarquia: c.jerarquia,
             url_fuente: c.url_fuente,
+            url_bcn: buildBCNUrl(c.norma_tipo, c.norma_numero),
             similarity: Math.round(c.similarity * 1000) / 1000,
             texto: c.texto,
           })),
@@ -319,6 +330,29 @@ export async function POST(req: NextRequest) {
           }
         }
 
+        // 5. Extraer parámetros o vacíos según el modo
+        if (modo === "arquitecto") {
+          const params = await extraerParametros(respuestaCompleta);
+          if (params) {
+            send({ type: "parametros", data: params });
+          }
+          
+          const tipoCalculadora = await detectarCalculadora(pregunta);
+          if (tipoCalculadora) {
+            send({ type: "calculadora", data: tipoCalculadora });
+          }
+        } else if (modo === "profundo") {
+          const vacios = await extraerVacios(respuestaCompleta);
+          if (vacios) {
+            send({ type: "vacios", data: vacios });
+          }
+          
+          const crono = await extraerCronologia(respuestaCompleta);
+          if (crono) {
+            send({ type: "cronologia", data: crono });
+          }
+        }
+
         // 6. Post-guardrail: validar consistencia y añadir disclaimer si el LLM lo omitió
         const validacion = validarConsistencia(respuestaCompleta, chunks);
         if (!validacion.valida && validacion.motivo === "Falta disclaimer legal") {
@@ -353,6 +387,7 @@ export async function POST(req: NextRequest) {
             norma_titulo: c.norma_titulo,
             jerarquia: c.jerarquia,
             url_fuente: c.url_fuente,
+            url_bcn: buildBCNUrl(c.norma_tipo, c.norma_numero),
             similarity: Math.round(c.similarity * 1000) / 1000,
             texto: c.texto,
           }));

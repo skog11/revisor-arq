@@ -6,6 +6,14 @@ import type { LucideIcon } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { FuentesPanel, type Fuente } from "./fuentes-panel";
+import { ParametrosCard } from "./parametros-card";
+import { VaciosCard } from "./vacios-card";
+import { CronologiaCard } from "./cronologia-card";
+import { CalcConstructibilidad } from "./calculadoras/calc-constructibilidad";
+import { CalcEstacionamientos } from "./calculadoras/calc-estacionamientos";
+import type { ParametrosTabla } from "@/lib/extraer-parametros";
+import type { VaciosTabla } from "@/lib/extraer-vacios";
+import type { CronologiaTabla } from "@/lib/extraer-cronologia";
 import dynamic from "next/dynamic";
 
 const ModalDescargaPDF = dynamic(
@@ -27,6 +35,17 @@ export interface MensajeData {
   modo?: ModoRespuesta;
   consultaId?: string; // ID de la consulta guardada en Supabase para feedback
   preguntaUsuario?: string; // Texto original de la pregunta (para portada PDF)
+  confianza?: {
+    nivel: "alta" | "media" | "baja";
+    score: number;
+    razon: string;
+    color: string;
+    icono: string;
+  };
+  parametros?: ParametrosTabla;
+  vacios?: VaciosTabla;
+  cronologia?: CronologiaTabla;
+  calculadora?: "constructibilidad" | "estacionamientos";
 }
 
 
@@ -147,20 +166,39 @@ function MensajeAsistente({ mensaje }: { mensaje: MensajeData }) {
 
       {/* Contenido */}
       <div className="flex-1 min-w-0">
-        {/* Header de modo */}
-        {cfg && (
-          <div className="flex items-center gap-1.5 mb-3.5">
-            <cfg.Icon className="size-3" style={{ color: accentColor }} />
-            <span
-              className="text-[9px] font-medium uppercase"
-              style={{
-                color: accentColor,
-                fontFamily: "var(--font-jetbrains-mono)",
-                letterSpacing: "0.18em",
-              }}
-            >
-              {cfg.label}
-            </span>
+        {/* Header de modo y confianza */}
+        {(cfg || mensaje.confianza) && (
+          <div className="flex items-center gap-3 mb-3.5 flex-wrap">
+            {cfg && (
+              <div className="flex items-center gap-1.5">
+                <cfg.Icon className="size-3" style={{ color: accentColor }} />
+                <span
+                  className="text-[9px] font-medium uppercase"
+                  style={{
+                    color: accentColor,
+                    fontFamily: "var(--font-jetbrains-mono)",
+                    letterSpacing: "0.18em",
+                  }}
+                >
+                  {cfg.label}
+                </span>
+              </div>
+            )}
+
+            {mensaje.confianza && (
+              <div 
+                className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full border text-[10.5px] font-medium tracking-wide"
+                style={{ 
+                  borderColor: `color-mix(in srgb, ${mensaje.confianza.color} 30%, transparent)`,
+                  backgroundColor: `color-mix(in srgb, ${mensaje.confianza.color} 8%, transparent)`,
+                  color: mensaje.confianza.color,
+                }}
+                title={`Confianza: ${mensaje.confianza.score}/100`}
+              >
+                <span className="text-[10px] leading-none">{mensaje.confianza.icono}</span>
+                <span className="leading-none pt-px">{mensaje.confianza.razon}</span>
+              </div>
+            )}
           </div>
         )}
 
@@ -227,6 +265,26 @@ function MensajeAsistente({ mensaje }: { mensaje: MensajeData }) {
                   initialVisible={mensaje.modo === "profundo" ? 6 : 3}
                 />
               )}
+
+            {/* Parámetros extraídos (solo modo arquitecto) */}
+            {!mensaje.streaming && !mensaje.error && mensaje.parametros && (
+              <ParametrosCard data={mensaje.parametros} />
+            )}
+
+            {/* Calculadora interactiva (solo modo arquitecto) */}
+            {!mensaje.streaming && !mensaje.error && mensaje.calculadora && (
+              mensaje.calculadora === "constructibilidad" ? <CalcConstructibilidad /> : <CalcEstacionamientos />
+            )}
+
+            {/* Vacíos detectados (solo modo profundo) */}
+            {!mensaje.streaming && !mensaje.error && mensaje.vacios && (
+              <VaciosCard data={mensaje.vacios} />
+            )}
+
+            {/* Cronología (solo modo profundo) */}
+            {!mensaje.streaming && !mensaje.error && mensaje.cronologia && (
+              <CronologiaCard data={mensaje.cronologia} />
+            )}
 
             {/* Descarga PDF — solo modo profundo, respuesta completa */}
             {!mensaje.streaming && !mensaje.error && mensaje.modo === "profundo" && mensaje.contenido && (

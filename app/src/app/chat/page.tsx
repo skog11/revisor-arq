@@ -2,7 +2,7 @@
 
 import { useRef, useState, useCallback, useEffect } from "react";
 import Link from "next/link";
-import { Send, Square, HardHat, Scale, Microscope, RotateCcw, BookOpen, Info, Plus, ScanSearch, Database, Sparkles } from "lucide-react";
+import { Send, Square, HardHat, Scale, Microscope, RotateCcw, BookOpen, Info, Plus, ScanSearch, Database, Sparkles, Paperclip, FileText, X } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { Mensaje, type MensajeData, type Fuente } from "@/components/chat/mensaje";
 import { cn } from "@/lib/utils";
@@ -91,10 +91,15 @@ export default function ChatPage() {
   const [modo, setModo]         = useState<ModoRespuesta>("arquitecto");
   const [cargando, setCargando] = useState(false);
   const [etapaActual, setEtapaActual] = useState<EtapaCarga | null>(null);
+  
+  const [documentoContexto, setDocumentoContexto] = useState<string | null>(null);
+  const [nombreDocumento, setNombreDocumento] = useState<string | null>(null);
+  const [cargandoDoc, setCargandoDoc] = useState(false);
 
   const bottomRef   = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const abortRef    = useRef<AbortController | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Auto-scroll
   useEffect(() => {
@@ -106,18 +111,55 @@ export default function ChatPage() {
     textareaRef.current?.focus();
   }, []);
 
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    setCargandoDoc(true);
+    setNombreDocumento(file.name);
+    
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      
+      const res = await fetch("/api/parse-doc", { 
+        method: "POST", 
+        body: formData 
+      });
+      
+      if (!res.ok) throw new Error("Error parseando documento");
+      
+      const { text } = await res.json();
+      setDocumentoContexto(text);
+    } catch (err) {
+      console.error(err);
+      setNombreDocumento("Error al cargar");
+      setTimeout(() => {
+        setNombreDocumento(null);
+        setDocumentoContexto(null);
+      }, 3000);
+    } finally {
+      setCargandoDoc(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
   const enviar = useCallback(
     async (textoPregunta?: string) => {
-      const texto = (textoPregunta ?? pregunta).trim();
-      if (!texto || cargando) return;
+      const textoBase = (textoPregunta ?? pregunta).trim();
+      if (!textoBase || cargando) return;
+      
+      const textoFinal = documentoContexto 
+        ? `${textoBase}\n\n--- CONTEXTO DEL PROYECTO (Extraído de ${nombreDocumento}) ---\n${documentoContexto}`
+        : textoBase;
 
       const userId  = crypto.randomUUID();
       const asistId = crypto.randomUUID();
 
       setMensajes((prev) => [
         ...prev,
-        { id: userId,  rol: "usuario",   contenido: texto },
-        { id: asistId, rol: "asistente", contenido: "", streaming: true, modo, preguntaUsuario: texto },
+        { id: userId,  rol: "usuario",   contenido: textoBase },
+        { id: asistId, rol: "asistente", contenido: "", streaming: true, modo, preguntaUsuario: textoBase },
       ]);
       setPregunta("");
       if (textareaRef.current) textareaRef.current.style.height = "auto";
@@ -140,9 +182,9 @@ export default function ChatPage() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            pregunta: texto,
+            pregunta: textoFinal,
             modo,
-            mensajes: [...historial, { role: "user", content: texto }],
+            mensajes: [...historial, { role: "user", content: textoFinal }],
           }),
           signal: ctrl.signal,
         });
@@ -170,7 +212,8 @@ export default function ChatPage() {
               const event = JSON.parse(json) as {
                 type: string;
                 text?: string;
-                data?: Fuente[];
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                data?: any;
                 message?: string;
                 consultaId?: string;
                 etapa?: EtapaCarga;
@@ -178,6 +221,26 @@ export default function ChatPage() {
 
               if (event.type === "etapa" && event.etapa) {
                 setEtapaActual(event.etapa);
+              } else if (event.type === "confianza" && event.data) {
+                setMensajes((prev) =>
+                  prev.map((m) => (m.id === asistId ? { ...m, confianza: event.data } : m))
+                );
+              } else if (event.type === "parametros" && event.data) {
+                setMensajes((prev) =>
+                  prev.map((m) => (m.id === asistId ? { ...m, parametros: event.data } : m))
+                );
+              } else if (event.type === "vacios" && event.data) {
+                setMensajes((prev) =>
+                  prev.map((m) => (m.id === asistId ? { ...m, vacios: event.data } : m))
+                );
+              } else if (event.type === "cronologia" && event.data) {
+                setMensajes((prev) =>
+                  prev.map((m) => (m.id === asistId ? { ...m, cronologia: event.data } : m))
+                );
+              } else if (event.type === "calculadora" && event.data) {
+                setMensajes((prev) =>
+                  prev.map((m) => (m.id === asistId ? { ...m, calculadora: event.data } : m))
+                );
               } else if (event.type === "fuentes" && event.data) {
                 setMensajes((prev) =>
                   prev.map((m) => (m.id === asistId ? { ...m, fuentes: event.data } : m))
@@ -639,6 +702,25 @@ export default function ChatPage() {
             )}
           </div>
 
+          {/* Chip de documento cargado */}
+          {nombreDocumento && (
+            <div className="flex items-center justify-between mb-2 px-3 py-1.5 rounded-lg border text-[11px]" style={{ background: "var(--paper-2)", borderColor: "var(--rule-2)", color: "var(--ink-2)" }}>
+              <div className="flex items-center gap-2 overflow-hidden">
+                <FileText className="size-3.5 shrink-0" style={{ color: "var(--ink-4)" }} />
+                <span className="truncate max-w-[200px] sm:max-w-[400px] font-medium">{nombreDocumento}</span>
+                {cargandoDoc && <span className="animate-pulse" style={{ color: "var(--ink-4)" }}>(Procesando...)</span>}
+                {!cargandoDoc && documentoContexto && <span style={{ color: "var(--mode-arq)" }}>(Leído)</span>}
+              </div>
+              <button 
+                onClick={() => { setNombreDocumento(null); setDocumentoContexto(null); }}
+                className="p-1 rounded hover:bg-foreground/[0.06] transition-colors"
+                disabled={cargandoDoc || cargando}
+              >
+                <X className="size-3" />
+              </button>
+            </div>
+          )}
+
           {/* Caja de texto — plana, borde simple */}
           <div
             className="flex items-end gap-2 rounded-lg px-3.5 py-2.5 transition-colors duration-150 focus-within:border-[var(--mode-arq-border)]"
@@ -667,6 +749,29 @@ export default function ChatPage() {
               rows={1}
               disabled={cargando}
             />
+
+            <input 
+              type="file" 
+              ref={fileInputRef} 
+              className="hidden" 
+              onChange={handleFileUpload} 
+              accept="application/pdf,image/*,text/plain"
+            />
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={cargandoDoc || cargando}
+              className="shrink-0 size-8 rounded-md flex items-center justify-center transition-colors hover:bg-foreground/[0.06]"
+              title="Adjuntar documento del proyecto (Planos, Informes)"
+              aria-label="Adjuntar documento"
+            >
+              <Paperclip 
+                className="size-3.5" 
+                style={{ 
+                  color: cargandoDoc ? "var(--ink-4)" : "var(--ink-3)", 
+                  animation: cargandoDoc ? "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite" : "none" 
+                }} 
+              />
+            </button>
 
             {cargando ? (
               <button
