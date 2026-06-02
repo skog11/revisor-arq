@@ -166,6 +166,31 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: "Cuota mensual agotada. Actualiza tu plan en /pricing." }, { status: 429 });
   }
 
+  // Active Prompting / Motor de Clarificación
+  if (clasificacion.confianza === "baja" && !contextoProyecto?.zonaSuelo && !contextoProyecto?.destino) {
+    const encoder3 = new TextEncoder();
+    const aclaraStream = new ReadableStream({
+      start(ctrl) {
+        const send = (e: Record<string, unknown>) =>
+          ctrl.enqueue(encoder3.encode(`data: ${JSON.stringify(e)}\n\n`));
+        send({ type: "fuentes", data: [] });
+        send({ type: "cruces", data: [] });
+        const mensajeAclaracion = "Para realizar el cruce normativo correcto, necesito conocer algunos parámetros base. **Por favor haz clic en el botón 'Contexto' (arriba del chat)** e indícame al menos si el suelo es Urbano/Rural y cuál es el Destino principal de tu proyecto. Una vez guardado, vuelve a consultarme.";
+        send({ type: "chunk", text: mensajeAclaracion });
+        send({ type: "done" });
+        ctrl.close();
+      }
+    });
+    return new Response(aclaraStream, {
+      headers: {
+        "Content-Type": "text/event-stream",
+        "Cache-Control": "no-cache",
+        Connection: "keep-alive",
+        "X-Accel-Buffering": "no",
+      },
+    });
+  }
+
   // 1b. Lookup en caché semántica — si hay hit, devolver respuesta cacheada sin LLM.
   //     Solo para consultas sin historial (no multi-turno) para evitar respuestas fuera de contexto.
   //     BYPASS del caché si la consulta activa una regla-gatillo (motor-reglas): las respuestas

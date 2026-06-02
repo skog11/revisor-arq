@@ -36,6 +36,17 @@ jobs:
         working-directory: app
         run: npm run test
 
+      - name: Instalar Playwright (chromium)
+        working-directory: app
+        run: npx playwright install --with-deps chromium
+
       - name: Deploy a Vercel (producción)
         working-directory: app
         run: vercel --prod --yes --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: E2E smoke tests contra producción
+        working-directory: app
+        run: npm run e2e:prod -- --grep "carga|modos|landing|mobile" --project=chromium
+        env:
+          E2E_URL: https://revisor-arq.vercel.app
+        continue-on-error: true  # no bloquear deploy por flakiness de LLM

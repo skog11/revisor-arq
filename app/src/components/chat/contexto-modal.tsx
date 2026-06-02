@@ -63,7 +63,8 @@ export function ContextoModal({ isOpen, onClose, contexto, onGuardar }: Props) {
 
         <div className="flex flex-col gap-4">
           <div>
-            <label className="mb-1.5 block text-xs font-medium" style={{ color: "var(--ink-2)" }}>Clasificación de Suelo</label>
+            <label className="mb-0.5 block text-xs font-medium" style={{ color: "var(--ink-2)" }}>Límite Urbano (Clasificación de Suelo)</label>
+            <p className="mb-2 text-[10px] leading-tight" style={{ color: "var(--ink-4)" }}>Define si el predio está dentro o fuera del límite urbano (No confundir con la Zona específica del PRC, ej: Z-1).</p>
             <select 
               value={draft.zonaSuelo}
               onChange={(e) => setDraft({ ...draft, zonaSuelo: e.target.value as any })}
@@ -78,7 +79,8 @@ export function ContextoModal({ isOpen, onClose, contexto, onGuardar }: Props) {
           </div>
 
           <div>
-            <label className="mb-1.5 block text-xs font-medium" style={{ color: "var(--ink-2)" }}>Destino Principal</label>
+            <label className="mb-0.5 block text-xs font-medium" style={{ color: "var(--ink-2)" }}>Destino Principal de la Edificación</label>
+            <p className="mb-2 text-[10px] leading-tight" style={{ color: "var(--ink-4)" }}>Según la clasificación legal de usos de suelo del Art. 2.1.24 de la OGUC.</p>
             <select 
               value={draft.destino}
               onChange={(e) => setDraft({ ...draft, destino: e.target.value as any })}
@@ -96,7 +98,8 @@ export function ContextoModal({ isOpen, onClose, contexto, onGuardar }: Props) {
           </div>
 
           <div>
-            <label className="mb-1.5 block text-xs font-medium" style={{ color: "var(--ink-2)" }}>Año Edificación / Permiso Original (Opcional)</label>
+            <label className="mb-0.5 block text-xs font-medium" style={{ color: "var(--ink-2)" }}>Año del Permiso Original (Opcional)</label>
+            <p className="mb-2 text-[10px] leading-tight" style={{ color: "var(--ink-4)" }}>Crucial para evaluar normas preexistentes (Ej: antes o después de 2001).</p>
             <input 
               type="text" 
               placeholder="Ej: 1995"
@@ -108,7 +111,8 @@ export function ContextoModal({ isOpen, onClose, contexto, onGuardar }: Props) {
           </div>
 
           <div>
-            <label className="mb-1.5 block text-xs font-medium" style={{ color: "var(--ink-2)" }}>Acogido a Ley Especial</label>
+            <label className="mb-0.5 block text-xs font-medium" style={{ color: "var(--ink-2)" }}>Régimen Legal Excepcional</label>
+            <p className="mb-2 text-[10px] leading-tight" style={{ color: "var(--ink-4)" }}>Indica si el proyecto se ampara en alguna ley que otorgue beneficios o exenciones.</p>
             <select 
               value={draft.leyEspecial}
               onChange={(e) => setDraft({ ...draft, leyEspecial: e.target.value as any })}

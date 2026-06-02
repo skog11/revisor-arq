@@ -5,6 +5,7 @@
 
 import { type ModoRespuesta, type CruceDetectado } from "./rag";
 import { type QueryClassificada } from "./clasificador";
+import { type ContextoProyecto } from "@/components/chat/contexto-modal";
 
 // ─── Disclaimers por modo ─────────────────────────────────────────────────────
 
@@ -23,7 +24,8 @@ export function buildSystemPromptV2(
   clasificacion?: QueryClassificada,
   relacionesGrafo?: string,
   pregunta?: string,        // texto original de la consulta para guardrails adicionales
-  compuertaNormativa?: string  // reglas-gatillo + restricciones detectadas (motor-reglas + detector-conflictos)
+  compuertaNormativa?: string,  // reglas-gatillo + restricciones detectadas (motor-reglas + detector-conflictos)
+  contextoProyecto?: ContextoProyecto // Variables duras inyectadas desde el frontend
 ): string {
   // Bloque de contexto del proyecto detectado (si clasificacion disponible y confianza no baja)
   let proyectoBloque = "";
@@ -39,10 +41,24 @@ export function buildSystemPromptV2(
       ? "\n⚠️ La consulta involucra posible conflicto de jerarquía normativa — analizar con especial cuidado."
       : "";
 
-    proyectoBloque = `CONTEXTO DEL PROYECTO DETECTADO:
+    proyectoBloque = `CONTEXTO DEL PROYECTO DETECTADO POR IA:
 Tipo de proyecto: ${tipoProyecto}
 Etapa: ${etapa}
 Dominios normativos activos: ${dominios}${keywordsLinea}${jerarquiaLinea}
+
+`;
+  }
+
+  // Variables duras del Frontend (Cuestionario)
+  let cuestionarioBloque = "";
+  if (contextoProyecto && (contextoProyecto.zonaSuelo || contextoProyecto.destino || contextoProyecto.anoOriginal || contextoProyecto.leyEspecial)) {
+    cuestionarioBloque = `DATOS ESTRUCTURADOS DEL PROYECTO (PROPORCIONADOS POR EL USUARIO):
+Zona / Suelo: ${contextoProyecto.zonaSuelo || "No especificada"}
+Destino Principal: ${contextoProyecto.destino || "No especificado"}
+Año Original: ${contextoProyecto.anoOriginal || "No especificado"}
+Ley Especial: ${contextoProyecto.leyEspecial || "Ninguna"}
+
+ESTA INFORMACIÓN ES INQUEBRANTABLE. Si el usuario definió que es "Rural", descarta normas urbanas, etc. Ajusta estrictamente tu razonamiento a estos parámetros, ignorando chunks incompatibles con este contexto.
 
 `;
   }
@@ -87,7 +103,7 @@ Ejemplo incorrecto: "según el artículo 116 de la LGUC el permiso lo otorga la 
 
 REGLA DE ORO — ARTÍCULOS:
 En cada párrafo que contenga una afirmación normativa, el número de artículo DEBE aparecer explícitamente en el formato (Norma, Art. X). No basta mencionar la norma sin el artículo. No basta parafrasear sin citar. Si no conoces el artículo exacto a partir del contexto recuperado, escribe "(artículo no disponible en base — verificar en BCN)" en lugar de omitirlo.
-${proyectoBloque}${crucesBloque}${relacionesGrafo ?? ""}${compuertaNormativa ?? ""}
+${cuestionarioBloque}${proyectoBloque}${crucesBloque}${relacionesGrafo ?? ""}${compuertaNormativa ?? ""}
 NORMATIVA RECUPERADA DE LA BASE DE CONOCIMIENTO:
 ${contexto}
 
