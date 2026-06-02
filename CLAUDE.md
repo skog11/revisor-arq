@@ -186,9 +186,11 @@ cd app && npm run eval:prod                              # evaluaciones contra p
 **No usar `bash &` para paralelizar `npm run corpus:ingest`**: bypasea el delay interno `BETWEEN_NORMAS_MS=1500ms` y causa race conditions en Voyage AI + Supabase. Usar siempre `--solo=KEY` de a uno o en lotes pequeños secuenciales.
 
 ## Prioridades actuales
-1. **Features UX v2** (doc 2026-06-02): deep-links BCN, indicador confianza, PWA, tests E2E
-2. Stripe / monetización — baja prioridad, `/pricing` preparado
-3. DDUs históricos 000–453 — largo plazo
+1. **Newsletter backend** — form UI listo, falta `/api/newsletter/subscribe` + migración SQL + `RESEND_API_KEY`
+2. **Guías: contenido editorial** — 3 guías con scaffold; falta contenido MDX completo
+3. **Deploy a producción** — build local limpio, pendiente push + Vercel deploy
+4. Stripe / monetización — baja prioridad, `/pricing` preparado
+5. DDUs históricos 000–453 — largo plazo
 
 → Detalle técnico en `PROGRESO.md`
 → Roadmap completo en `PLAN-IMPLEMENTACION.md`

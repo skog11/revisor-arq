@@ -306,12 +306,12 @@ consultas (id, pregunta, modo, respuesta, chunks_usados, modelo, latencia_ms, ..
 | BCN deep-links | ✅ Chips de fuentes son links a BCN/MINVU (`bcn-links.ts`) |
 | Indicador de confianza | ✅ Badge post-retrieval en cada respuesta (`confianza.ts`) |
 | PWA | ✅ `manifest.webmanifest` + `sw.js` + página offline + `RegisterSW` |
-| Upload de PDF | ✅ `/api/parse-doc` con pdf-parse (max 5MB, 8000 chars) |
+| Upload de documentos (multimodal) | ✅ `/api/parse-doc` con Gemini Flash multimodal — PDF, imagen, TXT (max 5MB) |
 | Tests E2E | ✅ Playwright configurado (`playwright.config.ts`, `e2e/chat.spec.ts`) |
 | Extracción estructurada (AI SDK) | ✅ `extraer-parametros/vacios/cronologia`, `detector-calculadoras` via `@ai-sdk/google` |
 | Calculadoras interactivas | ✅ `calc-constructibilidad.tsx`, `calc-estacionamientos.tsx` |
-| Guías temáticas (scaffold) | ✅ `src/app/guias/page.tsx` esqueleto listo |
-| Newsletter form | ✅ `newsletter-form.tsx` creado |
+| Guías temáticas | ✅ `/guias` con 3 guías (constructibilidad, rasantes, defensas DOM) — link en header |
+| Newsletter form | ✅ `newsletter-form.tsx` en landing — UI completa, backend pendiente (TODO Resend/Supabase) |
 
 ### ⏳ Pendiente
 
@@ -320,8 +320,8 @@ consultas (id, pregunta, modo, respuesta, chunks_usados, modelo, latencia_ms, ..
 | Stripe / monetización | 🟢 Baja | Scaffolding ya existe en `/pricing` |
 | Desplegar features v2 a Vercel | 🟡 Media | Build local pasa; falta push+deploy |
 | Playwright: instalar browsers en CI | 🟡 Media | `npx playwright install --with-deps chromium` |
-| Newsletter API + migración SQL | 🟡 Media | Requiere `RESEND_API_KEY` nueva env var |
-| Guías temáticas: contenido editorial | 🟡 Media | Scaffold listo; falta contenido de 7 guías |
+| Newsletter API + migración SQL | 🟡 Media | Form UI listo; falta `/api/newsletter/subscribe`, migración SQL `newsletter_suscripciones`, `RESEND_API_KEY` |
+| Guías temáticas: contenido editorial | 🟡 Media | 3 guías con scaffold; falta contenido MDX completo de cada guía + más guías |
 | DDUs históricos 000–453 | 🟢 Baja | No están digitalizados en MINVU |
 | SENTRY_DSN en Vercel | 🟢 Baja | Sentry config ya existe; solo falta env var |
 

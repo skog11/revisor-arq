@@ -12,6 +12,7 @@ import type { User as SupabaseUser } from "@supabase/supabase-js";
 const NAV_LINKS = [
   { href: "/",        label: "Home"      },
   { href: "/chat",    label: "Consulta"  },
+  { href: "/guias",   label: "Guías"     },
   { href: "/corpus",  label: "Normativa" },
 ];
 
