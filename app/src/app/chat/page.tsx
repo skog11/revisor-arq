@@ -2,7 +2,7 @@
 
 import { useRef, useState, useCallback, useEffect } from "react";
 import Link from "next/link";
-import { Send, Square, HardHat, Scale, Microscope, RotateCcw, BookOpen, Info, Plus, ScanSearch, Database, Sparkles, Paperclip, FileText, X, SlidersHorizontal } from "lucide-react";
+import { Send, Square, HardHat, Scale, Microscope, RotateCcw, BookOpen, Info, Plus, ScanSearch, Database, Sparkles, Paperclip, FileText, X, SlidersHorizontal, Eye } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import { Mensaje, type MensajeData, type Fuente } from "@/components/chat/mensaje";
 import { ContextoModal, type ContextoProyecto, CONTEXTO_INICIAL } from "@/components/chat/contexto-modal";
@@ -99,6 +99,7 @@ export default function ChatPage() {
   
   const [contextoProyecto, setContextoProyecto] = useState<ContextoProyecto>(CONTEXTO_INICIAL);
   const [modalContextoOpen, setModalContextoOpen] = useState(false);
+  const [vistaDocumentoOpen, setVistaDocumentoOpen] = useState(false);
 
   const bottomRef   = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -729,21 +730,103 @@ export default function ChatPage() {
           {/* Chip de documento cargado */}
           {nombreDocumento && (
             <div className="flex items-center justify-between mb-2 px-3 py-1.5 rounded-lg border text-[11px]" style={{ background: "var(--paper-2)", borderColor: "var(--rule-2)", color: "var(--ink-2)" }}>
-              <div className="flex items-center gap-2 overflow-hidden">
+              <div className="flex items-center gap-2 overflow-hidden flex-1 min-w-0">
                 <FileText className="size-3.5 shrink-0" style={{ color: "var(--ink-4)" }} />
-                <span className="truncate max-w-[200px] sm:max-w-[400px] font-medium">{nombreDocumento}</span>
-                {cargandoDoc && <span className="animate-pulse" style={{ color: "var(--ink-4)" }}>(Procesando...)</span>}
-                {!cargandoDoc && documentoContexto && <span style={{ color: "var(--mode-arq)" }}>(Leído)</span>}
+                <span className="truncate max-w-[160px] sm:max-w-[320px] font-medium">{nombreDocumento}</span>
+                {cargandoDoc && <span className="animate-pulse shrink-0" style={{ color: "var(--ink-4)" }}>(Procesando...)</span>}
+                {!cargandoDoc && documentoContexto && <span className="shrink-0" style={{ color: "var(--mode-arq)" }}>(Leído)</span>}
               </div>
-              <button 
-                onClick={() => { setNombreDocumento(null); setDocumentoContexto(null); }}
-                className="p-1 rounded hover:bg-foreground/[0.06] transition-colors"
-                disabled={cargandoDoc || cargando}
-              >
-                <X className="size-3" />
-              </button>
+              <div className="flex items-center gap-0.5 shrink-0 ml-2">
+                {!cargandoDoc && documentoContexto && (
+                  <button
+                    onClick={() => setVistaDocumentoOpen(true)}
+                    className="p-1 rounded hover:bg-foreground/[0.06] transition-colors"
+                    title="Ver texto extraído"
+                  >
+                    <Eye className="size-3" style={{ color: "var(--ink-3)" }} />
+                  </button>
+                )}
+                <button
+                  onClick={() => { setNombreDocumento(null); setDocumentoContexto(null); }}
+                  className="p-1 rounded hover:bg-foreground/[0.06] transition-colors"
+                  disabled={cargandoDoc || cargando}
+                  title="Quitar documento"
+                >
+                  <X className="size-3" />
+                </button>
+              </div>
             </div>
           )}
+
+          {/* Drawer: vista previa del texto extraído */}
+          <AnimatePresence>
+            {vistaDocumentoOpen && documentoContexto && (
+              <>
+                <motion.div
+                  key="doc-overlay"
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                  transition={{ duration: 0.18 }}
+                  className="fixed inset-0 z-40"
+                  style={{ background: "rgba(0,0,0,0.35)" }}
+                  onClick={() => setVistaDocumentoOpen(false)}
+                />
+                <motion.aside
+                  key="doc-drawer"
+                  role="dialog"
+                  aria-modal="true"
+                  aria-label="Texto extraído del documento"
+                  initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }}
+                  transition={{ type: "spring", damping: 28, stiffness: 280 }}
+                  onKeyDown={(e) => e.key === "Escape" && setVistaDocumentoOpen(false)}
+                  tabIndex={-1}
+                  className="fixed right-0 top-0 bottom-0 z-50 flex flex-col w-full max-w-lg shadow-2xl outline-none"
+                  style={{ background: "var(--paper)", borderLeft: "1px solid var(--rule)" }}
+                >
+                  {/* Cabecera */}
+                  <div className="flex items-center gap-3 px-5 py-4 shrink-0" style={{ borderBottom: "1px solid var(--rule)" }}>
+                    <FileText className="size-4 shrink-0" style={{ color: "var(--ink-3)" }} />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-medium truncate" style={{ color: "var(--ink)", fontFamily: "var(--font-jetbrains-mono)" }}>
+                        {nombreDocumento}
+                      </p>
+                      <p className="text-[10px] mt-0.5" style={{ color: "var(--ink-4)", fontFamily: "var(--font-jetbrains-mono)" }}>
+                        {documentoContexto.length.toLocaleString()} caracteres extraídos
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => setVistaDocumentoOpen(false)}
+                      className="p-1.5 rounded-lg transition-colors hover:bg-foreground/[0.06]"
+                      style={{ color: "var(--ink-3)" }}
+                    >
+                      <X className="size-3.5" />
+                    </button>
+                  </div>
+                  {/* Texto */}
+                  <div className="flex-1 overflow-y-auto px-5 py-5">
+                    <pre
+                      className="text-xs leading-relaxed whitespace-pre-wrap break-words"
+                      style={{ color: "var(--ink-2)", fontFamily: "var(--font-inter)" }}
+                    >
+                      {documentoContexto}
+                    </pre>
+                  </div>
+                  {/* Pie */}
+                  <div className="px-5 py-3 shrink-0 flex items-center justify-between" style={{ borderTop: "1px solid var(--rule)" }}>
+                    <p className="text-[10px]" style={{ color: "var(--ink-4)", fontFamily: "var(--font-jetbrains-mono)" }}>
+                      Este texto se inyectará como contexto en tu próxima consulta.
+                    </p>
+                    <button
+                      onClick={() => { navigator.clipboard.writeText(documentoContexto); }}
+                      className="text-[10px] px-2 py-1 rounded transition-colors hover:bg-foreground/[0.06]"
+                      style={{ color: "var(--ink-3)", fontFamily: "var(--font-jetbrains-mono)" }}
+                    >
+                      Copiar
+                    </button>
+                  </div>
+                </motion.aside>
+              </>
+            )}
+          </AnimatePresence>
 
           {/* Caja de texto — plana, borde simple */}
           <div
