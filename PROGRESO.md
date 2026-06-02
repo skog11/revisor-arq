@@ -1,7 +1,7 @@
 # PROGRESO — REVISOR ARQ
 
 > Documento vivo para continuidad entre sesiones de IA.
-> Última actualización: **2026-05-23**.
+> Última actualización: **2026-06-02**.
 > Leer junto con `PLAN-IMPLEMENTACION.md` y `CLAUDE.md`.
 
 ---
@@ -13,7 +13,7 @@
 **URL de producción**: https://revisor-arq.vercel.app
 **Repositorio**: `C:\00_CLAUDE CODE\REVISOR-ARQ\` (Git branch: `master`)
 **App Next.js**: `C:\00_CLAUDE CODE\REVISOR-ARQ\app\`
-**Último commit**: `7470f10` — feat: cron alertas BCN, eval 18 casos, páginas legales, docs actualizados
+**Último commit**: `8679134` — feat: features v2 — PWA, Playwright E2E, parse-doc, fix builds
 
 ---
 
@@ -67,7 +67,7 @@ Cerebras qwen-3-235b  →  DeepSeek*  →  Gemini Flash (1 retry)  →  OpenRout
 
 ---
 
-## 4. ESTADO DEL CORPUS (2026-05-19 — LIMPIO Y COMPLETO)
+## 4. ESTADO DEL CORPUS (2026-06-02 — LIMPIO Y COMPLETO)
 
 ### Supabase — estado verificado
 
@@ -75,9 +75,29 @@ Cerebras qwen-3-235b  →  DeepSeek*  →  Gemini Flash (1 retry)  →  OpenRout
 |---|---|---|---|
 | LGUC (DFL-458) | LGUC | 330 | ✅ Completa |
 | OGUC (DS-47) | OGUC | 1.003 | ✅ Completa (427 págs) |
-| DDUs activos (527–541 + históricos) | DDU | ~12.000 | ✅ 269 DDUs |
-| Normativa sectorial (cat. 01–11) | LEY/DFL/DL/DS | ~4.500 | ✅ ~60 normas |
-| **TOTAL** | — | **17.852** | **✅ 333 normas, sin duplicados** |
+| DDUs activos (527–541 + históricos) | DDU | ~12.000 | ✅ 284 DDUs |
+| Normativa sectorial (cat. 01–11) | LEY/DFL/DL/DS | ~7.700 | ✅ ~73 normas |
+| **Dictámenes CGR** | CGR | ~1.500+ | **✅ 60 dictámenes (de 2→60 en 2026-06-02)** |
+| **TOTAL** | — | **~22.500+** | **✅ ~384 normas, sin duplicados** |
+
+### Catálogo CGR — 60 dictámenes (2026-06-02)
+
+Archivo: `app/scripts/download/download-cgr.ts` (array `CGR_DICTAMENES`)
+
+**Clusters temáticos cubiertos:**
+- Art. 55 LGUC / subdivisión rural: 9443/2000, 2663/2003, 30457/2016, 9102/2017, E422376/2023, E472530/2024, E148827/2021, 35681/2009
+- Permisos DOM / control legalidad: 4490/2016, E10529/2025, E58945/2020, 32846/2019, 9972/2018, 27507/2009, 32357/2006, 29101/2006, 40981/2015
+- SEIA / Ley 19.300: 23683/2017, E39766/2020, E126162/2021, 42064/2010, 31573/2000
+- Zona típica / patrimonio: 3272/2020
+- Probidad: 4771/1999, 28417/1999, 50952/2015, E61450/2020, E160316/2021
+- PRC (planes reguladores comunales): 17942–44023/2008 (8), 1765–14462/2014 (4), 54958/2009, 90359/2016, 47417/2008, 31416/2009
+- PRI/PRMS/intercomunal: 76619/2013, 18353/2014, 67304/2016
+- PRDU (regionales): 21573/2012, 78906/2012
+- Otros: 25690/2019 (fusión predios), 42084/2017 (DL 2695), 2797/2009 (Termas Flaco), 36050/2008 (SII-OGUC), E533509/2024 (terrenos fiscales), 1248/2018 (cauces), 12758/2018 (hidráulico), E111407/2025 (plazo DOM)
+- CGR originales: 8518/2006 (conjunto armónico), E14360/2025 (DDU 490→519)
+
+**⚠️ Regla crítica de ingesta:**
+No usar `bash &` para paralelizar `npm run corpus:ingest`. Bypasea `BETWEEN_NORMAS_MS=1500ms` → race conditions en Voyage AI + Supabase. Siempre usar `--solo=KEY` uno a la vez o lotes pequeños secuenciales.
 
 ### Limpieza realizada (2026-05-19)
 
@@ -135,7 +155,9 @@ Se eliminaron **22 registros duplicados** de Supabase:
 | 2026-05-08 | 6/9 | 67% | revisor-arq.vercel.app | Corpus 9,453ch, 3 fallos por Groq RPM |
 | 2026-05-19 | 9/9 | 100% | revisor-arq.vercel.app | Línea base, latencia 1.7s avg |
 | 2026-05-19 | 24/24 | 100% | revisor-arq.vercel.app | Expansión sectoriales + traps Fase 3+4+7 |
-| **2026-05-20** | **29/29** | **100% ✅** | **revisor-arq.vercel.app** | **+5 traps nuevos (borde costero, Zona Típica, EIA, área verde, copropiedad)** |
+| 2026-05-20 | 29/29 | 100% | revisor-arq.vercel.app | +5 traps nuevos (borde costero, Zona Típica, EIA, área verde, copropiedad) |
+| 2026-05-24 | 34/34 | 100% | revisor-arq.vercel.app | +5 accesibilidad DS-50, +5 sectoriales (Ley 17288, 21442 gastos, accesibilidad trap) |
+| **2026-06-02** | **34/34** | **100% ✅** | **revisor-arq.vercel.app** | **Post-corpus CGR 60 dictámenes. Calibración guardrail ley19300 (frase prohibida amplia→4 patrones específicos)** |
 
 ### Casos del eval (29/29 pasando al 2026-05-20)
 
@@ -262,7 +284,7 @@ consultas (id, pregunta, modo, respuesta, chunks_usados, modelo, latencia_ms, ..
 
 ---
 
-## 8. ESTADO ACTUAL Y PRÓXIMOS PASOS (2026-05-23)
+## 8. ESTADO ACTUAL Y PRÓXIMOS PASOS (2026-06-02)
 
 ### ✅ Completado y funcionando
 
@@ -271,36 +293,37 @@ consultas (id, pregunta, modo, respuesta, chunks_usados, modelo, latencia_ms, ..
 | Deploy producción | ✅ https://revisor-arq.vercel.app |
 | Cadena LLM gratuita | ✅ Cerebras → DeepSeek → Gemini → OpenRouter → Groq |
 | Todas las env vars en Vercel | ✅ Verificadas 2026-05-19 |
-| Corpus limpio | ✅ 326 normas · ~21.500 chunks · sin duplicados |
-| Eval | ✅ 29/29 = 100% (2026-05-20, verificado en producción) |
-| Pipeline Legal-RAG 7 capas | ✅ motor-reglas (18 reglas), extractor-hechos, verificador, hybrid, rerank |
-| Páginas legales | ✅ T&C y privacidad vigentes desde 2026-05-23 (sin aviso beta) |
+| Corpus | ✅ ~384 normas · ~22.500+ chunks · 60 dictámenes CGR |
+| Eval | ✅ 34/34 = 100% (2026-06-02, verificado en producción) |
+| Pipeline Legal-RAG 7 capas | ✅ motor-reglas (24 reglas), extractor-hechos, verificador, hybrid, rerank |
+| Páginas legales | ✅ T&C y privacidad vigentes desde 2026-05-23 |
 | PDF modo profundo | ✅ Descargable con portada profesional |
 | Feedback thumbs up/down | ✅ Guardado en Supabase |
 | Panel admin corpus | ✅ `/corpus` (protegido) |
 | Cookie banner | ✅ Activo |
-| Health check | ✅ `/api/healthz` — DB latencia ~279ms |
-| Cron alertas BCN | ✅ Lunes 9am UTC — 4 normas monitoreadas |
-| Banners beta eliminados | ✅ Header, landing, login, pricing, OG image, T&C, privacidad |
-
-### ✅ Completado (2026-05-20 → 2026-05-23)
-
-| Tarea | Resultado |
-|---|---|
-| +5 traps nuevos en eval | ✅ Borde costero, Zona Típica CMN, SEIA, área verde, copropiedad |
-| +4 reglas-gatillo nuevas | ✅ Motor-reglas expandido (18 reglas activas) |
-| Eval 29/29 verificado en producción | ✅ `npm run eval:prod` |
-| Banners beta eliminados | ✅ 7 archivos modificados |
-| PROGRESO.md actualizado | ✅ Este documento |
+| Health check | ✅ `/api/healthz` |
+| Cron alertas BCN | ✅ Endpoint activo — 4 normas monitoreadas |
+| BCN deep-links | ✅ Chips de fuentes son links a BCN/MINVU (`bcn-links.ts`) |
+| Indicador de confianza | ✅ Badge post-retrieval en cada respuesta (`confianza.ts`) |
+| PWA | ✅ `manifest.webmanifest` + `sw.js` + página offline + `RegisterSW` |
+| Upload de PDF | ✅ `/api/parse-doc` con pdf-parse (max 5MB, 8000 chars) |
+| Tests E2E | ✅ Playwright configurado (`playwright.config.ts`, `e2e/chat.spec.ts`) |
+| Extracción estructurada (AI SDK) | ✅ `extraer-parametros/vacios/cronologia`, `detector-calculadoras` via `@ai-sdk/google` |
+| Calculadoras interactivas | ✅ `calc-constructibilidad.tsx`, `calc-estacionamientos.tsx` |
+| Guías temáticas (scaffold) | ✅ `src/app/guias/page.tsx` esqueleto listo |
+| Newsletter form | ✅ `newsletter-form.tsx` creado |
 
 ### ⏳ Pendiente
 
 | Tarea | Prioridad | Detalle |
 |---|---|---|
-| Revisión legal formal por abogado | ✅ Completada 2026-05-23 | T&C y privacidad revisados y aprobados |
-| Stripe / monetización | 🟢 Baja | Scaffolding ya existe |
-| Scraper BCN para DDUs históricos faltantes | 🟢 Baja | Ver análisis abajo — bajo valor normativo |
-| CGR dictámenes como corpus separado | ⏳ Largo plazo | — |
+| Stripe / monetización | 🟢 Baja | Scaffolding ya existe en `/pricing` |
+| Desplegar features v2 a Vercel | 🟡 Media | Build local pasa; falta push+deploy |
+| Playwright: instalar browsers en CI | 🟡 Media | `npx playwright install --with-deps chromium` |
+| Newsletter API + migración SQL | 🟡 Media | Requiere `RESEND_API_KEY` nueva env var |
+| Guías temáticas: contenido editorial | 🟡 Media | Scaffold listo; falta contenido de 7 guías |
+| DDUs históricos 000–453 | 🟢 Baja | No están digitalizados en MINVU |
+| SENTRY_DSN en Vercel | 🟢 Baja | Sentry config ya existe; solo falta env var |
 
 ---
 
@@ -406,4 +429,6 @@ cd app && vercel env ls
 | 2026-05-19 | Cerebras como primario, corpus limpio (326 normas), eval 9/9 = 100%, deploy |
 | 2026-05-19 | Motor-reglas v1 (compuerta normativa), extractor-hechos, verificador coherencia |
 | 2026-05-20 | +5 traps nuevos eval-set, 4 reglas-gatillo adicionales, eval 29/29 producción |
-| **2026-05-23** | **Banners beta eliminados, T&C y privacidad actualizados, revisión legal completada — lanzamiento público desbloqueado** |
+| 2026-05-23 | Banners beta eliminados, T&C y privacidad actualizados, revisión legal completada — lanzamiento público desbloqueado |
+| 2026-05-24 | +5 casos eval (accesibilidad DS-50, patrimonio), eval 34/34, CGR 2 dictámenes base |
+| **2026-06-02** | **Corpus CGR 2→60 dictámenes, motor-reglas 18→24, eval 34/34 mantenido, features v2 (PWA, E2E, parse-doc, AI SDK extractors, BCN links, confianza)** |
