@@ -209,7 +209,9 @@ export const EVAL_SET: EvalCase[] = [
       "art. 450 dispone",
       "art. 450 señala",
       "art. 450 indica",
-      "compensación obligatoria de emisiones",
+      // "compensación obligatoria de emisiones" removido: frase demasiado amplia —
+      // aparece también en negativas correctas ("no existe tal compensación").
+      // Los cuatro patrones art.450 ya cubren la alucinación afirmativa.
     ],
     minFuentes: 0,
   },
