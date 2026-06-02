@@ -99,6 +99,46 @@ export const CGR_DICTAMENES: CGRDictamenMeta[] = [
     titulo: "Áreas de preservación ecológica en IPT constituyen áreas bajo protección oficial para efectos del SEIA (Art. 10 letra p Ley 19.300)",
     materia: "LEY-19300",
   },
+
+  // ── Art. 55 LGUC + DL 3.516 — predios rústicos y autorizaciones rurales ──
+  {
+    numero: "E422376",
+    anio: "2023",
+    titulo: "Predios subdivididos bajo DL 3.516 quedan sujetos a prohibición de cambio de destino del Art. 55 LGUC — DOM debe exigir autorizaciones SEREMI + SAG",
+    materia: "LGUC",
+  },
+
+  // ── Ley 19.300 — SEIA y permisos de edificación (caso factibilidad + sombras)
+  {
+    numero: "90563",
+    anio: "2016",
+    titulo: "Permiso de edificación, factibilidad de servicios, proyección de sombras y evaluación ambiental — alcance de la DOM al otorgar permisos",
+    materia: "LEY-19300",
+  },
+
+  // ── LGUC Art. 116 — ITO y control de calidad de obras ────────────────────
+  {
+    numero: "32846",
+    anio: "2019",
+    titulo: "Juridicidad de permisos de edificación: medidas de gestión, control de calidad e inspector técnico de obras (ITO) en edificios de uso público",
+    materia: "LGUC",
+  },
+
+  // ── LGUC Art. 116 — vigencia de anteproyectos ────────────────────────────
+  {
+    numero: "32357",
+    anio: "2006",
+    titulo: "Vigencia del anteproyecto de loteo, edificación o urbanización: normas aplicables y plazo para obtener permiso definitivo (Art. 116 inc. 8 LGUC)",
+    materia: "LGUC",
+  },
+
+  // ── LGUC Art. 116 — campamentos con contenedores habitacionales ──────────
+  {
+    numero: "29101",
+    anio: "2006",
+    titulo: "Campamentos provisorios con contenedores habitacionales constituyen 'recintos habitables' según OGUC y requieren permiso de edificación y derechos municipales",
+    materia: "LGUC",
+  },
 ];
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────

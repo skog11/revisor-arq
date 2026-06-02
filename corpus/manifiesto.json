@@ -3465,5 +3465,55 @@
     "hash": "8ccb7ba4a365c6ba7f1cae8b1067b0870a6063298f26c611e44814c210160bb4",
     "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\E39766_2020.txt",
     "chars": 19857
+  },
+  "CGR-E422376-2023": {
+    "tipo": "CGR",
+    "numero": "E422376-2023",
+    "titulo": "Predios subdivididos bajo DL 3.516 quedan sujetos a prohibición de cambio de destino del Art. 55 LGUC — DOM debe exigir autorizaciones SEREMI + SAG",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/3CFC06A109C78B2684258A780045F85E",
+    "fecha_descarga": "2026-06-02",
+    "hash": "ce3707da96ecf8ba78c13633cea4a8c173b5d0a9f55815bdc6943b7e1a33f75c",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\E422376_2023.txt",
+    "chars": 12580
+  },
+  "CGR-90563-2016": {
+    "tipo": "CGR",
+    "numero": "90563-2016",
+    "titulo": "Permiso de edificación, factibilidad de servicios, proyección de sombras y evaluación ambiental — alcance de la DOM al otorgar permisos",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/1FF17C4C4787419703258091006C65AC",
+    "fecha_descarga": "2026-06-02",
+    "hash": "5b9834973d5e30d8d3f1c7e35d98cae30b57ef141eff79c33bbe8e5920490a0a",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\90563_2016.txt",
+    "chars": 5796
+  },
+  "CGR-32846-2019": {
+    "tipo": "CGR",
+    "numero": "32846-2019",
+    "titulo": "Juridicidad de permisos de edificación: medidas de gestión, control de calidad e inspector técnico de obras (ITO) en edificios de uso público",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/B953ADD2F7497DAD842584E000552CAB",
+    "fecha_descarga": "2026-06-02",
+    "hash": "e5313c228c9e612ede03cafb4fdd43f06ce7829947ff5a06b890b694cc6ec895",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\32846_2019.txt",
+    "chars": 33329
+  },
+  "CGR-32357-2006": {
+    "tipo": "CGR",
+    "numero": "32357-2006",
+    "titulo": "Vigencia del anteproyecto de loteo, edificación o urbanización: normas aplicables y plazo para obtener permiso definitivo (Art. 116 inc. 8 LGUC)",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/C9F0F45FD1A23480842571BD004FA90D",
+    "fecha_descarga": "2026-06-02",
+    "hash": "638a45a2d654ceea703b5a3b875f7d26ac70b9d29bc78e280eec02b519a809aa",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\32357_2006.txt",
+    "chars": 9188
+  },
+  "CGR-29101-2006": {
+    "tipo": "CGR",
+    "numero": "29101-2006",
+    "titulo": "Campamentos provisorios con contenedores habitacionales constituyen 'recintos habitables' según OGUC y requieren permiso de edificación y derechos municipales",
+    "url_fuente": "http://172.30.21.160/842577F8004BAD41/0/72388F5771978029842571BD004F03DF",
+    "fecha_descarga": "2026-06-02",
+    "hash": "3b8c349e8d115b734dd1c9a6a4976a3b97aa34c068705e0b95074622214eb068",
+    "archivo": "C:\\00_CLAUDE CODE\\REVISOR-ARQ\\corpus\\CGR\\29101_2006.txt",
+    "chars": 5076
   }
 }

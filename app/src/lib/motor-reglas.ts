@@ -70,7 +70,7 @@ export const REGLAS_INICIALES: ReglaGatillo[] = [
       co_ocurrencia: ["zona rural", "subdivid"],
       excepciones: [],
     },
-    forzar_normas: ["LGUC", "CGR-9443-2000", "CGR-2663-2003", "CGR-30457-2016"],
+    forzar_normas: ["LGUC", "CGR-9443-2000", "CGR-2663-2003", "CGR-30457-2016", "CGR-E422376-2023"],
     efecto: "requerir_revision",
     mensaje_experto:
       "El Art. 55 de la LGUC restringe la subdivisión y edificación en zonas rurales: requiere autorización previa de SEREMI MINVU " +
@@ -304,6 +304,45 @@ export const REGLAS_INICIALES: ReglaGatillo[] = [
       "Ningún particular puede obtener permiso de edificación permanente sobre ellos. " +
       "Una autorización municipal de uso temporal (ferias, eventos) no habilita construcción permanente. " +
       "La respuesta NO puede concluir que la instalación permanente es posible.",
+  },
+
+  // ── Regla: ITO obligatorio en edificios de uso público ────────────────────
+
+  {
+    id: "ito-edificio-publico",
+    descripcion:
+      "El Inspector Técnico de Obras (ITO) es obligatorio en edificios de uso público; las medidas de control de calidad deben estar en obra durante ejecución y acompañarse en la recepción, no en el permiso.",
+    cuando: {
+      co_ocurrencia: ["inspector técnico", "uso público"],
+      excepciones: [],
+    },
+    forzar_normas: ["LGUC", "CGR-32846-2019"],
+    efecto: "requerir_revision",
+    mensaje_experto:
+      "Conforme al Dictamen CGR N° 32.846/2019, el ITO (Inspector Técnico de Obras) es obligatorio en edificaciones de uso público. " +
+      "Las medidas de gestión y control de calidad de obras deben estar disponibles en obra durante toda su ejecución y " +
+      "acompañarse con la solicitud de recepción definitiva —no con el permiso de edificación—. " +
+      "La respuesta debe distinguir claramente qué se exige en la etapa de permiso versus en la etapa de recepción.",
+  },
+
+  // ── Regla: vigencia del anteproyecto aprobado ──────────────────────────────
+
+  {
+    id: "anteproyecto-vigencia",
+    descripcion:
+      "El anteproyecto aprobado por la DOM genera un marco de certeza normativa temporal: la DOM debe respetar sus condiciones durante el plazo OGUC, salvo cambios normativos específicos.",
+    cuando: {
+      co_ocurrencia: ["anteproyecto", "permiso"],
+      excepciones: ["sin anteproyecto", "no tiene anteproyecto"],
+    },
+    forzar_normas: ["LGUC", "OGUC", "CGR-32357-2006"],
+    efecto: "requerir_revision",
+    mensaje_experto:
+      "Conforme al Art. 116 inc. 8 LGUC y Dictamen CGR N° 32.357/2006, la aprobación de un anteproyecto por la DOM genera " +
+      "derechos adquiridos para el interesado: la DOM debe respetar las normas urbanísticas vigentes al momento del anteproyecto " +
+      "durante el plazo que fije la OGUC para obtener el permiso definitivo. " +
+      "Si entre la aprobación del anteproyecto y la solicitud del permiso hubo cambio de plan regulador, " +
+      "la respuesta debe analizar si opera el derecho adquirido del anteproyecto o rigen las nuevas normas.",
   },
 
   // ── Regla: permiso de demolición previo ────────────────────────────────────
