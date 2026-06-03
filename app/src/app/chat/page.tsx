@@ -513,6 +513,107 @@ export default function ChatPage() {
                   </div>
                 </motion.section>
 
+                {/* ── 4. Guía rápida de funcionalidades ──────── */}
+                <motion.section
+                  className="w-full max-w-lg"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.30 }}
+                >
+                  <p
+                    className="mb-3"
+                    style={{
+                      fontSize:      10.5,
+                      fontWeight:    500,
+                      letterSpacing: "0.08em",
+                      textTransform: "uppercase",
+                      color:         "var(--ink-4)",
+                    }}
+                  >
+                    Qué puedes hacer
+                  </p>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {[
+                      {
+                        icono: "🎛️",
+                        titulo: "Contexto del proyecto",
+                        desc: "Define zona (urbana/rural), destino y régimen legal antes de consultar para obtener resultados más precisos.",
+                        accion: () => setModalContextoOpen(true),
+                      },
+                      {
+                        icono: "📎",
+                        titulo: "Sube un documento",
+                        desc: "Adjunta un PDF, plano o resolución. La IA lo lee e integra como contexto en tu consulta.",
+                        accion: () => fileInputRef.current?.click(),
+                      },
+                      {
+                        icono: "🔬",
+                        titulo: "Modo Profundo + PDF",
+                        desc: "Analiza cruces normativos LGUC/OGUC/DDU y exporta el resultado como informe técnico PDF firmable.",
+                        accion: () => setModo("profundo"),
+                      },
+                      {
+                        icono: "📊",
+                        titulo: "Fuentes verificables",
+                        desc: "Cada respuesta muestra las fuentes con cita literal y deep-link directo a la BCN para verificación.",
+                        accion: null,
+                      },
+                    ].map((feat) => (
+                      <button
+                        key={feat.titulo}
+                        onClick={feat.accion ?? undefined}
+                        disabled={feat.accion === null}
+                        className="text-left rounded-lg p-3 transition-colors duration-150 group"
+                        style={{
+                          background:   "var(--card-bg)",
+                          border:       "1px solid var(--rule)",
+                          cursor:       feat.accion ? "pointer" : "default",
+                        }}
+                        onMouseEnter={(e) => {
+                          if (feat.accion) (e.currentTarget as HTMLButtonElement).style.background = "var(--paper-2)";
+                        }}
+                        onMouseLeave={(e) => {
+                          (e.currentTarget as HTMLButtonElement).style.background = "var(--card-bg)";
+                        }}
+                      >
+                        <div className="flex items-center gap-2 mb-1">
+                          <span style={{ fontSize: 14 }}>{feat.icono}</span>
+                          <span
+                            style={{
+                              fontSize:   11,
+                              fontWeight: 600,
+                              color:      "var(--ink-2)",
+                            }}
+                          >
+                            {feat.titulo}
+                          </span>
+                          {feat.accion && (
+                            <span
+                              style={{
+                                fontSize:     10,
+                                color:        "var(--ink-4)",
+                                marginLeft:   "auto",
+                              }}
+                            >
+                              →
+                            </span>
+                          )}
+                        </div>
+                        <p
+                          style={{
+                            fontSize:   11.5,
+                            color:      "var(--ink-4)",
+                            lineHeight: 1.45,
+                          }}
+                        >
+                          {feat.desc}
+                        </p>
+                      </button>
+                    ))}
+                  </div>
+                </motion.section>
+
               </motion.div>
             )}
 

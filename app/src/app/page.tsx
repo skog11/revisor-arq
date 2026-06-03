@@ -45,6 +45,73 @@ const FEATURES = [
   },
 ];
 
+const FUNCIONALIDADES = [
+  {
+    icono: "🏗️",
+    titulo: "Modo Arquitecto",
+    color: "var(--ra-blue)",
+    colorSoft: "var(--ra-blue-soft)",
+    desc: "Extrae automáticamente parámetros normativos: constructibilidad, altura, rasantes, distanciamientos y estacionamientos. Ideal para tomar decisiones de proyecto en fase de diseño.",
+    tips: ["Tabla de parámetros con cifras exactas", "Calculadoras interactivas integradas", "Referencia directa al artículo fuente"],
+  },
+  {
+    icono: "⚖️",
+    titulo: "Modo Abogado",
+    color: "var(--terracotta)",
+    colorSoft: "var(--terracotta-soft)",
+    desc: "Entrega el texto literal íntegro de cada artículo citado, con jerarquía de fuentes (LGUC > OGUC > DDU). Diseñado para redactar informes, recursos o certificados legales.",
+    tips: ["Cita textual completa del artículo", "Jerarquía normativa explícita", "Normas concordantes detectadas"],
+  },
+  {
+    icono: "🔬",
+    titulo: "Modo Profundo",
+    color: "var(--ra-green)",
+    colorSoft: "var(--ra-green-soft)",
+    desc: "Análisis de cruces normativos LGUC/OGUC/DDU. Detecta qué norma prevalece, vacíos legales y la ruta de cumplimiento. Incluye cronología normativa y exportación como informe PDF profesional.",
+    tips: ["Vacíos y conflictos normativos", "Cronología de modificaciones", "Exportar PDF firmable"],
+  },
+  {
+    icono: "📎",
+    titulo: "Sube tu documento",
+    color: "var(--ink-2)",
+    colorSoft: "var(--paper-2)",
+    desc: "Adjunta un PDF, imagen o texto plano con los antecedentes de tu proyecto (planos, informes, resoluciones). La IA los lee e integra como contexto en tu consulta.",
+    tips: ["PDF, imagen o texto plano", "Se inyecta como contexto automático", "Elimínalo cuando ya no lo necesites"],
+  },
+  {
+    icono: "🎛️",
+    titulo: "Contexto del proyecto",
+    color: "var(--terracotta)",
+    colorSoft: "var(--terracotta-soft)",
+    desc: "Define los parámetros base: zona urbana o rural, destino de la edificación, año del permiso original y régimen legal especial (DFL-2, Ley del Mono, Patrimonio). La IA descarta normas que no aplican.",
+    tips: ["Zona urbana, rural o extensión urbana", "Año permiso original (norma preexistente)", "DFL-2, Copropiedad, Patrimonio, Ley del Mono"],
+  },
+  {
+    icono: "📊",
+    titulo: "Panel de fuentes verificables",
+    color: "var(--ink-3)",
+    colorSoft: "var(--paper-2)",
+    desc: "Cada respuesta muestra las fuentes normativas utilizadas con número de artículo y fragmento literal. Haz clic para abrir directamente en la Biblioteca del Congreso Nacional (BCN).",
+    tips: ["Fragmento literal de cada chunk", "Deep-link directo a BCN", "Indicador de confianza (alta/media/baja)"],
+  },
+  {
+    icono: "🧮",
+    titulo: "Calculadoras interactivas",
+    color: "var(--ra-blue)",
+    colorSoft: "var(--ra-blue-soft)",
+    desc: "En modo Arquitecto, si la consulta involucra constructibilidad o estacionamientos, aparece una calculadora interactiva integrada en la respuesta. Ingresa los metros cuadrados de tu terreno y obtén el resultado al instante.",
+    tips: ["Calc. de constructibilidad máxima", "Calc. de estacionamientos requeridos", "Aparece automáticamente según la consulta"],
+  },
+  {
+    icono: "📄",
+    titulo: "Informe PDF profesional",
+    color: "var(--ra-green)",
+    colorSoft: "var(--ra-green-soft)",
+    desc: "En modo Profundo, cada respuesta genera un informe técnico descargable en PDF con portada profesional, citas normativas, datos del proyecto y el análisis completo. Listo para entregar a la DOM o tribunal.",
+    tips: ["Portada con datos del proyecto", "Citas normativas formateadas", "Apto para presentar ante autoridad"],
+  },
+];
+
 const DEMO_MESSAGES = [
   {
     who: "Arquitecto",
@@ -574,6 +641,120 @@ export default function HomePage() {
               </p>
             </motion.div>
           ))}
+        </div>
+      </section>
+
+      {/* ── GUÍA DE FUNCIONALIDADES ──────────────────────── */}
+      <section
+        id="funcionalidades"
+        className="px-5 py-12 sm:px-8 lg:px-16 lg:py-20"
+        style={{ borderTop: "1px solid var(--rule)", background: "var(--paper-2)" }}
+      >
+        <div
+          className="mb-3"
+          style={{
+            fontFamily: "var(--font-jetbrains-mono)",
+            fontSize: 11,
+            color: "var(--ink-3)",
+            textTransform: "uppercase",
+            letterSpacing: "1.5px",
+          }}
+        >
+          Funcionalidades
+        </div>
+        <h2
+          className="mb-3"
+          style={{
+            fontFamily: "var(--font-instrument-serif)",
+            fontSize: "clamp(32px, 4vw, 48px)",
+            lineHeight: 1.05,
+            letterSpacing: "-1px",
+            color: "var(--ink)",
+            maxWidth: 640,
+          }}
+        >
+          Todo lo que puedes hacer con la plataforma
+        </h2>
+        <p
+          className="mb-12 text-sm leading-relaxed"
+          style={{ color: "var(--ink-3)", maxWidth: 520 }}
+        >
+          Cada herramienta está diseñada para un momento específico del flujo de trabajo. Conoce todas para sacarle el máximo partido a cada consulta.
+        </p>
+
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
+          {FUNCIONALIDADES.map((fn, i) => (
+            <motion.div
+              key={fn.titulo}
+              custom={i}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-40px" }}
+              variants={fadeUp}
+              className="rounded-xl p-5 flex flex-col gap-3"
+              style={{
+                background: "var(--card)",
+                border: "1px solid var(--rule)",
+                boxShadow: "var(--shadow-1)",
+              }}
+            >
+              {/* Header */}
+              <div className="flex items-center gap-2.5">
+                <div
+                  className="flex size-9 items-center justify-center rounded-lg text-lg shrink-0"
+                  style={{ background: fn.colorSoft }}
+                >
+                  {fn.icono}
+                </div>
+                <h4
+                  className="font-medium leading-tight"
+                  style={{ fontSize: 14, color: "var(--ink)" }}
+                >
+                  {fn.titulo}
+                </h4>
+              </div>
+
+              {/* Descripción */}
+              <p
+                className="text-sm leading-relaxed flex-1"
+                style={{ color: "var(--ink-3)", fontSize: 12.5 }}
+              >
+                {fn.desc}
+              </p>
+
+              {/* Tips */}
+              <ul className="flex flex-col gap-1.5 mt-auto pt-3" style={{ borderTop: "1px solid var(--rule)" }}>
+                {fn.tips.map((tip) => (
+                  <li
+                    key={tip}
+                    className="flex items-start gap-1.5 text-[11.5px] leading-snug"
+                    style={{ color: "var(--ink-4)" }}
+                  >
+                    <span
+                      className="mt-[3px] size-1.5 rounded-full shrink-0"
+                      style={{ background: fn.color }}
+                    />
+                    {tip}
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* CTA inline */}
+        <div className="mt-12 flex flex-col sm:flex-row items-center justify-between gap-4 rounded-2xl p-6 sm:p-8" style={{ background: "var(--card)", border: "1px solid var(--rule)" }}>
+          <div>
+            <p className="font-semibold mb-1" style={{ fontSize: 16, color: "var(--ink)" }}>¿Listo para probarlo?</p>
+            <p className="text-sm" style={{ color: "var(--ink-3)" }}>Sin registro. Sin tarjeta. Acceso inmediato a toda la normativa chilena.</p>
+          </div>
+          <Link
+            href="/chat"
+            className="shrink-0 inline-flex items-center gap-1.5 rounded-full px-6 py-2.5 text-sm font-medium transition-all hover:-translate-y-px hover:shadow-md"
+            style={{ background: "var(--ink)", color: "var(--paper)" }}
+          >
+            Empezar ahora →
+          </Link>
         </div>
       </section>
 
