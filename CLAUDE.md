@@ -163,13 +163,14 @@ cd app && npm run eval:prod                              # evaluaciones contra p
 
 ---
 
-## Estado actual (2026-06-02)
-- **Producción**: https://revisor-arq.vercel.app ✅ (deploy CI exitoso, último commit `2696c29`)
+## Estado actual (2026-06-02 14:45)
+- **Producción**: https://revisor-arq.vercel.app ✅ (última versión: commit `2696c29`)
+- **Guías**: **Expandidas de 3 a 7** ✅ (commit `24cb8f5`) — permiso edificación, LGUC vs OGUC, checklist residencial, cambio uso suelo
 - **LLM**: Cerebras primario (gratuito) → DeepSeek* → Gemini fast-fail → OpenRouter → Groq
 - **Retrieval**: 50 candidatos → rerank-2 top 18 · HyDE + multi-query + hybrid BM25+vector
-- **Corpus**: ~384 normas · ~22.500+ chunks · sin duplicados ✅ — incluye **60 dictámenes CGR**
+- **Corpus**: ~384 normas · ~22.500+ chunks · **59 dictámenes CGR descargados** (ingest en background)
 - **Motor-reglas**: **24 reglas-gatillo activas**
-- **Eval**: **34/34** (2026-06-02) ✅
+- **Eval**: **34/34** ✅ — sin regresiones
 
 ### Features v2 en producción
 | Feature | Archivo | Estado |
