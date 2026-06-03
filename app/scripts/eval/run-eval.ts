@@ -92,9 +92,11 @@ async function evalCaso(caso: EvalCase, baseUrl: string, intentos = 3): Promise<
     error = (err as Error).message.slice(0, 100);
   }
 
-    // Retry si es error transitorio (rate limit, TPM limit, o stream parse error)
+    // Retry si es error transitorio (rate limit, TPM limit, cold start, stream parse error)
     const esTransitorio = error && (
       error.includes("límite") ||
+      error.includes("500") ||   // cold start / error transitorio del servidor
+      error.includes("502") ||   // bad gateway (Vercel cold start)
       error.includes("503") ||
       error.includes("429") ||
       error.includes("413") ||
@@ -186,6 +188,14 @@ async function main() {
   console.log(`\n🧪 REVISOR ARQ — Evaluaciones`);
   console.log(`   URL: ${baseUrl}`);
   console.log(`   Casos: ${casos.length}\n`);
+
+  // Warmup: un healthcheck para despertar la función antes de los tests
+  if (baseUrl.includes("vercel.app") || baseUrl.includes("https://")) {
+    try {
+      await fetch(`${baseUrl}/api/healthz`, { method: "GET" }).catch(() => null);
+      await new Promise((r) => setTimeout(r, 1000));
+    } catch { /* silencioso */ }
+  }
 
   const resultados: ResultadoEval[] = [];
 
