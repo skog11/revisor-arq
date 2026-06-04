@@ -6,6 +6,7 @@ import { Send, Square, HardHat, Scale, Microscope, RotateCcw, BookOpen, Info, Pl
 import type { LucideIcon } from "lucide-react";
 import { Mensaje, type MensajeData, type Fuente } from "@/components/chat/mensaje";
 import { ContextoModal, type ContextoProyecto, CONTEXTO_INICIAL } from "@/components/chat/contexto-modal";
+import type { CuestionarioData } from "@/components/chat/cuestionario-card";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -153,9 +154,9 @@ export default function ChatPage() {
     async (textoPregunta?: string) => {
       const textoBase = (textoPregunta ?? pregunta).trim();
       if (!textoBase || cargando) return;
-      
-      const textoFinal = documentoContexto 
-        ? `${textoBase}\n\n--- CONTEXTO DEL PROYECTO (Extraído de ${nombreDocumento}) ---\n${documentoContexto}`
+
+      const textoFinal = documentoContexto
+        ? `${textoBase}\n\n--- CONTEXTO DEL PROYECTO (Extraído de ${nombreDocumento ?? "documento"}) ---\n${documentoContexto}`
         : textoBase;
 
       const userId  = crypto.randomUUID();
@@ -247,6 +248,34 @@ export default function ChatPage() {
                 setMensajes((prev) =>
                   prev.map((m) => (m.id === asistId ? { ...m, calculadora: event.data } : m))
                 );
+              } else if (event.type === "cuestionario" && event.data) {
+                // Cuestionario activo: inyectar data + callback que reenvía con respuestas
+                const cuestionarioData = event.data as CuestionarioData;
+                setMensajes((prev) =>
+                  prev.map((m) =>
+                    m.id === asistId
+                      ? {
+                          ...m,
+                          cuestionario: cuestionarioData,
+                          contenido: "",
+                          onCuestionarioSubmit: (respuestasTexto: string) => {
+                            // Reenviar la pregunta original + respuestas del cuestionario
+                            const preguntaOriginal = m.preguntaUsuario ?? pregunta;
+                            const preguntaEnriquecida = `${preguntaOriginal}\n\n---\nInformación adicional proporcionada:\n${respuestasTexto}`;
+                            // Limpiar cuestionario del mensaje
+                            setMensajes((p) =>
+                              p.map((msg) =>
+                                msg.id === asistId
+                                  ? { ...msg, cuestionario: undefined, onCuestionarioSubmit: undefined }
+                                  : msg
+                              )
+                            );
+                            enviar(preguntaEnriquecida);
+                          },
+                        }
+                      : m
+                  )
+                );
               } else if (event.type === "fuentes" && event.data) {
                 setMensajes((prev) =>
                   prev.map((m) => (m.id === asistId ? { ...m, fuentes: event.data } : m))
@@ -303,7 +332,7 @@ export default function ChatPage() {
         textareaRef.current?.focus();
       }
     },
-    [pregunta, modo, cargando]
+    [pregunta, modo, cargando, documentoContexto, nombreDocumento]
   );
 
   const detener = () => abortRef.current?.abort();

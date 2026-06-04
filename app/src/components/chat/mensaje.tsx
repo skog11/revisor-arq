@@ -9,6 +9,7 @@ import { FuentesPanel, type Fuente } from "./fuentes-panel";
 import { ParametrosCard } from "./parametros-card";
 import { VaciosCard } from "./vacios-card";
 import { CronologiaCard } from "./cronologia-card";
+import { CuestionarioCard, type CuestionarioData } from "./cuestionario-card";
 import { CalcConstructibilidad } from "./calculadoras/calc-constructibilidad";
 import { CalcEstacionamientos } from "./calculadoras/calc-estacionamientos";
 import type { ParametrosTabla } from "@/lib/extraer-parametros";
@@ -46,6 +47,8 @@ export interface MensajeData {
   vacios?: VaciosTabla;
   cronologia?: CronologiaTabla;
   calculadora?: "constructibilidad" | "estacionamientos";
+  cuestionario?: CuestionarioData;           // Cuestionario activo de clarificación
+  onCuestionarioSubmit?: (txt: string) => void; // Callback inyectado desde ChatPage
 }
 
 
@@ -329,8 +332,17 @@ function MensajeAsistente({ mensaje }: { mensaje: MensajeData }) {
               </>
             )}
 
+            {/* Cuestionario de clarificación */}
+            {!mensaje.streaming && !mensaje.error && mensaje.cuestionario && mensaje.onCuestionarioSubmit && (
+              <CuestionarioCard
+                data={mensaje.cuestionario}
+                onSubmit={mensaje.onCuestionarioSubmit}
+                accentColor={accentColor}
+              />
+            )}
+
             {/* Feedback */}
-            {!mensaje.streaming && !mensaje.error && (
+            {!mensaje.streaming && !mensaje.error && !mensaje.cuestionario && (
               <FeedbackBar consultaId={mensaje.consultaId} />
             )}
           </>

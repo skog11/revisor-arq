@@ -54,6 +54,103 @@ import { extraerParametros } from "@/lib/extraer-parametros";
 import { extraerVacios } from "@/lib/extraer-vacios";
 import { extraerCronologia } from "@/lib/extraer-cronologia";
 import { detectarCalculadora } from "@/lib/detector-calculadoras";
+import type { CuestionarioData } from "@/components/chat/cuestionario-card";
+
+// ─── Cuestionario activo ──────────────────────────────────────────────────────
+// Detecta cuándo la consulta necesita aclaraciones antes de recuperar normativa.
+// Retorna un CuestionarioData si aplica, null si no.
+
+function detectarCuestionario(
+  pregunta: string,
+  clasificacion: { confianza: string },
+  contextoProyecto?: { zonaSuelo?: string; destino?: string }
+): CuestionarioData | null {
+
+  const tieneDocumentoAdjunto = pregunta.includes("--- CONTEXTO DEL PROYECTO");
+  const preguntaVaga = /qué puedes decir|analiza|qué ves|qué dice|qué contiene|qué muestra|qué indica|qué observas|revisa este|revisa el|analiza el|analiza este/i.test(pregunta);
+  const preguntaCIP = /cip|certificado de informaciones previas/i.test(pregunta);
+
+  // Caso 1: Documento adjunto + pregunta vaga → cuestionario de análisis
+  if (tieneDocumentoAdjunto && (preguntaVaga || preguntaCIP)) {
+    const esCIP = preguntaCIP;
+    return {
+      titulo: esCIP
+        ? "Para analizar el CIP con precisión, necesito saber:"
+        : "Para analizar el documento adjunto con precisión:",
+      descripcion: "El documento ha sido leído. Con esta información identificaré las normas exactas que aplican.",
+      preguntas: [
+        {
+          id: "objetivo",
+          texto: "¿Qué desea verificar en este documento?",
+          tipo: "opciones",
+          opciones: esCIP
+            ? [
+                "Vigencia y parámetros del CIP (constructibilidad, altura, rasantes)",
+                "Comparar con la normativa actual del PRC",
+                "Detectar restricciones o alertas normativas",
+                "Preparar antecedentes para un permiso de edificación",
+              ]
+            : [
+                "Verificar cumplimiento normativo",
+                "Identificar normas aplicables",
+                "Detectar vacíos o inconsistencias",
+                "Preparar informe técnico",
+              ],
+        },
+        {
+          id: "etapa",
+          texto: "¿En qué etapa se encuentra el proyecto?",
+          tipo: "opciones",
+          opciones: [
+            "Diseño / Anteproyecto",
+            "Permiso de edificación",
+            "En construcción",
+            "Recepción definitiva",
+          ],
+        },
+      ],
+    };
+  }
+
+  // Caso 2: Baja confianza + sin contexto de proyecto → cuestionario de contexto
+  if (
+    clasificacion.confianza === "baja" &&
+    !contextoProyecto?.zonaSuelo &&
+    !contextoProyecto?.destino
+  ) {
+    return {
+      titulo: "Necesito más información para responder con precisión",
+      descripcion: "La consulta es ambigua. Con estos datos identificaré las normas correctas para su caso.",
+      preguntas: [
+        {
+          id: "zona_suelo",
+          texto: "¿El predio está dentro o fuera del límite urbano?",
+          tipo: "opciones",
+          opciones: ["Urbano", "Rural", "Extensión Urbana", "No lo sé aún"],
+        },
+        {
+          id: "destino",
+          texto: "¿Cuál es el destino principal de la edificación?",
+          tipo: "opciones",
+          opciones: [
+            "Residencial",
+            "Equipamiento (salud, educación, comercio)",
+            "Actividad Productiva / Industrial",
+            "No aplica / Otro",
+          ],
+        },
+        {
+          id: "aspecto",
+          texto: "¿Qué aspecto específico necesita resolver?",
+          tipo: "texto",
+          placeholder: "Ej: altura máxima permitida, número de estacionamientos, retiro frontal…",
+        },
+      ],
+    };
+  }
+
+  return null;
+}
 
 // ─── Validación ───────────────────────────────────────────────────────────────
 
@@ -166,8 +263,9 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: "Cuota mensual agotada. Actualiza tu plan en /pricing." }, { status: 429 });
   }
 
-  // Active Prompting / Motor de Clarificación
-  if (clasificacion.confianza === "baja" && !contextoProyecto?.zonaSuelo && !contextoProyecto?.destino) {
+  // Active Prompting / Motor de Clarificación — ahora con cuestionario estructurado
+  const cuestionarioActivo = detectarCuestionario(pregunta, clasificacion, contextoProyecto);
+  if (cuestionarioActivo) {
     const encoder3 = new TextEncoder();
     const aclaraStream = new ReadableStream({
       start(ctrl) {
@@ -175,8 +273,8 @@ export async function POST(req: NextRequest) {
           ctrl.enqueue(encoder3.encode(`data: ${JSON.stringify(e)}\n\n`));
         send({ type: "fuentes", data: [] });
         send({ type: "cruces", data: [] });
-        const mensajeAclaracion = "Para realizar el cruce normativo correcto, necesito conocer algunos parámetros base. **Por favor haz clic en el botón 'Contexto' (arriba del chat)** e indícame al menos si el suelo es Urbano/Rural y cuál es el Destino principal de tu proyecto. Una vez guardado, vuelve a consultarme.";
-        send({ type: "chunk", text: mensajeAclaracion });
+        // Enviar cuestionario estructurado
+        send({ type: "cuestionario", data: cuestionarioActivo });
         send({ type: "done" });
         ctrl.close();
       }
