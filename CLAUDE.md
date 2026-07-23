@@ -163,12 +163,13 @@ cd app && npm run eval:prod                              # evaluaciones contra p
 
 ---
 
-## Estado actual (2026-06-02 14:45)
+## Estado actual (2026-07-09)
 - **Producción**: https://revisor-arq.vercel.app ✅ (última versión: commit `2696c29`)
-- **Guías**: **Expandidas de 3 a 7** ✅ (commit `24cb8f5`) — permiso edificación, LGUC vs OGUC, checklist residencial, cambio uso suelo
+- **Rumbo**: proyecto postulado a **Semilla Inicia CORFO 2026** (10 meses). Plan de evolución de 4 fases en `PLAN-IMPLEMENTACION.md`; fundamento en `revision-critica-plan-evolucion.md`
+- **Guías**: 7 ✅ — permiso edificación, LGUC vs OGUC, checklist residencial, cambio uso suelo
 - **LLM**: Cerebras primario (gratuito) → DeepSeek* → Gemini fast-fail → OpenRouter → Groq
 - **Retrieval**: 50 candidatos → rerank-2 top 18 · HyDE + multi-query + hybrid BM25+vector
-- **Corpus**: ~384 normas · ~22.500+ chunks · **59 dictámenes CGR descargados** (ingest en background)
+- **Corpus**: ~384 normas · ~22.500+ chunks · 60 dictámenes CGR
 - **Motor-reglas**: **24 reglas-gatillo activas**
 - **Eval**: **34/34** ✅ — sin regresiones
 
@@ -201,14 +202,23 @@ cd app && npm run eval:prod                              # evaluaciones contra p
 ### Ingesta CGR — advertencia técnica
 **No usar `bash &` para paralelizar `npm run corpus:ingest`**: bypasea el delay interno `BETWEEN_NORMAS_MS=1500ms` y causa race conditions en Voyage AI + Supabase. Usar siempre `--solo=KEY` de a uno o en lotes pequeños secuenciales.
 
-## Prioridades actuales
-1. **`RESEND_API_KEY`** — agregar en Vercel dashboard para activar emails de confirmación de newsletter (backend ya listo)
-2. **Guías: más contenido** — expandir a 7 guías y agregar páginas individuales con más detalle
-3. Stripe / monetización — baja prioridad, `/pricing` preparado
-4. DDUs históricos 000–453 — largo plazo
+## Prioridades actuales — Fase 0 del plan CORFO (mes 1)
+1. **0.1 Telemetría de consultas** — tabla `consultas_log` (consulta, reglas disparadas, casi-disparos, chunks, confianza, feedback) + dashboard en `/corpus`
+2. **0.2 Golden set 34 → 100+** con 3 métricas separadas: recall retrieval / fidelidad de cita / corrección de conclusión
+3. **0.3 Migrar reglas-gatillo a Supabase** — tabla `reglas_gatillo` con embedding de condición; motor lee de BD con caché
+4. **0.4 Ciclo feedback → eval** — thumbs-down genera caso candidato en cola de revisión
+5. `RESEND_API_KEY` en Vercel (newsletter, backend listo)
+
+**Siguientes fases** (no empezar sin completar Fase 0): Fase 1 = corpus territorial PRC Biobío (hito CORFO mes 5, tabla `prc_zonas` estructurada + retrieval por comuna) · Fase 2 = algoritmo v3 (verificación citas a nivel fragmento, conflictos v2, grafo en retrieval) + Tier Público two-pass · Fase 3 = pagos CLP y lanzamiento.
+
+**Reglas de diseño del plan (no negociables):**
+- Tier Público = capa de presentación sobre respuesta verificada; **nunca** un pipeline degradado sin verificación
+- PRC: **nunca mezclar chunks de comunas distintas** en una respuesta; parámetros de zona salen de `prc_zonas` (lookup determinístico), no de chunks
+- Verificación de citas: objetivo mover de "nº de artículo existe" a "fragmento citado es literal" (fuzzy-match + regeneración)
 
 → Detalle técnico en `PROGRESO.md`
-→ Roadmap completo en `PLAN-IMPLEMENTACION.md`
+→ Roadmap completo con KPIs en `PLAN-IMPLEMENTACION.md`
+→ Análisis crítico que fundamenta el plan en `revision-critica-plan-evolucion.md`
 
 ## LLM — notas de proveedores gratuitos
 - **Cerebras**: sin RPM agresivo, hardware dedicado CS-3, qwen-3-235b (235B params)

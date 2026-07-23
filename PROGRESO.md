@@ -1,8 +1,8 @@
 # PROGRESO — REVISOR ARQ
 
 > Documento vivo para continuidad entre sesiones de IA.
-> Última actualización: **2026-06-02**.
-> Leer junto con `PLAN-IMPLEMENTACION.md` y `CLAUDE.md`.
+> Última actualización: **2026-07-09**.
+> Leer junto con `PLAN-IMPLEMENTACION.md`, `CLAUDE.md` y `revision-critica-plan-evolucion.md`.
 
 ---
 
@@ -284,7 +284,27 @@ consultas (id, pregunta, modo, respuesta, chunks_usados, modelo, latencia_ms, ..
 
 ---
 
-## 8. ESTADO ACTUAL Y PRÓXIMOS PASOS (2026-06-02)
+## 8. ESTADO ACTUAL Y PRÓXIMOS PASOS (2026-07-09)
+
+### 🧭 Rumbo estratégico — plan CORFO Semilla Inicia
+
+El 2026-07-09 se hizo una **revisión crítica completa** del proyecto y del algoritmo (ver `revision-critica-plan-evolucion.md`) y se reescribió `PLAN-IMPLEMENTACION.md` con un plan de 4 fases alineado a los hitos de la postulación Semilla Inicia (10 meses):
+
+| Fase | Meses | Foco |
+|---|---|---|
+| 0 — Fundamentos | 1 | Telemetría, golden set 100+, reglas a BD, ciclo feedback→eval |
+| 1 — Corpus territorial Biobío | 2–5 | PRCs Concepción/Hualpén/Los Ángeles estructurados (`prc_zonas`), retrieval por comuna, minería de reglas, poblar grafo |
+| 2 — Algoritmo v3 + Tier Público | 4–8 | Verificación de citas a nivel fragmento, conflictos v2, grafo en retrieval, modo público two-pass, cuentas/límites, pilotos |
+| 3 — Lanzamiento comercial | 8–10 | Pasarela CLP (Flow/Khipu), tiers, early adopters, primera venta |
+
+**Hallazgos clave de la revisión crítica** (resumen; detalle en el documento):
+1. El cruce normativo actual es léxico (substring/regex), no estructural — frágil y de escalamiento manual.
+2. El detector de conflictos detecta vocabulario restrictivo, no conflictos reales entre normas.
+3. El grafo (`norm_relations`) solo decora el prompt; debe dirigir el retrieval y poblarse automáticamente.
+4. El validador verifica el nº de artículo pero **no** que la cita "literal" sea literal — mayor riesgo reputacional.
+5. Sin noción de territorio (comuna/zona): bloqueante para los PRC del hito mes 5.
+
+
 
 ### ✅ Completado y en producción (2026-06-02)
 
@@ -316,15 +336,19 @@ consultas (id, pregunta, modo, respuesta, chunks_usados, modelo, latencia_ms, ..
 | Cron alertas BCN | ✅ 4 normas monitoreadas |
 | Health check | ✅ `/api/healthz` ~375ms |
 
-### ⏳ Pendiente
+### ⏳ Pendiente — próximos pasos inmediatos (Fase 0 del plan)
 
 | Tarea | Prioridad | Detalle |
 |---|---|---|
-| `RESEND_API_KEY` en Vercel | 🟡 Media | Agregar en dashboard Vercel → activa emails de confirmación newsletter |
-| Guías: más contenido | 🟡 Media | Expandir a 7 guías con páginas individuales más detalladas |
-| Stripe / monetización | 🟢 Baja | Scaffolding existe, `/pricing` preparado |
-| SENTRY_DSN en Vercel | 🟢 Baja | `sentry.*.config.ts` existe; solo falta env var |
-| DDUs históricos 000–453 | 🟢 Largo plazo | No digitalizados en MINVU |
+| 0.1 Telemetría de consultas (`consultas_log` + dashboard) | 🔴 Alta | Prerequisito para auditar reglas y priorizar con datos |
+| 0.2 Golden set 34 → 100+ con 3 métricas separadas | 🔴 Alta | recall retrieval / fidelidad cita / corrección conclusión |
+| 0.3 Migrar reglas-gatillo a Supabase (tabla + embedding) | 🔴 Alta | Habilita minería (1.4) y gatillo semántico (2A.6) |
+| 0.4 Ciclo feedback → eval (thumbs-down → caso candidato) | 🟡 Media | Cierra el ciclo del feedback |
+| `RESEND_API_KEY` en Vercel | 🟡 Media | Activa emails de confirmación newsletter |
+| `SENTRY_DSN` en Vercel | 🟢 Baja | `sentry.*.config.ts` existe; solo falta env var |
+| DDUs históricos 000–453 | 🟢 Fuera de período CORFO | No digitalizados en MINVU (ver §4b) |
+
+> Roadmap completo con Fases 1–3 (PRC Biobío, algoritmo v3, Tier Público, lanzamiento) en `PLAN-IMPLEMENTACION.md`.
 
 ---
 
@@ -433,4 +457,6 @@ cd app && vercel env ls
 | 2026-05-23 | Banners beta eliminados, T&C y privacidad actualizados, revisión legal completada — lanzamiento público desbloqueado |
 | 2026-05-24 | +5 casos eval (accesibilidad DS-50, patrimonio), eval 34/34, CGR 2 dictámenes base |
 | 2026-06-02 (mañana) | Corpus CGR 2→60 dictámenes, motor-reglas 18→24, eval 34/34 mantenido, features v2 (PWA, E2E, parse-doc, AI SDK extractors, BCN links, confianza) |
-| **2026-06-02 (tarde)** | **Newsletter backend completo (SQL+API+form), guías 3 páginas SSG, Playwright en CI, deploy producción ✅ — `2696c29`** |
+| 2026-06-02 (tarde) | Newsletter backend completo (SQL+API+form), guías 3 páginas SSG, Playwright en CI, deploy producción ✅ — `2696c29` |
+| 2026-07-09 | Revisión crítica del proyecto y algoritmo (`revision-critica-plan-evolucion.md`) + plan de evolución CORFO 4 fases · `PLAN-IMPLEMENTACION.md` reescrito · README y CLAUDE.md actualizados |
+| **2026-07-10** | **Consolidación de ~90 mejoras propuestas (`00_MEJORAS POR IMPLEMENTAR/consolidado-mejoras-plan.md`): 20 nuevas aceptadas e integradas al plan (0.5–0.10, 1.7–1.10, 2A.7–2A.8, 2B.6–2B.8, 2C.4–2C.6, 3.7–3.10), ~15 descartadas con razón, ~9 detectadas como ya implementadas. Hallazgos: caché semántica posiblemente muerta en prod (migración ausente), TTFT largo enmascara el streaming, mockup de informe técnico profesional adoptado como feature 2B.6** |

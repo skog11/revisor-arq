@@ -249,3 +249,139 @@
 .guia-content strong { color: var(--ink); font-weight: 600; }
 .guia-content pre { border-radius: 8px; overflow-x: auto; font-size: 12px; line-height: 1.5; }
 .guia-content a { color: var(--terracotta); text-decoration: underline; text-underline-offset: 2px; }
+
+/* ══════════════════════════════════════════════════════════
+ * SCROLL-WORLD — 3D parallax & immersive scroll utilities
+ * ══════════════════════════════════════════════════════════ */
+
+/* Missing ra-blue alias — used in page.tsx, maps to mode-arq */
+:root {
+    --ra-blue:      var(--mode-arq);
+    --ra-blue-soft: var(--mode-arq-soft);
+}
+.dark {
+    --ra-blue:      var(--mode-arq);
+    --ra-blue-soft: var(--mode-arq-soft);
+}
+
+/* ── Perspective container ─────────────────────────────── */
+.perspective-container {
+    perspective: 1200px;
+    perspective-origin: center center;
+}
+
+.preserve-3d {
+    transform-style: preserve-3d;
+}
+
+/* ── Parallax layers ───────────────────────────────────── */
+.parallax-layer {
+    position: absolute;
+    inset: 0;
+    will-change: transform;
+}
+
+.parallax-layer--back   { transform: translateZ(-300px) scale(1.25); }
+.parallax-layer--mid    { transform: translateZ(-150px) scale(1.125); }
+.parallax-layer--front  { transform: translateZ(0); }
+
+/* ── Scroll-world section transitions ──────────────────── */
+.scroll-section {
+    position: relative;
+    overflow: hidden;
+}
+
+.scroll-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.scroll-section--arq::before {
+    background: radial-gradient(ellipse at 30% 50%, var(--mode-arq-soft) 0%, transparent 70%);
+}
+
+.scroll-section--abg::before {
+    background: radial-gradient(ellipse at 70% 50%, var(--mode-abg-soft) 0%, transparent 70%);
+}
+
+.scroll-section--pro::before {
+    background: radial-gradient(ellipse at 50% 30%, var(--mode-pro-soft) 0%, transparent 70%);
+}
+
+.scroll-section.in-view::before {
+    opacity: 1;
+}
+
+/* ── 3D card hover ─────────────────────────────────────── */
+.card-3d {
+    transform-style: preserve-3d;
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.card-3d:hover {
+    transform: rotateY(-4deg) rotateX(2deg) translateZ(12px);
+}
+
+/* ── Grid lines decorative ─────────────────────────────── */
+.grid-lines {
+    background-image:
+        linear-gradient(var(--rule) 1px, transparent 1px),
+        linear-gradient(90deg, var(--rule) 1px, transparent 1px);
+    background-size: 60px 60px;
+}
+
+/* ── Floating elements animation ───────────────────────── */
+@keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50%      { transform: translateY(-12px) rotate(1deg); }
+}
+
+@keyframes float-delayed {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50%      { transform: translateY(-8px) rotate(-1.5deg); }
+}
+
+.animate-float         { animation: float 6s ease-in-out infinite; }
+.animate-float-delayed { animation: float-delayed 7s ease-in-out 1s infinite; }
+
+/* ── Glow pulse for hero accents ───────────────────────── */
+@keyframes glow-pulse {
+    0%, 100% { opacity: 0.4; filter: blur(40px); }
+    50%      { opacity: 0.7; filter: blur(60px); }
+}
+
+.glow-orb {
+    border-radius: 50%;
+    animation: glow-pulse 5s ease-in-out infinite;
+    pointer-events: none;
+}
+
+/* ── Reduced motion ────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+    .animate-float,
+    .animate-float-delayed,
+    .glow-orb {
+        animation: none !important;
+    }
+    .card-3d:hover {
+        transform: none;
+    }
+    .parallax-layer--back,
+    .parallax-layer--mid {
+        transform: none;
+    }
+}
+
+/* ── Scroll-snap (optional, smooth sections) ───────────── */
+.scroll-snap-container {
+    scroll-snap-type: y proximity;
+}
+
+.scroll-snap-section {
+    scroll-snap-align: start;
+}
