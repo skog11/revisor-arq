@@ -30,6 +30,7 @@ Thumbs.db
 .claude/projects/
 .claude/cache/
 *.jsonl
+.worktrees/
 
 # Corpus — archivos binarios y textos grandes (no versionar, solo estructura)
 corpus/**/*.pdf
