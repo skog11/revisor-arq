@@ -1,0 +1,42 @@
+name: Regresión determinística
+
+on:
+  schedule:
+    # Lunes 10:00 UTC: separado del monitor de vigencia para aislar fallos.
+    - cron: "0 10 * * 1"
+  workflow_dispatch:
+
+# No ejecuta evaluaciones conversacionales ni llama al endpoint /api/chat:
+# esas pruebas consumen LLM y requieren una alerta/autoridad explícita.
+permissions:
+  contents: read
+
+concurrency:
+  group: regression-deterministica
+  cancel-in-progress: false
+
+jobs:
+  unit-and-build:
+    name: Pruebas unitarias y compilación
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Instalar dependencias bloqueadas
+        working-directory: app
+        run: npm ci
+
+      - name: Ejecutar regresión determinística
+        working-directory: app
+        run: npm run test
+
+      - name: Verificar compilación
+        working-directory: app
+        run: npm run build

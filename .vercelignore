@@ -1,0 +1,13 @@
+# Material local y resultados de desarrollo: el runtime usa Supabase, no estos archivos.
+.git
+.worktrees
+corpus
+NORMAS
+00_FRONTEND
+00_MEJORAS POR IMPLEMENTAR
+.superpowers
+
+# Dependencias y artefactos se instalan/generan en Vercel.
+app/node_modules
+app/.next
+app/.vercel

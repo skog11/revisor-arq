@@ -46,3 +46,5 @@ corpus/00_control/
 ingestar_ddu_masiva.sh
 ingestar_normativa_masiva.sh
 NORMAS/
+
+.vercel
