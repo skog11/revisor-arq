@@ -33,7 +33,7 @@ const NORMAS: NormaBCN[] = [
     idNorma: "13560",
     dir: join(CORPUS_ROOT, "lguc"),
     filename: "LGUC",
-    fallbackVersion: "2026-03-29",
+    fallbackVersion: "2026-06-24",
   },
   {
     tipo: "OGUC",
@@ -42,7 +42,7 @@ const NORMAS: NormaBCN[] = [
     idNorma: "8201",
     dir: join(CORPUS_ROOT, "oguc"),
     filename: "OGUC",
-    fallbackVersion: "2026-03-16",
+    fallbackVersion: "2026-06-22",
   },
 ];
 
@@ -54,7 +54,7 @@ async function detectVersionDate(idNorma: string, fallback: string): Promise<str
     const html = await res.text();
     // El HTML contiene la URL de exportación con la versión vigente
     const match = html.match(new RegExp(`hddResultadoExportar=${idNorma}\\.(\\d{4}-\\d{2}-\\d{2})`));
-    if (match) return match[1];
+    if (match && match[1] >= fallback) return match[1];
   } catch {
     // usa fallback
   }

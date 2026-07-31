@@ -18,6 +18,9 @@ export interface ManifiestoEntry {
   archivo: string;
   chars: number;
   paginas?: number;
+  anio_norma?: number;
+  organo_emisor?: string;
+  id_norma_bcn?: number;
   fecha_publicacion?: string;  // ISO date "YYYY-MM-DD" — para normas complementarias
 }
 

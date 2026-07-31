@@ -1,0 +1,2696 @@
+<?xml version="1.0" encoding="UTF-8"?><Norma xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.leychile.cl/esquemas" xsi:schemaLocation="http://www.leychile.cl/esquemas http://www.leychile.cl/esquemas/EsquemaIntercambioNorma-v1-0.xsd" normaId="1163423" esTratado="no tratado" fechaVersion="2222-02-02" SchemaVersion="1.0" derogado="no derogado">
+  <Identificador fechaPromulgacion="2021-07-27" fechaPublicacion="2021-08-07">
+    <TiposNumeros>
+      <TipoNumero>
+        <Tipo>Ley</Tipo>
+        <Numero>21364</Numero>
+      </TipoNumero>
+    </TiposNumeros>
+    <Organismos>
+      <Organismo>MINISTERIO DEL INTERIOR Y SEGURIDAD P&#218;BLICA</Organismo>
+    </Organismos>
+  </Identificador>
+  <Metadatos>
+    <TituloNorma>ESTABLECE EL SISTEMA NACIONAL DE PREVENCI&#211;N Y RESPUESTA ANTE DESASTRES, SUSTITUYE LA OFICINA NACIONAL DE EMERGENCIA POR EL SERVICIO NACIONAL DE PREVENCI&#211;N Y RESPUESTA ANTE DESASTRES, Y ADEC&#218;A NORMAS QUE INDICA</TituloNorma>
+    <Materias>
+      <Materia>Sistema Nacional de Emergencia y Protecci&#243;n Civil</Materia>
+      <Materia>Agencia Nacional de Protecci&#243;n Civil</Materia>
+      <Materia>Oficina Nacional de Emergencia</Materia>
+      <Materia> Sistema Nacional de Prevenci&#243;n y Respuesta ante Desastres</Materia>
+      <Materia>Comit&#233; Nacional para la Gesti&#243;n del Riesgo de Desastres</Materia>
+      <Materia>Gesti&#243;n del Riesgo de Desastres</Materia>
+      <Materia>Reducci&#243;n del Riesgo de Desastres</Materia>
+    </Materias>
+    
+    
+    <IdentificacionFuente>Diario Oficial</IdentificacionFuente>
+    <NumeroFuente>43022</NumeroFuente>
+  </Metadatos>
+  <Encabezado fechaVersion="2021-08-07" derogado="no derogado">
+    <Texto>
+LEY N&#218;M. 21.364
+      
+ESTABLECE EL SISTEMA NACIONAL DE PREVENCI&#211;N Y RESPUESTA
+ANTE DESASTRES, SUSTITUYE LA OFICINA NACIONAL DE EMERGENCIA
+POR EL SERVICIO NACIONAL DE PREVENCI&#211;N Y RESPUESTA ANTE
+DESASTRES, Y ADEC&#218;A NORMAS QUE INDICA
+ 
+     Teniendo presente que el H. Congreso Nacional ha dado
+su aprobaci&#243;n al siguiente
+      
+     Proyecto de ley:</Texto>
+  </Encabezado>
+  <EstructurasFuncionales>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257826">
+      <Texto>     "T&#205;TULO PRELIMINAR
+      
+     DISPOSICIONES GENERALES Y PRINCIPIOS
+                    </Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">T&#205;TULO PRELIMINAR DISPOSICIONES GENERALES Y PRINCIPIOS</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257827">
+          <Texto>     Art&#237;culo 1.- DEL SISTEMA NACIONAL DE PREVENCI&#211;N Y
+RESPUESTA ANTE DESASTRES. Cr&#233;ase el Sistema Nacional de
+Prevenci&#243;n y Respuesta ante Desastres, en adelante "el
+Sistema", conformado por el conjunto de entidades p&#250;blicas
+y privadas con competencias relacionadas con las fases del
+ciclo del riesgo de desastres, que se organizan
+desconcentrada o descentralizadamente y de manera
+escalonada, desde el &#225;mbito comunal, provincial, regional y
+nacional, para garantizar una adecuada Gesti&#243;n del Riesgo
+de Desastres, y comprende las normas, pol&#237;ticas, planes y
+otros instrumentos y procedimientos atingentes a la Gesti&#243;n
+del Riesgo de Desastres.
+      </Texto>
+          <Metadatos>
+            <NombreParte presente="si">1 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257828">
+          <Texto>     Art&#237;culo 2.- DEFINICIONES. Para los efectos de esta
+ley se entender&#225; por:
+      
+     a) Amenaza: fen&#243;meno de origen natural, biol&#243;gico o
+antr&#243;pico, que puede ocasionar p&#233;rdidas, da&#241;os o
+trastornos a las personas, infraestructura, servicios, modos
+de vida o medio ambiente.
+     b) Emergencia: evento, o la inminencia de &#233;ste, que
+altere el funcionamiento de una comunidad debido a la
+manifestaci&#243;n de una amenaza de origen natural, biol&#243;gico
+o antr&#243;pico, que interacciona con las condiciones de
+exposici&#243;n, vulnerabilidad y capacidad de afrontamiento,
+ocasionando una o m&#225;s de las siguientes afectaciones:
+p&#233;rdidas, impactos humanos, materiales, econ&#243;micos o
+ambientales.
+     c) Niveles de emergencia: aquellos que se determinan
+sobre la base de la evaluaci&#243;n de un conjunto de factores y
+condiciones, tales como la extensi&#243;n de la zona afectada,
+la cantidad de personas afectadas o potencialmente afectadas
+y la capacidad de respuesta de los niveles administrativos
+involucrados.
+      
+     Conforme a lo anterior, los niveles de emergencia
+pueden ser categorizados de la siguiente forma:
+      
+     i. Emergencia Menor: situaci&#243;n con un nivel de
+afectaci&#243;n que permite ser gestionada con capacidades
+comunales y, eventualmente, con refuerzos o apoyos desde
+otras zonas, a trav&#233;s de una coordinaci&#243;n de nivel
+comunal.
+     ii. Emergencia Mayor: situaci&#243;n con un nivel de
+afectaci&#243;n que permite ser gestionada con capacidades
+regionales y, eventualmente, con refuerzos o apoyos desde
+otras zonas, a trav&#233;s de una coordinaci&#243;n de nivel
+provincial o regional.
+     iii. Desastre: situaci&#243;n con un nivel de afectaci&#243;n e
+impacto que no permite ser gestionada con capacidades
+regionales, y requiere refuerzos o apoyos desde otras zonas
+del pa&#237;s, a trav&#233;s de una coordinaci&#243;n de nivel nacional.
+     iv. Cat&#225;strofe: situaci&#243;n con un nivel de afectaci&#243;n
+e impacto que requiere de asistencia internacional, como
+apoyo a las capacidades del pa&#237;s, a trav&#233;s de una
+coordinaci&#243;n de nivel nacional.
+      
+     d) Gesti&#243;n del Riesgo de Desastres: el proceso
+continuo de car&#225;cter social, profesional, t&#233;cnico y
+cient&#237;fico de la formulaci&#243;n, ejecuci&#243;n, seguimiento y
+evaluaci&#243;n de pol&#237;ticas, planes, programas, regulaciones,
+instrumentos, est&#225;ndares, medidas y acciones permanentes
+para el conocimiento y la reducci&#243;n del riesgo de
+desastres, con el prop&#243;sito de evitar la generaci&#243;n de
+nuevos riesgos de desastres, reducir los existentes y
+gestionar el riesgo residual. Considerar&#225;, adem&#225;s de la
+organizaci&#243;n y gesti&#243;n de los recursos, las potestades y
+atribuciones que permitan hacer frente a los diversos
+aspectos de las emergencias y la administraci&#243;n de las
+diversas fases del ciclo del riesgo de desastres.
+     e) Reducci&#243;n del Riesgo de Desastres: la actividad
+orientada a la prevenci&#243;n de nuevos riesgos de desastres,
+la reducci&#243;n de los riesgos de desastres existentes y a la
+gesti&#243;n del riesgo residual, todo lo cual contribuye al
+desarrollo sostenible del pa&#237;s.
+     f) Vulnerabilidad: aquellas condiciones determinadas
+por factores o procesos f&#237;sicos, sociales, institucionales,
+econ&#243;micos o ambientales que aumentan la susceptibilidad de
+una persona, una comunidad, los bienes, infraestructuras o
+servicios, a los efectos de las amenazas.
+      </Texto>
+          <Metadatos>
+            <NombreParte presente="si">2 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257829">
+          <Texto>     Art&#237;culo 3.- FASES DEL CICLO DEL RIESGO DE DESASTRES.
+Para efectos de esta ley, se considerar&#225;n como fases del
+ciclo del riesgo de desastres, las siguientes:
+      
+     a) Fase de Mitigaci&#243;n: comprende las medidas dirigidas
+a reducir los riesgos existentes, evitar la generaci&#243;n de
+nuevos riesgos y limitar los impactos adversos o da&#241;os
+producidos por las amenazas.
+     b) Fase de Preparaci&#243;n: implica las capacidades y
+habilidades que se desarrollan para prever, responder y
+recuperarse de forma oportuna y eficaz de los impactos de
+amenazas inminentes o emergencias.
+     La Alerta constituye una etapa de la Fase de
+Preparaci&#243;n y consistir&#225; en un estado de monitoreo y
+atenci&#243;n permanente; a la vez que ser&#225; un estado declarado
+cuando se advierte la probable y cercana ocurrencia de un
+evento adverso, con el fin de tomar precauciones y
+difundirlas.
+     c) Fase de Respuesta: corresponde a las actividades
+propias de atenci&#243;n de una emergencia, que se llevan a cabo
+inmediatamente despu&#233;s de ocurrido el evento. Tienen por
+objetivo salvar vidas, reducir el impacto en la comunidad
+afectada y disminuir las p&#233;rdidas.
+     d) Fase de Recuperaci&#243;n: acciones que tienen por
+objeto el restablecimiento de las condiciones normales de
+vida mediante las etapas de rehabilitaci&#243;n y
+reconstrucci&#243;n de la zona afectada, y evitar la
+reproducci&#243;n de las condiciones de riesgo preexistentes. De
+este modo, las etapas en la Fase de Recuperaci&#243;n son las
+siguientes:
+      
+     i. Rehabilitaci&#243;n: consiste en la recuperaci&#243;n, a
+corto plazo, de los servicios b&#225;sicos y el inicio de la
+reparaci&#243;n del da&#241;o f&#237;sico, social, ambiental y
+econ&#243;mico de la zona afectada, durante el per&#237;odo de
+transici&#243;n comprendido entre la culminaci&#243;n de las
+acciones de respuesta y el inicio de las acciones de
+reconstrucci&#243;n.
+     ii. Reconstrucci&#243;n: consiste en la reparaci&#243;n o
+reemplazo, a mediano y largo plazo, de la infraestructura
+da&#241;ada, y la restauraci&#243;n o perfeccionamiento de los
+sistemas de producci&#243;n. Esta etapa no es materia de esta
+ley.
+      </Texto>
+          <Metadatos>
+            <NombreParte presente="si">3 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257830">
+          <Texto>     Art&#237;culo 4.- PRINCIPIOS EN LA GESTI&#211;N DEL RIESGO DE
+DESASTRES. Se establecen como principios generales de
+ordenaci&#243;n del Sistema los que siguen:
+      
+     a) Principio de Prevenci&#243;n: implica atender, gestionar
+y reducir los factores subyacentes del riesgo de desastres
+por parte del Sistema que esta ley establece. De conformidad
+con este principio, deber&#225;n elaborarse modelos de gesti&#243;n
+prospectiva del riesgo por parte del sector p&#250;blico y
+privado.
+     b) Principio de Apoyo Mutuo: requiere que todos los
+componentes del Sistema, sean p&#250;blicos o privados, y la
+comunidad organizada, aporten colaborativamente sus
+competencias y capacidades en aquellas fases del ciclo del
+riesgo de desastres en que tengan responsabilidades
+establecidas, en pos de reducir el riesgo de desastres y
+limitar sus impactos.
+     c) Principio de Coordinaci&#243;n: la Gesti&#243;n del Riesgo
+de Desastres depende de mecanismos de coordinaci&#243;n dentro y
+a trav&#233;s de los componentes del Sistema en todos sus
+niveles. Requiere de un compromiso absoluto de todos los
+organismos del Estado, de naturaleza ejecutiva y
+legislativa, as&#237; como de la sociedad civil, para articular
+responsabilidades que aseguren complementariedad,
+coordinaci&#243;n y confianza entre todos los integrantes del
+Sistema.
+     d) Principio de Transparencia: el Sistema ser&#225;
+inclusivo, informado y orientado hacia todas las fases del
+ciclo del riesgo de desastres, de modo que permita el
+intercambio y diseminaci&#243;n de datos e informaci&#243;n entre
+todos los integrantes del Sistema, de manera accesible,
+actualizada y comprensible, cuyo fundamento sea basado en la
+ciencia y complementado por el conocimiento tradicional, en
+conformidad con lo establecido en las leyes. Adem&#225;s, el
+Sistema promover&#225; el conocimiento de los instrumentos de
+gesti&#243;n y de los protocolos de actuaci&#243;n celebrados con
+los integrantes del Sistema.
+     e) Principio de Participaci&#243;n: el Sistema debe
+reconocer, facilitar y promover la participaci&#243;n de la
+sociedad civil organizada, incluyendo al voluntariado, en el
+proceso de Gesti&#243;n del Riesgo de Desastres.
+     f) Principio de Escalabilidad: es la utilizaci&#243;n o
+movilizaci&#243;n gradual y escalonada de capacidades humanas,
+t&#233;cnicas y materiales desde el nivel comunal, provincial,
+regional, nacional e internacional, respectivamente, con el
+objetivo de satisfacer las necesidades que surjan en cada
+una de las fases del ciclo del riesgo de desastres.
+     g) Principio de Oportunidad: toda instituci&#243;n o
+entidad, sea p&#250;blica o privada, deber&#225; actuar en el
+momento propicio en cada fase del ciclo del riesgo de
+desastres, de acuerdo con las responsabilidades establecidas
+para cada una de ellas.
+      </Texto>
+          <Metadatos>
+            <NombreParte presente="si">4 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257831">
+          <Texto>     Art&#237;culo 5.- ESTRUCTURAS DE COORDINACI&#211;N. Cr&#233;anse
+los Comit&#233;s para la Gesti&#243;n del Riesgo de Desastres, que
+ejercer&#225;n las funciones propias de cada fase, a nivel
+nacional, provincial, regional y comunal, seg&#250;n
+corresponda.
+     En las Fases de Mitigaci&#243;n y Preparaci&#243;n aprobar&#225;n
+los Instrumentos de Gesti&#243;n del Riesgo de Desastres que
+establece esta ley, y coordinar&#225;n las instancias necesarias
+para desarrollar las capacidades y recursos para fortalecer
+la Gesti&#243;n del Riesgo de Desastres, de acuerdo con lo
+establecido en el P&#225;rrafo 2&#176; del T&#237;tulo I.
+     Asimismo, los Comit&#233;s se constituir&#225;n de acuerdo al
+nivel de la emergencia en las zonas geogr&#225;ficas afectadas
+para ejercer las funciones propias de las Fases de Respuesta
+y Recuperaci&#243;n, seg&#250;n lo establecido en el P&#225;rrafo 3&#176;
+del T&#237;tulo I.
+     Un reglamento dictado por el Ministerio del Interior y
+Seguridad P&#250;blica determinar&#225; el funcionamiento y
+periodicidad de estos Comit&#233;s en cada una de sus fases, sin
+perjuicio de lo dispuesto en esta ley.
+     En todas las fases del ciclo del riesgo de desastres,
+la coordinaci&#243;n de las Fuerzas Armadas se realizar&#225; de
+conformidad con lo establecido en el inciso quinto del
+art&#237;culo 16 de esta ley.
+      </Texto>
+          <Metadatos>
+            <NombreParte presente="si">5 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257832">
+      <Texto>     T&#205;TULO I
+      
+     DE LA INSTITUCIONALIDAD DEL SISTEMA: SU ESTRUCTURA,
+ORGANIZACI&#211;N Y DIRECCI&#211;N
+      </Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">T&#205;TULO I DE LA INSTITUCIONALIDAD DEL SISTEMA: SU ESTRUCTURA, ORGANIZACI&#211;N Y DIRECCI&#211;N</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="P&#225;rrafo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257833">
+          <Texto>     P&#225;rrafo 1&#176;
+      
+     De la composici&#243;n de los Comit&#233;s para la Gesti&#243;n del
+Riesgo de Desastres
+      </Texto>
+          <Metadatos>
+            <NombreParte presente="no">&#160;</NombreParte>
+            <TituloParte presente="si">P&#225;rrafo 1&#176; De la composici&#243;n de los Comit&#233;s para la Gesti&#243;n del Riesgo de Desastres</TituloParte>
+            
+          </Metadatos>
+          <EstructurasFuncionales>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2222-02-02" derogado="no derogado" idParte="10257834">
+              <Texto>     Art&#237;culo 6.- DEL COMIT&#201; NACIONAL. Habr&#225; un Comit&#233;
+Nacional para la Gesti&#243;n del Riesgo de Desastres, en
+adelante "el Comit&#233; Nacional", que ser&#225; la instancia
+superior que se encargar&#225; de la planificaci&#243;n y la
+coordinaci&#243;n del Sistema a nivel nacional, adem&#225;s de
+constituirse y ejercer las funciones descritas en la ley y
+el reglamento, para abordar las fases del ciclo del riesgo
+de desastres.
+     Ser&#225;n miembros permanentes del Comit&#233; Nacional:
+      
+     a) El Ministro o la Ministra del Interior, quien lo
+presidir&#225;.
+     b) El Ministro de Defensa Nacional.
+     c) El Ministro de Hacienda.
+     d) El Ministro o la Ministra de Seguridad P&#250;blica.
+     e) El Ministro de Educaci&#243;n
+     f) El Ministro de Obras P&#250;blicas.
+     g) El Ministro de Salud.
+     h) El Ministro de Vivienda y Urbanismo.
+     i) El Ministro de Agricultura.
+     j) El Ministro de Transportes y Telecomunicaciones.
+     k) El Ministro de Energ&#237;a.
+     l) El Ministro del Medio Ambiente.
+     m) El Subsecretario del Interior.
+     n) El Jefe del Estado Mayor Conjunto.
+     o) El General Director de Carabineros de Chile.
+     p) El Director Nacional del Servicio Nacional de
+Prevenci&#243;n y Respuesta ante Desastres, en adelante "el
+Servicio", quien har&#225; las veces de su Secretario T&#233;cnico y
+Ejecutivo.
+     q) El Presidente Nacional de la Junta Nacional de
+Bomberos de Chile.
+      
+     En las Fases de Mitigaci&#243;n y Preparaci&#243;n, el Ministro
+del Interior y Seguridad P&#250;blica podr&#225; convocar al Comit&#233;
+Nacional, para ser o&#237;dos, a otras entidades u organismos
+p&#250;blicos o privados para abordar temas relevantes en la
+Gesti&#243;n del Riesgo de Desastres. En especial, deber&#225;
+convocar previamente a la aprobaci&#243;n del Plan Estrat&#233;gico
+Nacional para la Reducci&#243;n del Riesgo de Desastres definido
+en el art&#237;culo 26 de esta ley, a los ministerios que tengan
+relaci&#243;n de jerarqu&#237;a o supervigilancia con servicios que
+contemplen acciones de su competencia en la propuesta de
+dicho plan.
+     Sin perjuicio de lo anterior, en las Fases de Respuesta
+y Recuperaci&#243;n, el Director General de la Polic&#237;a de
+Investigaciones de Chile ser&#225; integrante permanente del
+Comit&#233; Nacional. Adem&#225;s, el Ministro del Interior y
+Seguridad P&#250;blica podr&#225; convocar, para ser o&#237;dos, a
+propuesta del Director Nacional del Servicio, a otros
+ministerios y a los organismos p&#250;blicos o privados con las
+competencias t&#233;cnicas que resulten estrictamente necesarias
+para abordar la emergencia, seg&#250;n sean sus
+caracter&#237;sticas, nivel de peligrosidad, alcance y amplitud
+de la misma, en la forma que determinen los protocolos
+generados para estos efectos entre los organismos
+competentes y el Servicio, en conformidad con los t&#233;rminos
+establecidos en el reglamento.
+      </Texto>
+              <Metadatos>
+                <NombreParte presente="si">6 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257835">
+              <Texto>     Art&#237;culo 7.- DEL COMIT&#201; REGIONAL. Habr&#225; un Comit&#233;
+Regional para la Gesti&#243;n del Riesgo de Desastres, en
+adelante "el Comit&#233; Regional", en cada una de las regiones
+del pa&#237;s, que se encargar&#225; de la planificaci&#243;n y
+coordinaci&#243;n del Sistema a nivel regional, adem&#225;s de
+constituirse y ejercer las funciones descritas en la ley y
+el reglamento para abordar las fases del ciclo del riesgo de
+desastres.
+     Ser&#225;n miembros permanentes del Comit&#233; Regional
+respectivo:
+      
+     a) El delegado presidencial regional, quien lo
+presidir&#225;.
+     b) El gobernador regional.
+     c) El director regional del servicio.
+     d) Los secretarios regionales ministeriales de la
+regi&#243;n respectiva, de aquellos ministros que conforman el
+Comit&#233; Nacional, y en su defecto, un representante que
+designe el ministro respectivo de los servicios de su
+dependencia que sean esenciales para la Gesti&#243;n del Riesgo
+de Desastres.
+     e) La autoridad militar que, para estos efectos,
+designe el Ministro de Defensa Nacional.
+     f) El jefe de zona de Carabineros de Chile que
+corresponda a la Regi&#243;n.
+     g) La autoridad regional de la Junta Nacional de
+Cuerpos de Bomberos de Chile.
+      
+     En las Fases de Mitigaci&#243;n y Preparaci&#243;n, el delegado
+presidencial regional actuar&#225; en coordinaci&#243;n con el
+gobernador regional. En dichas fases, podr&#225; convocar al
+Comit&#233; Regional, para ser o&#237;dos, a otras entidades y
+organismos p&#250;blicos y privados necesarios para abordar
+temas relevantes en la Gesti&#243;n del Riesgo de Desastres. En
+particular, podr&#225; convocar a organismos, tales como la
+Secretar&#237;a Regional de Desarrollo Social y Familia
+respectiva, la Direcci&#243;n Regional del Fondo de Solidaridad
+e Inversi&#243;n Social, del Servicio de Cooperaci&#243;n T&#233;cnica,
+y los organismos t&#233;cnicos establecidos en el literal b) del
+art&#237;culo 38 de esta ley.
+     En las Fases de Respuesta y Recuperaci&#243;n, el delegado
+presidencial regional, a propuesta del director regional del
+servicio, podr&#225; convocar, para ser o&#237;dos, adem&#225;s de los
+permanentes, a los organismos p&#250;blicos y privados con las
+competencias t&#233;cnicas que resulten estrictamente necesarias
+para abordar la emergencia, seg&#250;n sean sus
+caracter&#237;sticas, nivel de peligrosidad, alcance y amplitud
+de la misma, en la forma que determinen los protocolos
+celebrados entre los organismos competentes y el Servicio,
+en conformidad a los t&#233;rminos establecidos en el
+reglamento.
+      </Texto>
+              <Metadatos>
+                <NombreParte presente="si">7 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257836">
+              <Texto>     Art&#237;culo 8.- DEL COMIT&#201; COMUNAL. Habr&#225; un Comit&#233;
+Comunal para la Gesti&#243;n del Riesgo de Desastres, en
+adelante el "Comit&#233; Comunal", que estar&#225; integrado por las
+siguientes autoridades:
+      
+     a) El alcalde, quien lo presidir&#225;.
+     b) El jefe de la Unidad de Gesti&#243;n del Riesgo de
+Desastres de la comuna, o a quien se le haya encomendado
+dicha funci&#243;n de acuerdo con lo establecido en los
+art&#237;culos 26 bis y 26 ter de la ley N&#176; 18.695, org&#225;nica
+constitucional de Municipalidades, cuyo texto refundido,
+coordinado y sistematizado fue fijado por el decreto con
+fuerza de ley N&#176; 1, de 2006, del Ministerio del Interior.
+     c) El jefe de la comisar&#237;a o tenencia, o el
+funcionario de Carabineros de Chile de mayor jerarqu&#237;a en
+la comuna.
+     d) El superintendente del Cuerpo de Bomberos con
+competencia en la respectiva comuna, o el representante que
+&#233;ste designe.
+      
+     En las Fases de Mitigaci&#243;n y Preparaci&#243;n, el alcalde
+podr&#225; convocar al Comit&#233; Comunal, para ser o&#237;dos, a otras
+entidades u organismos p&#250;blicos y privados necesarios para
+abordar temas relevantes en la Gesti&#243;n del Riesgo de
+Desastres. En particular, podr&#225; convocar a organismos,
+tales como la Secretar&#237;a Comunal de Planificaci&#243;n, Unidad
+de Desarrollo Comunitario, la Direcci&#243;n de Obras
+Municipales en aquellas comunas en que hubiere, la autoridad
+comunal de la Polic&#237;a de Investigaciones y el Consejo de la
+Sociedad Civil.
+     En las Fases de Respuesta y Recuperaci&#243;n, asimismo,
+podr&#225; convocar al Comit&#233; Comunal, para ser o&#237;dos, a otras
+entidades u organismos p&#250;blicos y privados con las
+competencias t&#233;cnicas que resulten estrictamente necesarias
+para abordar la emergencia seg&#250;n sean sus caracter&#237;sticas,
+nivel de peligrosidad, alcance y amplitud de la misma, en la
+forma que determinen los protocolos de actuaci&#243;n.
+      </Texto>
+              <Metadatos>
+                <NombreParte presente="si">8 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257837">
+              <Texto>     Art&#237;culo 9.- SECRETAR&#205;A T&#201;CNICA Y EJECUTIVA. La
+Secretar&#237;a T&#233;cnica y Ejecutiva de los Comit&#233;s recaer&#225; a
+nivel nacional, regional, provincial y comunal,
+respectivamente, en el director nacional, el director
+regional, el funcionario que designe el director regional en
+la provincia y el jefe de la Unidad de Gesti&#243;n de Riesgos y
+Desastres, seg&#250;n corresponda, y ejercer&#225; las funciones que
+establezca la ley y el reglamento.
+      </Texto>
+              <Metadatos>
+                <NombreParte presente="si">9 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+          </EstructurasFuncionales>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="P&#225;rrafo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257838">
+          <Texto>     P&#225;rrafo 2&#176;
+      
+     Del funcionamiento de la institucionalidad en las Fases
+de Mitigaci&#243;n y Preparaci&#243;n
+                    </Texto>
+          <Metadatos>
+            <NombreParte presente="no">&#160;</NombreParte>
+            <TituloParte presente="si">P&#225;rrafo 2&#176; Del funcionamiento de la institucionalidad en las Fases de Mitigaci&#243;n y Preparaci&#243;n</TituloParte>
+            
+          </Metadatos>
+          <EstructurasFuncionales>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257839">
+              <Texto>     Art&#237;culo 10.- DE LOS COMIT&#201;S Y SUS FUNCIONES. Los
+Comit&#233;s para la Gesti&#243;n del Riesgo de Desastres ejercer&#225;n
+las funciones de planificaci&#243;n y coordinaci&#243;n en las Fases
+de Mitigaci&#243;n y Preparaci&#243;n en cada uno de los niveles,
+conforme a las normas de este p&#225;rrafo y al reglamento
+dictado por el Ministerio del Interior y Seguridad P&#250;blica.
+     Ser&#225;n funciones de los Comit&#233;s las siguientes:
+      
+     1. El Comit&#233; Nacional deber&#225;:
+      
+     a) Proponer al Presidente de la Rep&#250;blica, para su
+aprobaci&#243;n, la Pol&#237;tica Nacional para la Reducci&#243;n del
+Riesgo de Desastres, en adelante, indistintamente la
+"Pol&#237;tica Nacional".
+     b) Aprobar el Plan Estrat&#233;gico Nacional para la
+Reducci&#243;n del Riesgo de Desastres, en adelante, el "Plan
+Estrat&#233;gico Nacional", a propuesta del Servicio.
+     c) Aprobar el Plan Nacional de Emergencia, a propuesta
+del Servicio.
+     d) Aprobar los instrumentos se&#241;alados en esta ley y
+que fueren necesarios en materia de Gesti&#243;n del Riesgo de
+Desastres.
+     e) Coordinar, a trav&#233;s del Director Nacional, los
+Comit&#233;s Regionales, con el objeto de desarrollar las
+capacidades y recursos para fortalecer la Gesti&#243;n del
+Riesgo de Desastres en dicha unidad territorial y de sus
+instrumentos.
+      
+     2. El Comit&#233; Regional deber&#225;:
+      
+     a) Aprobar el Plan Regional para la Reducci&#243;n del
+Riesgo de Desastres, a propuesta de la Direcci&#243;n Regional
+del Servicio.
+     b) Aprobar el Plan Regional de Emergencia, a propuesta
+de la Direcci&#243;n Regional del Servicio.
+     c) Coordinar, a trav&#233;s del director regional, los
+Comit&#233;s Provinciales que correspondan a la regi&#243;n, y en su
+ausencia, los Comit&#233;s Comunales, con el objeto de
+desarrollar las capacidades y recursos para fortalecer la
+Gesti&#243;n del Riesgo de Desastres en dicha unidad territorial
+y de sus instrumentos.
+     d) Recomendar al Servicio proyectos a ser financiados
+con cargo al Programa de Gesti&#243;n del Riesgo de Desastres
+establecido en el art&#237;culo 41 de esta ley.
+      
+     3. El Comit&#233; Provincial deber&#225;:
+      
+     a) Aprobar el Plan Provincial de Emergencia, a
+propuesta del funcionario del Servicio que designe el
+director regional.
+     b) Coordinar, a trav&#233;s del funcionario del Servicio
+que designe el director regional, los Comit&#233;s Comunales que
+correspondan a la provincia, con el objeto de desarrollar
+las capacidades y recursos para fortalecer la Gesti&#243;n del
+Riesgo de Desastres en dicha unidad territorial y de sus
+instrumentos.
+     c) Recomendar al Servicio proyectos a ser financiados
+con cargo al Programa de Gesti&#243;n del Riesgo de Desastres
+establecido en el art&#237;culo 41 de esta ley.
+      
+     4. El Comit&#233; Comunal, en las labores de coordinaci&#243;n
+y planificaci&#243;n en las Fases de Mitigaci&#243;n y Preparaci&#243;n,
+se sujetar&#225; a lo dispuesto en los art&#237;culos 28 y 32 de
+esta ley.
+      </Texto>
+              <Metadatos>
+                <NombreParte presente="si">10 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257840">
+              <Texto>     Art&#237;culo 11.- DE LA DECLARACI&#211;N DE EMERGENCIA
+PREVENTIVA. Sin perjuicio del funcionamiento de los Comit&#233;s
+en las Fases de Mitigaci&#243;n y Preparaci&#243;n, en el caso que
+el Servicio informe que una zona se ve afectada por un
+riesgo de emergencia, el Ministerio del Interior y Seguridad
+P&#250;blica podr&#225; declararla en emergencia preventiva, y
+deber&#225; actuar en coordinaci&#243;n con el presidente del
+Comit&#233; Regional respectivo. La declaraci&#243;n de emergencia
+preventiva ser&#225; fundada y expedida por decreto del
+Ministerio del Interior y Seguridad P&#250;blica, "por orden del
+Presidente de la Rep&#250;blica". A partir de ese momento,
+podr&#225; aplicar todas las disposiciones establecidas en el
+decreto supremo N&#176; 104, de 1977, del Ministerio del
+Interior, que fija el texto refundido, coordinado y
+sistematizado del T&#237;tulo I de la ley N&#176; 16.282, que fija
+disposiciones permanentes para casos de sismos o
+cat&#225;strofes.
+      </Texto>
+              <Metadatos>
+                <NombreParte presente="si">11 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+          </EstructurasFuncionales>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="P&#225;rrafo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257841">
+          <Texto>     P&#225;rrafo 3&#176;
+      
+     Del funcionamiento de los Comit&#233;s en las Fases de
+Respuesta y Recuperaci&#243;n
+                    </Texto>
+          <Metadatos>
+            <NombreParte presente="no">&#160;</NombreParte>
+            <TituloParte presente="si">P&#225;rrafo 3&#176; Del funcionamiento de los Comit&#233;s en las Fases de Respuesta y Recuperaci&#243;n</TituloParte>
+            
+          </Metadatos>
+          <EstructurasFuncionales>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257842">
+              <Texto>     Art&#237;culo 12.- DE LOS COMIT&#201;S EN LAS FASES DE
+RESPUESTA Y RECUPERACI&#211;N. Los Comit&#233;s para la Gesti&#243;n del
+Riesgo de Desastres se constituir&#225;n a nivel nacional,
+regional, provincial o comunal, respectivamente, seg&#250;n sean
+las caracter&#237;sticas, nivel de peligrosidad, afectaci&#243;n,
+alcance, amplitud y magnitud de la emergencia, para la
+planificaci&#243;n, direcci&#243;n y coordinaci&#243;n intersectorial de
+las acciones de respuesta y recuperaci&#243;n, en las zonas
+afectadas por una emergencia.
+     Un reglamento dictado por el Ministerio del Interior y
+Seguridad P&#250;blica determinar&#225; las modalidades y
+funcionamiento de estos Comit&#233;s en las Fases de Respuesta y
+Recuperaci&#243;n.
+     Los actos administrativos que se dicten a prop&#243;sito de
+la respuesta a la emergencia, una vez constituidos los
+respectivos Comit&#233;s, deber&#225;n comunicarse y cumplirse de
+inmediato, sin esperar su total tramitaci&#243;n.
+      </Texto>
+              <Metadatos>
+                <NombreParte presente="si">12 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257843">
+              <Texto>     Art&#237;culo 13.- DE LA CONVOCATORIA. Acaecida una
+emergencia o ante una emergencia inminente, el respectivo
+Comit&#233; ser&#225; convocado por:
+      
+     a) El Ministro del Interior y Seguridad P&#250;blica, en el
+caso del Comit&#233; Nacional.
+     b) El delegado presidencial regional, en el caso del
+Comit&#233; Regional.
+     c) El delegado presidencial provincial, en el caso del
+Comit&#233; Provincial.
+     d) El alcalde, en el caso del Comit&#233; Comunal.
+      
+     Excepcionalmente, el respectivo Comit&#233; podr&#225; ser
+autoconvocado de conformidad con las disposiciones
+establecidas en el reglamento, para abordar las fases del
+ciclo del riesgo de desastres.
+     En el acto de constituci&#243;n, la autoridad pertinente
+dictar&#225; los actos administrativos que declaren instalado el
+respectivo comit&#233; en las Fases de Respuesta y
+Recuperaci&#243;n, los que producir&#225;n efecto desde su
+dictaci&#243;n o emisi&#243;n, sin esperarse la total tramitaci&#243;n
+de &#233;stos, y deber&#225;n ser comunicados por los medios m&#225;s
+expeditos. Asimismo, deber&#225;n establecer la zona geogr&#225;fica
+afectada por la emergencia.
+</Texto>
+              <Metadatos>
+                <NombreParte presente="si">13 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257844">
+              <Texto>     Art&#237;culo 14.- FUNCIONAMIENTO DE LOS COMIT&#201;S. Los
+respectivos Comit&#233;s podr&#225;n funcionar simult&#225;neamente,
+cada uno dentro del &#225;mbito de sus competencias, sin
+perjuicio de que, a medida que la emergencia escale hacia el
+nivel superior, la direcci&#243;n de la respuesta a la
+emergencia corresponder&#225; al nivel superior. De este modo:
+      
+     a) Si se constituyera el Comit&#233; Comunal, Provincial,
+Regional y Nacional, corresponder&#225; la direcci&#243;n de la
+respuesta a este &#250;ltimo.
+     b) Si se constituyera el Comit&#233; Comunal, Provincial y
+Regional, corresponder&#225; la direcci&#243;n de la respuesta a
+este &#250;ltimo.
+     c) Si se constituyera el Comit&#233; Comunal y Provincial,
+corresponder&#225; la direcci&#243;n de la respuesta a este &#250;ltimo.
+      
+     Cada Comit&#233; continuar&#225; con la ejecuci&#243;n de las
+acciones que correspondan, en el marco de los protocolos de
+actuaci&#243;n e Instrumentos de Gesti&#243;n del Riesgo de
+Desastres vigentes, respetando la jerarqu&#237;a y direcci&#243;n
+se&#241;aladas.
+     En caso de que el alcalde constate la falta de recursos
+o capacidad del Comit&#233; Comunal para responder a la
+emergencia, solicitar&#225; al delegado presidencial provincial
+correspondiente, o al delegado presidencial regional si no
+hubiera Comit&#233; Provincial, de la forma m&#225;s expedita y sin
+formalidades, los medios que sean necesarios para
+enfrentarla. El delegado presidencial provincial o regional,
+en su caso, estar&#225; a cargo de proveer dichos recursos, bajo
+coordinaci&#243;n comunal o provincial, o regional si
+correspondiere, cuando lo requiera la emergencia.
+      </Texto>
+              <Metadatos>
+                <NombreParte presente="si">14 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257845">
+              <Texto>     Art&#237;culo 15.- FUNCIONES DEL PRESIDENTE DE LOS
+COMIT&#201;S. Son funciones de quien preside cada Comit&#233;, sea
+comunal, provincial, regional o nacional, las siguientes:
+      
+     a) Dirigir el funcionamiento del Comit&#233; y las acciones
+necesarias para ir en ayuda de la poblaci&#243;n afectada,
+dentro del marco establecido en la ley e Instrumentos de
+Gesti&#243;n del Riesgo de Desastres vigentes y aplicando los
+protocolos de actuaci&#243;n detallados en el reglamento.
+     Para estos efectos, todas las autoridades y
+funcionarios de la Administraci&#243;n del Estado, dentro de sus
+competencias, tendr&#225;n la obligaci&#243;n de prestar
+colaboraci&#243;n a los Comit&#233;s; implementar sus instrucciones
+y ejecutar las medidas pertinentes, as&#237; como la
+disposici&#243;n de todos los recursos humanos, t&#233;cnicos,
+maquinarias e infraestructura pertenecientes a los &#243;rganos
+de la Administraci&#243;n del Estado.
+     b) Convocar y coordinar el apoyo de las empresas o
+entidades privadas que administren o provean servicios de
+utilidad p&#250;blica o aquellos que sean esenciales para la
+respuesta y recuperaci&#243;n en la zona geogr&#225;fica afectada
+por la misma, conforme a los Instrumentos de Gesti&#243;n del
+Riesgo de Desastres y protocolos de actuaci&#243;n detallados en
+el reglamento, coordinando a &#233;stos con los dem&#225;s &#243;rganos
+del Sistema.
+     c) Dar respuesta oportuna a la emergencia de que se
+trate, informando con la mayor celeridad posible a la
+poblaci&#243;n, de acuerdo con los protocolos y procedimientos
+establecidos.
+     d) Realizar las dem&#225;s funciones que sean necesarias
+seg&#250;n las caracter&#237;sticas, nivel de peligrosidad, alcance,
+amplitud y magnitud de la emergencia.
+      
+     Los organismos que cuenten con las competencias
+t&#233;cnicas y que puedan ser convocados a los Comit&#233;s de
+acuerdo con lo se&#241;alado en los art&#237;culos 6, 7 y 8 de esta
+ley deber&#225;n informar al Comit&#233; respecto de nuevas amenazas
+producto de la emergencia, su nivel de peligrosidad,
+alcance, amplitud y magnitud de las mismas, as&#237; como la
+planificaci&#243;n para enfrentarlas, en la forma que determinen
+los protocolos generados para estos efectos entre los
+organismos competentes y el Servicio, para la correcta toma
+de decisiones en estas materias. Igualmente, deber&#225;n
+asesorar y concurrir con los antecedentes necesarios para
+enfrentar la emergencia en el &#225;mbito de su competencia.
+      </Texto>
+              <Metadatos>
+                <NombreParte presente="si">15 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+          </EstructurasFuncionales>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="P&#225;rrafo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257846">
+          <Texto>     P&#225;rrafo 4&#176;
+      
+     Del rol de la Defensa Nacional
+      </Texto>
+          <Metadatos>
+            <NombreParte presente="no">&#160;</NombreParte>
+            <TituloParte presente="si">P&#225;rrafo 4&#176; Del rol de la Defensa Nacional</TituloParte>
+            
+          </Metadatos>
+          <EstructurasFuncionales>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257847">
+              <Texto>     Art&#237;culo 16.- ACTUACI&#211;N DEL MINISTERIO DE DEFENSA
+NACIONAL. Para el cumplimiento de los cometidos que la
+presente ley confiere a las Fuerzas Armadas y facilitar su
+adecuada articulaci&#243;n con el Sistema, el Ministerio de
+Defensa Nacional ser&#225; responsable, en su rol de &#243;rgano
+superior de colaboraci&#243;n del Presidente de la Rep&#250;blica en
+las funciones de gobierno y administraci&#243;n de la defensa
+nacional, de la coordinaci&#243;n y ejecuci&#243;n, en las materias
+que le correspondan a su sector, de la Pol&#237;tica Nacional
+para la Reducci&#243;n del Riesgo de Desastres, del Plan
+Estrat&#233;gico Nacional para la Reducci&#243;n del Riesgo de
+Desastres y del Plan Nacional de Emergencia, seg&#250;n lo
+dispuesto en los art&#237;culos 24 y siguientes de la presente
+ley.
+     Le corresponder&#225;, asimismo, elaborar los planes y los
+protocolos de operaci&#243;n para la participaci&#243;n coordinada
+de las Fuerzas Armadas en todas las fases del ciclo del
+riesgo de desastres. Los planes y protocolos deber&#225;n
+asegurar una sujeci&#243;n a lo se&#241;alado en los Instrumentos de
+Gesti&#243;n del Riesgo de Desastres y las instrucciones que, al
+efecto, formule el Ministro de Defensa Nacional.
+     La forma de empleo de los medios terrestres, navales y
+a&#233;reos, deber&#225; contenerse en los respectivos Instrumentos
+de Gesti&#243;n del Riesgo de Desastres indicados en los incisos
+anteriores.
+     En el caso de que los medios considerados para la
+respuesta en los Instrumentos de Gesti&#243;n precedentemente
+se&#241;alados sean insuficientes por la magnitud de la
+emergencia, el Ministro de Defensa Nacional podr&#225; autorizar
+el empleo de otros medios militares. Dicha autorizaci&#243;n se
+otorgar&#225; previa solicitud del Presidente del Comit&#233;
+respectivo, cuando la emergencia se desarrolle a nivel
+nacional, o bien, ante el requerimiento que haga la
+autoridad militar del nivel regional o provincial, en los
+casos en que as&#237; lo solicite quien presida el Comit&#233; al
+que corresponda la direcci&#243;n de la emergencia en estos
+niveles.
+     Corresponder&#225; al Jefe del Estado Mayor Conjunto
+prestar la asesor&#237;a militar, coordinar y dirigir las
+actividades de apoyo militar de recursos y capacidades
+provenientes de las Fuerzas Armadas a la Gesti&#243;n del Riesgo
+de Desastres en todas las fases del ciclo del riesgo de
+desastres, en consideraci&#243;n a las instrucciones que formule
+el Ministro de Defensa Nacional y a lo establecido en los
+Instrumentos de Gesti&#243;n del Riesgo de Desastres.
+     El empleo de los medios referidos en este art&#237;culo no
+podr&#225; afectar las capacidades estrat&#233;gicas de la defensa
+nacional.
+      </Texto>
+              <Metadatos>
+                <NombreParte presente="si">16 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257848">
+              <Texto>     Art&#237;culo 17.- ACTUACI&#211;N DE LAS FUERZAS ARMADAS. Las
+Fuerzas Armadas forman parte del Sistema que esta ley
+establece y actuar&#225;n de acuerdo a sus capacidades y
+competencias en las fases del ciclo del riesgo de desastres,
+conforme a lo establecido en el art&#237;culo 16.
+      </Texto>
+              <Metadatos>
+                <NombreParte presente="si">17 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257849">
+              <Texto>     Art&#237;culo 18.- DESIGNACI&#211;N DE AUTORIDADES MILITARES.
+El Ministerio de Defensa Nacional designar&#225; autoridades
+militares regionales y provinciales cuando se hubieren
+constituido Comit&#233;s Provinciales, para los efectos de esta
+ley, las que integrar&#225;n los Comit&#233;s respectivos y los
+asesorar&#225;n en relaci&#243;n con la participaci&#243;n de los medios
+militares en las fases del ciclo del riesgo de desastres.
+     En caso de que se declare el estado de excepci&#243;n
+constitucional de cat&#225;strofe, corresponder&#225; al Jefe de la
+Defensa Nacional ejercer sus deberes y atribuciones, en
+permanente coordinaci&#243;n con quien presida el Comit&#233;
+respectivo en las Fases de Respuesta y Recuperaci&#243;n.
+     Durante la fase de respuesta de la emergencia, el Jefe
+de la Defensa Nacional dispondr&#225; de todos los medios
+militares operativos considerados en los planes de
+emergencia previamente establecidos.
+                                   </Texto>
+              <Metadatos>
+                <NombreParte presente="si">18 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+          </EstructurasFuncionales>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="P&#225;rrafo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257850">
+          <Texto>     P&#225;rrafo 5&#176;
+      
+     Del Servicio Nacional de Prevenci&#243;n y Respuesta ante
+Desastres
+      </Texto>
+          <Metadatos>
+            <NombreParte presente="no">&#160;</NombreParte>
+            <TituloParte presente="si">P&#225;rrafo 5&#176; Del Servicio Nacional de Prevenci&#243;n y Respuesta ante Desastres</TituloParte>
+            
+          </Metadatos>
+          <EstructurasFuncionales>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257851">
+              <Texto>     Art&#237;culo 19.- CREACI&#211;N DEL SERVICIO. Cr&#233;ase el
+Servicio Nacional de Prevenci&#243;n y Respuesta ante Desastres,
+como un servicio p&#250;blico descentralizado, con personalidad
+jur&#237;dica y patrimonio propio, sometido a la supervigilancia
+del Presidente de la Rep&#250;blica a trav&#233;s del Ministerio del
+Interior y Seguridad P&#250;blica mediante la coordinaci&#243;n de
+la Subsecretar&#237;a del Interior, y que ser&#225; el servicio
+encargado de asesorar, coordinar, organizar, planificar y
+supervisar las actividades relacionadas con la Gesti&#243;n del
+Riesgo de Desastres del pa&#237;s.
+     El Servicio se desconcentrar&#225; territorialmente y
+tendr&#225; presencia en todas las regiones en que se divide
+pol&#237;tico-administrativamente el pa&#237;s, con las atribuciones
+y facultades que le permitan cumplir oportunamente las
+funciones que le fije la ley.
+     El primer y segundo nivel jer&#225;rquico del Servicio
+estar&#225; afecto al Sistema de Alta Direcci&#243;n P&#250;blica que
+regula el T&#237;tulo VI de la ley N&#186; 19.882.
+     El personal del Servicio Nacional de Prevenci&#243;n y
+Respuesta ante Desastres se regir&#225; por la ley N&#176; 18.834,
+sobre Estatuto Administrativo, cuyo texto refundido,
+coordinado y sistematizado fue fijado por el decreto con
+fuerza de ley N&#176; 29, de 2004, del Ministerio de Hacienda, y
+estar&#225; afecto al r&#233;gimen de remuneraciones fijado en el
+decreto ley N&#176; 249, de 1974, y sus normas complementarias.
+      </Texto>
+              <Metadatos>
+                <NombreParte presente="si">19 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257852">
+              <Texto>     Art&#237;culo 20.- FUNCIONES. El Servicio Nacional de
+Prevenci&#243;n y Respuesta ante Desastres tendr&#225; las
+siguientes funciones:
+      
+     a) Asesorar al Comit&#233; Nacional, proponi&#233;ndole la
+Pol&#237;tica Nacional para la Reducci&#243;n del Riesgo de
+Desastres, para ser aprobada por el Presidente de la
+Rep&#250;blica de conformidad con el art&#237;culo 24 de esta ley.
+     b) Formular, para su aprobaci&#243;n por el Comit&#233;
+Nacional, la normativa e Instrumentos de Gesti&#243;n del Riesgo
+de Desastres para la adecuada coordinaci&#243;n y funcionamiento
+del Sistema.
+     c) Coordinar y supervisar la ejecuci&#243;n de los
+Instrumentos de Gesti&#243;n del Riesgo de Desastres a nivel
+nacional establecidos en esta ley.
+     d) Coordinar, evaluar y supervisar los Instrumentos de
+Gesti&#243;n del Riesgo de Desastres en los niveles regional,
+provincial y comunal establecidos en esta ley.
+     e) Asesorar y apoyar a los integrantes del Sistema en
+el desarrollo de capacidades para la Gesti&#243;n del Riesgo de
+Desastres. Asimismo, el Servicio deber&#225; prestar apoyo
+t&#233;cnico en la generaci&#243;n de toda clase de instrumentos
+respecto de todas las fases del ciclo del riesgo de
+desastres.
+     f) Ejercer la Secretar&#237;a T&#233;cnica y Ejecutiva de los
+respectivos Comit&#233;s, en conformidad con el art&#237;culo 9 de
+esta ley.
+     g) Celebrar acuerdos, convenios o protocolos con
+organismos e instituciones p&#250;blicas o privadas nacionales,
+para la Gesti&#243;n del Riesgo de Desastres. Asimismo, podr&#225;
+celebrar dentro del &#225;mbito de su competencia, convenios
+interinstitucionales con organismos e instituciones
+p&#250;blicas o privadas, internacionales o extranjeras, en
+conformidad con lo dispuesto en el art&#237;culo 35 de la ley
+N&#176; 21.080.
+     h) Requerir de los &#243;rganos de la Administraci&#243;n del
+Estado y de los organismos p&#250;blicos y privados con
+capacidades humanas, operativas y materiales para la
+Gesti&#243;n del Riesgo de Desastres, informaci&#243;n respecto de
+sus medios y recursos, que sea necesaria para el
+cumplimiento de sus funciones.
+     i) Informar semestralmente en sesi&#243;n especial a la
+comisi&#243;n que determine cada rama del Congreso Nacional,
+sobre el cumplimiento y desarrollo de las materias de
+competencia del Servicio en la Gesti&#243;n del Riesgo de
+Desastres.
+     j) Gestionar, en coordinaci&#243;n con el Ministerio del
+Interior y Seguridad P&#250;blica y el Ministerio de Relaciones
+Exteriores, la asistencia internacional y participaci&#243;n del
+Estado de Chile en instancias internacionales sobre las
+materias establecidas por esta ley.
+     k) Establecer, previo informe t&#233;cnico de la
+Subsecretar&#237;a de Telecomunicaciones, lineamientos para la
+interoperabilidad y correcto funcionamiento de las redes de
+comunicaciones de emergencia de los &#243;rganos de la
+Administraci&#243;n del Estado que formen parte del Sistema,
+excluidas las de las Fuerzas Armadas, Carabineros de Chile y
+la Polic&#237;a de Investigaciones de Chile en aquellos
+materiales que no tengan relaci&#243;n directa con la Gesti&#243;n
+del Riesgo de Desastres.
+     l) Las dem&#225;s funciones que determine la ley.
+      </Texto>
+              <Metadatos>
+                <NombreParte presente="si">20 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257853">
+              <Texto>     Art&#237;culo 21.- DIRECCI&#211;N. El Servicio Nacional de
+Prevenci&#243;n y Respuesta ante Desastres estar&#225; a cargo de un
+Director Nacional, quien ser&#225; su jefe superior.
+     Existir&#225; en cada regi&#243;n una Direcci&#243;n Regional del
+Servicio Nacional de Prevenci&#243;n y Respuesta ante Desastres,
+a cargo de un Director Regional, quien ejercer&#225; su cargo
+conforme a los lineamientos de la Pol&#237;tica Nacional para la
+Reducci&#243;n del Riesgo de Desastres, a los Instrumentos de
+Gesti&#243;n del Riesgo de Desastres a nivel regional y a las
+instrucciones del Director Nacional. Para su desempe&#241;o, se
+requerir&#225; estar en posesi&#243;n, a lo menos, de un t&#237;tulo
+t&#233;cnico de nivel superior de ocho semestres de duraci&#243;n,
+otorgado por una universidad o instituto profesional del
+Estado o reconocidos por &#233;ste, o aquellos t&#237;tulos
+validados en Chile de acuerdo con la legislaci&#243;n vigente y
+con especializaci&#243;n o experiencia acreditada en la materia
+de su cargo no inferior a cinco a&#241;os.
+      </Texto>
+              <Metadatos>
+                <NombreParte presente="si">21 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257854">
+              <Texto>     Art&#237;culo 22.- FUNCIONES DEL DIRECTOR NACIONAL. El
+Director Nacional del Servicio Nacional de Prevenci&#243;n y
+Respuesta ante Desastres tendr&#225; la funci&#243;n de dirigir el
+Servicio; asesorar t&#233;cnicamente a todas las instituciones
+que conforman el Sistema, y coordinar toda acci&#243;n en
+materia de Gesti&#243;n del Riesgo de Desastres, en las &#225;reas
+de su competencia conforme a la ley.
+     Son funciones principales del Director Nacional del
+Servicio:
+      
+     a) Dirigir, planificar y supervisar las actividades que
+se lleven a efecto, para cumplir los objetivos y funciones
+del Servicio.
+     b) Estudiar y proponer el proyecto de presupuesto anual
+del Servicio.
+     c) Preparar y proponer los reglamentos y decretos
+supremos que se relacionen con las materias de su
+competencia, y con la organizaci&#243;n y funciones del
+Servicio.
+     d) Proponer al jefe superior de la respectiva
+instituci&#243;n la designaci&#243;n en comisi&#243;n de servicios de
+cualquier funcionario remunerado con fondos fiscales,
+municipales o de empresas en que tenga aportes el Estado,
+quien podr&#225; autorizarlo por un per&#237;odo de tiempo superior
+al establecido en el art&#237;culo 76 de la ley N&#176; 18.834,
+sobre Estatuto Administrativo, cuyo texto refundido,
+coordinado y sistematizado fue fijado por el decreto con
+fuerza de ley N&#176; 29, de 2004, del Ministerio de Hacienda, o
+en otras disposiciones legales.
+     e) Gestionar un modelo log&#237;stico eficiente para
+enfrentar la provisi&#243;n de bienes y servicios en las Fases
+de Respuesta y Recuperaci&#243;n, de acuerdo con lo establecido
+en la ley N&#176; 19.886, de bases sobre contratos
+administrativos de suministro y prestaci&#243;n de servicios, y
+en esta ley.
+     f) Adoptar, mediante resoluci&#243;n fundada y por el
+tiempo necesario, durante la Fase de Respuesta y la Etapa de
+Rehabilitaci&#243;n, las siguientes medidas:
+      
+     1. Contratar personal a honorarios sin las limitaciones
+de dotaci&#243;n establecidas en la Ley de Presupuestos del
+Sector P&#250;blico, previa aprobaci&#243;n del Ministerio de
+Hacienda.
+     2. Destinar funcionarios en comisi&#243;n de servicios
+dentro del pa&#237;s.
+     3. Celebrar directamente actos y contratos para atender
+las necesidades de respuesta.
+     4. Efectuar giros globales con cargo a los respectivos
+&#237;tems del presupuesto del Servicio, sin perjuicio de su
+obligaci&#243;n de rendir cuenta documentada de su inversi&#243;n a
+la Contralor&#237;a General de la Rep&#250;blica.
+      
+     Las medidas se&#241;aladas en los n&#250;meros de este literal
+podr&#225;n llevarse a efecto de inmediato, sin perjuicio de que
+se proceda posteriormente a cumplir el tr&#225;mite de toma de
+raz&#243;n de las resoluciones respectivas en la Contralor&#237;a
+General de la Rep&#250;blica, las que deber&#225;n enviarse a dicho
+organismo dentro de los treinta d&#237;as siguientes a su
+dictaci&#243;n.
+     Con todo, lo anterior debe entenderse sin perjuicio de
+las prohibiciones y autorizaciones previas que se encuentren
+vigentes para el sector p&#250;blico, en relaci&#243;n con las
+medidas especiales que trata este literal.
+     g) Participar en instancias internacionales sobre
+Gesti&#243;n del Riesgo de Desastres.
+     h) Ejercer las funciones que le correspondan como
+Secretario T&#233;cnico y Ejecutivo.
+     i) Desempe&#241;ar y ejercer las dem&#225;s funciones y
+atribuciones que le asignen las leyes y reglamentos.
+      </Texto>
+              <Metadatos>
+                <NombreParte presente="si">22 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257855">
+              <Texto>     Art&#237;culo 23.- PATRIMONIO. El patrimonio del Servicio
+Nacional de Prevenci&#243;n y Respuesta ante Desastres estar&#225;
+constituido por:
+      
+     a) Los recursos que se le asignen anualmente en el
+Presupuesto del Sector P&#250;blico.
+     b) Los recursos otorgados por leyes especiales.
+     c) Los bienes muebles e inmuebles, corporales e
+incorporales, que se le transfieran o que adquiera a
+cualquier t&#237;tulo y los frutos, rentas e intereses de estos
+bienes.
+     d) Las herencias y legados que acepte, lo que deber&#225;
+hacer con beneficio de inventario. Dichas asignaciones
+hereditarias estar&#225;n exentas de toda clase de impuestos y
+de todo gravamen o pago que les afecte.
+     e) Los aportes provenientes de la cooperaci&#243;n nacional
+e internacional que reciba a cualquier t&#237;tulo.
+      </Texto>
+              <Metadatos>
+                <NombreParte presente="si">23 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+          </EstructurasFuncionales>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257856">
+      <Texto>     T&#205;TULO II
+      
+     DE LOS INSTRUMENTOS DE GESTI&#211;N DEL RIESGO DE DESASTRES
+      </Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">T&#205;TULO II DE LOS INSTRUMENTOS DE GESTI&#211;N DEL RIESGO DE DESASTRES</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="P&#225;rrafo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257857">
+          <Texto>     P&#225;rrafo 1&#176;
+      
+     De la Pol&#237;tica Nacional para la Reducci&#243;n del Riesgo
+de Desastres y de los Planes para la Gesti&#243;n del Riesgo de
+Desastres.
+                    </Texto>
+          <Metadatos>
+            <NombreParte presente="no">&#160;</NombreParte>
+            <TituloParte presente="si">P&#225;rrafo 1&#176; De la Pol&#237;tica Nacional para la Reducci&#243;n del Riesgo de Desastres y de los Planes para la Gesti&#243;n del Riesgo de Desastres.</TituloParte>
+            
+          </Metadatos>
+          <EstructurasFuncionales>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257858">
+              <Texto>     Art&#237;culo 24.- DE LA POL&#205;TICA NACIONAL PARA LA
+REDUCCI&#211;N DEL RIESGO DE DESASTRES. La Pol&#237;tica Nacional
+para la Reducci&#243;n del Riesgo de Desastres es un instrumento
+que orienta las acciones y decisiones pol&#237;ticas desde una
+perspectiva integral de la Gesti&#243;n del Riesgo de Desastres,
+para lograr una mejora permanente de su administraci&#243;n que
+contribuya al desarrollo sostenible del pa&#237;s en el corto,
+mediano y largo plazo.
+      
+     La Pol&#237;tica Nacional abordar&#225; toda acci&#243;n necesaria
+para:
+      
+     a) Fortalecer la gobernanza nacional en materias de
+Gesti&#243;n del Riesgo de Desastres, a trav&#233;s de acciones
+sectoriales y territoriales que guarden armon&#237;a con los
+marcos internacionales referentes a materias de Reducci&#243;n
+del Riesgo de Desastres, las que, en un escenario de mediano
+y largo plazo, apunten al desarrollo sostenible econ&#243;mico,
+ambiental y social.
+     b) Fomentar la cultura de la prevenci&#243;n y del
+autocuidado mediante el desarrollo de estrategias de
+construcci&#243;n de conocimientos y socializaci&#243;n de la
+informaci&#243;n que permita el acceso a &#233;sta, educando y
+motivando a la poblaci&#243;n a asumir una cultura de
+resiliencia y prevenci&#243;n.
+     c) Invertir en la reducci&#243;n de los factores
+subyacentes del riesgo, mediante el desarrollo de una
+planificaci&#243;n que aborde de manera transversal los factores
+de las dimensiones f&#237;sicas, ambientales, econ&#243;micas y
+sociales que incrementan el riesgo en los territorios y
+comunidades, as&#237; como tambi&#233;n las medidas necesarias para
+mitigarlos.
+     d) Fortalecer la preparaci&#243;n ante las emergencias para
+lograr una respuesta eficaz, incrementando las capacidades y
+creando sinergias con los diferentes niveles sectoriales,
+institucionales y con una participaci&#243;n m&#225;s activa de la
+sociedad civil organizada.
+     e) Comprender el riesgo de desastres, fortaleciendo la
+investigaci&#243;n y los sistemas de alerta temprana mediante el
+desarrollo de capacidades e infraestructuras para monitorear
+y analizar las amenazas, las vulnerabilidades y los impactos
+de las emergencias, lo cual se deber&#225; realizar a trav&#233;s de
+la recopilaci&#243;n y el uso de datos relevantes para la
+Gesti&#243;n del Riesgo de Desastres en todas las fases del
+ciclo del riesgo de desastres.
+     f) Planificar una recuperaci&#243;n sostenible que
+considere evitar la generaci&#243;n de nuevos riesgos de
+desastres, reducir los existentes y gestionar el riesgo
+residual.
+      
+     El Servicio Nacional de Prevenci&#243;n y Respuesta ante
+Desastres elaborar&#225; la Pol&#237;tica Nacional y la propondr&#225;
+para su presentaci&#243;n y posterior aprobaci&#243;n del Presidente
+de la Rep&#250;blica, mediante decreto supremo expedido a
+trav&#233;s del Ministerio del Interior y Seguridad P&#250;blica.
+Durante la elaboraci&#243;n de la Pol&#237;tica Nacional consultar&#225;
+a las entidades p&#250;blicas y privadas que se estimen
+relevantes en la materia, a fin de contribuir en su
+elaboraci&#243;n.
+     El Servicio Nacional de Prevenci&#243;n y Respuesta ante
+Desastres podr&#225; solicitar a los &#243;rganos de la
+Administraci&#243;n del Estado y a las entidades e instituciones
+privadas, de los indicados en el reglamento de esta ley, la
+informaci&#243;n necesaria para la elaboraci&#243;n de la Pol&#237;tica
+Nacional. Tales instituciones o entidades se encontrar&#225;n
+obligadas a entregar dicha informaci&#243;n con las limitaciones
+que indica la ley N&#176; 20.285, sobre acceso a la informaci&#243;n
+p&#250;blica, y la ley N&#176; 19.628, sobre protecci&#243;n de la vida
+privada.
+     La Pol&#237;tica Nacional establecer&#225; aquellos &#243;rganos de
+la Administraci&#243;n del Estado que deber&#225;n elaborar Planes
+Sectoriales para la Gesti&#243;n del Riesgo de Desastres a que
+se refiere el art&#237;culo 34 de esta ley.
+     La Pol&#237;tica Nacional debe ser actualizada o ratificada
+cada cinco a&#241;os, y deber&#225; realizarse una evaluaci&#243;n de su
+cumplimiento al menos cada cinco a&#241;os. Para lo anterior, el
+Servicio Nacional de Prevenci&#243;n y Respuesta ante Desastres
+deber&#225; seleccionar, previa licitaci&#243;n o concurso p&#250;blico,
+a una entidad evaluadora externa cuyo informe deber&#225;
+publicarse en la p&#225;gina web institucional al mes siguiente
+de la entrega de la evaluaci&#243;n realizada por dicha entidad.
+      </Texto>
+              <Metadatos>
+                <NombreParte presente="si">24 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2026-02-16" derogado="no derogado" idParte="10257859">
+              <Texto>     Art&#237;culo 25.- DE LOS PLANES PARA LA GESTI&#211;N DEL
+RIESGO DE DESASTRES. Los Planes para la Gesti&#243;n del Riesgo
+de Desastres son los instrumentos que abarcan la
+planificaci&#243;n para la reducci&#243;n del riesgo de desastres y
+la respuesta de la emergencia que permiten, en todos los
+niveles del Sistema, materializar lo establecido en la
+Pol&#237;tica Nacional.
+     Los Planes para la Gesti&#243;n del Riesgo de Desastres
+comprenden:
+
+     i. El Plan Estrat&#233;gico Nacional para la Reducci&#243;n del
+Riesgo de Desastres.
+     ii. Los Planes para la Reducci&#243;n del Riesgo de
+Desastres, en los niveles regionales, provinciales y
+comunales durante las Fases de Mitigaci&#243;n y Preparaci&#243;n.
+     iii. Los Planes de Emergencia y sus anexos, durante la
+Fase de Respuesta, en todos los niveles.
+
+     El Plan Estrat&#233;gico Nacional para la Reducci&#243;n del
+Riesgo de Desastres definir&#225; objetivos estrat&#233;gicos,
+acciones, metas, plazos y responsabilidades que permiten
+materializar lo establecido en la Pol&#237;tica Nacional a
+trav&#233;s del desarrollo de capacidades en todas las fases del
+ciclo del riesgo de desastres.
+     Por su parte, los Planes para la Reducci&#243;n del Riesgo
+de Desastres deber&#225;n contemplar las acciones definidas en
+el Plan Estrat&#233;gico Nacional para la Reducci&#243;n del Riesgo
+de Desastres, as&#237; como otras acciones tendientes a
+disminuir las vulnerabilidades de su territorio.
+     Los Planes de Emergencia deber&#225;n comprender la
+coordinaci&#243;n general de las capacidades del Sistema para la
+respuesta frente a los distintos niveles de emergencia, y
+establecer una estructura de gesti&#243;n operativa de las
+emergencias, disponiendo con claridad las l&#237;neas de
+autoridad y responsabilidad en la gesti&#243;n territorial de
+&#233;stas, considerando el trabajo con equipos
+multidisciplinarios e interinstitucionales, y la
+utilizaci&#243;n eficiente y oportuna de los medios disponibles,
+mediante el uso o movilizaci&#243;n gradual y escalonado de
+recursos humanos, t&#233;cnicos y materiales.
+     Los Planes para la Gesti&#243;n del Riesgo de Desastres
+deber&#225;n identificar y considerar, en todas sus fases, a las
+personas cuidadoras, ni&#241;os, ni&#241;as, adolescentes, personas
+con discapacidad y personas mayores, que son titulares del
+Sistema Nacional de Apoyos y Cuidados, con el objeto de
+asegurar su protecci&#243;n, inclusi&#243;n y acceso oportuno a
+apoyos espec&#237;ficos durante situaciones de emergencia o
+desastre. Los lineamientos t&#233;cnicos, mecanismos de
+articulaci&#243;n e implementaci&#243;n se ajustar&#225;n a lo se&#241;alado
+en ambas Pol&#237;ticas Nacionales, tanto para la Reducci&#243;n del
+Riesgo de Desastres como la de Apoyos y Cuidados, de acuerdo
+con las funciones y atribuciones de cada instituci&#243;n,
+dentro de sus competencias.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">25 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257860">
+              <Texto>     Art&#237;culo 26.- DEL PLAN ESTRAT&#201;GICO NACIONAL PARA LA
+REDUCCI&#211;N DEL RIESGO DE DESASTRES. El Servicio Nacional de
+Prevenci&#243;n y Respuesta ante Desastres elaborar&#225; y
+propondr&#225; al Comit&#233; Nacional, para su aprobaci&#243;n, el Plan
+Estrat&#233;gico Nacional, que ser&#225; sancionado mediante decreto
+expedido por el Ministerio del Interior y Seguridad
+P&#250;blica, suscrito adem&#225;s por el Ministro de Defensa
+Nacional, el Ministro de Hacienda, el Ministro de
+Educaci&#243;n, el Ministro de Obras P&#250;blicas, el Ministro de
+Salud, el Ministro de Transportes y Telecomunicaciones, el
+Ministro de Energ&#237;a, el Ministro de Vivienda y Urbanismo,
+el Ministro de Agricultura y el Ministro del Medio Ambiente.
+     El Servicio podr&#225; solicitar a los &#243;rganos de la
+Administraci&#243;n del Estado y a las entidades e instituciones
+privadas, de los se&#241;alados en el reglamento de esta ley, la
+informaci&#243;n necesaria para la elaboraci&#243;n del Plan
+Estrat&#233;gico Nacional. Tales instituciones o entidades se
+encontrar&#225;n obligadas a entregar de forma oportuna toda la
+informaci&#243;n solicitada.
+     El Director Nacional del Servicio velar&#225; por la
+adecuada aplicaci&#243;n y el seguimiento del Plan Estrat&#233;gico
+Nacional, mediante los instrumentos, informes y, en general,
+toda clase de documentos que provean los integrantes del
+Sistema, a solicitud del Servicio.
+     El Plan Estrat&#233;gico Nacional ser&#225; revisado por el
+Servicio Nacional de Prevenci&#243;n y Respuesta ante Desastres,
+al menos cada dos a&#241;os.
+      </Texto>
+              <Metadatos>
+                <NombreParte presente="si">26 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257861">
+              <Texto>     Art&#237;culo 27.- DEL PLAN REGIONAL PARA LA REDUCCI&#211;N DEL
+RIESGO DE DESASTRES. El Servicio Nacional de Prevenci&#243;n y
+Respuesta ante Desastres, a trav&#233;s del Director Regional,
+elaborar&#225; y propondr&#225;, para la aprobaci&#243;n del Comit&#233;
+Regional, el Plan Regional para la Reducci&#243;n del Riesgo de
+Desastres, que ser&#225; sancionado mediante resoluci&#243;n del
+delegado presidencial regional.
+     En la elaboraci&#243;n del Plan Regional para la Reducci&#243;n
+del Riesgo de Desastres se consultar&#225; a las entidades
+p&#250;blicas, pudiendo adem&#225;s solicitar opini&#243;n a las
+entidades privadas que se estime conveniente, y se
+recibir&#225;n los aportes de la comunidad organizada, a trav&#233;s
+de los procedimientos que defina el Reglamento.
+     El Plan al que alude este art&#237;culo deber&#225; formularse
+en consonancia, armon&#237;a y sistematicidad con el Plan
+Estrat&#233;gico Nacional.
+     El Director Regional del Servicio Nacional de
+Prevenci&#243;n y Respuesta ante Desastres velar&#225; por la
+adecuada aplicaci&#243;n y seguimiento del Plan Regional para la
+Reducci&#243;n del Riesgo de Desastres, mediante los
+instrumentos, informes y, en general, toda clase de
+documentos que provean los integrantes del Sistema a
+solicitud del Servicio.
+     El Plan Regional para la Reducci&#243;n del Riesgo de
+Desastres ser&#225; revisado por el Servicio al menos cada dos
+a&#241;os, o en cualquier momento, si as&#237; lo dispone su
+Director Regional fundadamente y en caso de modificarse el
+Plan Estrat&#233;gico Nacional.
+      </Texto>
+              <Metadatos>
+                <NombreParte presente="si">27 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257862">
+              <Texto>     Art&#237;culo 28.- DEL PLAN COMUNAL PARA LA REDUCCI&#211;N DEL
+RIESGO DE DESASTRES. Los Planes Comunales para la Reducci&#243;n
+del Riesgo de Desastres ser&#225;n desarrollados por la Unidad
+de Gesti&#243;n del Riesgo de Desastres de la comuna, o por
+quien haya sido encomendado en dicha funci&#243;n, previo
+informe t&#233;cnico del Servicio Nacional de Prevenci&#243;n y
+Respuesta ante Desastres en conformidad con los t&#233;rminos
+establecidos en el reglamento. Recibido el citado informe
+t&#233;cnico, el alcalde requerir&#225; el acuerdo del Comit&#233;
+Comunal para aprobar el Plan Comunal para la Reducci&#243;n del
+Riesgo de Desastres mediante decreto alcaldicio.
+     Para el financiamiento de la elaboraci&#243;n del Plan
+Comunal para la Reducci&#243;n del Riesgo de Desastres, las
+municipalidades podr&#225;n participar del Programa de Gesti&#243;n
+del Riesgo de Desastres a que hace referencia el art&#237;culo
+41.
+      </Texto>
+              <Metadatos>
+                <NombreParte presente="si">28 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257863">
+              <Texto>     Art&#237;culo 29.- DEL PLAN NACIONAL DE EMERGENCIA. El Plan
+Nacional de Emergencia corresponder&#225; al instrumento de
+gesti&#243;n que contempla la coordinaci&#243;n y funcionamiento del
+Sistema para el empleo de sus capacidades disponibles a
+nivel nacional durante la Fase de Respuesta. Este
+instrumento establecer&#225; como anexo aquellas materias
+espec&#237;ficas que se requieran, tales como planes de
+contingencia, planes por amenaza, planes de continuidad,
+entre otras.
+     Adem&#225;s, el Plan Nacional de Emergencia ser&#225; elaborado
+por el Servicio, que lo propondr&#225; para la aprobaci&#243;n del
+Comit&#233; Nacional, y ser&#225; sancionado mediante decreto
+expedido a trav&#233;s del Ministerio del Interior y Seguridad
+P&#250;blica, siendo as&#237; vinculante para el Sistema.
+     El Servicio podr&#225; solicitar a los &#243;rganos de la
+Administraci&#243;n del Estado y a entidades e instituciones
+privadas, de los indicados en el reglamento de esta ley, la
+informaci&#243;n necesaria para la elaboraci&#243;n del Plan
+Nacional de Emergencia. Tales instituciones o entidades se
+encontrar&#225;n obligadas a entregar oportunamente toda la
+informaci&#65533;n solicitada.
+     El Director Nacional del Servicio velar&#225; por la
+adecuada aplicaci&#243;n y seguimiento del Plan Nacional de
+Emergencia, mediante los instrumentos, informes y, en
+general, toda clase de documentos que provean los
+integrantes del Sistema, a solicitud del Servicio.
+     El Plan Nacional de Emergencia ser&#225; revisado por el
+Servicio al menos cada dos a&#241;os, o en cualquier momento, si
+as&#237; lo dispone su Director Nacional fundadamente, y en caso
+de modificarse el Plan Estrat&#233;gico Nacional.
+      </Texto>
+              <Metadatos>
+                <NombreParte presente="si">29 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257864">
+              <Texto>     Art&#237;culo 30.- DE LOS PLANES REGIONALES DE EMERGENCIA.
+El Plan Regional de Emergencia corresponder&#225; al instrumento
+de gesti&#243;n que contempla la coordinaci&#243;n y funcionamiento
+del Sistema para el empleo de sus capacidades disponibles a
+nivel regional durante la Fase de Respuesta. Este
+instrumento establecer&#225; como anexo diversas materias
+espec&#237;ficas de acuerdo con las instrucciones entregadas por
+el Servicio Nacional de Prevenci&#243;n y Respuesta ante
+Desastres.
+     El Plan Regional de Emergencia ser&#225; elaborado por el
+Servicio, a trav&#233;s del Director Regional, quien lo
+propondr&#225; para su aprobaci&#243;n al Comit&#233; Regional, y ser&#225;
+sancionado mediante resoluci&#243;n del delegado presidencial
+regional.
+     En la elaboraci&#243;n del Plan Regional de Emergencia se
+consultar&#225; a las entidades p&#250;blicas, pudiendo adem&#225;s
+solicitar opini&#243;n a las entidades privadas que se estime
+conveniente, y se recibir&#225;n los aportes de la comunidad
+organizada, a trav&#233;s de los procedimientos que defina el
+reglamento.
+     El Director Regional del Servicio velar&#225; por la
+adecuada aplicaci&#243;n y seguimiento del Plan Regional de
+Emergencia, mediante los instrumentos, informes y, en
+general, toda clase de documentos que provean los
+integrantes del Sistema a solicitud del Servicio.
+     El Plan Regional de Emergencia ser&#225; revisado por el
+Servicio al menos cada dos a&#241;os, o en cualquier momento, si
+as&#237; lo dispone su Director Regional fundadamente, y en caso
+de modificarse el Plan Estrat&#233;gico Nacional o el Plan
+Nacional de Emergencia.
+      </Texto>
+              <Metadatos>
+                <NombreParte presente="si">30 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257865">
+              <Texto>     Art&#237;culo 31.- DE LOS PLANES PROVINCIALES DE
+EMERGENCIA. El Plan Provincial de Emergencia corresponder&#225;
+al instrumento de gesti&#243;n que contempla la coordinaci&#243;n y
+funcionamiento del Sistema para el empleo de sus capacidades
+disponibles a nivel provincial durante la Fase de Respuesta.
+Este instrumento establecer&#225; como anexo diversas materias
+espec&#237;ficas de acuerdo con las instrucciones entregadas por
+el Servicio.
+     Adem&#225;s, ser&#225; elaborado por el Servicio Nacional de
+Prevenci&#243;n y Respuesta ante Desastres respecto de aquellas
+provincias que determine por haberse constituido el Comit&#233;
+Provincial, a trav&#233;s del funcionario que designe el
+Director Regional, quien lo propondr&#225; para su aprobaci&#243;n
+al Comit&#233; Provincial, y ser&#225; sancionado mediante
+resoluci&#243;n del delegado presidencial provincial.
+     En la elaboraci&#243;n del Plan Provincial de Emergencia se
+consultar&#225; a las entidades p&#250;blicas, pudiendo adem&#225;s
+solicitar opini&#243;n a las entidades privadas que se estime
+conveniente, y se recibir&#225;n los aportes de la comunidad
+organizada, a trav&#233;s de los procedimientos que defina el
+reglamento.
+     El funcionario del Servicio mencionado velar&#225; por la
+adecuada aplicaci&#243;n y seguimiento del Plan Provincial de
+Emergencia en el nivel provincial, mediante los
+instrumentos, informes y, en general, toda clase de
+documentos que provean los integrantes del Sistema, a
+solicitud del Servicio.
+     El Plan Provincial de Emergencia ser&#225; revisado por el
+Servicio al menos cada dos a&#241;os, o en cualquier momento, si
+as&#237; lo dispone fundadamente el funcionario mencionado, y en
+caso de modificarse el Plan Estrat&#233;gico Nacional o el Plan
+Nacional de Emergencia.
+      </Texto>
+              <Metadatos>
+                <NombreParte presente="si">31 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257866">
+              <Texto>     Art&#237;culo 32.- DE LOS PLANES COMUNALES DE EMERGENCIA.
+El Plan Comunal de Emergencia corresponder&#225; al instrumento
+de gesti&#243;n que contempla la coordinaci&#243;n y funcionamiento
+del Sistema para el empleo de sus capacidades disponibles a
+nivel comunal durante la Fase de Respuesta. Este instrumento
+establecer&#225; como anexo diversas materias espec&#237;ficas de
+acuerdo con las instrucciones entregadas por el Servicio.
+     El Plan Comunal de Emergencia ser&#225; desarrollado por la
+Unidad de Gesti&#243;n del Riesgo de Desastres de la comuna, o
+por quien haya sido encomendado en dicha funci&#243;n, previo
+informe t&#233;cnico del Servicio Nacional de Prevenci&#243;n y
+Respuesta ante Desastres en conformidad con los t&#233;rminos
+establecidos en el reglamento. Recibido el citado informe
+t&#233;cnico, el alcalde requerir&#225; el acuerdo del Comit&#233;
+Comunal para aprobar el Plan Comunal de Emergencia mediante
+decreto alcaldicio.
+     Para el financiamiento de la elaboraci&#243;n del Plan
+Comunal de Emergencia, las municipalidades podr&#225;n
+participar del Programa de Gesti&#243;n del Riesgo de Desastres
+a que hace referencia el art&#237;culo 41.
+      </Texto>
+              <Metadatos>
+                <NombreParte presente="si">32 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257867">
+              <Texto>     Art&#237;culo 33.- DE LA COORDINACI&#211;N. Los Planes para la
+Gesti&#243;n del Riesgo de Desastres en todos los niveles
+territoriales deber&#225;n estar en consonancia, armon&#237;a y
+sistematicidad entre s&#237;, y primar&#225;n aquellos que tengan
+alcance nacional por sobre los regionales, y estos &#250;ltimos
+por sobre los comunales.
+     Deber&#225;n considerar especialmente la realidad
+territorial local y las caracter&#237;sticas especiales de cada
+una de las zonas de que se trate.
+      </Texto>
+              <Metadatos>
+                <NombreParte presente="si">33 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+          </EstructurasFuncionales>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="P&#225;rrafo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257868">
+          <Texto>     P&#225;rrafo 2&#176;
+      
+     Planes Sectoriales, Mapas de Amenazas y Mapas de Riesgo
+      </Texto>
+          <Metadatos>
+            <NombreParte presente="no">&#160;</NombreParte>
+            <TituloParte presente="si">P&#225;rrafo 2&#176; Planes Sectoriales, Mapas de Amenazas y Mapas de Riesgo</TituloParte>
+            
+          </Metadatos>
+          <EstructurasFuncionales>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257869">
+              <Texto>     Art&#237;culo 34.- DE LOS PLANES SECTORIALES PARA LA
+GESTI&#211;N DEL RIESGO DE DESASTRES. Los &#243;rganos de la
+Administraci&#243;n del Estado que se individualicen en la
+Pol&#237;tica Nacional para la Reducci&#243;n del Riesgo de
+Desastres, de conformidad con lo establecido en el art&#237;culo
+24, deber&#225;n elaborar un Plan Sectorial para la Gesti&#243;n del
+Riesgo de Desastres que permita el cumplimiento de los
+objetivos establecidos para cada sector en el Plan
+Estrat&#233;gico Nacional, as&#237; como definir el desarrollo de
+sus capacidades para la respuesta de las emergencias y su
+empleo en conformidad a los Planes de Emergencia, en todos
+sus niveles.
+     Para tales efectos, dichos &#243;rganos y organismos
+deber&#225;n convocar a las unidades administrativas que los
+componen; a las asociaciones de funcionarios y a los
+estamentos que en ellos se hayan constituido; a las empresas
+o entidades privadas ligadas a su sector o sometidas a su
+fiscalizaci&#243;n o supervigilancia, y a las entidades que
+administren o provean servicios de utilidad p&#250;blica o
+aquellos que sean esenciales en la Gesti&#243;n del Riesgo de
+Desastres, para una adecuada y eficiente coordinaci&#243;n y
+definici&#243;n de estos planes.
+     Una vez aprobados, en todo caso, ser&#225;n vinculantes
+para los &#243;rganos respectivos, las empresas o entidades
+privadas antes referidas, y los servicios p&#250;blicos que
+correspondan.
+     Estos planes sectoriales deber&#225;n establecer metas y
+objetivos espec&#237;ficos para la Gesti&#243;n del Riesgo de
+Desastres, e identificar acciones concretas que sean
+conducentes al logro de ellos. En su elaboraci&#243;n, los
+&#243;rganos de la Administraci&#243;n del Estado deber&#225;n seguir
+los lineamientos y directrices establecidos en la Pol&#237;tica
+Nacional, guardando la debida correspondencia y armon&#237;a.
+     Cada Plan Sectorial ser&#225; presentado ante el Comit&#233;
+Nacional para su discusi&#243;n y aprobaci&#243;n, debiendo ser
+acompa&#241;ado de un informe t&#233;cnico elaborado por el Servicio
+Nacional de Prevenci&#243;n y Respuesta ante Desastres, y
+deber&#225; ser sancionado mediante decreto supremo suscrito por
+el Ministro del Interior y Seguridad P&#250;blica, y el Ministro
+que corresponda al sector respectivo, expedido bajo la
+f&#243;rmula "por orden del Presidente de la Rep&#250;blica".
+     El Plan Sectorial ser&#225; revisado por el &#243;rgano que lo
+elabore en el plazo determinado por &#233;ste, el cual no podr&#225;
+superar los cinco a&#241;os.
+      </Texto>
+              <Metadatos>
+                <NombreParte presente="si">34 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257870">
+              <Texto>     Art&#237;culo 35.- DE LOS MAPAS DE AMENAZA. Se entender&#225;
+por Mapas de Amenaza a los instrumentos que identifican las
+&#225;reas expuestas al efecto directo o indirecto de una
+amenaza, cuya representaci&#243;n gr&#225;fica es una zonificaci&#243;n
+simple realizada a trav&#233;s de diversas metodolog&#237;as y
+variadas escalas seg&#250;n la amenaza. La elaboraci&#243;n,
+validaci&#243;n y actualizaci&#243;n permanente de los mapas de
+amenazas estar&#225; a cargo de los organismos t&#233;cnicos
+correspondientes seg&#250;n sus competencias, establecidos en el
+literal b) del art&#237;culo 38.
+     Los Mapas de Amenaza deber&#225;n ser incorporados a los
+Planes para la Gesti&#243;n del Riesgo de Desastres a nivel
+regional, provincial y comunal, seg&#250;n corresponda.
+     El Mapa de Amenaza respectivo ser&#225; utilizado para la
+elaboraci&#243;n de los instrumentos de planificaci&#243;n
+territorial, adem&#225;s de la Planificaci&#243;n del Borde Costero,
+el Ordenamiento Territorial y el Manejo Integrado de
+Cuencas.
+     El reglamento regular&#225; el procedimiento de
+elaboraci&#243;n de los Mapas de Amenaza.
+      </Texto>
+              <Metadatos>
+                <NombreParte presente="si">35 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257871">
+              <Texto>     Art&#237;culo 36.- DE LOS MAPAS DE RIESGO. Se entender&#225;
+por Mapas de Riesgo a los instrumentos de diagn&#243;stico de
+los escenarios de riesgos cuya representaci&#243;n gr&#225;fica
+corresponde a la relaci&#243;n de vulnerabilidad, elementos y
+sistemas expuestos a amenazas, sobre una proporci&#243;n del
+territorio en un momento dado, con el objeto de apoyar la
+Gesti&#243;n del Riesgo de Desastres.
+     La elaboraci&#243;n de los Mapas de Riesgo estar&#225; a cargo
+del Servicio Nacional de Prevenci&#243;n y Respuesta ante
+Desastres, en coordinaci&#243;n con el Gobierno Regional, las
+municipalidades y las Secretar&#237;as Regionales Ministeriales
+de Vivienda y Urbanismo, y los organismos t&#233;cnicos que
+correspondan, los que estar&#225;n obligados a proveer la
+informaci&#243;n necesaria para la elaboraci&#243;n de estos mapas.
+     Los Mapas de Riesgo deber&#225;n ser incorporados a los
+Planes para la Gesti&#243;n de Riesgo de Desastres
+correspondientes al nivel regional, provincial y comunal.
+     El reglamento regular&#225; el procedimiento de
+elaboraci&#243;n de los Mapas de Riesgo.
+      </Texto>
+              <Metadatos>
+                <NombreParte presente="si">36 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257872">
+              <Texto>     Art&#237;culo 37.- DE OTROS INSTRUMENTOS DE GESTI&#211;N. El
+Servicio Nacional de Prevenci&#243;n y Respuesta ante Desastres
+podr&#225; proponer al Comit&#233; Nacional la aprobaci&#243;n de
+cualquier otro instrumento de gesti&#243;n, para ser incorporado
+y ejecutado en la Gesti&#243;n del Riesgo de Desastres en
+cualquier nivel, conforme el avance de la ciencia y la
+tecnolog&#237;a correspondiente.
+     Estos instrumentos ser&#225;n obligatorios y vinculantes
+para los integrantes del Sistema, una vez que sean aprobados
+por el Comit&#233; Nacional y sancionados a trav&#233;s de decreto
+supremo fundado, suscrito por el Ministro del Interior y
+Seguridad P&#250;blica bajo la f&#243;rmula "por orden del
+Presidente de la Rep&#250;blica".
+      </Texto>
+              <Metadatos>
+                <NombreParte presente="si">37 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+          </EstructurasFuncionales>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="P&#225;rrafo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257873">
+          <Texto>     P&#225;rrafo 3&#176;
+      
+     Sistema de Alerta, Monitoreo, Comunicaciones e
+Informaci&#243;n
+      </Texto>
+          <Metadatos>
+            <NombreParte presente="no">&#160;</NombreParte>
+            <TituloParte presente="si">P&#225;rrafo 3&#176; Sistema de Alerta, Monitoreo, Comunicaciones e Informaci&#243;n</TituloParte>
+            
+          </Metadatos>
+          <EstructurasFuncionales>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257874">
+              <Texto>     Art&#237;culo 38.- DEL SISTEMA DE ALERTA TEMPRANA. Se
+entender&#225; por Sistema de Alerta Temprana al conjunto de
+capacidades necesarias para generar y difundir informaci&#243;n
+de alerta que sea oportuna y significativa, para que las
+personas, las comunidades y las organizaciones expuestas a
+alguna amenaza se preparen y act&#250;en de forma adecuada y con
+suficiente antelaci&#243;n, con el objeto de reducir la
+posibilidad de que se produzcan p&#233;rdidas o da&#241;os.
+     El Sistema de Alerta Temprana estar&#225; compuesto por:
+      
+     a) Unidades de Alerta Temprana.
+     El Servicio deber&#225; contar con una Unidad Nacional de
+Alerta Temprana y, al menos, una Unidad Regional de Alerta
+Temprana por cada regi&#243;n del pa&#237;s, las cuales deber&#225;n
+realizar el monitoreo constante de las posibilidades de
+riesgos, basados en la informaci&#243;n obtenida a trav&#233;s del
+Sistema y, en especial, la de los organismos t&#233;cnicos.
+Conforme a lo anterior, el Servicio deber&#225; declarar los
+estados de alerta, sobre la base de los procedimientos que
+&#233;ste establezca para tales efectos, y difundirlos a la
+poblaci&#243;n en forma oportuna, clara y suficiente.
+      
+     b) Los organismos t&#233;cnicos para el monitoreo de las
+amenazas.
+     Los organismos t&#233;cnicos para el monitoreo de las
+amenazas corresponden a todas aquellas entidades que
+pertenecen al Sistema y que cuentan con las competencias
+t&#233;cnicas para mantener un monitoreo permanente de las
+diferentes amenazas, tales como: la Direcci&#243;n
+Meteorol&#243;gica de Chile, el Servicio Hidrogr&#225;fico y
+Oceanogr&#225;fico de la Armada, el Servicio Nacional de
+Geolog&#237;a y Miner&#237;a, la Corporaci&#243;n Nacional Forestal o su
+sucesor legal, el Centro Sismol&#243;gico Nacional, la
+Direcci&#243;n General de Aguas, la Direcci&#243;n de Obras
+Hidr&#225;ulicas, Bomberos de Chile, la Comisi&#243;n Chilena de
+Energ&#237;a Nuclear y los dem&#225;s que se&#241;ale el reglamento. El
+reglamento podr&#225; contemplar convenios o acuerdos con
+organismos nacionales o internacionales vinculados con el
+monitoreo de amenazas.
+     Cuando corresponda, los organismos indicados
+precedentemente deber&#225;n comunicar al Servicio Nacional de
+Prevenci&#243;n y Respuesta ante Desastres, a cada Direcci&#243;n
+Regional involucrada, el estado de las amenazas, su nivel de
+peligrosidad, el alcance y la amplitud de las mismas, en la
+forma que determinen los protocolos generados para estos
+efectos entre los organismos competentes y el Servicio. Este
+&#250;ltimo deber&#225; declarar, en el nivel que corresponda y
+sobre la base de los informes de dichos organismos, la
+Alerta a la poblaci&#243;n y a toda autoridad comunal, regional,
+provincial o nacional, por todos los medios de comunicaci&#243;n
+que sean necesarios.
+      
+     c. Sistema Nacional de Comunicaciones.
+     El Servicio deber&#225; mantener un Sistema Nacional de
+Comunicaciones integrado y robusto, que permita el flujo de
+comunicaciones permanentes con las organizaciones del
+Sistema que participan en todas las fases del ciclo del
+riesgo de desastres y que considere, a lo menos, la
+interoperabilidad, confiabilidad, escalabilidad,
+portabilidad, resiliencia y redundancia. Se deber&#225;n
+contemplar, adem&#225;s, los mecanismos de aviso y comunicaci&#243;n
+de las alertas y emergencias preventivas a la poblaci&#243;n.
+Para ello, el Servicio deber&#225; contemplar protocolos que
+establezcan procedimientos destinados a:
+      
+     i. Mantener comunicaciones con los organismos t&#233;cnicos
+responsables de vigilar las amenazas, las que deben
+efectuarse de manera constante, r&#225;pida y oportuna.
+     ii. Difundir las alertas y emergencias preventivas a la
+poblaci&#243;n, por todos los medios de comunicaci&#243;n
+disponibles. Ser&#225; aplicable a este respecto lo se&#241;alado en
+el art&#237;culo 7 bis de la ley N&#176; 18.168.
+     iii. Difundir toda clase de informaci&#243;n en todas las
+fases del ciclo del riesgo de desastres, especialmente los
+mapas de riesgo, tanto a nivel comunal, provincial, regional
+y nacional.
+     iv. Coordinar, como parte del Sistema Nacional de
+Comunicaciones, el empleo del servicio y red de
+radioaficionados organizados legalmente en todo el
+territorio nacional, quienes en este caso deber&#225;n actuar
+bajo la direcci&#243;n del Servicio.
+      
+     El Ministerio de Transportes y Telecomunicaciones, de
+conformidad con el art&#237;culo 6, letra f), del decreto ley
+N&#176; 1.762, de 1977, deber&#225; reservar un espectro
+radioel&#233;ctrico para efectos de permitir las comunicaciones
+del Sistema en los eventos de emergencias o desastres y en
+cualquiera de sus fases del ciclo del riesgo de desastres.
+      
+     d) Per&#237;metro de Seguridad.
+     El Presidente del Comit&#233; Regional podr&#225; establecer
+por resoluci&#243;n, seg&#250;n corresponda, un Per&#237;metro de
+Seguridad, indicando la evacuaci&#243;n de la poblaci&#243;n y su
+restricci&#243;n de ingreso al lugar en que, seg&#250;n un informe
+fundado del Servicio, exista una grave y actual amenaza a la
+vida o integridad f&#237;sica de las personas y s&#243;lo mientras
+se mantengan estas condiciones.
+      </Texto>
+              <Metadatos>
+                <NombreParte presente="si">38 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257875">
+              <Texto>     Art&#237;culo 39.- DEL SISTEMA DE INFORMACI&#211;N. El Servicio
+Nacional de Prevenci&#243;n y Respuesta ante Desastres, conforme
+a las pol&#237;ticas, est&#225;ndares y tecnolog&#237;as que est&#225;n a
+disposici&#243;n del Estado de Chile, deber&#225; poner en marcha un
+Sistema de Informaci&#243;n para la Gesti&#243;n del Riesgo de
+Desastres, a trav&#233;s del cual deber&#225; procurar en todas las
+fases del ciclo del riesgo la integraci&#243;n de toda clase de
+contenidos referidos a &#233;stas, obtenidos de todas las
+entidades nacionales, regionales, provinciales y comunales.
+     El Sistema de Informaci&#243;n deber&#225; estar disponible en
+los niveles nacional, regional, provincial y comunal,
+adaptado a los requerimientos de cada nivel geogr&#225;fico.
+     Dicho sistema ser&#225; dirigido, coordinado y ejecutado
+por el Servicio y ser&#225; sometido a la evaluaci&#243;n del
+Comit&#233; Nacional. El Servicio podr&#225;, para estos fines y
+dentro de sus disponibilidades presupuestarias, realizar
+contrataciones con instituciones privadas. Asimismo, se
+encontrar&#225;n obligadas a proporcionar al Servicio toda
+informaci&#243;n que posean vinculada a esta materia las
+instituciones p&#250;blicas y las instituciones privadas que
+obtengan fondos o financiamiento p&#250;blico o que operen
+servicios de utilidad p&#250;blica.
+      </Texto>
+              <Metadatos>
+                <NombreParte presente="si">39 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257876">
+              <Texto>     Art&#237;culo 40.- FUNCIONES B&#193;SICAS DEL SISTEMA DE
+INFORMACI&#211;N. Ser&#225;n funciones y objetivos b&#225;sicos del
+sistema de informaci&#243;n:
+      
+     a) Permitir el acceso gratuito de la poblaci&#243;n a toda
+informaci&#243;n relacionada con la Gesti&#243;n del Riesgo de
+Desastres en todo el pa&#237;s, salvo que dicha informaci&#243;n
+est&#233; sujeta a reserva de conformidad a la ley.
+     b) Adaptar, adoptar y promover est&#225;ndares, protocolos,
+soluciones tecnol&#243;gicas y procesos para el manejo de la
+informaci&#243;n para la Gesti&#243;n del Riesgo de Desastres a
+nivel nacional, regional, provincial y comunal.
+     c) Contribuir a la generaci&#243;n de los elementos de
+informaci&#243;n e interacci&#243;n para el seguimiento de amenazas,
+vulnerabilidades y riesgos del pa&#237;s.
+     d) Divulgar toda clase de informaci&#243;n en todas las
+fases del ciclo del riesgo de desastres, a nivel nacional,
+regional, provincial y comunal, salvo que concurra una
+causal de secreto o reserva de la informaci&#243;n, de acuerdo
+con la ley.
+     e) Dar respuesta a la informaci&#243;n sobre las
+estad&#237;sticas de afectaci&#243;n y de las capacidades, acciones
+y recursos utilizados.
+     f) Privilegiar el trabajo conjunto e intersectorial
+para producir, compartir y usar la informaci&#243;n.
+      </Texto>
+              <Metadatos>
+                <NombreParte presente="si">40 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+          </EstructurasFuncionales>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257877">
+      <Texto>     T&#205;TULO III
+      
+     DISPOSICIONES FINALES
+      </Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">T&#205;TULO III DISPOSICIONES FINALES</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257878">
+          <Texto>     Art&#237;culo 41.- DEL PROGRAMA DE GESTI&#211;N DEL RIESGO DE
+DESASTRES. Cr&#233;ase el Programa de Gesti&#243;n del Riesgo de
+Desastres en el presupuesto del Servicio Nacional de
+Prevenci&#243;n y Respuesta ante Desastres, con el objeto de
+concurrir al financiamiento de los Instrumentos de Gesti&#243;n
+del Riesgo de Desastres definidos en esta ley.
+     El Director asignar&#225; dichos fondos mediante
+resoluci&#243;n fundada o convenio. Dicha resoluci&#243;n o convenio
+deber&#225; identificar el instrumento que se financia, su monto
+y la instituci&#243;n responsable de su ejecuci&#243;n.
+     Un reglamento, dictado a trav&#233;s del Ministerio del
+Interior y Seguridad P&#250;blica, suscrito tambi&#233;n por el
+Ministro de Hacienda, establecer&#225; criterios objetivos que
+permitan priorizar la asignaci&#243;n de los recursos, las
+reglas de funcionamiento y los medios de verificaci&#243;n del
+correcto uso de los fondos asignados a la finalidad
+se&#241;alada en el inciso primero.
+      </Texto>
+          <Metadatos>
+            <NombreParte presente="si">41 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257879">
+          <Texto>     Art&#237;culo 42.- SUCESOR LEGAL. A partir de la
+iniciaci&#243;n de actividades del Servicio Nacional de
+Prevenci&#243;n y Respuesta ante Desastres, der&#243;gase el decreto
+ley N&#176; 369, de 1974, que crea la Oficina Nacional de
+Emergencia. Para todos los efectos legales, reglamentarios y
+contractuales, el Servicio Nacional de Prevenci&#243;n y
+Respuesta ante Desastres ser&#225; el sucesor y continuador
+legal de la Oficina Nacional de Emergencia del Ministerio
+del Interior y Seguridad P&#250;blica, y le corresponder&#225;
+hacerse cargo de todos los derechos y obligaciones de los
+que aquella oficina fuera titular y que existieren o se
+encontraren pendientes a la fecha de entrada en vigencia de
+esta norma.
+     Toda referencia a la Oficina Nacional de Emergencia que
+hagan las leyes, reglamentos y dem&#225;s normativa vigente
+deber&#225; entenderse hecha, a partir de la fecha se&#241;alada en
+el inciso primero, respecto del Servicio Nacional de
+Prevenci&#243;n y Respuesta ante Desastres creado por esta ley.
+      
+</Texto>
+          <Metadatos>
+            <NombreParte presente="si">42 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257880">
+          <Texto>     Art&#237;culo 43.- ASIGNACI&#211;N DE TURNO. Establ&#233;cese una
+asignaci&#243;n de turno para el personal de planta y a contrata
+que se desempe&#241;e en las Unidades de Alerta Temprana del
+Servicio, que laboren efectiva y permanentemente en los
+puestos de trabajo que requieren atenci&#243;n las 24 horas del
+d&#237;a, durante todos los d&#237;as del a&#241;o, con un sistema de
+turno integrado por, al menos, cuatro funcionarios.
+     Dicha asignaci&#243;n estar&#225; destinada a retribuir
+pecuniariamente al referido personal por el desempe&#241;o de
+jornadas de trabajo en horarios total o parcialmente
+diferentes de la jornada ordinaria establecida en el
+art&#237;culo 65 de la ley N&#176; 18.834, sobre Estatuto
+Administrativo, cuyo texto refundido, coordinado y
+sistematizado fue fijado por el decreto con fuerza de ley
+N&#176; 29, de 2004, del Ministerio de Hacienda, incluso en
+horario nocturno y en d&#237;as s&#225;bados, domingos y festivos,
+de acuerdo con las necesidades de funcionamiento
+ininterrumpido de las Unidades de Alerta Temprana.
+     La Ley de Presupuestos del Sector P&#250;blico expresar&#225;
+el n&#250;mero m&#225;ximo de funcionarios que podr&#225; desempe&#241;arse
+en las Unidades de Alerta Temprana sujetas al sistema de
+turno integrado por, al menos, cuatro funcionarios,
+separadamente.
+      </Texto>
+          <Metadatos>
+            <NombreParte presente="si">43 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257881">
+          <Texto>     Art&#237;culo 44.- REGULACI&#211;N DE LA ASIGNACI&#211;N DE TURNO.
+La asignaci&#243;n contemplada en el art&#237;culo 43 ser&#225;
+imponible e incompatible con la asignaci&#243;n establecida en
+la letra c) del art&#237;culo 98 de la ley N&#176; 18.834, sobre
+Estatuto Administrativo, cuyo texto refundido, coordinado y
+sistematizado fue fijado por el decreto con fuerza de ley
+N&#176; 29, de 2004, del Ministerio de Hacienda.
+     El personal que labora en el sistema de turno de que
+trata el art&#237;culo 43 no podr&#225; desempe&#241;ar trabajos
+extraordinarios de ning&#250;n tipo, salvo cuando se trate de
+trabajos de car&#225;cter imprevisto, y motivados por
+emergencias o necesidades impostergables, los que deber&#225;n
+ser calificados por el Director del Servicio mediante
+resoluci&#243;n fundada. En estos casos, ser&#225; aplicable lo
+dispuesto en el inciso segundo del art&#237;culo 66 de la ley
+N&#176; 18.834, sobre Estatuto Administrativo, cuyo texto
+refundido, coordinado y sistematizado fue fijado por el
+decreto con fuerza de ley N&#176; 29, de 2004, del Ministerio de
+Hacienda.
+     Para tener derecho a la asignaci&#243;n de turno, los
+funcionarios deber&#225;n estar formalmente destinados a prestar
+servicios en las Unidades de Alerta Temprana.
+     Esta asignaci&#243;n se percibir&#225; mientras el trabajador
+se encuentre en funciones en los puestos de trabajo
+mencionados, e integre el sistema de turnos rotativos,
+manteniendo el derecho a percibirla durante los per&#237;odos de
+ausencia con goce de remuneraciones originados por permisos,
+licencias y feriado legal.
+     Asimismo, ser&#225; considerada como estipendio de
+car&#225;cter general y permanente, para efectos del inciso
+tercero del art&#237;culo 21 de la ley N&#176; 19.429.
+     Las horas extraordinarias que, en virtud de lo
+dispuesto en la letra c) del art&#237;culo 98 de la ley N&#176;
+18.834, sobre Estatuto Administrativo, cuyo texto refundido,
+coordinado y sistematizado fue fijado por el decreto con
+fuerza de ley N&#176; 29, de 2004, del Ministerio de Hacienda,
+puedan percibir los dem&#225;s funcionarios de planta y a
+contrata del Servicio, cualquiera que sea el motivo de su
+origen, no constituir&#225;n remuneraci&#243;n permanente para
+ning&#250;n efecto legal. En consecuencia, no se percibir&#225;n
+durante los feriados, licencias y permisos con goce de
+remuneraciones.
+      </Texto>
+          <Metadatos>
+            <NombreParte presente="si">44 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257882">
+          <Texto>     Art&#237;culo 45.- Modif&#237;case la ley N&#176; 18.695, org&#225;nica
+constitucional de Municipalidades, cuyo texto refundido,
+coordinado y sistematizado fue fijado mediante el decreto
+con fuerza de ley N&#176; 1, de 2006, del Ministerio del
+Interior, en el siguiente sentido:
+      
+     1. Sustit&#250;yese la letra i) del art&#237;culo 4 por la
+siguiente:
+      
+     "i) La Gesti&#243;n del Riesgo de Desastres en el
+territorio de la comuna, la que comprender&#225; especialmente
+las acciones relativas a las Fases de Mitigaci&#243;n y
+Preparaci&#243;n de estos eventos, as&#237; como las acciones
+vinculadas a las Fases de Respuesta y Recuperaci&#243;n frente a
+emergencias.".        
+      
+     2. Interc&#225;lase en el inciso segundo del art&#237;culo 15,
+entre la expresi&#243;n "tr&#225;nsito y transporte p&#250;blicos," y
+las palabras "administraci&#243;n y finanzas", la expresi&#243;n
+"gesti&#243;n del riesgo de desastres,".
+      
+     3. Agr&#233;gase el siguiente art&#237;culo 26 bis, nuevo:
+      
+     "Art&#237;culo 26 bis.- En general, corresponder&#225; a la
+Unidad de Gesti&#243;n del Riesgo de Desastres:
+      
+     a) Prestar apoyo al alcalde en todas las materias
+referentes al Sistema Nacional de Prevenci&#243;n y Respuesta
+ante Desastres.
+     b) Elaborar el Plan Comunal para la Reducci&#243;n del
+Riesgo de Desastres y el Plan Comunal de Emergencia, en
+conformidad con lo dispuesto en la ley que establece el
+Sistema Nacional de Prevenci&#243;n y Respuesta ante Desastres y
+su reglamento.
+     c) Confeccionar los informes en aquellas materias de su
+competencia, referidas a los art&#237;culos 28 y 32 de la ley
+indicada en la letra anterior, cuando las unidades
+se&#241;aladas en dichos art&#237;culos soliciten su
+pronunciamiento.
+     d) Aportar al funcionario que designe el Director
+Regional del Servicio Nacional de Prevenci&#243;n y Respuesta
+ante Desastres, la informaci&#243;n referente a su comuna para
+la elaboraci&#243;n del mapa de riesgo que contempla la ley que
+establece el Sistema Nacional de Prevenci&#243;n y Respuesta
+ante Desastres.
+     e) Coordinar con la Direcci&#243;n Regional del Servicio
+Nacional de Prevenci&#243;n y Respuesta ante Desastres, y con
+los organismos o entidades p&#250;blicas correspondientes, en el
+marco de sus competencias, las acciones en materia de
+Gesti&#243;n del Riesgo de Desastres en su comuna.".            
+      
+     4. Agr&#233;gase el siguiente art&#237;culo 26 ter, nuevo:
+      
+     "Art&#237;culo 26 ter.- Esta Unidad se podr&#225; asignar o
+crear a proposici&#243;n del alcalde y con la aprobaci&#243;n del
+concejo municipal respectivo. Una vez que el alcalde cuente
+con la aprobaci&#243;n anterior, estar&#225; facultado para crear y
+proveer el cargo de encargado de la Unidad de Gesti&#243;n del
+Riesgo de Desastres, para lo que se considerar&#225; la
+disponibilidad en el presupuesto municipal, lo cual deber&#225;
+ser certificado por los jefes de las unidades de
+administraci&#243;n y finanzas, y de control de la municipalidad
+respectiva.
+     El cargo aludido corresponder&#225; al escalaf&#243;n de
+directivos o jefaturas, y para su acceso se estar&#225; a los
+requisitos exigidos en el art&#237;culo 8 de la ley N&#176; 18.883,
+seg&#250;n corresponda a un cargo de directivo o de jefatura.
+     Ser&#225; designado por el alcalde y podr&#225; ser removido
+por &#233;ste, sin perjuicio de que rijan a su respecto,
+adem&#225;s, las causales de cesaci&#243;n de funciones aplicables
+al personal municipal.".
+      
+     5. Agr&#233;gase el siguiente art&#237;culo octavo transitorio,
+nuevo:
+      
+     "Art&#237;culo octavo transitorio.- El encargado de la
+Unidad de Gesti&#243;n del Riesgo de Desastres a que alude el
+art&#237;culo 26 ter se financiar&#225; con recursos municipales o,
+en caso de no existir el cargo en el municipio, se
+financiar&#225; a profesionales o t&#233;cnicos de nivel superior
+para desempe&#241;ar labores que fortalezcan la aplicaci&#243;n de
+los Instrumentos de Gesti&#243;n del Riesgo de Desastres, que
+contempla la ley que establece el Sistema Nacional
+Prevenci&#243;n y Respuesta ante Desastres, como parte del
+convenio a que se refiere el art&#237;culo 41 de dicha ley.".
+      
+</Texto>
+          <Metadatos>
+            <NombreParte presente="si">45 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257883">
+          <Texto>     Art&#237;culo 46.- Introd&#250;cense en el decreto supremo N&#176;
+104, de 1977, del Ministerio del Interior, que fija el texto
+refundido, coordinado y sistematizado del T&#237;tulo I de la
+ley N&#176; 16.282, que fija disposiciones permanentes para
+casos de sismos o cat&#225;strofes, las siguientes
+modificaciones:
+                    
+     1. En el art&#237;culo 3:
+      
+     a) Reempl&#225;zase la letra b) por la siguiente:
+      
+     "b) Autorizar la contrataci&#243;n, mediante licitaci&#243;n
+privada o trato directo, a los &#243;rganos y servicios
+indicados en el art&#237;culo 1 de la ley N&#176; 18.575, org&#225;nica
+constitucional de Bases Generales de la Administraci&#243;n del
+Estado, cuyo texto refundido, coordinado y sistematizado fue
+fijado por el decreto con fuerza de ley N&#176; 1-19.653, de
+2000, del Ministerio Secretar&#237;a General de la Presidencia.
+Asimismo, podr&#225; ratificar aquellas medidas adoptadas, en
+los momentos posteriores a la ocurrencia de la emergencia
+que hubieren requerido de esta norma de excepci&#243;n.".
+      
+     b) Der&#243;gase la letra c).
+     c) Reempl&#225;zase en la letra d) la palabra
+"Autorizaciones" por "Autorizar".
+     d) Der&#243;gase la letra e).
+     e) Reempl&#225;zase en la letra f) la expresi&#243;n
+"Autorizaci&#243;n para rebajar" por "Autorizar la rebaja de".
+     f) Der&#243;ganse las letras g), h) e i).
+                    
+     2. Der&#243;gase el inciso s&#233;ptimo del art&#237;culo 5.
+      
+     3. En el art&#237;culo 8:
+      
+     a) Interc&#225;lase, entre los t&#233;rminos "subastas
+p&#250;blicas" y el texto "en la zona afectada", la expresi&#243;n
+"y las audiencias, y podr&#225;n prorrogar o suspender plazos".
+     b) Reempl&#225;zase la expresi&#243;n ", no pudiendo fijarse un
+plazo de suspensi&#243;n superior a un a&#241;o." por el siguiente
+texto: ". El plazo de suspensi&#243;n podr&#225; ser prorrogado
+cuantas veces sea necesario, y no podr&#225; exceder el per&#237;odo
+total de suspensi&#243;n la vigencia del decreto que declara la
+situaci&#243;n de emergencia.".
+                    
+     4. En el art&#237;culo 10:
+      
+     a) Elim&#237;nase la expresi&#243;n "de un &#237;tem a otro".
+     b) Reempl&#225;zase la expresi&#243;n "llevar a cabo las tareas
+de reconstrucci&#243;n y auxilio de los damnificados" por
+"financiar aquellos gastos ocasionados con motivo del sismo
+o cat&#225;strofe que imposibiliten el correcto funcionamiento
+de las instituciones que aportaron a la misma con recursos
+propios".
+      
+     5. En el art&#237;culo 16:
+      
+     a) Elim&#237;nanse las expresiones "de fomento industrial,
+agr&#237;cola o minero" y "mediante pr&#233;stamos o asistencia
+t&#233;cnica".
+     b) Agr&#233;gase a continuaci&#243;n de la expresi&#243;n "sin
+sujeci&#243;n a las normas legales", la frase "con cargo a sus
+fondos propios o a los que les sean asignados para tales
+fines".
+     c) Interc&#225;lase entre las expresiones "Presidente de la
+Rep&#250;blica mediante decreto supremo fijar&#225;" y "su monto,
+plazo", la expresi&#243;n "el destino o uso de los recursos a
+otorgar,".
+      
+     6. Der&#243;ganse los art&#237;culos 20, 21 y 22.
+     7. En el art&#237;culo 26:
+      
+     a) Reempl&#225;zase en el inciso segundo la expresi&#243;n "la
+Direcci&#243;n de Planificaci&#243;n del Desarrollo Urbano" por "el
+Ministerio de Vivienda y Urbanismo".
+     b) Agr&#233;gase en el inciso segundo, despu&#233;s de las
+palabras "noventa d&#237;as", la expresi&#243;n ", prorrogables
+hasta por ciento ochenta d&#237;as".
+      
+     8. Der&#243;gase el art&#237;culo 32.
+     9. En el inciso primero del art&#237;culo 38:
+      
+     a) Reempl&#225;zase la expresi&#243;n "herramientas, ropas de
+cama, y prendas de vestir" por el vocablo "especies".
+     b) Interc&#225;lase, antes del punto final, la expresi&#243;n
+", sin exigir el pago de la acreencia".
+                    
+     10. Der&#243;gase el inciso final del art&#237;culo 42.
+      
+</Texto>
+          <Metadatos>
+            <NombreParte presente="si">46 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257884">
+          <Texto>     Art&#237;culo 47.- Introd&#250;cense en la ley N&#176; 20.304,
+sobre operaci&#243;n de embalses frente a alertas y emergencias
+de crecidas y otras medidas que indica, las siguientes
+modificaciones:
+      
+     1. Reempl&#225;zase en el art&#237;culo 8 la expresi&#243;n "a la
+Oficina Nacional de Emergencia del Ministerio del Interior
+(ONEMI)" por "el Servicio Nacional de Prevenci&#243;n y
+Respuesta ante Desastres".
+      
+     2. En el art&#237;culo 9:
+      
+     a) Reempl&#225;zase la expresi&#243;n "La ONEMI" por "La DGA".
+     b) Agr&#233;gase, a continuaci&#243;n del punto final, la
+siguiente oraci&#243;n: "La declaraci&#243;n de alerta deber&#225; ser
+comunicada por la DGA al Servicio Nacional de Prevenci&#243;n y
+Respuesta ante Desastres en forma oportuna y suficiente.".
+      
+     3. En el art&#237;culo 10:
+      
+     a) Reempl&#225;zase la expresi&#243;n "la ONEMI" por "el
+Servicio Nacional de Prevenci&#243;n y Respuesta ante
+Desastres".
+     b) Supr&#237;mese la expresi&#243;n "a la DGA,".
+     c) Reempl&#225;zase la expresi&#243;n "el Plan Nacional de
+Protecci&#243;n Civil" por "Plan de Emergencia respectivo".
+                    
+</Texto>
+          <Metadatos>
+            <NombreParte presente="si">47 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257885">
+          <Texto>     Art&#237;culo 48.- Corresponder&#225; a la Corporaci&#243;n
+Nacional Forestal o a su sucesor legal declarar la alerta de
+amenaza en caso de incendio forestal, su nivel y cobertura,
+y comunicarla en forma oportuna y suficiente al Servicio
+Nacional de Prevenci&#243;n y Respuesta ante Desastres, en la
+forma que determinen los protocolos generados para estos
+efectos.
+      </Texto>
+          <Metadatos>
+            <NombreParte presente="si">48 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257886">
+          <Texto>     Art&#237;culo 49.- Agr&#233;gase en el art&#237;culo 3 de la ley
+N&#176; 16.752, que fija organizaci&#243;n y funciones y establece
+disposiciones generales a la Direcci&#243;n General de
+Aeron&#225;utica Civil, la siguiente letra z), nueva:
+      
+     "z) Declarar las alertas de origen meteorol&#243;gico, su
+nivel y cobertura, y comunicarlas en forma oportuna y
+suficiente al Servicio Nacional de Prevenci&#243;n y Respuesta
+ante Desastres, en la forma que determinen los protocolos
+generados para estos efectos.".
+      
+</Texto>
+          <Metadatos>
+            <NombreParte presente="si">49 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257887">
+          <Texto>     Art&#237;culo 50.- Introd&#250;cense en el art&#237;culo 2 del
+decreto ley N&#186; 3.525, de 1980, del Ministerio de Miner&#237;a,
+que crea el Servicio Nacional de Geolog&#237;a y Miner&#237;a, los
+siguientes numerales 17 y 18, nuevos:
+      
+     "17. Declarar las alertas derivadas de actividad
+volc&#225;nica o erupci&#243;n y remoci&#243;n en masa, que puedan
+afectar a la poblaci&#243;n, en sus niveles y cobertura, y
+comunicarlas de manera oportuna y suficiente, en la forma
+que determinen los protocolos generados para estos efectos,
+al Servicio Nacional de Prevenci&#243;n y Respuesta ante
+Desastres.
+     18. Declarar la alerta de amenazas derivadas de
+emergencias mineras de gran alcance, en sus niveles y
+cobertura, y comunicarla de manera oportuna y suficiente, en
+la forma que determinen los protocolos generados para estos
+efectos, al Servicio Nacional de Prevenci&#243;n y Respuesta
+ante Desastres.".
+      
+</Texto>
+          <Metadatos>
+            <NombreParte presente="si">50 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257888">
+          <Texto>     Art&#237;culo 51.- Agr&#233;gase, en la letra b) del art&#237;culo
+299 del C&#243;digo de Aguas, el siguiente numeral 4, nuevo:
+      
+     "4. Corresponder&#225; a la Direcci&#243;n General de Aguas
+declarar la alerta de amenaza asociada al recurso h&#237;drico,
+informando el nivel y cobertura del mismo, y comunicarla de
+manera oportuna y suficiente al Servicio Nacional de
+Prevenci&#243;n y Respuesta ante Desastres, en la forma que
+determinen los protocolos generados para estos efectos.".
+      
+</Texto>
+          <Metadatos>
+            <NombreParte presente="si">51 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257889">
+          <Texto>     Art&#237;culo 52.- Reempl&#225;zase el art&#237;culo 5 del decreto
+ley N&#176; 2.552, de 1979, del Ministerio de Vivienda y
+Urbanismo, por el siguiente:
+      
+     "Art&#237;culo 5.- Con el fin de atender los casos de
+destrucci&#243;n de viviendas derivadas de emergencias o
+cat&#225;strofes, tales como terremotos, tsunamis, inundaciones,
+incendios u otras amenazas semejantes, el Servicio Nacional
+de Prevenci&#243;n y Respuesta ante Desastres podr&#225; encomendar
+la construcci&#243;n de viviendas de emergencia.
+     Para todos los efectos legales, se entender&#225; por
+vivienda de emergencia aquella de car&#225;cter provisorio
+destinada a resolver la necesidad de vivienda de los
+damnificados de una emergencia o cat&#225;strofe. Una
+resoluci&#243;n dictada por el Servicio Nacional de Prevenci&#243;n
+y Respuesta ante Desastres, y publicada en el Diario
+Oficial, establecer&#225; los est&#225;ndares de habitabilidad de la
+vivienda de emergencia, incluyendo los metros cuadrados
+conforme al grupo de damnificados que pueda albergar. El
+procedimiento para asignar la vivienda de emergencia, sea en
+comodato, dominio u otra forma, ser&#225; establecido igualmente
+en dicha resoluci&#243;n.
+     En todos los casos, la vivienda de emergencia, por su
+car&#225;cter provisorio, no requerir&#225; permiso ni recepci&#243;n
+definitiva de la Direcci&#243;n de Obras Municipales.
+     Corresponder&#225; al Ministerio de Vivienda y Urbanismo,
+con acuerdo del Servicio Nacional de Prevenci&#243;n y Respuesta
+ante Desastres y en coordinaci&#243;n con la municipalidad
+local, establecer los lineamientos para la constituci&#243;n de
+barrios transitorios de prevenci&#243;n de desastres y
+determinar su creaci&#243;n, los que ser&#225;n propuestos y
+administrados por el Ministerio de Vivienda y Urbanismo.
+     Lo dispuesto en el inciso anterior se entiende sin
+perjuicio de la facultad que tiene el Ministerio de Vivienda
+y Urbanismo de crear barrios transitorios, cuando &#233;stos no
+tengan por objeto la prevenci&#243;n de desastres.".
+      
+</Texto>
+          <Metadatos>
+            <NombreParte presente="si">52 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="transitorio" tipoParte="T&#237;tulo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257890">
+      <Texto>     DISPOSICIONES TRANSITORIAS
+      </Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">DISPOSICIONES TRANSITORIAS</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257891">
+          <Texto>     Art&#237;culo primero.- Fac&#250;ltase al Presidente de la
+Rep&#250;blica para que, dentro del plazo de un a&#241;o contado
+desde la publicaci&#243;n de esta ley, establezca, mediante uno
+o m&#225;s decretos con fuerza de ley, expedidos por intermedio
+del Ministerio del Interior y Seguridad P&#250;blica, los que
+tambi&#233;n deber&#225;n ser suscritos por el Ministro de Hacienda,
+las normas necesarias para regular las siguientes materias:
+      
+     1. Fijar la fecha en que entrar&#225; en funcionamiento el
+Servicio Nacional de Prevenci&#243;n y Respuesta ante Desastres.
+Adem&#225;s, determinar&#225; la supresi&#243;n de la Oficina Nacional
+de Emergencia.
+     2. Fijar la planta de personal del Servicio Nacional de
+Prevenci&#243;n y Respuesta ante Desastres. El encasillamiento
+en esta planta deber&#225; incluir al personal de la Oficina
+Nacional de Emergencia.
+     3. Disponer, sin soluci&#243;n de continuidad, el traspaso
+de los funcionarios titulares de planta y del personal a
+contrata desde la Oficina Nacional de Emergencia al Servicio
+Nacional de Prevenci&#243;n y Respuesta ante Desastres.
+     El traspaso del personal titular de planta y a contrata
+se efectuar&#225; en el mismo grado y en la misma calidad
+jur&#237;dica que ten&#237;an a la fecha del traspaso.
+     4. Disponer el traspaso de toda clase de bienes desde
+el Ministerio del Interior y Seguridad P&#250;blica y de sus
+servicios dependientes o que se relacionen por su
+intermedio, al Servicio Nacional de Prevenci&#243;n y Respuesta
+ante Desastres.
+     5. Determinar el n&#250;mero de funcionarios que se
+traspasar&#225;n por estamento y calidad jur&#237;dica. La
+individualizaci&#243;n del personal traspasado se realizar&#225; en
+decretos expedidos bajo la f&#243;rmula "Por orden del
+Presidente de la Rep&#250;blica", por intermedio del Ministerio
+del Interior y Seguridad P&#250;blica.
+     6. Dictar las normas necesarias para la adecuada
+estructuraci&#243;n y funcionamiento de las plantas que fije y,
+en especial, el n&#250;mero de cargos para cada planta, los
+requisitos para su desempe&#241;o, sus denominaciones, los
+cargos que tendr&#225;n la calidad de exclusiva confianza y de
+carrera, y los niveles jer&#225;rquicos para la aplicaci&#243;n del
+art&#237;culo 8 de la ley N&#176; 18.834, sobre Estatuto
+Administrativo, cuyo texto refundido, coordinado y
+sistematizado fue fijado por el decreto con fuerza de ley
+N&#176; 29, de 2004, del Ministerio de Hacienda, y el T&#237;tulo VI
+de la ley N&#176; 19.882. Adem&#225;s, establecer&#225; las normas de
+encasillamiento del personal en las plantas que fije.
+Podr&#225;, adem&#225;s, determinar las normas transitorias para la
+aplicaci&#243;n de las remuneraciones variables, tales como las
+contempladas en el art&#237;culo 1 de la ley N&#176; 19.553.
+     Los requisitos para el desempe&#241;o de los cargos que se
+establezcan en el ejercicio de esta facultad y aquellos que
+se se&#241;alan en el art&#237;culo 19 de esta ley no ser&#225;n
+exigibles para efectos del encasillamiento respecto de los
+funcionarios titulares y a contrata en servicio a la fecha
+de entrada en vigencia del o los respectivos decretos con
+fuerza de ley. Asimismo, a los funcionarios a contrata en
+servicio a la fecha de vigencia del o los respectivos
+decretos con fuerza de ley, y a aquellos cuyos contratos se
+prorroguen en las mismas condiciones, no les ser&#225;n
+exigibles los requisitos que se establezcan en los decretos
+con fuerza de ley correspondientes.
+     7. Determinar la fecha de entrada en vigencia de las
+plantas que fije y de los encasillamientos que practique.
+     Igualmente, fijar&#225; la dotaci&#243;n m&#225;xima de personal
+del Servicio, la cual no estar&#225; afecta a la limitaci&#243;n
+establecida en el inciso segundo del art&#237;culo 10 de la ley
+N&#176;18.834, sobre Estatuto Administrativo, cuyo texto
+refundido, coordinado y sistematizado fue fijado por el
+decreto con fuerza de ley N&#176; 29, de 2004, del Ministerio de
+Hacienda, respecto de los empleos a contrata incluidos en
+estas dotaciones.
+     8. Establecer el procedimiento para la determinaci&#243;n
+del monto de la asignaci&#243;n de turno a que se refieren los
+art&#237;culos 43 y 44 de esta ley. Adem&#225;s, fijar&#225; el n&#250;mero
+m&#225;ximo de funcionarios a los que corresponder&#225; percibir
+dicha asignaci&#243;n.
+     9. El uso de las facultades se&#241;aladas en este
+art&#237;culo quedar&#225; sujeto a las siguientes restricciones,
+respecto del personal al que afecte:
+      
+     a) No podr&#225; tener como consecuencia ni podr&#225; ser
+considerado como causal de t&#233;rmino de servicios, supresi&#243;n
+de cargos, cese de funciones o t&#233;rmino de la relaci&#243;n
+laboral del personal. Tampoco podr&#225; importar cambio de la
+residencia habitual de los funcionarios fuera de la Regi&#243;n
+en que est&#233;n prestando servicios, salvo con su
+consentimiento.
+     b) No podr&#225; significar p&#233;rdida del empleo,
+disminuci&#243;n de remuneraciones ni modificaci&#243;n de derechos
+previsionales del personal traspasado. Cualquier diferencia
+de remuneraciones deber&#225; ser pagada por planilla
+suplementaria, la que se absorber&#225; por los futuros
+mejoramientos de remuneraciones que corresponda al
+funcionario, excepto los derivados de reajustes generales
+que se otorguen a los trabajadores del sector p&#250;blico.
+Dicha planilla mantendr&#225; la misma imponibilidad que aquella
+de las remuneraciones que compensa. Adem&#225;s, a la planilla
+suplementaria se le aplicar&#225; el reajuste general antes
+indicado.
+     c) Los funcionarios conservar&#225;n la asignaci&#243;n de
+antig&#252;edad que tengan reconocida, como tambi&#233;n el tiempo
+computable para dicho reconocimiento.".
+      </Texto>
+          <Metadatos>
+            <NombreParte presente="si">primero</NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257892">
+          <Texto>     Art&#237;culo segundo.- El Presidente de la Rep&#250;blica, por
+decreto expedido por intermedio del Ministerio de Hacienda,
+conformar&#225; el primer presupuesto del Servicio Nacional de
+Prevenci&#243;n y Respuesta ante Desastres, transfiriendo a
+&#233;ste los fondos de la Oficina Nacional de Emergencia del
+Ministerio del Interior y Seguridad P&#250;blica para que se
+cumplan sus funciones. Al efecto, podr&#225; crear, suprimir o
+modificar los cap&#237;tulos, programas, asignaciones, &#237;tems y
+glosas presupuestarias que sean pertinentes. Al mismo
+tiempo, podr&#225; transferirle recursos al Programa de Gesti&#243;n
+del Riesgo de Desastres a que se refiere el art&#237;culo 41 de
+esta ley.
+      </Texto>
+          <Metadatos>
+            <NombreParte presente="si">segundo</NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257893">
+          <Texto>     Art&#237;culo tercero.- Los organismos que formen parte del
+Sistema y ya cuenten con redes de comunicaciones en el
+momento de la entrada en vigencia de esta ley tendr&#225;n el
+plazo que indique el reglamento para informar a la
+Subsecretar&#237;a de Telecomunicaciones, del Ministerio de
+Transportes y Telecomunicaciones, las caracter&#237;sticas y
+componentes de dichas redes para evaluar su declaraci&#243;n
+como infraestructura cr&#237;tica de las telecomunicaciones.
+      </Texto>
+          <Metadatos>
+            <NombreParte presente="si">tercero</NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257894">
+          <Texto>     Art&#237;culo cuarto.- Los funcionarios de planta y a
+contrata de la Oficina Nacional de Emergencia que sean
+traspasados al Servicio Nacional de Prevenci&#243;n y Respuesta
+ante Desastres podr&#225;n conservar su afiliaci&#243;n a las
+asociaciones de funcionarios de la se&#241;alada Oficina. Dicha
+afiliaci&#243;n se mantendr&#225; vigente hasta que se haya
+constituido al menos una asociaci&#243;n del Servicio Nacional
+de Prevenci&#243;n y Respuesta ante Desastres.
+      </Texto>
+          <Metadatos>
+            <NombreParte presente="si">cuarto</NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257895">
+          <Texto>     Art&#237;culo quinto.- Los Instrumentos de Gesti&#243;n del
+Riesgo de Desastres establecidos en el P&#225;rrafo 1&#176; del
+T&#237;tulo II de esta ley, que no se hubiesen dictado o no
+estuviesen vigentes a la fecha de publicaci&#243;n de esta ley,
+deber&#225;n ser dictados dentro de los dos a&#241;os siguientes a
+su publicaci&#243;n.
+      </Texto>
+          <Metadatos>
+            <NombreParte presente="si">quinto</NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257896">
+          <Texto>     Art&#237;culo sexto.- Los reglamentos a que se refiere esta
+ley deber&#225;n dictarse en el plazo de un a&#241;o contado desde
+la publicaci&#243;n de la misma.
+      </Texto>
+          <Metadatos>
+            <NombreParte presente="si">sexto</NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="transitorio" tipoParte="Art&#237;culo" fechaVersion="2021-08-07" derogado="no derogado" idParte="10257897">
+          <Texto>     Art&#237;culo s&#233;ptimo.- El mayor gasto fiscal que
+represente la aplicaci&#243;n de esta ley durante el primer a&#241;o
+presupuestario de su vigencia, se financiar&#225; con cargo al
+Presupuesto del Ministerio del Interior y Seguridad P&#250;blica
+y, en lo que faltare, con cargo al &#237;tem 50-01-03-24-03.104
+de la Partida Tesoro P&#250;blico. En los a&#241;os siguientes se
+financiar&#225; con los recursos que se consulten en las
+respectivas leyes de presupuestos del Sector P&#250;blico.".</Texto>
+          <Metadatos>
+            <NombreParte presente="si">s&#233;ptimo</NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+  </EstructurasFuncionales>
+  <Promulgacion fechaVersion="2021-08-07" derogado="no derogado">
+    <Texto>     Habi&#233;ndose cumplido con lo establecido en el N&#186; 1 del
+art&#237;culo 93 de la Constituci&#243;n Pol&#237;tica de la Rep&#250;blica
+y por cuanto he tenido a bien aprobarlo y sancionarlo; por
+tanto, prom&#250;lguese y ll&#233;vese a efecto como Ley de la
+Rep&#250;blica.
+      
+     Santiago, 27 de julio de 2021.- SEBASTI&#193;N PI&#209;ERA
+ECHENIQUE, Presidente de la Rep&#250;blica.- Rodrigo Delgado
+Mocarquer, Ministro del Interior  y Seguridad P&#250;blica.-
+Carolina Valdivia Torres,  Ministra de Relaciones Exteriores
+(S).- Cristi&#225;n de la Maza Riquelme, Ministro de Defensa
+Nacional (S).- Rodrigo Cerda Norambuena, Ministro de
+Hacienda.- Lucas Palacios Covarrubias, Ministro de
+Econom&#237;a, Fomento y Turismo.- Karla Rubilar Barahona,
+Ministra de Desarrollo Social y Familia.- Ra&#250;l Figueroa
+Salas, Ministro de Educaci&#243;n.- Alfredo Moreno Charme,
+Ministro de Obras P&#250;blicas.- Enrique Paris Mancilla,
+Ministro de Salud.- Felipe Ward Edwards, Ministro de
+Vivienda y Urbanismo.- Mar&#237;a Emilia Undurraga Marim&#243;n,
+Ministra de Agricultura.- Juan Carlos Jobet Eluchans,
+Ministro de Miner&#237;a.- Gloria Hutt Hesse, Ministra de
+Transportes y Telecomunicaciones.- Juan Carlos Jobet
+Eluchans, Ministro de Energ&#237;a.- Carolina Schmidt Zald&#237;var,
+Ministra del Medio Ambiente.
+     Lo que transcribo a Ud. para su conocimiento.- Saluda
+Atte. a Ud., Juan Francisco Galli Basili, Subsecretario del
+Interior.</Texto>
+  </Promulgacion>
+  <Anexos>
+    <Anexo fechaVersion="2021-08-07" derogado="no derogado" idParte="10257899" transitorio="no transitorio">
+      <Metadatos>
+        <Titulo>Proyecto de ley que establece el Sistema Nacional de Emergencia y Protecci&#243;n Civil y crea la Agencia Nacional de Protecci&#243;n Civil, correspondiente al Bolet&#237;n N&#176; 7550-06</Titulo>
+        
+      </Metadatos>
+      <Texto>      
+     Tribunal Constitucional
+      
+     Proyecto de ley que establece el Sistema Nacional de
+Emergencia y Protecci&#243;n Civil y crea la Agencia Nacional de
+Protecci&#243;n Civil, correspondiente al Bolet&#237;n N&#176; 7550-06
+      
+     La Secretaria del Tribunal Constitucional, quien
+suscribe, certifica que la H. C&#225;mara de Diputadas y
+Diputados envi&#243; el proyecto de ley enunciado en el rubro,
+aprobado por el Congreso Nacional, a fin de que este
+Tribunal ejerciera el control de constitucionalidad de sus
+art&#237;culos 16 y 45, y por sentencia de 8 de julio de 2021,
+en los autos Rol 11001-21-CPR.
+      
+     Se declara:
+      
+     I. Que las siguientes disposiciones del proyecto de ley
+son conformes con la Constituci&#243;n Pol&#237;tica:
+      
+     . Art&#237;culo 5, incisos primero y segundo, en la frase
+"En las Fases de Mitigaci&#243;n y Preparaci&#243;n aprobar&#225;n los
+Instrumentos de Gesti&#243;n del Riesgo de Desastres que
+establece esta ley,".
+     . Art&#237;culos 6, 7, 8 y 9.
+     . Art&#237;culo 10 N&#176; 1, literales b), c) y d); N&#176; 2,
+literales a) y b); y N&#176; 3, literal a).
+     . Art&#237;culo 14, inciso final.
+     . Art&#237;culo 16, inciso quinto.
+     . Art&#237;culo 18, inciso segundo.
+     . Art&#237;culo 19, inciso tercero.
+     . Art&#237;culos 28, inciso primero, en la frase "Recibido
+el citado informe t&#233;cnico, el alcalde requerir&#225; el acuerdo
+del Comit&#233; Comunal para aprobar el Plan Comunal para la
+Reducci&#243;n del Riesgo de Desastres mediante decreto
+alcaldicio.".
+     . Art&#237;culo 32, inciso segundo, en la frase "Recibido
+el citado informe t&#233;cnico, el alcalde requerir&#225; el acuerdo
+del Comit&#233; Comunal para aprobar el Plan Comunal de
+Emergencia mediante decreto alcaldicio.".
+     . Art&#237;culo 45, que realiza las siguientes
+modificaciones a la Ley N&#176; 18.695, Org&#225;nica Constitucional
+de Municipalidades, cuyo Texto Refundido, Coordinado y
+Sistematizado fue fijado mediante el decreto con fuerza de
+ley N&#176; 1, de 2006, del Ministerio del Interior:
+      
+     - N&#176; 1, que sustituye la letra i) del art&#237;culo 4.
+     - N&#176; 2, que intercala una expresi&#243;n en el inciso
+segundo del art&#237;culo 15.
+     - N&#176; 3, que agrega un nuevo art&#237;culo 26 bis.
+     - N&#176; 4, que agrega un nuevo art&#237;culo 26 ter.
+     - N&#176; 5, que agrega un nuevo art&#237;culo octavo
+transitorio.
+      
+     II. Que no se emite pronunciamiento, en examen
+preventivo de constitucionalidad, de las restantes
+disposiciones del proyecto de ley, por no regular materias
+reservadas a la Ley Org&#225;nica Constitucional.
+      
+     Santiago, 8 de julio de 2021.- Mar&#237;a Ang&#233;lica Barriga
+Meza, Secretaria.
+</Texto>
+    </Anexo>
+  </Anexos>
+</Norma>

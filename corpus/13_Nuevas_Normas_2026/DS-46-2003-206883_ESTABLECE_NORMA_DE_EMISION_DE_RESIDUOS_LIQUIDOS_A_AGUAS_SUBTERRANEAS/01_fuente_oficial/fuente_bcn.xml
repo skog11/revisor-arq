@@ -1,0 +1,769 @@
+<?xml version="1.0" encoding="UTF-8"?><Norma xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.leychile.cl/esquemas" xsi:schemaLocation="http://www.leychile.cl/esquemas http://www.leychile.cl/esquemas/EsquemaIntercambioNorma-v1-0.xsd" normaId="206883" esTratado="no tratado" fechaVersion="2003-01-17" SchemaVersion="1.0" derogado="no derogado">
+  <Identificador fechaPromulgacion="2002-03-08" fechaPublicacion="2003-01-17">
+    <TiposNumeros>
+      <TipoNumero>
+        <Tipo>Decreto</Tipo>
+        <Numero>46</Numero>
+      </TipoNumero>
+    </TiposNumeros>
+    <Organismos>
+      <Organismo>MINISTERIO SECRETAR&#205;A GENERAL DE LA PRESIDENCIA</Organismo>
+    </Organismos>
+  </Identificador>
+  <Metadatos>
+    <TituloNorma>ESTABLECE NORMA DE EMISION DE RESIDUOS LIQUIDOS A AGUAS SUBTERRANEAS</TituloNorma>
+    
+    
+    
+    <IdentificacionFuente>Diario Oficial</IdentificacionFuente>
+    <NumeroFuente>37461</NumeroFuente>
+  </Metadatos>
+  <Encabezado fechaVersion="2003-01-17" derogado="no derogado">
+    <Texto>ESTABLECE NORMA DE EMISION DE RESIDUOS LIQUIDOS A AGUAS SUBTERRANEAS
+
+     N&#250;m 46.- Santiago, 8 de marzo de 2002.- Visto: La Constituci&#243;n Pol&#237;tica de la Rep&#250;blica, art&#237;culos 19 N&#186; 8 y 32 N&#186;8; el art&#237;culo 32 de la ley N&#186; 19.300 sobre Bases Generales del Medio Ambiente; el D.S. N&#186; 93 de 1995, del Ministerio Secretar&#237;a General de la Presidencia, Reglamento para la Dictaci&#243;n de Normas de Calidad Ambiental y de Emisi&#243;n; el Acuerdo N&#186; 99 del 26 de marzo de 1999, del Consejo Directivo de la Comisi&#243;n Nacional del Medio Ambiente, que aprob&#243; el Cuarto Programa Priorizado de Normas; la Res. Ex. N&#186; 466, del 22 de mayo de 2000, publicada en el Diario Oficial del 9 de junio de 2000 y en el diario La Naci&#243;n el d&#237;a 9 de junio de 2000, con que se dio inicio a la elaboraci&#243;n del anteproyecto de norma, y su rectificaci&#243;n mediante la Res. Ex. N&#186; 649, del 4 de julio de 2000, publicada en el Diario Oficial del 3 de agosto de 2000 y en el diario La Naci&#243;n el d&#237;a 3 de agosto de 2000; la Res.
+Ex. N&#186; 256, del 19 de marzo de 2001, publicada en el Diario Oficial el 2 de abril de 2001 y en el diario La Tercera el d&#237;a 8 de abril del mismo a&#241;o, que aprob&#243; el anteproyecto de norma de emisi&#243;n; los estudios cient&#237;ficos y el an&#225;lisis general del impacto econ&#243;mico y social de la norma; el an&#225;lisis de las observaciones formuladas; la opini&#243;n del Consejo Consultivo de la Comisi&#243;n Nacional del Medio Ambiente, adoptada en sesiones de fecha 21 de junio de 2001 y 18 de octubre de 2001; el Acuerdo N&#186; 195 del 28 de noviembre de 2001, del Consejo Directivo de la Comisi&#243;n Nacional del Medio Ambiente, que aprob&#243; el proyecto definitivo de la norma de emisi&#243;n; los dem&#225;s antecedentes que obran en el expediente p&#250;blico respectivo, y lo dispuesto en la resoluci&#243;n N&#186; 520 de 1996, de la Contralor&#237;a General de la Rep&#250;blica, que fija el texto refundido, coordinado y sistematizado de la resoluci&#243;n N&#186; 55 de 1992, de la Contralor&#237;a General de la Rep&#250;blica, y
+
+     Considerando:
+
+     1) Que las aguas subterr&#225;neas representan una importante fuente de suministro de agua para las ciudades. Aproximadamente el 77% del agua utilizada por los servicios de agua potable rural proviene de esta fuente, y en el caso del abastecimiento urbano es de alrededor de un 40% a nivel nacional, seg&#250;n estad&#237;sticas de la Superintendencia de Servicios Sanitarios al 31 de diciembre de 1995. La proporci&#243;n de uso de aguas subterr&#225;neas para el abastecimiento urbano es variable, llegando a ser pr&#225;cticamente en su totalidad para las ciudades del norte del pa&#237;s.
+     2) Que otros usos importantes de las aguas subterr&#225;neas, sobre todo entre la zona central y el norte del pa&#237;s, son la agricultura, la industria y la miner&#237;a. Sin embargo, dada la importancia vital que tiene el consumo de agua para la poblaci&#243;n, se considera de la mayor relevancia el uso para el abastecimiento de agua potable, dentro del contexto general de la explotaci&#243;n de las aguas subterr&#225;neas.
+     3) Que la presente norma de emisi&#243;n tiene como objeto de protecci&#243;n prevenir la contaminaci&#243;n de las aguas subterr&#225;neas, mediante el control de la disposici&#243;n de los residuos l&#237;quidos que se infiltran a trav&#233;s del subsuelo al acu&#237;fero. Con lo anterior, se contribuye a mantener la calidad ambiental de las aguas subterr&#225;neas,
+
+     D e c r e t o:</Texto>
+  </Encabezado>
+  <EstructurasFuncionales>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427582">
+      <Texto>     TITULO  I
+
+     Disposiciones generales</Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">TITULO I Disposiciones generales</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427581">
+          <Texto>     Art&#237;culo 1&#186;. Establ&#233;cese la siguiente norma de emisi&#243;n que determina las concentraciones m&#225;ximas de contaminantes permitidas en los residuos l&#237;quidos que son descargados por la fuente emisora, a trav&#233;s del suelo, a las zonas saturadas de los acu&#237;feros, mediante obras destinadas a infiltrarlo.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">1 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427583">
+          <Texto>     Art&#237;culo 2&#186;. La presente norma no ser&#225; aplicable a las labores de riego, a los dep&#243;sitos de relaves y a la inyecci&#243;n de las aguas de formaci&#243;n a los pozos de producci&#243;n en los yacimientos de hidrocarburos. </Texto>
+          <Metadatos>
+            <NombreParte presente="si">2 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427584">
+          <Texto>     Art&#237;culo 3&#186;. La presente norma se aplicar&#225; en todo el territorio nacional.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">3 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427586">
+      <Texto>     TITULO II
+
+     Definiciones
+</Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">TITULO II Definiciones</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427585">
+          <Texto>     Art&#237;culo 4&#186;. Para los efectos de lo dispuesto en este decreto, se entender&#225; por:
+
+1.   Aguas subterr&#225;neas: Son aquellas definidas en el
+     art&#237;culo 2, inciso final del C&#243;digo de Aguas.
+2.   Acu&#237;fero: Formaci&#243;n geol&#243;gica permeable
+     susceptible de almacenar agua en su interior y
+     ceder parte de ella.
+3.   Acu&#237;fero confinado: Es aquel en que el agua
+     alojada en el interior de la zona saturada se
+     encuentra a una presi&#243;n mayor que la atmosf&#233;rica.
+4.   Acu&#237;fero libre: Es aquel en que el agua de la
+     zona saturada se encuentra en contacto directo
+     con la atm&#243;sfera a trav&#233;s de los espacios de la
+     zona no saturada.
+5.   Contenido natural: Es la concentraci&#243;n o valor
+     de un elemento en la zona saturada del acu&#237;fero
+     en el lugar donde se produce la descarga de la
+     fuente emisora, que corresponde a la situaci&#243;n
+     original sin intervenci&#243;n antr&#243;pica del cuerpo
+     de agua m&#225;s las situaciones permanentes,
+     irreversibles o inmodificables de origen
+     antr&#243;pico. Corresponder&#225; a la Direcci&#243;n General
+     de Aguas establecer el contenido natural del
+     acu&#237;fero. Para estos efectos la Direcci&#243;n General
+     de Aguas podr&#225; solicitar los antecedentes que
+     estime conveniente al responsable de la fuente
+     emisora.
+6.   Emisi&#243;n directa: Es la descarga de residuos
+     l&#237;quidos en la zona saturada del acu&#237;fero.
+7.   Emisi&#243;n indirecta: Es la descarga de residuos
+     l&#237;quidos hacia la zona saturada del acu&#237;fero,
+     mediante obras de infiltraci&#243;n.
+8.   Fuente emisora: Establecimiento que descarga
+     sus residuos l&#237;quidos por medio de obras de
+     infiltraci&#243;n tales como zanjas, drenes, lagunas,
+     pozos de infiltraci&#243;n, u otra obra destinada a
+     infiltrar dichos residuos a trav&#233;s de la zona
+     no saturada del acu&#237;fero, como resultado de su
+     proceso, actividad o servicio, con una carga
+     contaminante media diaria superior en uno o m&#225;s
+     para los par&#225;metros indicados en la siguiente
+     tabla:
+
+                ESTABLECIMIENTO EMISOR
+
+                       Valor       Carga contaminante
+Par&#225;metros         Caracter&#237;stico     media diaria
+                                  (equiv. 100 Hab/d&#237;a)*
+
+Aceites y Grasas       60 mg/L           960 g/d
+Aluminio                1 mg/L            16 g/d
+Ars&#233;nico             0,05 mg/L           0,8 g/d
+Benceno             0,010 mg/L          0,16 g/d
+Boro                 0,75 mg/L          12,8 g/d
+Cadmio               0,01 mg/L          0,16 g/d
+Cianuro              0,20 mg/L           3,2 g/d
+Cloruros              400 mg/L          6400 g/d
+Cobre                   1 mg/L            16 g/d
+Cromo Hexavalente    0,05 mg/L           0,8 g/d
+Fluoruro              1,5 mg/L            24 g/d
+Hierro                1,0 mg/L            16 g/d
+Manganeso             0,3 mg/L           4,8 g/d
+Mercurio            0,001 mg/L          0,02 g/d
+Molibdeno            0,07 mg/L          1,12 g/d
+N&#237;quel                0,1 mg/L           1,6 g/d
+Nitr&#243;geno Total
+Kjeldahl               50 mg/L           800 g/d
+Nitrito m&#225;s Nitrato    15 mg/L           240 g/d
+Pentaclorofenol     0,009 mg/L         0,144 g/d
+Plomo                 0,2 mg/L           3,2 g/d
+Selenio              0,01 mg/L          0,16 g/d
+Sulfatos              300 mg/L          4800 g/d
+Sulfuros                3 mg/L            48 g/d
+Tetracloroeteno      0,04 mg/L          0,64 g/d
+Tolueno               0,7 mg/L          11,2 g/d
+Triclorometano        0,2 mg/L           3,2 g/d
+Xileno                0,5 mg/L             8 g/d
+Zinc                    1 mg/L            16 g/d
+
+*)   Se consider&#243; una dotaci&#243;n de agua potable de 200
+     L/hab/d&#237;a y un coeficiente de recuperaci&#243;n de 0,8.
+
+     Los residuos l&#237;quidos deber&#225;n mantenerse con un
+valor caracter&#237;stico en un rango de pH entre 6 y 8.
+     Los establecimientos que emitan una carga
+contaminante media diaria igual o inferior a lo
+se&#241;alado, no se consideran fuentes emisoras para los
+efectos del presente decreto y no quedan sujetos a la
+misma, en tanto se mantengan dichas condiciones.
+
+9.   Fuentes existentes: Son aquellas que a la fecha
+     de entrada en vigencia del presente decreto se
+     encuentran autorizadas a verter sus residuos
+     l&#237;quidos al acu&#237;fero.
+10.  Fuentes nuevas: Son aquellas que a la fecha de
+     entrada en vigencia del presente decreto no se
+     encuentran autorizadas a verter sus residuos
+     l&#237;quidos.
+11.  Infiltraci&#243;n: Introducci&#243;n del flujo de agua entre
+     los poros del suelo o subsuelo.
+12.  Nivel fre&#225;tico: Cota o nivel de saturaci&#243;n del
+     agua de un acu&#237;fero libre medido desde la
+     superficie del suelo.
+13.  Residuos l&#237;quidos o aguas residuales: Aguas que
+     se descargan despu&#233;s de haber sido usadas en un
+     proceso, o producidas por &#233;ste, y que no tienen
+     ning&#250;n valor inmediato para ese proceso, seg&#250;n
+     se establece en la definici&#243;n contenida en la
+     NCh 410. Of 96.
+14.  Vulnerabilidad intr&#237;nseca de un acu&#237;fero: Para
+     efectos del presente decreto la vulnerabilidad
+     intr&#237;nseca de un acu&#237;fero dice relaci&#243;n con la
+     velocidad con la que un contaminante puede migrar
+     hasta la zona saturada del acu&#237;fero. Se definir&#225;
+     como alta, media y baja, en t&#233;rminos tales que, en
+     general, a mayor rapidez mayor vulnerabilidad.
+     La Direcci&#243;n General de Aguas, de acuerdo a los
+     antecedentes que posea, determinar&#225; la
+     vulnerabilidad del acu&#237;fero. Para estos efectos
+     la Direcci&#243;n General de Aguas podr&#225; solicitar
+     los antecedentes que estime convenientes al
+     responsable de la fuente emisora.
+     Para determinar la vulnerabilidad se considerar&#225;
+     la profundidad del punto de descarga; propiedades
+     del suelo, de la zona saturada y de la zona no
+     saturada; caracter&#237;sticas intr&#237;nsecas del
+     acu&#237;fero, niveles fre&#225;ticos m&#225;s desfavorables y
+     tipo de acu&#237;fero; caracter&#237;sticas de la recarga.
+     Para estos efectos, la Direcci&#243;n General de Aguas
+     aprobar&#225; mediante resoluci&#243;n, que se publicar&#225; en
+     el Diario Oficial, la metodolog&#237;a para determinar
+     la vulnerabilidad, en la que detallar&#225; las
+     condiciones espec&#237;ficas y los par&#225;metros a
+     considerar.
+15.  Zona saturada del acu&#237;fero: Corresponde a aquella
+     parte del acu&#237;fero que se encuentra con sus poros
+     completamente ocupados por agua.
+16.  Zona no saturada del acu&#237;fero: Corresponde a
+     aquella parte de un acu&#237;fero en que sus poros no
+     se encuentran completamente ocupados por agua.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">4 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427588">
+      <Texto>     TITULO III
+
+     LIMITES MAXIMOS PERMITIDOS PARA DESCARGAS DE
+     RESIDUOS LIQUIDOS A AGUAS SUBTERRANEAS</Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">TITULO III LIMITES MAXIMOS PERMITIDOS PARA DESCARGAS DE RESIDUOS LIQUIDOS A AGUAS SUBTERRANEAS</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Otros" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427589">
+          <Texto>     Consideraciones generales</Texto>
+          <Metadatos>
+            <NombreParte presente="no">&#160;</NombreParte>
+            <TituloParte presente="si">Consideraciones generales</TituloParte>
+            
+          </Metadatos>
+          <EstructurasFuncionales>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427587">
+              <Texto>     Art&#237;culo 5&#186;. La norma de emisi&#243;n para los contaminantes a que se refiere el presente decreto est&#225; determinada por los l&#237;mites m&#225;ximos establecidos en las tablas N&#186; 1 y 2, analizados de acuerdo a los resultados que en conformidad a los art&#237;culos 24&#186; y 25&#186; arrojen las mediciones que se efect&#250;en.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">5 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427590">
+              <Texto>     Art&#237;culo 6&#186;. Los l&#237;mites m&#225;ximos permitidos est&#225;n referidos al valor de la concentraci&#243;n del contaminante determinados en t&#233;rminos totales.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">6 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427591">
+              <Texto>     Art&#237;culo 7&#186;. Si el contenido natural de la zona saturada del acu&#237;fero excede al l&#237;mite m&#225;ximo permitido en este decreto, el l&#237;mite m&#225;ximo de la descarga ser&#225; igual a dicho contenido natural.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">7 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427592">
+              <Texto>     Art&#237;culo 8&#186;. No se podr&#225; emitir directamente a la zona saturada del acu&#237;fero, salvo que la emisi&#243;n sea de igual o mejor calidad que la del contenido natural. </Texto>
+              <Metadatos>
+                <NombreParte presente="si">8 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427593">
+              <Texto>     Art&#237;culo 9&#186;. Si la vulnerabilidad del acu&#237;fero es calificada por la Direcci&#243;n General de Aguas como alta, s&#243;lo se podr&#225; disponer residuos l&#237;quidos mediante infiltraci&#243;n, cuando la emisi&#243;n sea de igual o mejor calidad que la del contenido natural del acu&#237;fero. </Texto>
+              <Metadatos>
+                <NombreParte presente="si">9 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+          </EstructurasFuncionales>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Otros" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427595">
+          <Texto>     L&#237;mites M&#225;ximos de Emisi&#243;n
+</Texto>
+          <Metadatos>
+            <NombreParte presente="no">&#160;</NombreParte>
+            <TituloParte presente="si">L&#237;mites M&#225;ximos de Emisi&#243;n</TituloParte>
+            
+          </Metadatos>
+          <EstructurasFuncionales>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427594">
+              <Texto>     Art&#237;culo 10&#186;. Los l&#237;mites m&#225;ximos de emisi&#243;n en t&#233;rminos totales, para los acu&#237;feros con vulnerabilidad calificada como media, ser&#225;n los siguientes:
+
+                      TABLA 1
+
+  L&#237;mites M&#225;ximos Permitidos para Descargar Residuos
+    L&#237;quidos en Condiciones de Vulnerabilidad Media
+
+Contaminante      Unidad    L&#237;mites m&#225;ximos permitidos
+
+          Indicadores F&#237;sicos y Qu&#237;micos
+
+Ph                Unidad    6,0 - 8,5
+
+                    Inorg&#225;nicos
+
+Cianuro           Mg/L      0,20
+Cloruros          Mg/L      250
+Fluoruro          Mg/L      1,5
+N-Nitrato + N-    Mg/L      10
+Nitrito
+Sulfatos          Mg/L      250
+Sulfuros          Mg/L      1
+
+                    Org&#225;nicos
+
+Aceite y Grasas   mg/L      10
+Benceno           mg/L      0,01
+Pentaclorofenol   mg/L      0,009
+Tetracloroeteno   mg/L      0,04
+Tolueno           mg/L      0,7
+Triclorometano    mg/L      0,2
+Xileno            mg/L      0,5
+
+                     Metales
+
+Aluminio          mg/L      5
+Ars&#233;nico          mg/L      0,01
+Boro              mg/L      0,75
+Cadmio            mg/L      0,002
+Cobre             mg/L      1
+Cromo
+Hexavalente       mg/L      0,05
+Hierro            mg/L      5
+Manganeso         mg/L      0,3
+Mercurio          mg/L      0,001
+Molibdeno         mg/L      1
+N&#237;quel            mg/L      0,2
+Plomo             mg/L      0,05
+Selenio           mg/L      0,01
+Zinc              mg/L      3
+
+                    Nutrientes
+
+Nitr&#243;geno total   mg/L      10
+Kjeldahl</Texto>
+              <Metadatos>
+                <NombreParte presente="si">10 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427596">
+              <Texto>     Art&#237;culo 11&#186;. Los l&#237;mites m&#225;ximos de emisi&#243;n en t&#233;rminos totales, para los acu&#237;feros con vulnerabilidad calificada como baja, ser&#225;n los siguientes:
+
+                      TABLA 2
+
+  L&#237;mites M&#225;ximos Permitidos para Descargar Residuos
+    L&#237;quidos en Condiciones de Vulnerabilidad Baja
+
+Contaminante      Unidad    L&#237;mites m&#225;ximos permitidos
+
+          Indicadores F&#237;sicos y Qu&#237;micos
+
+Ph                Unidad    6,0 - 8,5
+
+                    Inorg&#225;nicos
+
+Cianuro           mg/L      0,2
+Cloruros          mg/L      250
+Fluoruro          mg/L      5
+N-Nitrato + N-    mg/L      15
+Nitrito
+Sulfatos          mg/L      500
+Sulfuros          mg/L      5
+
+                    Org&#225;nicos
+
+Aceite y Grasas   mg/L      10
+Benceno           mg/L      0,01
+Pentaclorofenol   mg/L      0,009
+Tetracloroeteno   mg/L      0,04
+Tolueno           mg/L      0,7
+Triclorometano    mg/L      0,2
+Xileno            mg/L      0,5
+
+                     Metales
+
+Aluminio          mg/L      20
+Ars&#233;nico          mg/L      0,01
+Boro              mg/L      3
+Cadmio            mg/L      0,002
+Cobre             mg/L      3
+Cromo
+Hexavalente       mg/L      0,2
+Hierro            mg/L      10
+Manganeso         mg/L      2
+Mercurio          mg/L      0,001
+Molibdeno         mg/L      2,5
+N&#237;quel            mg/L      0,5
+Plomo             mg/L      0,05
+Selenio           mg/L      0,02
+Zinc              mg/L      20
+
+                    Nutrientes
+
+Nitr&#243;geno Total   mg/L      15
+Kjeldahl</Texto>
+              <Metadatos>
+                <NombreParte presente="si">11 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+          </EstructurasFuncionales>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427598">
+      <Texto>     TITULO IV
+
+     PROGRAMA Y PLAZOS DE CUMPLIMIENTO DE LAS NORMAS
+     DE EMISION</Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">TITULO IV PROGRAMA Y PLAZOS DE CUMPLIMIENTO DE LAS NORMAS DE EMISION</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427597">
+          <Texto>     Art&#237;culo 12&#186;. La norma de emisi&#243;n contenida en el presente decreto ser&#225; obligatoria para toda fuente nueva desde su entrada en vigencia.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">12 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427599">
+          <Texto>     Art&#237;culo 13&#186;. Las fuentes emisoras existentes deber&#225;n cumplir con los l&#237;mites m&#225;ximos permitidos, en el plazo de tres a&#241;os contados desde la entrada en vigencia del presente de-creto.
+     Aquellas fuentes existentes, respecto de las cuales se determine que est&#225;n vertiendo sus residuos l&#237;quidos a un acu&#237;fero con vulnerabilidad alta, deben dar cumplimiento a lo establecido en el art&#237;culo 9&#186;, en el plazo de dos a&#241;os contados desde la entrada en vigencia del presente decreto.
+     Desde la entrada en vigencia del presente decreto, las fuentes existentes deber&#225;n caracterizar e informar todos sus residuos l&#237;quidos, mediante los procedimientos de medici&#243;n y control establecidos en la presente norma. Aquellas fuentes emisoras que tengan inter&#233;s en la determinaci&#243;n del contenido natural, deber&#225;n entregar los antecedentes que correspondan a la autoridad competente.
+     Durante el primer a&#241;o de vigencia del presente decreto, las fuentes existentes deber&#225;n entregar a la Direcci&#243;n General de Aguas, los antecedentes necesarios para la determinaci&#243;n de la vulnerabilidad del acu&#237;fero, la que deber&#225; quedar determinada seis meses antes del cumplimiento de los plazos establecidos en este art&#237;culo.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">13 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427601">
+      <Texto>     TITULO V
+
+     PROCEDIMIENTOS DE MEDICION Y CONTROL</Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">TITULO V PROCEDIMIENTOS DE MEDICION Y CONTROL</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Otros" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427602">
+          <Texto>     Control de las normas de emisi&#243;n</Texto>
+          <Metadatos>
+            <NombreParte presente="no">&#160;</NombreParte>
+            <TituloParte presente="si">Control de las normas de emisi&#243;n</TituloParte>
+            
+          </Metadatos>
+          <EstructurasFuncionales>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427600">
+              <Texto>     Art&#237;culo 14&#186;. Las inspecciones que realice el organismo fiscalizador y los monitoreos que deban realizar las fuentes emisoras deber&#225;n efectuarse conforme a la presente norma.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">14 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+          </EstructurasFuncionales>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Otros" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427604">
+          <Texto>     Consideraciones generales para el monitoreo</Texto>
+          <Metadatos>
+            <NombreParte presente="no">&#160;</NombreParte>
+            <TituloParte presente="si">Consideraciones generales para el monitoreo</TituloParte>
+            
+          </Metadatos>
+          <EstructurasFuncionales>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427603">
+              <Texto>     Art&#237;culo 15&#186;. Las fuentes emisoras deber&#225;n cumplir con los l&#237;mites m&#225;ximos permitidos en la presente norma respecto de todos los contaminantes normados. </Texto>
+              <Metadatos>
+                <NombreParte presente="si">15 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427605">
+              <Texto>     Art&#237;culo 16&#186;. Los contaminantes que deber&#225;n ser considerados en el monitoreo ser&#225;n los que se&#241;ale la Superintendencia de Servicios Sanitarios, atendida la actividad que desarrolle la fuente emisora, los antecedentes disponibles y las condiciones de la descarga.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">16 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427606">
+              <Texto>     Art&#237;culo 17&#186;. Los procedimientos para el monitoreo de residuos l&#237;quidos est&#225;n contenidos en la Norma Chilena Oficial NCh 411/2 Of 96, Calidad del agua - Muestreo - Parte 2: Gu&#237;a sobre t&#233;cnicas de muestreo; NCh 411/3 Of 96, Calidad del agua -Muestreo - Parte 3:
+Gu&#237;a sobre la preservaci&#243;n y manejo de las muestras, y NCh 411/10 Of 97, Calidad del agua - Muestreo -Parte 10: Gu&#237;a para el muestreo de aguas residuales. </Texto>
+              <Metadatos>
+                <NombreParte presente="si">17 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427607">
+              <Texto>     Art&#237;culo 18&#186;. El monitoreo deber&#225; efectuarse en cada uno de los puntos de descarga de la fuente emisora. El lugar de toma de muestras deber&#225; considerar una c&#225;mara o dispositivo, de f&#225;cil acceso, especialmente habilitada al efecto.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">18 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+          </EstructurasFuncionales>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427609">
+      <Texto>     TITULO VI
+
+     CONDICIONES ESPECIFICAS PARA EL MONITOREO</Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">TITULO VI CONDICIONES ESPECIFICAS PARA EL MONITOREO</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Otros" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427610">
+          <Texto>     Frecuencia de monitoreo</Texto>
+          <Metadatos>
+            <NombreParte presente="no">&#160;</NombreParte>
+            <TituloParte presente="si">Frecuencia de monitoreo</TituloParte>
+            
+          </Metadatos>
+          <EstructurasFuncionales>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427608">
+              <Texto>     Art&#237;culo 19&#186;. El n&#250;mero de d&#237;as de monitoreos deber&#225; ser representativo de cada una de las descargas, en t&#233;rminos tales que corresponda a aquellas en que, de acuerdo a la planificaci&#243;n de la fuente emisora, se viertan los residuos l&#237;quidos generados en m&#225;xima producci&#243;n o en m&#225;ximo caudal de descarga.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">19 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427611">
+              <Texto>     Art&#237;culo 20&#186;. El n&#250;mero m&#237;nimo de d&#237;as del muestreo en el a&#241;o calendario, se determinar&#225;, conforme se indica a continuaci&#243;n:
+
+Volumen de        Numero m&#237;nimo de
+descarga          d&#237;as
+m3 x 103/a&#241;o      de monitoreo
+                  anual, N
+
+&lt; 5.000           12
+
+5.000 a 20.000    24
+
+&gt; 20.000          48
+
+     Para aquellas fuentes emisoras que neutralizan sus residuos l&#237;quidos, se requerir&#225; medici&#243;n continua de pH con registrador.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">20 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427612">
+              <Texto>     Art&#237;culo 21&#186;. El n&#250;mero m&#237;nimo de d&#237;as de toma de muestras anual deber&#225; distribuirse mensualmente, determin&#225;ndose el n&#250;mero de d&#237;as de toma de muestra por mes en forma proporcional a la distribuci&#243;n del volumen de descarga de residuos l&#237;quidos en el a&#241;o. </Texto>
+              <Metadatos>
+                <NombreParte presente="si">21 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+          </EstructurasFuncionales>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Otros" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427614">
+          <Texto>     N&#250;mero de muestras</Texto>
+          <Metadatos>
+            <NombreParte presente="no">&#160;</NombreParte>
+            <TituloParte presente="si">N&#250;mero de muestras</TituloParte>
+            
+          </Metadatos>
+          <EstructurasFuncionales>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427613">
+              <Texto>     Art&#237;culo 22&#186;. Se obtendr&#225; una muestra compuesta por cada punto de descarga.
+
+i)   Cada muestra compuesta, para cada d&#237;a de control, deber&#225; estar constituida por la mezcla homog&#233;nea de al menos:
+
+     * Tres (3) muestras puntuales, en los casos en que la descarga tenga una duraci&#243;n inferior a cuatro (4) horas.
+     * Muestras puntuales obtenidas a lo m&#225;s cada dos (2) horas, en los casos en que la descarga sea superior o igual a cuatro (4) horas.
+
+     En cada muestra puntual se deber&#225; registrar el caudal del efluente.
+     La muestra puntual deber&#225; estar constituida por la mezcla homog&#233;nea de dos submuestras de igual volumen, extra&#237;das en lo posible de la superficie y del interior del fluido, debi&#233;ndose cumplir con las condiciones de extracci&#243;n de muestras indicadas en el art&#237;culo 23&#186; de esta norma.
+
+ii)  Medici&#243;n de caudal y tipo de muestra
+
+     La medici&#243;n del caudal informado deber&#225; efectuarse con las metodolog&#237;as que se indican, de acuerdo al volumen de descarga:
+
+     * menor a 30 m3/d&#237;a, la metodolog&#237;a de medici&#243;n deber&#225; estimarse por el consumo del agua potable y de las fuentes propias.
+     * entre 30 a 300 m3/d&#237;a, se deber&#225; emplear un equipo port&#225;til con registro.
+     * mayor a 300 m3/d&#237;a, se debe utilizar una c&#225;mara de medici&#243;n y caudal&#237;metro con registro diario.
+
+     Las muestras para los tres casos deber&#225; ser compuesta y proporcional al caudal de la descarga.
+     La Superintendencia de Servicios Sanitarios podr&#225; autorizar otras metodolog&#237;as cuando las indicadas no puedan realizarse.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">22 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+          </EstructurasFuncionales>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Otros" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427616">
+          <Texto>     Condiciones para la extracci&#243;n de muestras y
+     vol&#250;menes de muestra</Texto>
+          <Metadatos>
+            <NombreParte presente="no">&#160;</NombreParte>
+            <TituloParte presente="si">Condiciones para la extracci&#243;n de muestras y vol&#250;menes de muestra</TituloParte>
+            
+          </Metadatos>
+          <EstructurasFuncionales>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427615">
+              <Texto>     Art&#237;culo 23&#186;. Las condiciones sobre el lugar de an&#225;lisis, tipo de envase, preservaci&#243;n de las muestras, tiempo m&#225;ximo entre la toma de muestra y el an&#225;lisis, y los vol&#250;menes m&#237;nimos de muestras que deben extraerse, se someter&#225;n a lo establecido en las NCh 411, a las NCh 2313 y a lo descrito en el Standard Methods for the Examination of Water and Wastewater; &#250;ltima edici&#243;n. </Texto>
+              <Metadatos>
+                <NombreParte presente="si">23 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+          </EstructurasFuncionales>
+        </EstructuraFuncional>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Otros" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427618">
+          <Texto>     Resultados de los an&#225;lisis</Texto>
+          <Metadatos>
+            <NombreParte presente="no">&#160;</NombreParte>
+            <TituloParte presente="si">Resultados de los an&#225;lisis</TituloParte>
+            
+          </Metadatos>
+          <EstructurasFuncionales>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427617">
+              <Texto>     Art&#237;culo 24&#186;. Si una o m&#225;s muestras durante el mes exceden los l&#237;mites m&#225;ximos establecidos en las tablas N&#186; 1 y 2, se deber&#225; efectuar un muestreo adicional o remuestreo. El remuestreo deber&#225; efectuarse dentro de los 15 d&#237;as siguientes a la detecci&#243;n de la anomal&#237;a. </Texto>
+              <Metadatos>
+                <NombreParte presente="si">24 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+            <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427619">
+              <Texto>     Art&#237;culo 25&#186;. No se considerar&#225;n sobrepasados los l&#237;mites m&#225;ximos establecidos en las tablas N&#186; 1 y 2 del presente decreto cuando:
+
+a)   analizadas 10 o menos muestras mensuales, incluyendo los remuestreos, s&#243;lo una de ellas excede, en uno o m&#225;s contaminantes, hasta en un 100% el l&#237;mite m&#225;ximo establecido en las referidas tablas.
+
+b)   analizadas m&#225;s de 10 muestras mensuales, incluyendo los remuestreos, s&#243;lo un 10% o menos, del n&#250;mero de muestras analizadas excede, en uno o m&#225;s contaminantes, hasta en un 100% el l&#237;mite m&#225;ximo establecido en esas tablas. Para el c&#225;lculo del 10% el resultado se aproximar&#225; al entero superior.
+     Para efectos de lo anterior en el caso que el remuestreo se efect&#250;e al mes siguiente, se considerar&#225; realizado en el mismo mes en que se tomaron las muestras excedidas.</Texto>
+              <Metadatos>
+                <NombreParte presente="si">25 </NombreParte>
+                <TituloParte presente="no">&#160;</TituloParte>
+                
+              </Metadatos>
+            </EstructuraFuncional>
+          </EstructurasFuncionales>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427621">
+      <Texto>     TITULO VII
+
+     M&#233;todos de an&#225;lisis
+</Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">TITULO VII M&#233;todos de an&#225;lisis</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427620">
+          <Texto>     Art&#237;culo 26&#186;. El an&#225;lisis de los contaminantes incluidos en este decreto deber&#225; efectuarse de acuerdo a los m&#233;todos establecidos en las normas chilenas oficializadas que se indican a continuaci&#243;n, considerando que los resultados deber&#225;n referirse a valores totales en los contaminantes que corresponda.
+
+*    NCh 2313/1, Of 95, decreto supremo N&#186; 545 de 1995 del Ministerio de Obras P&#250;blicas: Aguas Residuales-M&#233;todos de an&#225;lisis-Parte I: Determinaci&#243;n de pH.
+*    NCh 2313/6, Of 97, decreto supremo N&#186; 317 de 1997 del Ministerio de Obras P&#250;blicas: Aguas Residuales-M&#233;todos de an&#225;lisis-Parte 6: Determinaci&#243;n de Aceites y Grasas.
+*    NCh 2313/9, Of 96, decreto supremo N&#186; 879 de 1996 del Ministerio de Obras P&#250;blicas: Aguas Residuales-M&#233;todos de an&#225;lisis-Parte 9: Determinaci&#243;n de Ars&#233;nico.
+*    NCh 2313/10, Of 96, decreto supremo N&#186; 879 de 1996 del Ministerio de Obras P&#250;blicas: Aguas Residuales-M&#233;todos de an&#225;lisis-Parte 10: Determinaci&#243;n de Metales Pesados: Cadmio, Cobre, Cromo Total, Hierro, Manganeso, N&#237;quel, Plomo, Zinc.
+*    NCh 2313/11, Of 96, decreto supremo N&#186; 879 de 1996 del Ministerio de Obras P&#250;blicas: Aguas Residuales-M&#233;todos de an&#225;lisis-Parte 11: Determinaci&#243;n de Cromo Hexavalente.
+*    NCh 2313/12, Of 96, decreto supremo N&#186; 879 de 1996 del Ministerio de Obras P&#250;blicas: Aguas Residuales-M&#233;todos de an&#225;lisis-Parte 12: Determinaci&#243;n de Mer-curio.
+*    NCh 2313/13, Of 98, decreto supremo N&#186; 306 de 1998 del Ministerio de Obras P&#250;blicas: Aguas Residuales-M&#233;todos de an&#225;lisis-Parte 13: Determinaci&#243;n de molibdeno por espectrofotometr&#237;a de absorci&#243;n at&#243;mica con llama.
+*    NCh 2313/14, Of 97, decreto supremo N&#186; 949 de 1997 del Ministerio de Obras P&#250;blicas: Aguas Residuales-M&#233;todos de an&#225;lisis-Parte 14: Determinaci&#243;n de Cianuro Total.
+*    NCh 2313/17, Of 97, decreto supremo N&#186; 1.144 de 1997 del Ministerio de Obras P&#250;blicas: Aguas Residuales-M&#233;todos de an&#225;lisis-Parte 17: Determinaci&#243;n de Sulfuro total.
+*    NCh 2313/18, Of 97, decreto supremo N&#186; 1.144 de 1997 del Ministerio de Obras P&#250;blicas: Aguas Residuales-M&#233;todos de an&#225;lisis-Parte 18: Determinaci&#243;n de Sulfato disuelto (para la determinaci&#243;n de sulfato total se debe realizar previa digesti&#243;n de la muestra).
+*    NCh 2313/20, Of 98, decreto supremo N&#186; 2.557 de 1998 del Ministerio de Obras P&#250;blicas: Aguas Residuales-M&#233;todos de an&#225;lisis-Parte 20: Determinaci&#243;n de Trihalometanos (se utiliza para los Triclorometano y Tetracloroeteno).
+*    NCh 2313/25, Of 97, decreto supremo N&#186; 37 de 1998 del Ministerio de Obras P&#250;blicas: Aguas Residuales-M&#233;todos de an&#225;lisis-Parte 25: Determinaci&#243;n de Metales por espectroscop&#237;a de
+     emisi&#243;n de plasma. *    NCh 2313/28, Of 98, decreto supremo N&#186; 2.557 de 1998 del Ministerio de Obras P&#250;blicas: Aguas Residuales-M&#233;todo de an&#225;lisis-Parte 28: Determinaci&#243;n de Nitr&#243;geno Kjeldahl.
+*    NCh 2313/29, Of 99, decreto supremo N&#186; 1159 de 1999 del Ministerio de Obras P&#250;blicas: Aguas Residuales-M&#233;todo de an&#225;lisis - Parte 29: Determinaci&#243;n de Pentaclorofenol y algunos herbicidas organoclorados.
+*    NCh 2313/30, Of 99, decreto supremo N&#186; 1.159 de 1999 del Ministerio de Obras P&#250;blicas: Aguas Residuales-M&#233;todo de an&#225;lisis-Parte 30: Determinaci&#243;n de Selenio.
+*    NCh 2313/31, Of 99, decreto supremo N&#186; 1.159 de 1999 del Ministerio de Obras P&#250;blicas: Aguas Residuales-M&#233;todo de an&#225;lisis-Parte 31: Determinaci&#243;n de benceno y algunos derivados (Tolueno y Xileno).
+*    NCh 2313/32, Of 99, decreto supremo N&#186; 414 de 1999 del Ministerio de Obras P&#250;blicas: Aguas Residuales-M&#233;todo de an&#225;lisis-Parte 32: Determinaci&#243;n de Cloruro.
+*    NCh 2313/33, Of 99, decreto supremo N&#186; 1.159 de 1999 del Ministerio de Obras P&#250;blicas: Aguas Residuales-M&#233;todo de an&#225;lisis-Parte 33: Determinaci&#243;n de Fluo-ruro.
+*    M&#233;todo Cromatograf&#237;a I&#243;nica con Supresi&#243;n Qu&#237;mica de Conductividad del Eluyente, para determinar Nitrito (NO2-) y Nitrato (NO3-), seg&#250;n 4110 B, Standard Methods for the Examination of Water and Wastewater; 19th Ed.; APHA-AWWA-WEF; 1995.
+*    M&#233;todo de Electrodo de Nitrato, para determinaci&#243;n de Nitrato (NO3-), seg&#250;n 4500-NO3- D. Standard Methods for the Examination of Water and Wastewater; 19th Ed.; APHA-AWWA-WEF; 1995.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">26 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427623">
+      <Texto>     TITULO VIII
+
+     Fiscalizaci&#243;n</Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">TITULO VIII Fiscalizaci&#243;n</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427622">
+          <Texto>     Art&#237;culo 27&#186;. La presente norma ser&#225; fiscalizada por la Superintendencia de Servicios Sanitarios y los Servicios de Salud respectivos, seg&#250;n corresponda. </Texto>
+          <Metadatos>
+            <NombreParte presente="si">27 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="T&#237;tulo" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427625">
+      <Texto>     TITULO IX
+
+     Plazo de vigencia</Texto>
+      <Metadatos>
+        <NombreParte presente="no">&#160;</NombreParte>
+        <TituloParte presente="si">TITULO IX Plazo de vigencia</TituloParte>
+        
+      </Metadatos>
+      <EstructurasFuncionales>
+        <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2003-01-17" derogado="no derogado" idParte="8427624">
+          <Texto>     Art&#237;culo 28&#186;. El presente decreto, entrar&#225; en vigencia 30 d&#237;as despu&#233;s de su publicaci&#243;n en el Diario Oficial.</Texto>
+          <Metadatos>
+            <NombreParte presente="si">28 </NombreParte>
+            <TituloParte presente="no">&#160;</TituloParte>
+            
+          </Metadatos>
+        </EstructuraFuncional>
+      </EstructurasFuncionales>
+    </EstructuraFuncional>
+  </EstructurasFuncionales>
+  <Promulgacion fechaVersion="2003-01-17" derogado="no derogado">
+    <Texto>     An&#243;tese, t&#243;mese raz&#243;n y publ&#237;quese.- RICARDO LAGOS ESCOBAR, Presidente de la Rep&#250;blica.- Mario Fern&#225;ndez Baeza, Ministro Secretario General de la Presidencia.
+     Lo que transcribo a Ud. para su conocimiento.- Saluda atte. a Ud., Gonzalo Martner Fanta, Subsecretario General de la Presidencia de la Rep&#250;blica.</Texto>
+  </Promulgacion>
+  
+</Norma>

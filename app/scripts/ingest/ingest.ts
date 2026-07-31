@@ -92,16 +92,22 @@ async function upsertNormaGetId(
     titulo: string;
     url_fuente: string;
     fecha_publicacion?: string;
+    anio_norma?: number;
+    organo_emisor?: string;
+    id_norma_bcn?: number;
     hash_contenido: string;
   }
 ): Promise<string> {
   // Buscar existente
-  const { data: existing } = await sb
-    .from("normas")
-    .select("id")
-    .eq("tipo", opts.tipo)
-    .eq("numero", opts.numero)
-    .maybeSingle();
+  let existingQuery = sb.from("normas").select("id");
+  if (opts.id_norma_bcn) {
+    existingQuery = existingQuery.eq("id_norma_bcn", opts.id_norma_bcn);
+  } else {
+    existingQuery = existingQuery.eq("tipo", opts.tipo).eq("numero", opts.numero);
+    if (opts.anio_norma) existingQuery = existingQuery.eq("anio_norma", opts.anio_norma);
+    if (opts.organo_emisor) existingQuery = existingQuery.eq("organo_emisor", opts.organo_emisor);
+  }
+  const { data: existing } = await existingQuery.maybeSingle();
 
   if (existing?.id) {
     // Actualizar
@@ -111,6 +117,9 @@ async function upsertNormaGetId(
         titulo: opts.titulo,
         url_fuente: opts.url_fuente,
         fecha_publicacion: opts.fecha_publicacion ?? null,
+        anio_norma: opts.anio_norma ?? null,
+        organo_emisor: opts.organo_emisor ?? null,
+        id_norma_bcn: opts.id_norma_bcn ?? null,
         hash_contenido: opts.hash_contenido,
         fecha_actualizacion: new Date().toISOString().split("T")[0],
         vigente: true,
@@ -129,6 +138,9 @@ async function upsertNormaGetId(
       titulo: opts.titulo,
       url_fuente: opts.url_fuente,
       fecha_publicacion: opts.fecha_publicacion ?? null,
+      anio_norma: opts.anio_norma ?? null,
+      organo_emisor: opts.organo_emisor ?? null,
+      id_norma_bcn: opts.id_norma_bcn ?? null,
       hash_contenido: opts.hash_contenido,
       fecha_actualizacion: new Date().toISOString().split("T")[0],
       vigente: true,
@@ -150,7 +162,9 @@ async function insertarChunks(
   chunks: ReturnType<typeof chunkearNorma>,
   embeddings: number[][]
 ) {
-  const BATCH_INSERT = 25;
+  // Vectores de 1024 dimensiones en lotes de 25 superan el statement timeout
+  // del proyecto Supabase. Cinco mantiene la inserción predecible.
+  const BATCH_INSERT = Number(process.env.INGEST_CHUNK_BATCH ?? "5");
 
   for (let i = 0; i < chunks.length; i += BATCH_INSERT) {
     const batch = chunks.slice(i, i + BATCH_INSERT);
@@ -215,8 +229,9 @@ async function procesarNorma(
     } else if (tipo === "OGUC") {
       norma = parseOGUCFile(entry.archivo, entry.url_fuente);
     } else if (["LEY", "DFL", "DL", "DS"].includes(tipo)) {
-      // Inferir número desde la key (ej. "LEY-19300" → "19300")
-      const numero = key.split("-").slice(1).join("-");
+      // La key puede incluir año/id BCN para evitar colisiones entre decretos
+      // de distinto organismo; la identidad jurídica está en el manifiesto.
+      const numero = entry.numero || key.split("-").slice(1).join("-");
       norma = parseLey(entry.archivo, {
         tipo,
         numero,
@@ -284,6 +299,9 @@ async function procesarNorma(
       titulo: norma.titulo,
       url_fuente: norma.url_fuente,
       fecha_publicacion: norma.fecha_publicacion,
+      anio_norma: entry.anio_norma,
+      organo_emisor: entry.organo_emisor,
+      id_norma_bcn: entry.id_norma_bcn,
       hash_contenido: hashActual,
     });
     console.log(`     Norma id: ${normaId.slice(0, 8)}…`);

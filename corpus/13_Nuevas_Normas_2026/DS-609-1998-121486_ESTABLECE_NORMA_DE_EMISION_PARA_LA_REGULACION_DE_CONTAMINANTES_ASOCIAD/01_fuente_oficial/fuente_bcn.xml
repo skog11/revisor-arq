@@ -1,0 +1,554 @@
+<?xml version="1.0" encoding="UTF-8"?><Norma xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.leychile.cl/esquemas" xsi:schemaLocation="http://www.leychile.cl/esquemas http://www.leychile.cl/esquemas/EsquemaIntercambioNorma-v1-0.xsd" normaId="121486" esTratado="no tratado" fechaVersion="2004-09-08" SchemaVersion="1.0" derogado="no derogado">
+  <Identificador fechaPromulgacion="1998-05-07" fechaPublicacion="1998-07-20">
+    <TiposNumeros>
+      <TipoNumero>
+        <Tipo>Decreto</Tipo>
+        <Numero>609</Numero>
+      </TipoNumero>
+    </TiposNumeros>
+    <Organismos>
+      <Organismo>MINISTERIO DE OBRAS P&#218;BLICAS</Organismo>
+    </Organismos>
+  </Identificador>
+  <Metadatos>
+    <TituloNorma>ESTABLECE NORMA DE EMISION PARA LA REGULACION DE CONTAMINANTES ASOCIADOS A LAS DESCARGAS DE RESIDUOS INDUSTRIALES LIQUIDOS A SISTEMAS DE ALCANTARILLADO</TituloNorma>
+    
+    
+    
+    <IdentificacionFuente>Diario Oficial</IdentificacionFuente>
+    <NumeroFuente>36118</NumeroFuente>
+  </Metadatos>
+  <Encabezado fechaVersion="1998-07-20" derogado="no derogado">
+    <Texto>ESTABLECE NORMA DE EMISION PARA LA REGULACION DE
+CONTAMINANTES  ASOCIADOS A  LAS  DESCARGAS DE RESIDUOS
+INDUSTRIALES LIQUIDOS A SISTEMAS DE ALCANTARILLADO
+ N&#250;m. 609.- Santiago, 7 de mayo de 1998.- Vistos: Lo
+establecido en la Constituci&#243;n Pol&#237;tica de la Rep&#250;blica
+en su art&#237;culo 19 N&#186; 8 y 32 N&#186; 8; lo dispuesto en el
+art&#237;culo 40 de la ley 19.300; en la ley 3.133; en el
+decreto con fuerza de ley N&#186; 735 de 1968, C&#243;digo
+Sanitario; en el decreto con fuerza de ley N&#186; 382 de 1988,
+Ley General de Servicios Sanitarios; en el decreto con
+fuerza de ley N&#186; 70 de 1988 sobre Fijaci&#243;n de Tarifas de
+Servicios de Agua Potable y Alcantarillado; en el decreto
+supremo N&#186; 351, de 1992 de Obras P&#250;blicas, Reglamento para
+la neutralizaci&#243;n y/o depuraci&#243;n de los residuos l&#237;quidos
+provenientes de establecimientos industriales a que se
+refiere la ley N&#186; 3.133; en el decreto supremo N&#186; 93, de
+1995 del Ministerio Secretar&#237;a General de la Presidencia,
+Reglamento para la dictaci&#243;n de normas de calidad ambiental
+y de emisi&#243;n; en el decreto supremo N&#186; 745 de 1992 de
+Salud, sobre condiciones sanitarias y ambientales b&#225;sicas
+en los lugares de trabajo; en el decreto supremo N&#186; 1.144
+de 1998 de Obras P&#250;blicas; el acuerdo del Consejo Directivo
+de la Comisi&#243;n Nacional del Medio Ambiente de fecha 12 de
+abril de 1996, que aprob&#243; el primer programa priorizado de
+normas; la resoluci&#243;n exenta N&#186; 1.958 de 27 de agosto de
+1996, publicada en el Diario Oficial de 10 de septiembre de
+1996 y en el diario La Tercera el d&#237;a 16 de septiembre de
+1996, que dio inicio a la elaboraci&#243;n del anteproyecto de
+norma de emisi&#243;n para la regulaci&#243;n de contaminantes
+asociados a las descargas de residuos industriales l&#237;quidos
+a sistemas de alcantarillado; la resoluci&#243;n exenta N&#186; 281
+de 12 de mayo de 1997 que aprob&#243; el anteproyecto de norma
+de emisi&#243;n, cuyo extracto se public&#243; en el Diario Oficial
+de 15 de mayo de 1997 y en el diario La Tercera el d&#237;a 18
+de mayo del mismo a&#241;o; los estudios cient&#237;ficos, el
+an&#225;lisis general del impacto econ&#243;mico y social de la
+misma; las observaciones formuladas en la etapa de consulta
+al anteproyecto de revisi&#243;n de la norma; el an&#225;lisis de
+las observaciones se&#241;aladas; el acuerdo del Consejo
+Consultivo de fecha 14 de julio de 1997; el acuerdo N&#186; 1/98
+de 23 de enero de 1998 del Consejo Directivo de la Comisi&#243;n
+Nacional del Medio Ambiente que aprob&#243; el proyecto
+definitivo de la norma de emisi&#243;n; los dem&#225;s antecedentes
+que obran en el expediente p&#250;blico respectivo y lo
+dispuesto en la resoluci&#243;n N&#186; 520 de 1996 de la
+Contralor&#237;a General de la Rep&#250;blica que fija el texto
+refundido, coordinado y sistematizado de la resoluci&#243;n N&#186;
+55 de 1992 de la Contralor&#237;a General de la Rep&#250;blica.
+ D e c r e t o:</Texto>
+  </Encabezado>
+  <EstructurasFuncionales>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="2004-09-08" derogado="no derogado" idParte="8669961">
+      <Texto>     Art&#237;culo primero: Establ&#233;cese la siguiente norma de
+emisi&#243;n para la regulaci&#243;n de contaminantes asociados a
+las descargas de residuos industriales l&#237;quidos a sistemas
+de alcantarillado, cuyo texto es el siguiente:
+
+
+1.   Objetivos de Protecci&#243;n Ambiental y Resultados
+Esperados
+
+1.1  La presente norma de emisi&#243;n tiene como objetivo
+mejorar la calidad ambiental de las aguas servidas que los
+servicios p&#250;blicos de disposici&#243;n de &#233;stas vierten a los
+cuerpos de agua terrestres o mar&#237;timos mediante el control
+de los contaminantes l&#237;quidos de origen industrial, que se
+descargan en los alcantarillados. Con lo anterior se logra
+que los servicios p&#250;blicos de disposici&#243;n de aguas
+servidas dispongan aguas residuales con un bajo nivel de
+contaminaci&#243;n, protegiendo as&#237; los cuerpos de agua
+receptores. Corresponder&#225; a la norma que regula las
+descargas de residuos l&#237;quidos a las aguas superficiales
+determinar la calidad del efluente del servicio p&#250;blico de
+disposici&#243;n de aguas servidas.
+
+1.2  Asimismo la presente norma est&#225; orientada a proteger y
+preservar los servicios p&#250;blicos de recolecci&#243;n y
+disposici&#243;n de aguas servidas mediante el control de las
+descargas de residuos industriales l&#237;quidos, que puedan
+producir interferencias con los sistemas de tratamiento de
+aguas servidas, o dar lugar a la corrosi&#243;n, incrustaci&#243;n,
+u obstrucci&#243;n de las redes de alcantarillado o a la
+formaci&#243;n de gases t&#243;xicos o explosivos en las mismas, u
+otros fen&#243;menos similares. Esta norma, al proteger los
+sistemas de recolecci&#243;n de aguas servidas, evita que los
+contaminantes transportados por &#233;stos puedan eventualmente
+ser liberados sin tratamiento, al medio ambiente urbano
+(calles, suelo, aire entre otros), por efecto de roturas u
+obstrucciones del sistema, pudiendo afectar la calidad de
+&#233;ste, y la salud de las personas.
+
+2.   Disposiciones Generales
+
+2.1  La presente norma de emisi&#243;n establece los l&#237;mites
+m&#225;ximos de contaminantes permitidos para residuos
+industriales l&#237;quidos, descargados por establecimientos
+industriales a los servicios p&#250;blicos de recolecci&#243;n de
+aguas servidas de tipo separado o unitario.
+
+2.2  La norma de emisi&#243;n se aplicar&#225; en todo el territorio
+nacional.
+
+2.3  Los residuos industriales l&#237;quidos no podr&#225;n contener
+sustancias radiactivas, corrosivas, venenosas, infecciosas,
+explosivas o inflamables, sean &#233;stas s&#243;lidas, l&#237;quidas,
+gases o vapores, y otras de car&#225;cter peligroso en
+conformidad a la legislaci&#243;n y reglamentaci&#243;n vigente.
+
+2.4  Con el prop&#243;sito de lograr una efectiva reducci&#243;n de
+los contaminantes provenientes de los establecimientos
+industriales, no se debe usar como procedimiento de
+tratamiento la diluci&#243;n de los residuos industriales
+l&#237;quidos con aguas ajenas al proceso industrial,
+incorporadas s&#243;lo con el fin de reducir las
+concentraciones. Para estos efectos, no se consideran aguas
+ajenas al proceso industrial las aguas servidas provenientes
+del establecimiento industrial.
+
+2.5  Los sedimentos, lodos y/o sustancias s&#243;lidas
+provenientes de sistemas de tratamiento de residuos
+industriales l&#237;quidos no deben disponerse en cuerpos
+receptores o en servicios p&#250;blicos de recolecci&#243;n de aguas
+servidas y su disposici&#243;n final debe cumplir con las normas
+legales vigentes en materia de residuos s&#243;lidos.
+
+2.6  El volumen de descarga diario, VDD (m&#179;/d&#237;a) no
+deber&#225; afectar la operaci&#243;n normal del servicio p&#250;blico
+de recolecci&#243;n y tratamiento de aguas servidas. Su valor
+m&#225;ximo corresponder&#225; al indicado en el certificado de
+factibilidad otorgado por el prestador de servicios
+sanitarios.
+
+3.   Definiciones
+
+3.1  Carga contaminante media diaria: Cuociente entre la
+masa o volumen de un par&#225;metro y el n&#250;mero de d&#237;as en que
+efectivamente se descarg&#243; el residuo industrial l&#237;quido al
+sistema de alcantarillado, durante un mes de m&#225;xima
+producci&#243;n. Se expresa en gramos/d&#237;a (para s&#243;lidos
+suspendidos, aceites y grasas, aluminio, boro,
+hidrocarburos, DBO5, ars&#233;nico, cadmio, cianuro, cobre,
+cromo total, como hexavalente, f&#243;sforo, manganeso,
+mercurio, n&#237;quel, nitr&#243;geno amoniacal, plomo, sulfatos,
+sulfuro y zinc), en litros/d&#237;a (para s&#243;lidos
+sedimentables).
+     La masa o volumen de un par&#225;metro corresponde a la
+suma de las masas o vol&#250;menes diarios descargados durante
+dicho mes. Se determina mediante el producto del volumen de
+descarga por la concentraci&#243;n de la muestra obtenida seg&#250;n
+lo establecido en el punto 6.3.1.
+
+3.2  ELIMINADA
+3.3  ELIMINADA
+3.2  CIIU: Clasificaci&#243;n Industrial Uniforme de Todas las
+Actividades Econ&#243;micas, Informes Estad&#237;sticos, Serie M N&#186;
+4, Rev.2 (Publicaci&#243;n de las Naciones Unidas), Nueva York,
+1969, o su equivalente.
+
+3.3  DBO5: Demanda bioqu&#237;mica de ox&#237;geno a los 5 d&#237;as y a
+20 &#176;C.
+
+3.4 Establecimiento Industrial: Aquel en el que se realiza
+una actividad econ&#243;mica donde se produce una
+transformaci&#243;n de la materia prima o materiales empleados,
+dando origen a nuevos productos, o bien en que sus
+operaciones de fraccionamiento, manipulaci&#243;n o limpieza, no
+produce ning&#250;n tipo de transformaci&#243;n en su esencia. Este
+concepto comprende industrias, talleres artesanales y
+peque&#241;as industrias que descargan afluentes con una carga
+contaminante media diaria, medida en condiciones de m&#225;xima
+generaci&#243;n de carga contaminante y antes de toda forma de
+tratamiento, superior al equivalente a:
+
+a)  Si el establecimiento industrial descargare sus Riles a
+una red de alcantarillado, que correspondiese a un servicio
+sanitario con poblaci&#243;n abastecida inferior o igual a
+100.000 habitantes, deber&#225; dar cumplimiento a la presente
+norma, cuando sus descargas de residuos industriales
+l&#237;quidos tuvieren una carga media diaria superior al
+equivalente a las aguas servidas de una poblaci&#243;n de 100
+personas, en uno o m&#225;s de los par&#225;metros se&#241;alados en la
+Tabla N&#186; 1:
+
+                  Tabla N&#186; 1:
+
+Caracterizaci&#243;n de aguas servidas dom&#233;sticas
+correspondiente a 100 habitantes(1).
+
+Par&#225;metros           Valor
+                  caracter&#237;stico  Carga contaminante
+                                    100 Hab/d&#237;a
+
+Aceites y grasas     60 (mg/L)         960 (g/d&#237;a)
+Aluminio             1 (mg/L)          16 (g/d&#237;a)(2)
+Ars&#233;nico             0,05 (mg/L)       0,8 (g/d&#237;a)
+Boro                 0,75 (mg/L)     12,8 (g/d&#237;a)(2)
+Cadmio               0,01 (mg/L)       0,16 (g/d&#237;a)
+Cianuro              0,2 (mg/L)        3,2 (g/d&#237;a)
+Cobre                1 (mg/L)          16 (g/d&#237;a)
+Cromo total          0,1 (mg/L)        1,6 (g/d&#237;a)
+Cromo hexavalente    0,05 (mg/L)       0,8 (g/d&#237;a)
+DBO5                 250 (mg/L)        4.000 (g/d&#237;a)
+F&#243;sforo              5 (mg/L)          80 (g/d&#237;a)
+Hidrocarburos totales 10 (mg/L)        160 (g/d&#237;a)
+Manganeso            0,3 (mg/L)        4,8 (g/d&#237;a)
+Mercurio             0,001 (mg/L)      0,02 (g/d&#237;a)
+N&#237;quel               0,1 (mg/L)        1,6 (g/d&#237;a)
+Nitr&#243;geno amoniacal  50 (mg/L)         800 (g/d&#237;a)
+pH                   6-8               6-8(3)
+Plomo                0,2 (mg/L)        3,2 (g/d&#237;a)
+Poder espum&#243;geno     5 mm              5 mm(3)
+S&#243;lidos sedimentables 6 ml/L 1 h       6 ml/L 1 h(3)
+S&#243;lidos suspendidos
+totales              220 (mg/L)        3.520 (g/d&#237;a)
+Sulfatos (disueltos) 300 (mg/L)        4.800 (g/d&#237;a)
+Sulfuro              3 (mg/L)          48 (g/d&#237;a)
+Temperatura          20&#176; C             20&#176; C (3)
+Zinc                 1 (mg/L)          16 (g/d&#237;a)
+
+     (1) Se considera una dotaci&#243;n de agua potable de 200
+L/hab/d&#237;a y un coeficiente de recuperaci&#243;n de 0,8.
+
+     (2) Si la concentraci&#243;n media del contaminante
+presente en la captaci&#243;n de agua del establecimiento
+industrial (distribuida por el prestador de servicio
+sanitario o de fuente propia) es mayor al indicado en la
+tabla, la carga contaminante de 100 personas se calcular&#225;
+considerando la concentraci&#243;n presente en la captaci&#243;n.
+
+     (3) Expresados en valor absoluto y no en t&#233;rminos de
+carga.
+
+b)  Si el establecimiento descargare sus Riles a una red de
+alcantarillado, que correspondiese a un servicio sanitario
+con poblaci&#243;n abastecida superior a 100.000 habitantes,
+deber&#225; dar cumplimiento a la presente norma si sus
+descargas de residuos industriales l&#237;quidos tuvieren una
+carga media diaria superior al equivalente a las aguas
+servidas de una poblaci&#243;n de 100 personas, como se se&#241;ala
+en la Tabla N&#186; 1, excepto para los par&#225;metros DBO5,
+f&#243;sforo, nitr&#243;geno amoniacal y s&#243;lidos suspendidos que
+corresponder&#225;n a una poblaci&#243;n de 200 personas, como se
+indica a continuaci&#243;n:
+
+              Tabla N&#186; 2:
+
+Caracterizaci&#243;n de par&#225;metros org&#225;nicos correspondiente a
+200 habitantes(1)
+
+Par&#225;metros    Valor
+              caracter&#237;stico  Carga contaminante
+                              200 Hab/d&#237;a
+
+DBO5           250 (mg/L)    8.000 (g/d&#237;a)
+F&#243;sforo        5 (mg/L)      160 (g/d&#237;a)
+Nitr&#243;geno
+amoniacal      50 (mg/L)     1.600 (g/d&#237;a)
+S&#243;lidos
+suspendidos
+totales        220 (mg/L)    7.040 (g/d&#237;a)
+
+     (1) Se considera una dotaci&#243;n de agua potable de 200
+L/hab/d&#237;a y un coeficiente de recuperaci&#243;n de 0,8.
+
+3.5  Fuentes Existentes: Son los Establecimientos
+Industriales que disponen de Certificado de dotaci&#243;n de
+Servicios, con fecha previa a la entrada en vigencia de la
+presente norma.
+
+3.6  Fuentes Nuevas: Son los Establecimientos Industriales
+que disponen de Certificado de dotaci&#243;n de Servicios, con
+fecha posterior a la entrada en vigencia de la presente
+norma.
+
+3.7  Muestreo de autocontrol: Es el muestreo realizado
+directamente o por cuenta y cargo del establecimiento
+industrial destinado a controlar la calidad y cantidad de
+sus efluentes.
+
+3.8  Prestador de Servicios Sanitarios: La empresa o entidad
+concesionaria de los servicios p&#250;blicos de recolecci&#243;n y/o
+disposici&#243;n de aguas servidas.
+3.11 ELIMINADA
+3.9  RIL - riles: Residuo(s) industrial(les) l&#237;quido(s)
+descargados por un establecimiento industrial.
+
+3.10 Servicio p&#250;blico de disposici&#243;n de aguas servidas:
+Aquel definido en el art&#237;culo 5&#186; del D.F.L. N&#186; 382, de
+1988, Ley General de Servicios Sanitarios.
+3.11 Servicio p&#250;blico de recolecci&#243;n de aguas servidas:
+Aquel definido en el art&#237;culo 5&#186; del D.F.L. N&#186; 382, de
+1988, Ley General de Servicios Sanitarios.
+3.12 Sistema de Tratamiento de Aguas Servidas, Planta de
+Tratamiento de Aguas Servidas: Conjunto de operaciones y
+procesos secuenciales f&#237;sicos, qu&#237;micos, biol&#243;gicos, o
+combinaci&#243;n de ellos, naturales o artificiales, posibles de
+controlar, que se desarrollan en instalaciones dise&#241;adas y
+construidas de acuerdo a criterios t&#233;cnicos espec&#237;ficos
+para este tipo de obras y cuyo prop&#243;sito es reducir la
+carga contaminante de las aguas residuales para adecuarla a
+las exigencias de descarga al cuerpo receptor. Bajo este
+concepto se incluyen, entre otros, lagunas de
+estabilizaci&#243;n, lodos activados, y emisarios submarinos
+aprobados por la autoridad competente.
+3.13 Superintendencia: La Superintendencia de Servicios
+Sanitarios.
+
+3.17  ELIMINADA
+3.18  ELIMINADA
+4.   L&#237;mites M&#225;ximos Permitidos para las Descargas de
+Residuos Industriales L&#237;quidos a las Redes de
+Alcantarillado de los Servicios P&#250;blicos de Recolecci&#243;n de
+Aguas Servidas
+
+4.1  Los l&#237;mites m&#225;ximos permisibles est&#225;n
+referidos a unidades de concentraci&#243;n o valores
+absolutos, y corresponder&#225;n al valor promedio diario de
+la concentraci&#243;n del correspondiente contaminante o de la
+caracter&#237;stica del efluente, seg&#250;n sea el caso, con
+excepci&#243;n del pH y Temperatura cuyos l&#237;mites se refieren a
+valores instant&#225;neos.
+4.2  Las descargas de efluentes que se efect&#250;en a redes de
+alcantarillado que no cuenten con plantas de tratamiento de
+aguas servidas deber&#225;n cumplir con los l&#237;mites
+establecidos en la Tabla N&#186; 3:
+
+            Tabla N&#186; 3:
+     L&#237;mites m&#225;ximos permitidos para descargas de
+efluentes que se efect&#250;en a redes de alcantarillado que no
+cuenten con plantas de tratamiento de aguas servidas
+
+Par&#225;metros        Unidad  Expresi&#243;n    L&#237;mite m&#225;ximo
+                                       permitido
+
+Aceites y grasas  mg/L     A y G       150
+Aluminio          mg/L     Al          10(1)
+Ars&#233;nico          mg/L     As          0,5
+Boro              mg/L     B           4(1)
+Cadmio            mg/L     Cd          0,5
+Cianuro           mg/L     CN          1
+Cobre             mg/L     Cu          3
+Cromo hexavalente mg/L     Cr+6        0,5
+Cromo total       mg/L     Cr          10
+Hidrocarburos
+totales           mg/L     HC          20
+Manganeso         mg/L     Mn          4
+Mercurio          mg/L     Hg          0,02
+N&#237;quel            mg/L     Ni          4
+pH                Unidad   pH          5,5-9,0
+Plomo             mg/L     Pb          1
+Poder espum&#243;geno  mm       PE          7
+S&#243;lidos
+sedimentables     ml/L 1 h S.D.        20
+Sulfatos          mg/L     SO4-2       1.000(2)
+Sulfuros          mg/L     S-2         5
+Temperatura      &#176;C         T&#176;         35
+Zinc              mg/L      Zn         5
+
+    (1) Si la concentraci&#243;n media del contaminante presente
+en la captaci&#243;n de agua del establecimiento industrial
+(distribuida por el prestador de servicio sanitario o de
+fuente propia) fuere mayor a la indicada en la tabla, el
+l&#237;mite m&#225;ximo del contaminante presente en la descarga
+ser&#225; igual a la concentraci&#243;n presente en la captaci&#243;n.
+
+     (2) Se aceptar&#225;n concentraciones entre 1.000 y 1.500
+mg/L si se cumplen las siguientes condiciones:
+
+a) pH = 8 -9;
+b) temperatura del residuo industrial l&#237;quido (&#176;C) ?
+temperatura de las aguas receptoras.
+
+4.3  DEROGADO
+
+4.3 Las descargas de efluentes que se efect&#250;an a redes de
+alcantarillado que cuenten con plantas de tratamiento de
+aguas servidas deber&#225;n cumplir con los l&#237;mites m&#225;ximos
+se&#241;alados en la Tabla N&#186; 4:
+                 Tabla N&#186; 4:
+L&#237;mites m&#225;ximos permitidos para descargas de efluentes que
+se efect&#250;an a redes de alcantarillado que cuenten con
+plantas de tratamiento de aguas servidas 
+Par&#225;metros       Unidad
+                            Expresi&#243;n  L&#237;mite m&#225;ximo
+                                        permitido
+
+Aceites y grasas    mg/L    A y G       150
+Aluminio            mg/L    Al          10(1)
+Ars&#233;nico            mg/L    As          0,5
+Boro                mg/L    B           4(1)
+Cadmio              mg/L    Cd          0,5
+Cianuro             mg/L    CN-         1
+Cobre               mg/L    Cu          3
+Cromo hexavalente   mg/L    Cr+6        0,5
+Cromo total         mg/L    Cr          10
+Hidrocarburos totales  mg/L HC          20
+Manganeso           mg/L    Mn          4
+Mercurio            mg/L    Hg          0,02
+N&#237;quel              mg/L    Ni          4
+pH                  Unidad  pH          5,5-9,0
+Plomo               mg/L    Pb          1
+Poder espum&#243;geno    mm      PE          7
+S&#243;lidos
+sedimentables     ml/L 1 h  S.D.        20
+Sulfatos            mg/L    SO4-2       1.000(2)
+Sulfuros            mg/L    S-2         5
+Temperatura         &#176;C       T&#176;         35
+Zinc                 mg/L    Zn         5
+DBO5                 mg/L    DBO5       300
+F&#243;sforo              mg/L    P          10-15(3)
+Nitr&#243;geno amoniacal  mg/L    NH4+       80
+S&#243;lidos suspendidos
+totales              mg/L     S.S.      300
+
+
+     (1) Si la concentraci&#243;n media del contaminante
+presente en la captaci&#243;n de agua del establecimiento
+industrial (distribuida por el prestador de servicio
+sanitario o de fuente propia) fuere mayor a la indicada en
+la tabla, el l&#237;mite m&#225;ximo del contaminante presente en la
+descarga ser&#225; igual a la concentraci&#243;n presente en la
+captaci&#243;n.
+     (2) Se aceptar&#225;n concentraciones entre 1.000 y 1.500
+mg/L cuando se cumplan las siguientes condiciones:
+
+a) pH = 8 -9;
+
+b) temperatura del residuo industrial l&#237;quido (&#186;C) ?
+temperatura de las aguas receptoras.
+
+     (3) El elemento F&#243;sforo tendr&#225; l&#237;mite m&#225;ximo
+permitido de 15 mg/L. En aquellos riles descargados en
+sistemas de alcantarillado cuya disposici&#243;n final se
+efect&#250;a a un afluente de un lago, a un lago, laguna o
+embalse, sean estas &#250;ltimas naturales o artificiales, este
+par&#225;metro tendr&#225; l&#237;mite m&#225;ximo permitido de 10 mg/L.
+
+4.5  DEROGADO
+4.4  Los establecimientos industriales que descarguen su
+efluente en una red de alcantarillado que cuente con planta
+de tratamiento de aguas servidas autorizada para aplicar
+cargo tarifario, podr&#225;</Texto>
+      <Metadatos>
+        <NombreParte presente="si">PRIMERO</NombreParte>
+        <TituloParte presente="no">&#160;</TituloParte>
+        
+      </Metadatos>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="1998-07-20" derogado="no derogado" idParte="8669962">
+      <Texto>     Art&#237;culo segundo: Der&#243;gase el decreto supremo N&#186;
+1.065 de 12 de diciembre de 1996 de Obras P&#250;blicas que
+declara Norma Oficial de la Rep&#250;blica de Chile la NCh2280:
+Residuos Industriales L&#237;quidos-Descarga a servicios
+p&#250;blicos de recolecci&#243;n de aguas servidas, a contar de la
+entrada en vigencia de la norma de emisi&#243;n establecida en
+el art&#237;culo anterior.</Texto>
+      <Metadatos>
+        <NombreParte presente="si">SEGUNDO</NombreParte>
+        <TituloParte presente="no">&#160;</TituloParte>
+        
+      </Metadatos>
+    </EstructuraFuncional>
+    <EstructuraFuncional transitorio="no transitorio" tipoParte="Art&#237;culo" fechaVersion="1998-07-20" derogado="no derogado" idParte="8669963">
+      <Texto>     Art&#237;culo tercero: Modif&#237;case el decreto supremo N&#186;
+351, de fecha 26 de noviembre 1992, del Ministerio de Obras
+P&#250;blicas, en la forma siguiente:
+
+     1. Introd&#250;cese al art&#237;culo 1&#186; letra a) el siguiente
+p&#225;rrafo final:
+
+      ''Este concepto no comprende a los establecimientos
+que descargan sus Riles a una red de alcantarillado que
+corresponda a un servicio sanitario con poblaci&#243;n
+abastecida superior a 100.000 habitantes, cuando sus
+descargas de residuos industriales l&#237;quidos tengan una
+carga media diaria igual o inferior al equivalente a las
+aguas servidas de una poblaci&#243;n de 200 personas para los
+par&#225;metros org&#225;nicos (DBO5, f&#243;sforo, nitr&#243;geno amoniacal
+y s&#243;lidos suspendidos) se&#241;alados en la norma de descargas
+l&#237;quidas.''
+
+     2. Interc&#225;lese en el inciso 1&#186; del art&#237;culo 2&#186;
+entre la palabra ''oficiales'' y la letra ''y'' que le sigue
+una coma (,) y la siguiente frase: ''a las normas de
+emisi&#243;n''.</Texto>
+      <Metadatos>
+        <NombreParte presente="si">TERCERO</NombreParte>
+        <TituloParte presente="no">&#160;</TituloParte>
+        
+      </Metadatos>
+    </EstructuraFuncional>
+  </EstructurasFuncionales>
+  <Promulgacion fechaVersion="1998-07-20" derogado="no derogado">
+    <Texto>     An&#243;tese, t&#243;mese raz&#243;n, comun&#237;quese, publ&#237;quese y
+arch&#237;vese.- EDUARDO FREI RUIZ-TAGLE, Presidente de la
+Rep&#250;blica.- Ricardo Lagos Escobar, Ministro de Obras
+P&#250;blicas.- Alex Figueroa Mu&#241;oz, Ministro de Salud.- Juan
+Villarz&#250; Rohde, Ministro Secretario General de la
+Presidencia.
+
+      Lo que transcribo a Ud., para su conocimiento.- Saluda
+Atte. a Ud., Juan Lobos D&#237;az, Subsecretario de Obras
+P&#250;blicas Subrogante.</Texto>
+  </Promulgacion>
+  <Anexos>
+    <Anexo fechaVersion="1998-07-20" derogado="no derogado" idParte="8669965" transitorio="no transitorio">
+      <Metadatos>
+        <Titulo>Cursa con Alcance Decreto N&#186; 609, de 1998, del
+Ministerio de Obras P&#250;blicas</Titulo>
+        
+      </Metadatos>
+      <Texto>Cursa con Alcance Decreto N&#186; 609, de 1998, del Ministerio
+de Obras P&#250;blicas
+
+     N&#250;m. 23.340.- Santiago, 6 de julio de 1998.
+
+     La Contralor&#237;a General ha dado curso al documento de
+la suma, a trav&#233;s del cual se establecen normas de emisi&#243;n
+para la regulaci&#243;n de los contaminantes asociados a las
+descargas de residuos industriales l&#237;quidos a sistemas de
+alcantarillado, pero cumple con precisar que el C&#243;digo
+Sanitario fue aprobado por el D.F.L. N&#186; 725, de 1967, y que
+el decreto N&#186; 1.144, del Ministerio de Obras P&#250;blicas, es
+de 1997 y no como se indica en los vistos del acto
+administrativo en an&#225;lisis.
+
+     Saluda atentamente a US., Jorge Reyes Riveros,
+Contralor General de la Rep&#250;blica Subrogante.
+
+Al Se&#241;or Ministro de Obras P&#250;blicas Presente </Texto>
+    </Anexo>
+  </Anexos>
+</Norma>

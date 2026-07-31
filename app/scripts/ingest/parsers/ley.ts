@@ -17,7 +17,7 @@ import type { ParsedArticulo, ParsedNorma, TipoNorma } from "../types";
 // ─── Regexes ─────────────────────────────────────────────────────────────────
 
 // Artículo standard: "Artículo 5°.-", "Artículo 2 bis.-", "Art. 5.-"
-const RE_ART = /^\s{0,8}Art[íi]culo\s+(\d+\s*(?:bis|ter|qu[áa]ter|quinquies)?)\s*[°º]?\s*\.?-?\s*/im;
+const RE_ART = /^\s{0,8}Art[íi]culo\s+(\d+(?:\.\d+){0,4}\s*(?:bis|ter|qu[áa]ter|quinquies)?)\s*[°º]?\s*\.?-?\s*/im;
 
 // Jerarquía
 const RE_TITULO = /^\s{0,8}T[ÍI]TULO\s+((?:[IVX]+|\d+)[°\s].*?)$/im;
@@ -103,6 +103,11 @@ export function parseLey(
   meta: LeyMetadata
 ): ParsedNorma {
   const raw = readFileSync(filePath, "utf-8");
+  // LeyChile puede responder la carcasa HTML de su aplicación SPA en vez del
+  // texto normativo. Nunca debe indexarse como una ley válida.
+  if (/<!doctype html|<app-root>|styles\.[a-f0-9]+\.bundle\.css/i.test(raw)) {
+    throw new Error(`Fuente inválida: ${filePath} contiene HTML de navegación, no texto normativo`);
+  }
   const clean = cleanText(raw);
   const lines = clean.split("\n");
 
