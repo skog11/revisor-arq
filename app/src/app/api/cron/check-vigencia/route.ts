@@ -12,6 +12,7 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
+import { enviarAlertaCorreo } from "@/lib/alertas-email";
 import { getSupabaseAdmin } from "@/lib/supabase";
 
 export const maxDuration = 60;
@@ -273,7 +274,16 @@ export async function GET(req: NextRequest) {
       `[cron/check-vigencia] ⚠️ Se detectaron ${alerts.length} posible(s) cambio(s) normativo(s):`
     );
     alerts.forEach((a) => console.log(`  ${a}`));
-    // TODO: enviar email a contacto@revisorarq.cl cuando se integre un proveedor SMTP/Resend
+    await enviarAlertaCorreo(
+      "[REVISOR ARQ] " + alerts.length + " posible(s) cambio(s) normativo(s)",
+      [
+        "El monitor de vigencia detectó cambios que requieren revisión humana.",
+        "",
+        ...alerts,
+        "",
+        "Fecha: " + new Date().toISOString(),
+      ]
+    );
   } else {
     console.log("[cron/check-vigencia] ✅ Sin cambios normativos detectados.");
   }
