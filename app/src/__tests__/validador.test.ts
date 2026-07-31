@@ -19,10 +19,10 @@ import type { ChunkRecuperado } from "@/lib/rag";
 
 let _idCounter = 0;
 
-function chunk(articulo: string | null, tipo = "LGUC"): ChunkRecuperado {
+function chunk(articulo: string | null, tipo = "LGUC", texto = "Texto de prueba del chunk normativo."): ChunkRecuperado {
   return {
     id: `chunk-test-${++_idCounter}`,
-    texto: "Texto de prueba del chunk normativo.",
+    texto,
     similarity: 0.9,
     norma_tipo: tipo,
     norma_numero: "DFL-458",
@@ -134,10 +134,10 @@ describe("validarConsistencia — verificación de artículos citados", () => {
     expect(mencionaArt116).toBe(false); // art. 116 sí está → sin advertencia
   });
 
-  it("chunk con artículo null no causa error y no bloquea la validación", () => {
+  it("chunk con artículo null no causa error y bloquea la cita no respaldada", () => {
     const r = validarConsistencia(RESPUESTA_VALIDA_ARQ, [chunk(null)]);
-    expect(r.valida).toBe(true); // sigue válida (disclaimer presente)
-    // art. 116 citado pero ningún chunk tiene artículo → advertencia esperada
+    expect(r.valida).toBe(false);
+    expect(r.motivo).toContain("116");
     expect(r.advertencias.length).toBeGreaterThan(0);
   });
 
@@ -166,6 +166,41 @@ describe("validarConsistencia — normalización de ordinales", () => {
 ⚠️ **Aviso legal**: Consulta con un profesional habilitado.`;
     const r = validarConsistencia(respuesta, [chunk("116")]);
     expect(r.advertencias.some((a) => a.includes("116"))).toBe(false);
+  });
+
+  it("trata el punto final heredado en el metadato como la misma clave de artículo", () => {
+    const respuesta = `Según el artículo 5.1.1 de la OGUC corresponde verificar el permiso aplicable.
+
+---
+⚠️ **Aviso legal**: Consulta con un profesional habilitado.`;
+    const r = validarConsistencia(respuesta, [chunk("5.1.1.", "OGUC")]);
+    expect(r.valida).toBe(true);
+  });
+});
+
+describe("validarConsistencia — citas textuales", () => {
+  it("acepta una cita respaldada aunque cambie la puntuación del PDF", () => {
+    const respuesta = `El artículo 116 dispone que "La construcción, reconstrucción y demolición de edificios" requiere permiso.
+
+---
+⚠️ **Aviso legal**: Consulta con un profesional habilitado.`;
+    const r = validarConsistencia(
+      respuesta,
+      [chunk("116", "LGUC", "La construcción: reconstrucción y demolición de edificios requiere permiso.")]
+    );
+    expect(r.valida).toBe(true);
+  });
+
+  it("acepta una cita con elipsis si cada tramo está respaldado", () => {
+    const respuesta = `El artículo 116 señala "La construcción… obras de urbanización" como regla general.
+
+---
+⚠️ **Aviso legal**: Consulta con un profesional habilitado.`;
+    const r = validarConsistencia(
+      respuesta,
+      [chunk("116", "LGUC", "La construcción, reconstrucción y las obras de urbanización requieren permiso.")]
+    );
+    expect(r.valida).toBe(true);
   });
 });
 
