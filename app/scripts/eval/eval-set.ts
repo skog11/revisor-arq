@@ -181,7 +181,9 @@ export const EVAL_SET: EvalCase[] = [
     pregunta: "¿Qué autorizaciones se requieren para la corta o intervención de bosque nativo según la Ley 20.283?",
     modo: "arquitecto",
     articulosEsperados: [],
-    frasesEsperadas: ["CONAF", "plan de manejo"],
+    // La Corporación Nacional Forestal puede citarse por su nombre completo
+    // o por la sigla CONAF. Ambas formas identifican al mismo órgano.
+    frasesEsperadas: ["CONAF|Corporación Nacional Forestal", "plan de manejo"],
     frasesProhibidas: [],
     minFuentes: 2,
   },
@@ -223,11 +225,15 @@ export const EVAL_SET: EvalCase[] = [
     modo: "arquitecto",
     articulosEsperados: [],
     frasesEsperadas: ["base de conocimiento"],
+    // OJO: no repetir acá la frase textual de la pregunta ("resistencia
+    // sísmica obligatoria para edificaciones patrimoniales") — se sacó el
+    // 2026-07-25 porque cualquier respuesta que discuta el tema, sea
+    // correcta o alucinada, la va a contener. La prueba real de alucinación
+    // son los patrones de afirmación de abajo.
     frasesProhibidas: [
       "DS-250 establece",
       "DS-250 dispone",
       "DS-250 señala",
-      "resistencia sísmica obligatoria para edificaciones patrimoniales",
     ],
     minFuentes: 0,
   },
@@ -244,8 +250,10 @@ export const EVAL_SET: EvalCase[] = [
     pregunta: "¿Puedo acoger a conjunto armónico un proyecto que ya tiene edificaciones con recepción municipal?",
     modo: "arquitecto",
     articulosEsperados: [],
-    // El LLM debe indicar improcedencia; "no procede" es la forma más común en derecho administrativo
-    frasesEsperadas: ["no procede"],
+    // El LLM debe indicar improcedencia; acepta variantes equivalentes
+    // (ver "|" en run-eval.ts) — "no es procedente / improcedente" también
+    // es correcto, no solo "no procede" literal.
+    frasesEsperadas: ["no procede|improcedente|improcedencia|no es procedente|no corresponde"],
     // NO puede afirmar procedencia directa con la regla general OGUC
     frasesProhibidas: [
       "sí es posible acoger",
@@ -471,5 +479,72 @@ export const EVAL_SET: EvalCase[] = [
       "no se requiere normativa adicional",
     ],
     minFuentes: 2,
+  },
+
+  // Cobertura de normas sectoriales incorporadas en julio de 2026.
+  {
+    id: "sectorial-ds15-humedales",
+    pregunta: "¿Qué regula el artículo 1 del DS 15 del Ministerio del Medio Ambiente sobre humedales urbanos?",
+    modo: "abogado", articulosEsperados: ["1"], frasesEsperadas: ["humedales urbanos"], minFuentes: 1,
+  },
+  {
+    id: "sectorial-ds30-imiv",
+    pregunta: "¿Qué establece el artículo 1.1.1 del reglamento IMIV, DS 30 del Ministerio de Transportes?",
+    modo: "abogado", articulosEsperados: ["1.1.1"], frasesEsperadas: ["objeto"], minFuentes: 1,
+  },
+  {
+    id: "sectorial-ds43-peligrosas",
+    pregunta: "¿Qué establece el artículo 1 del DS 43 sobre almacenamiento de sustancias peligrosas?",
+    modo: "abogado", articulosEsperados: ["1"], frasesEsperadas: ["sustancias peligrosas"], minFuentes: 1,
+  },
+  {
+    id: "sectorial-ds57-ghs",
+    pregunta: "¿Qué regula el artículo 1 del DS 57 sobre clasificación y etiquetado de sustancias químicas?",
+    modo: "abogado", articulosEsperados: ["1"], frasesEsperadas: ["clasificación"], minFuentes: 1,
+  },
+  {
+    id: "sectorial-ley20958-aportes",
+    pregunta: "¿Qué modifica el artículo 1 de la Ley 20.958 sobre aportes al espacio público?",
+    modo: "abogado", articulosEsperados: ["1"], frasesEsperadas: ["espacio público"], minFuentes: 1,
+  },
+  {
+    id: "sectorial-ley21202-humedales",
+    pregunta: "¿Qué dispone el artículo 2 de la Ley 21.202 respecto de los humedales urbanos?",
+    modo: "abogado", articulosEsperados: ["2"], frasesEsperadas: ["reglamento"], minFuentes: 1,
+  },
+  {
+    id: "sectorial-ley21455-clima",
+    pregunta: "¿Cuál es el objeto de la Ley Marco de Cambio Climático según su artículo 1?",
+    modo: "profundo", articulosEsperados: ["1"], frasesEsperadas: ["cambio climático"], minFuentes: 1,
+  },
+  {
+    id: "sectorial-ley21600-sbap",
+    pregunta: "¿Cuál es el objeto de la Ley 21.600 según su artículo 1?",
+    modo: "profundo", articulosEsperados: ["1"], frasesEsperadas: ["biodiversidad"], minFuentes: 1,
+  },
+  {
+    id: "sectorial-ley21770-autorizaciones",
+    pregunta: "¿Cuál es el objeto de la Ley Marco de Autorizaciones Sectoriales según su artículo 1?",
+    modo: "profundo", articulosEsperados: ["1"], frasesEsperadas: ["autorizaciones sectoriales"], minFuentes: 1,
+  },
+  {
+    id: "sectorial-ds4-lodos",
+    pregunta: "¿Qué regula el artículo 1 del DS 4 sobre manejo de lodos?",
+    modo: "abogado", articulosEsperados: ["1"], frasesEsperadas: ["lodos"], minFuentes: 1,
+  },
+  {
+    id: "sectorial-ds46-subterraneas",
+    pregunta: "¿Qué establece el artículo 1 del DS 46 sobre descargas a aguas subterráneas?",
+    modo: "abogado", articulosEsperados: ["1"], frasesEsperadas: ["aguas subterráneas"], minFuentes: 1,
+  },
+  {
+    id: "sectorial-ley21364-senapred",
+    pregunta: "¿Qué crea el artículo 1 de la Ley 21.364?",
+    modo: "abogado", articulosEsperados: ["1"], frasesEsperadas: ["Sistema Nacional"], minFuentes: 1,
+  },
+  {
+    id: "sectorial-ley21595-delitos",
+    pregunta: "¿Qué considera delito económico el artículo 1 de la Ley 21.595?",
+    modo: "abogado", articulosEsperados: ["1"], frasesEsperadas: ["delitos económicos"], minFuentes: 1,
   },
 ];

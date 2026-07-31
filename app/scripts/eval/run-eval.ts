@@ -12,6 +12,11 @@
 import { writeFileSync, mkdirSync, existsSync } from "fs";
 import { join } from "path";
 import { EVAL_SET, type EvalCase } from "./eval-set";
+import {
+  esRespuestaSinRespaldoVerificable,
+  obtenerEsperaEntreCasos,
+  obtenerNombreArchivoResultados,
+} from "./config";
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 
@@ -93,7 +98,11 @@ async function evalCaso(caso: EvalCase, baseUrl: string, intentos = 3): Promise<
   }
 
     // Retry si es error transitorio (rate limit, TPM limit, cold start, stream parse error)
-    const esTransitorio = error && (
+    // El fallback estándar sin respaldo verificable puede deberse a una
+    // recuperación incompleta. Se reintenta brevemente y, si persiste, se
+    // conserva como un fallo normal del caso.
+    const respuestaSinRespaldo = esRespuestaSinRespaldoVerificable(respuesta);
+    const esErrorTransitorio = Boolean(error && (
       error.includes("límite") ||
       error.includes("500") ||   // cold start / error transitorio del servidor
       error.includes("502") ||   // bad gateway (Vercel cold start)
@@ -106,10 +115,12 @@ async function evalCaso(caso: EvalCase, baseUrl: string, intentos = 3): Promise<
       error.includes("alta demanda") ||
       error.includes("overloaded") ||
       error.includes("too large")
-    );
+    ));
+    const esTransitorio = esErrorTransitorio || respuestaSinRespaldo;
     if (esTransitorio && intento < intentos) {
-      const espera = intento * 180_000; // 3 min, 6 min backoff
-      process.stdout.write(` [transitorio, reintento ${intento}/${intentos - 1} en ${espera / 1000}s] `);
+      const espera = respuestaSinRespaldo ? 2_000 : intento * 180_000;
+      const motivo = respuestaSinRespaldo ? "sin respaldo verificable" : "transitorio";
+      process.stdout.write(` [${motivo}, reintento ${intento}/${intentos - 1} en ${espera / 1000}s] `);
       await new Promise((r) => setTimeout(r, espera));
       continue;
     }
@@ -117,29 +128,50 @@ async function evalCaso(caso: EvalCase, baseUrl: string, intentos = 3): Promise<
   }
 
   const latenciaMs = Date.now() - t0;
-  const respLower = respuesta.toLowerCase();
+
+  // Normaliza espacios antes de comparar: el LLM a veces intercala espacios
+  // "raros" (U+202F narrow no-break space, U+00A0 non-breaking space, etc.
+  // — típico en formato numérico/tipográfico) donde uno esperaría un espacio
+  // normal. .includes() compara caracter a caracter, así que "DDU 519" con
+  // espacio normal nunca hace match contra "DDU 519" aunque a la vista
+  // sean indistinguibles. Se detectó el 2026-07-25: varios "faltantes"
+  // reportados por el eval eran falsos — la frase estaba, con otro espacio.
+  const normalizarEspacios = (s: string) => s.replace(/\s+/g, " ");
+  const respLower = normalizarEspacios(respuesta.toLowerCase());
+
+  // Una frase esperada puede escribirse como "op1|op2|op3" para aceptar
+  // sinónimos — un LLM puede expresar la misma conclusión jurídica de
+  // varias formas ("no procede" / "improcedente" / "no es procedente").
+  // Basta con que UNA de las alternativas aparezca. Entradas sin "|" se
+  // comportan igual que antes (una sola alternativa).
+  const algunaAlternativaPresente = (frase: string) =>
+    frase.split("|").some((alt) => respLower.includes(normalizarEspacios(alt.trim().toLowerCase())));
 
   // ── Verificaciones ──
-  const frasesEsperadasEncontradas = caso.frasesEsperadas.filter((f) =>
-    respLower.includes(f.toLowerCase())
-  );
-  const frasesEsperadasFaltantes = caso.frasesEsperadas.filter(
-    (f) => !respLower.includes(f.toLowerCase())
-  );
-  const frasesProhibidasEncontradas = (caso.frasesProhibidas ?? []).filter((f) =>
-    respLower.includes(f.toLowerCase())
-  );
+  const frasesEsperadasEncontradas = caso.frasesEsperadas.filter(algunaAlternativaPresente);
+  const frasesEsperadasFaltantes = caso.frasesEsperadas.filter((f) => !algunaAlternativaPresente(f));
+  const frasesProhibidasEncontradas = (caso.frasesProhibidas ?? []).filter(algunaAlternativaPresente);
 
-  // Artículos citados: buscar patrones "Art. X", "artículo X", "Art X°"
-  // Captura solo el número (y opcionalmente bis/ter/quinquies/°), sin incluir texto posterior
+  // Artículos citados: buscar patrones "Art. X", "artículo X", "Art X°",
+  // y también listas del tipo "artículos 13° y 7°" o "Art. 5, 19 y 60" —
+  // se captura todo el tramo de números que sigue al disparador
+  // ("artículo(s)" / "art.") y se extrae cada número por separado, no solo
+  // el primero. Detectado el 2026-07-25: "Los artículos 13° y 7°
+  // establecen..." solo registraba el 13, nunca el 7, porque la regex
+  // anterior paraba en el primer número.
+  const numeroArt = "\\d+(?:\\.\\d+){0,4}\\s*(?:bis|ter|qu[aá]ter|quinquies)?\\s*[°º]?";
+  const separador = "\\s*(?:,|y)\\s*";
+  const tramoLista = `((?:${numeroArt}${separador})*${numeroArt})`;
   const articulosCitados = [
     ...new Set(
       [
-        // "artículo 116°", "artículo 116 bis", "artículo 116"
-        ...respuesta.matchAll(/art[íi]culo[s]?\s+(\d+\s*(?:bis|ter|qu[aá]ter|quinquies)?)\s*[°º]?/gi),
-        // "Art. 116" (forma corta con punto)
-        ...respuesta.matchAll(/\bart\.\s*(\d+\s*(?:bis|ter|qu[aá]ter|quinquies)?)\s*[°º]?/gi),
-      ].map((m) => m[1].trim().replace(/\s+/g, " ").toLowerCase())
+        ...respuesta.matchAll(new RegExp(`art[íi]culo[s]?\\s+${tramoLista}`, "gi")),
+        ...respuesta.matchAll(new RegExp(`\\bart\\.\\s*${tramoLista}`, "gi")),
+      ].flatMap((m) =>
+        [...m[1].matchAll(/\d+(?:\.\d+){0,4}\s*(?:bis|ter|qu[aá]ter|quinquies)?/gi)].map((n) =>
+          n[0].trim().replace(/\s+/g, " ").toLowerCase()
+        )
+      )
     ),
   ];
   const articulosEsperadosFaltantes = caso.articulosEsperados.filter(
@@ -175,6 +207,7 @@ async function evalCaso(caso: EvalCase, baseUrl: string, intentos = 3): Promise<
 
 async function main() {
   const { baseUrl, casoId } = parsearArgs();
+  const esperaEntreCasos = obtenerEsperaEntreCasos();
 
   const casos = casoId
     ? EVAL_SET.filter((c) => c.id === casoId)
@@ -221,7 +254,9 @@ async function main() {
 
     // Pausa entre casos — Gemini Free Tier: 20 RPM
     // 30s de pausa para ser más conservadores ya que Groq fallback está fallando
-    await new Promise((r) => setTimeout(r, 30_000));
+    if (esperaEntreCasos > 0) {
+      await new Promise((r) => setTimeout(r, esperaEntreCasos));
+    }
   }
 
   // ── Resumen ──
@@ -238,7 +273,8 @@ async function main() {
   if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
 
   const fecha = new Date().toISOString().split("T")[0];
-  const outPath = join(dir, `${fecha}.json`);
+  const nombreArchivo = obtenerNombreArchivoResultados(fecha, casoId);
+  const outPath = join(dir, nombreArchivo);
   writeFileSync(
     outPath,
     JSON.stringify(
@@ -256,7 +292,7 @@ async function main() {
     ),
     "utf-8"
   );
-  console.log(`\n  Resultados guardados en: scripts/eval/resultados/${fecha}.json`);
+  console.log(`\n  Resultados guardados en: scripts/eval/resultados/${nombreArchivo}`);
 
   if (fallados > 0) process.exit(1);
 }
