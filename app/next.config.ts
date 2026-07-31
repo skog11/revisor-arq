@@ -5,6 +5,12 @@ const nextConfig: NextConfig = {
   // pdf-parse usa módulos Node.js nativos; debe ser tratado como external
   serverExternalPackages: ["pdf-parse"],
 
+  images: {
+    // 90 para la maqueta de la landing: es una foto a pantalla completa y
+    // a 75 el papel pierde el grano, que es justamente lo que la vende.
+    qualities: [75, 90],
+  },
+
   async redirects() {
     return [
       {
@@ -29,13 +35,6 @@ const nextConfig: NextConfig = {
             key: "Strict-Transport-Security",
             value: "max-age=63072000; includeSubDomains; preload",
           },
-        ],
-      },
-      // Cache para assets estáticos de Next.js
-      {
-        source: "/_next/static/(.*)",
-        headers: [
-          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
         ],
       },
     ];

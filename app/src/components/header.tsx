@@ -115,6 +115,10 @@ export function Header() {
     return () => subscription.unsubscribe();
   }, []);
 
+  // La landing tiene su propia franja superior integrada a la maqueta:
+  // un header encima rompería la inmersión de la ciudad.
+  if (pathname === "/") return null;
+
   return (
     <header
       className="sticky top-0 z-50"
