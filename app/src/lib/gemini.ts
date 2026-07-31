@@ -6,6 +6,7 @@ import { streamCerebras } from "@/lib/cerebras";
 import { streamDeepSeek } from "@/lib/deepseek";
 import { streamOpenRouter } from "@/lib/openrouter";
 import { streamGroq } from "@/lib/groq";
+import { streamOmniRoute, tieneOmniRouteConfigurado } from "@/lib/omniroute";
 
 export const MODEL_FLASH = "gemini-2.5-flash";
 export const MODEL_PRO = "gemini-2.5-pro";
@@ -139,20 +140,30 @@ function buildProviderChain(
 ): Array<{ nombre: string; gen: () => AsyncGenerator<string, void, unknown> }> {
   const primary = (process.env.LLM_PRIMARY ?? "cerebras").toLowerCase();
   const geminiRetries = primary === "gemini" ? MAX_RETRIES_STREAM : 1;
+  // Reserva amplia solo para informes profundos. El resto de las consultas
+  // gana capacidad y estabilidad con un límite suficiente de 3k tokens.
+  const presupuestoSalida = modelo === MODEL_PRO ? 8192 : 3072;
 
   const gemini     = { nombre: "Gemini",     gen: () => streamGeminiNative(systemPrompt, userMessage, modelo, geminiRetries) };
-  const cerebras   = { nombre: "Cerebras",   gen: () => streamCerebras(systemPrompt, userMessage) };
+  const cerebras   = { nombre: "Cerebras",   gen: () => streamCerebras(systemPrompt, userMessage, presupuestoSalida) };
   const deepseek   = { nombre: "DeepSeek",   gen: () => streamDeepSeek(systemPrompt, userMessage) };
   const openrouter = { nombre: "OpenRouter", gen: () => streamOpenRouter(systemPrompt, userMessage) };
   const groq       = { nombre: "Groq",       gen: () => streamGroq(systemPrompt, userMessage) };
+  const omniroute  = { nombre: "OmniRoute",  gen: () => streamOmniRoute(systemPrompt, userMessage) };
 
   // DeepSeek solo entra en la cadena si la API key está configurada
   const hasDeepSeek = !!process.env.DEEPSEEK_API_KEY;
 
   if (primary === "gemini") {
-    return [gemini, cerebras, ...(hasDeepSeek ? [deepseek] : []), openrouter, groq];
+    return [
+      ...(tieneOmniRouteConfigurado() ? [omniroute] : []),
+      gemini, cerebras, ...(hasDeepSeek ? [deepseek] : []), openrouter, groq,
+    ];
   }
-  return [cerebras, ...(hasDeepSeek ? [deepseek] : []), gemini, openrouter, groq];
+  return [
+    ...(tieneOmniRouteConfigurado() ? [omniroute] : []),
+    cerebras, ...(hasDeepSeek ? [deepseek] : []), gemini, openrouter, groq,
+  ];
 }
 
 /**

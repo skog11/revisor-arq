@@ -1,5 +1,11 @@
 /**
- * middleware.ts
+ * proxy.ts
+ * (Antes middleware.ts — Next.js 16 renombró el archivo y la función;
+ *  ver https://nextjs.org/docs/messages/middleware-to-proxy. Mismo
+ *  comportamiento, ahora corre en runtime Node.js por defecto en vez
+ *  de Edge, lo cual conviene porque este archivo ya hacía llamadas de
+ *  red a Supabase y verificación JWT.)
+ *
  * 1. Refresca el token de sesión de Supabase en cada request.
  * 2. Protege rutas de administrador (/normativa, /corpus, /api/corpus, /admin)
  *    verificando un JWT firmado en la cookie admin_session.
@@ -11,7 +17,7 @@ import { verifyAdminJwt } from "@/lib/admin-jwt";
 
 const ADMIN_PROTECTED = ["/normativa", "/corpus", "/api/corpus", "/admin"];
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // ── 1. Protección de rutas admin ────────────────────────────────────────────

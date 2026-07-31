@@ -2,11 +2,19 @@
  * deepseek.ts — Cliente DeepSeek (API OpenAI-compatible)
  *
  * Primer fallback en la cadena: Gemini → DeepSeek → Cerebras → OpenRouter → Groq
- * Modelo: deepseek-chat (DeepSeek-V3) — calidad comparable a Gemini Flash, muy bajo costo.
+ * Modelo: deepseek-v4-flash — el más barato de los dos que acepta la API hoy.
  * Registrarse en https://platform.deepseek.com para obtener API key.
+ *
+ * ⚠️ Es el único proveedor de pago de la cadena. Si se quiere respetar a
+ *    rajatabla la política de solo proveedores gratuitos, basta con no
+ *    definir DEEPSEEK_API_KEY: la cadena lo salta solo.
+ *
+ *    2026-07-25 — "deepseek-chat" dejó de ser un nombre válido y la API
+ *    respondía 400 en cada llamada. Los nombres vigentes son
+ *    deepseek-v4-pro y deepseek-v4-flash.
  */
 
-export const MODEL_DEEPSEEK = "deepseek-chat";
+export const MODEL_DEEPSEEK = "deepseek-v4-flash";
 
 function getApiKey(): string {
   const key = process.env.DEEPSEEK_API_KEY;

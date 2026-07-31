@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { X } from "lucide-react";
 
@@ -10,9 +11,16 @@ const STORAGE_KEY = "ra-cookie-consent";
  * Banner de cookies — aparece en la primera visita.
  * Persiste la decisión en localStorage.
  * Acepta o rechaza cookies de analítica (las esenciales siempre activas).
+ *
+ * En /chat va pegado arriba en vez de abajo: la barra de entrada del chat
+ * (textarea + botón enviar) también vive pegada al fondo de la pantalla,
+ * y el banner flotante (z-50) le tapaba el botón mientras el usuario no
+ * hubiera aceptado o rechazado — el clic no llegaba a pasar por debajo.
  */
 export function CookieBanner() {
   const [visible, setVisible] = useState(false);
+  const pathname = usePathname();
+  const enChat = pathname === "/chat";
 
   useEffect(() => {
     try {
@@ -41,7 +49,14 @@ export function CookieBanner() {
       role="dialog"
       aria-label="Aviso de cookies"
       aria-live="polite"
-      className="fixed bottom-4 left-4 right-4 z-50 mx-auto max-w-xl rounded-2xl px-5 py-4 shadow-lg sm:left-auto sm:right-6 sm:max-w-sm"
+      className={
+        // En /chat el banner va arriba (top-20, debajo del header sticky de
+        // ~57px) en vez de abajo: el header y el banner comparten z-50 y el
+        // banner se pinta después en el DOM, así que "abajo" tapaba el botón
+        // de enviar y "arriba pegado" habría tapado la barra de navegación.
+        (enChat ? "fixed top-20 left-4 right-4 z-50 mx-auto max-w-xl rounded-2xl px-5 py-4 shadow-lg sm:left-auto sm:right-6 sm:max-w-sm"
+                : "fixed top-20 left-4 right-4 z-50 mx-auto max-w-xl rounded-2xl px-5 py-4 shadow-lg sm:top-auto sm:bottom-4 sm:left-auto sm:right-6 sm:max-w-sm")
+      }
       style={{
         background: "var(--paper-2)",
         border: "1px solid var(--rule)",
