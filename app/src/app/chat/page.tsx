@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
 type ModoRespuesta = "arquitecto" | "abogado" | "profundo";
-type EtapaCarga = "clasificando" | "recuperando" | "generando";
+type EtapaCarga = "clasificando" | "recuperando" | "generando" | "verificando";
 
 // ─── Configuración de modos ─────────────────────────────────────────────────
 // Iteración 2: modo colors apuntan a variables CSS muted (cálidas en dark,
@@ -352,6 +352,7 @@ export default function ChatPage() {
     clasificando: { label: "Clasificando consulta…",         Icon: ScanSearch },
     recuperando:  { label: "Recuperando normativa relevante…", Icon: Database  },
     generando:    { label: "Generando respuesta…",            Icon: Sparkles  },
+    verificando:  { label: "Verificando citas y fuentes…",    Icon: BookOpen  },
   };
 
   const limpiarChat = useCallback(() => {

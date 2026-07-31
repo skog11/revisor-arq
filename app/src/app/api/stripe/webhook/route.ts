@@ -13,9 +13,6 @@ import { getStripe } from "@/lib/stripe";
 import { getSupabaseServiceClient } from "@/lib/supabase";
 import type Stripe from "stripe";
 
-// Necesario para leer el body raw sin que Next.js lo parsee
-export const config = { api: { bodyParser: false } };
-
 export async function POST(req: NextRequest) {
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
   if (!webhookSecret) {

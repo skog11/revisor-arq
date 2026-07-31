@@ -31,6 +31,9 @@ const C = {
   azul:       "#1a2e4a",
   azulMedio:  "#2c4a6e",
   azulSuave:  "#e8f0f8",
+  cobre:      "#b8864b",
+  cobreSuave: "#f5ecdf",
+  tintaSuave: "#617087",
   grisTexto:  "#2d2d2d",
   grisCelda:  "#f5f5f5",
   grisBorde:  "#d0d0d0",
@@ -51,6 +54,13 @@ const S = StyleSheet.create({
     paddingBottom: 52,
     paddingHorizontal: 52,
     lineHeight: 1.45,
+  },
+  indicePage: {
+    fontFamily: "Helvetica",
+    color: C.grisTexto,
+    paddingTop: 56,
+    paddingBottom: 52,
+    paddingHorizontal: 52,
   },
 
   // ── Portada ──
@@ -87,6 +97,12 @@ const S = StyleSheet.create({
     height: 1,
     backgroundColor: "rgba(255,255,255,0.20)",
     marginBottom: 28,
+  },
+  portadaMarca: {
+    width: 42,
+    height: 4,
+    backgroundColor: C.cobre,
+    marginBottom: 22,
   },
   portadaMetaLabel: {
     fontSize: 8,
@@ -162,7 +178,7 @@ const S = StyleSheet.create({
     marginBottom: 8,
     paddingBottom: 4,
     borderBottomWidth: 1,
-    borderBottomColor: C.azulSuave,
+    borderBottomColor: C.cobre,
   },
 
   // ── Texto ──
@@ -219,6 +235,55 @@ const S = StyleSheet.create({
     borderTopWidth: 0.5,
     borderTopColor: C.grisBorde,
   },
+  controlWrapper: {
+    flexDirection: "row",
+    backgroundColor: C.azulSuave,
+    borderLeftWidth: 3,
+    borderLeftColor: C.cobre,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    marginBottom: 18,
+  },
+  controlItem: {
+    flex: 1,
+    paddingRight: 8,
+  },
+  controlLabel: {
+    fontSize: 6.5,
+    color: C.tintaSuave,
+    letterSpacing: 0.8,
+    marginBottom: 3,
+  },
+  controlValor: {
+    fontSize: 8.5,
+    color: C.azul,
+    fontFamily: "Helvetica-Bold",
+  },
+  indiceTitulo: {
+    fontSize: 19,
+    fontFamily: "Helvetica-Bold",
+    color: C.azul,
+    marginBottom: 6,
+  },
+  indiceSubtitulo: {
+    fontSize: 9,
+    color: C.tintaSuave,
+    marginBottom: 24,
+  },
+  indiceFila: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    borderBottomWidth: 0.5,
+    borderBottomColor: C.grisBorde,
+    paddingVertical: 8,
+  },
+  indiceNumero: {
+    width: 24,
+    color: C.cobre,
+    fontSize: 9,
+    fontFamily: "Helvetica-Bold",
+  },
+  indiceTexto: { flex: 1, fontSize: 10, color: C.azul },
   tablaCeldaPar: {
     flex: 1,
     padding: "4 8",
@@ -368,7 +433,7 @@ function RenderTabla({ lineasTabla }: { lineasTabla: string[] }) {
         const celdas = parsearCeldasTabla(fila);
         const esImpar = ri % 2 === 1;
         return (
-          <View key={ri} style={S.tablaFila}>
+          <View key={ri} style={S.tablaFila} wrap={false}>
             {celdas.map((celda, ci) => (
               <Text key={ci} style={esImpar ? S.tablaCeldaImpar : S.tablaCeldaPar}>
                 {celda}
@@ -517,7 +582,8 @@ function Portada({ datos, numInforme, fechaFormateada }: {
   numInforme: string;
   fechaFormateada: string;
 }) {
-  const titulo = datos.tituloConsulta.slice(0, 80) + (datos.tituloConsulta.length > 80 ? "…" : "");
+  const tituloConsulta = datos.tituloConsulta || "Consulta normativa";
+  const titulo = tituloConsulta.slice(0, 80) + (tituloConsulta.length > 80 ? "…" : "");
 
   return (
     <Page size="A4" style={S.portadaPage}>
@@ -526,6 +592,7 @@ function Portada({ datos, numInforme, fechaFormateada }: {
 
       {/* Bloque central */}
       <View>
+        <View style={S.portadaMarca} />
         <Text style={S.portadaTituloBig}>{titulo}</Text>
         <Text style={S.portadaSubtitulo}>INFORME TÉCNICO NORMATIVO</Text>
 
@@ -572,6 +639,32 @@ function Portada({ datos, numInforme, fechaFormateada }: {
   );
 }
 
+function Indice({ datos, numInforme }: { datos: DatosInforme; numInforme: string }) {
+  const titulos = (datos.contenido || "")
+    .split("\n")
+    .filter((linea) => /^##\s+/.test(linea))
+    .map((linea) => limpiarInline(linea.replace(/^##\s+/, "").trim()))
+    .slice(0, 12);
+
+  return (
+    <Page size="A4" style={S.indicePage}>
+      <HeaderPagina numInforme={numInforme} />
+      <FooterPagina />
+      <Text style={S.indiceTitulo}>Estructura del informe</Text>
+      <Text style={S.indiceSubtitulo}>Documento técnico de consulta normativa y trazabilidad de antecedentes.</Text>
+      {titulos.length > 0 ? titulos.map((titulo, indice) => (
+        <View key={`${titulo}-${indice}`} style={S.indiceFila} wrap={false}>
+          <Text style={S.indiceNumero}>{String(indice + 1).padStart(2, "0")}</Text>
+          <Text style={S.indiceTexto}>{titulo}</Text>
+        </View>
+      )) : <Text style={S.indiceSubtitulo}>El detalle de análisis se presenta en las páginas siguientes.</Text>}
+      <View style={[S.avisoWrapper, { marginTop: 28, backgroundColor: C.cobreSuave, borderColor: C.cobre }]}>
+        <Text style={S.avisoTexto}>Las conclusiones de este documento deben contrastarse con el texto vigente y los antecedentes específicos del proyecto antes de cualquier presentación formal.</Text>
+      </View>
+    </Page>
+  );
+}
+
 // ─── Página de cuerpo ─────────────────────────────────────────────────────────
 
 function PaginaCuerpo({ datos, numInforme }: {
@@ -589,15 +682,29 @@ function PaginaCuerpo({ datos, numInforme }: {
           Informe Técnico Normativo
         </Text>
         <Text style={{ fontSize: 9, color: "#888" }}>
-          {datos.tituloConsulta.slice(0, 100)}
+          {(datos.tituloConsulta || "Consulta normativa").slice(0, 100)}
         </Text>
         <View style={{ height: 0.5, backgroundColor: C.grisBorde, marginTop: 10 }} />
       </View>
+      <View style={S.controlWrapper} wrap={false}>
+        <View style={S.controlItem}>
+          <Text style={S.controlLabel}>TIPO DE DOCUMENTO</Text>
+          <Text style={S.controlValor}>Informe técnico normativo</Text>
+        </View>
+        <View style={S.controlItem}>
+          <Text style={S.controlLabel}>EMISOR</Text>
+          <Text style={S.controlValor}>{datos.nombreProfesional}</Text>
+        </View>
+        <View style={S.controlItem}>
+          <Text style={S.controlLabel}>ESTADO</Text>
+          <Text style={S.controlValor}>Consulta orientativa</Text>
+        </View>
+      </View>
 
-      <RenderContenido contenido={datos.contenido} />
+      <RenderContenido contenido={datos.contenido || "No se recibió contenido para este informe."} />
 
       {/* Sección de firmas */}
-      <View style={S.firmasWrapper}>
+      <View style={S.firmasWrapper} wrap={false}>
         <View style={S.firmaBloque}>
           <Text style={S.firmaNombre}>{datos.nombreProfesional}</Text>
           <Text style={S.firmaCargo}>Firma del Profesional Evaluador</Text>
@@ -639,12 +746,13 @@ export function InformePDFDoc({ datos }: { datos: DatosInforme }) {
 
   return (
     <Document
-      title={`Informe REVISOR ARQ — ${datos.tituloConsulta.slice(0, 60)}`}
+      title={`Informe REVISOR ARQ — ${(datos.tituloConsulta || "Consulta normativa").slice(0, 60)}`}
       author={datos.nombreProfesional}
       subject="Informe Técnico Normativo — REVISOR ARQ"
       creator="REVISOR ARQ"
     >
       <Portada datos={datos} numInforme={numInforme} fechaFormateada={fechaConCiudad} />
+      <Indice datos={datos} numInforme={numInforme} />
       <PaginaCuerpo datos={datos} numInforme={numInforme} />
     </Document>
   );
