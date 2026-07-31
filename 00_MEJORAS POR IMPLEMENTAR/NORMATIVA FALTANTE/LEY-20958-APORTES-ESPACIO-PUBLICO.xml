@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?><Norma xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" fechaPromulgacion="" xmlns="http://www.leychile.cl/esquemas" normaId="1095541" esTratado="no tratado" fechaVersion="2020-11-12" SchemaVersion="1.0" derogado="no derogado" xsi:schemaLocation="http://www.leychile.cl/esquemas EsquemaIntercambioNorma-v1-0.xsd">
+  <Identificador fechaPublicacion="2016-10-15">
+    <TiposNumeros>
+      <TipoNumero>
+        <Tipo>Ley</Tipo>
+        <Numero>20958</Numero>
+      </TipoNumero>
+    </TiposNumeros>
+    <Organismos>
+      <Organismo>MINISTERIO DE VIVIENDA Y URBANISMO</Organismo>
+    </Organismos>
+  </Identificador>
+  <Metadatos>
+    <TituloNorma>ESTABLECE UN SISTEMA DE APORTES AL ESPACIO P&#218;BLICO</TituloNorma>
+    <Materias>
+      <Materia>Ley General de Urbanismo y Construcci&#243;n</Materia>
+      <Materia>Sistema de Aportes al Espacio P&#250;blico</Materia>
+    </Materias>
+    <VIGENCIAS_VERSION_NORMA>
+      <VIGENCIA_VERSION_NORMA tipo_version="3" inicio_vigencia="2016-10-15"/>
+    </VIGENCIAS_VERSION_NORMA>
+    <NumeroFuente>41584</NumeroFuente>
+    <Resumenes>
+      <Resumen idioma="Espa&#241;ol">La presente ley se funda en la necesidad de que todo proyecto de construcci&#243;n contribuya en la conformaci&#243;n de ciudades equilibradas.
+En tal sentido, se establece una serie de modificaciones en la Ley General de Urbanismo y Construcciones, y otras normas complementarias, para establecer un sistema de aportes al espacio p&#250;blico.
+Destaca, la redacci&#243;n del texto del nuevo art&#237;culo 168 del decreto con fuerza de ley N&#176; 458, de 1975, Ley General de   Urbanismo y Construcciones, que se&#241;ala los principios relacionados con la mitigaci&#243;n y aportes al espacio p&#250;blico, frente a proyectos de construcci&#243;n:
+a) Universalidad: todos los proyectos inmobiliarios p&#250;blicos y privados deber&#225;n mitigar y/o aportar conforme a las reglas del presente T&#237;tulo.
+b) Proporcionalidad: las mitigaciones deber&#225;n ser equivalentes a las externalidades efectivamente generadas por el proyecto, y no se har&#225;n cargo de los d&#233;ficits hist&#243;ricos de infraestructura. Los aportes se ajustar&#225;n a la densidad y al destino del proyecto.
+c) Predictibilidad: las mitigaciones y aportes se calcular&#225;n seg&#250;n m&#233;todos objetivos y en base a procedimientos y plazos predefinidos y estandarizados. La Administraci&#243;n velar&#225; porque puedan conocerse en forma oportuna las obras y aportes que se exigir&#225;n.
+
+</Resumen>
+    </Resumenes>
+    <CategoriasNorma>
+      <CategoriaNorma>Construcci&#243;n y aporte al espacio p&#250;blico</CategoriaNorma>
+    </CategoriasNorma>
+    <Observaciones>
+      <Observacion>CVE 1123890</Observacion>
+    </Observaciones>
+    <Fuente>Diario Oficial</Fuente>
+  </Metadatos>
+  <Encabezado fechaVersion="2020-11-12" derogado="no derogado">
+    <Texto>
+LEY N&#218;M. 20.958
+
+ESTABLECE UN SISTEMA DE APORTES AL ESPACIO P&#218;BLICO
+
+     Tengo a honra comunicar a V.E. que el Congreso Nacional ha dado su aprobaci&#243;n al siguiente
+
+     Proyecto de ley:</Texto>
+  </Encabezado>
+  <Url>http://www.leychile.cl/Navegar?idNorma=1095541</Url>
+</Norma>

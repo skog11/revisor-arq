@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?><Norma xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" fechaPromulgacion="" xmlns="http://www.leychile.cl/esquemas" normaId="1088802" esTratado="no tratado" fechaVersion="2022-08-17" SchemaVersion="1.0" derogado="no derogado" xsi:schemaLocation="http://www.leychile.cl/esquemas EsquemaIntercambioNorma-v1-0.xsd">
+  <Identificador fechaPublicacion="2016-03-29">
+    <TiposNumeros>
+      <TipoNumero>
+        <Tipo>Decreto</Tipo>
+        <Numero>43</Numero>
+      </TipoNumero>
+    </TiposNumeros>
+    <Organismos>
+      <Organismo>MINISTERIO DE SALUD</Organismo>
+    </Organismos>
+  </Identificador>
+  <Metadatos>
+    <TituloNorma>APRUEBA EL REGLAMENTO DE ALMACENAMIENTO DE SUSTANCIAS PELIGROSAS</TituloNorma>
+    
+    <VIGENCIAS_VERSION_NORMA>
+      <VIGENCIA_VERSION_NORMA tipo_version="3" inicio_vigencia="2016-09-25"/>
+    </VIGENCIAS_VERSION_NORMA>
+    <NumeroFuente>41418</NumeroFuente>
+    <TerminosLibres>
+      <TerminoLibre/>
+    </TerminosLibres>
+    <CategoriasNorma>
+      <CategoriaNorma/>
+    </CategoriasNorma>
+    <NombreUsoComun>
+      <NombreUsoComun>&#160;</NombreUsoComun>
+    </NombreUsoComun>
+    <Observaciones>
+      <Observacion>IdDO 1009147</Observacion>
+    </Observaciones>
+    <Fuente>Diario Oficial</Fuente>
+  </Metadatos>
+  <Encabezado fechaVersion="2022-08-17" derogado="no derogado">
+    <Texto>
+APRUEBA EL REGLAMENTO DE ALMACENAMIENTO DE SUSTANCIAS PELIGROSAS
+ 
+     N&#250;m. 43.- Santiago, 27 de julio de 2015.
+ 
+     Visto:
+ 
+     Lo dispuesto en los art&#237;culos 1&#176;, 2&#176;, 3&#176;, 90, 91 y en el Libro D&#233;cimo del C&#243;digo Sanitario, aprobado por decreto con fuerza de ley N&#176; 725, de 1967 del Ministerio de Salud; en los art&#237;culos 4&#176; y 7&#176; del decreto con fuerza de ley N&#176; 1 de 2005, del Ministerio de Salud y las facultades que me confiere el art&#237;culo 32 N&#176; 6 de la Constituci&#243;n Pol&#237;tica de la Rep&#250;blica; y
+ 
+     Considerando:
+ 
+     La necesidad de actualizar las normas que regulan las condiciones b&#225;sicas de seguridad en que deben mantenerse las sustancias peligrosas, de manera de evitar riesgo en la salud de la poblaci&#243;n,
+ 
+     Decreto:
+ 
+     Apru&#233;base el siguiente Reglamento de Almacenamiento de Sustancias Peligrosas:</Texto>
+  </Encabezado>
+  <Url>http://www.leychile.cl/Navegar?idNorma=1088802</Url>
+</Norma>

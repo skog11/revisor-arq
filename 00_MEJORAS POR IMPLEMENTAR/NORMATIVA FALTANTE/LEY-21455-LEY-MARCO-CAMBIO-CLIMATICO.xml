@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><Norma xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" fechaPromulgacion="" xmlns="http://www.leychile.cl/esquemas" normaId="1177286" esTratado="no tratado" fechaVersion="2025-07-11" SchemaVersion="1.0" derogado="no derogado" xsi:schemaLocation="http://www.leychile.cl/esquemas EsquemaIntercambioNorma-v1-0.xsd">
+  <Identificador fechaPublicacion="2022-06-13">
+    <TiposNumeros>
+      <TipoNumero>
+        <Tipo>Ley</Tipo>
+        <Numero>21455</Numero>
+      </TipoNumero>
+    </TiposNumeros>
+    <Organismos>
+      <Organismo>MINISTERIO DEL MEDIO AMBIENTE</Organismo>
+    </Organismos>
+  </Identificador>
+  <Metadatos>
+    <TituloNorma>LEY MARCO DE CAMBIO CLIM&#193;TICO</TituloNorma>
+    <Materias>
+      <Materia>Cambio Clim&#225;tico</Materia>
+      <Materia>Medio Ambiente</Materia>
+      <Materia>Di&#243;xido de Carbono</Materia>
+      <Materia>Convenci&#243;n Marco de las Naciones Unidas sobre el Cambio Clim&#225;tico</Materia>
+      <Materia>Efecto Invernadero</Materia>
+      <Materia>Estrategia Clim&#225;tica</Materia>
+      <Materia>Acuerdo de Par&#237;s</Materia>
+      <Materia>Ministerio de Medio Ambiente</Materia>
+      <Materia>Reporte de Acci&#243;n Nacional de Cambio Clim&#225;tico (RANCC)</Materia>
+      <Materia> Consejo Nacional para la Sustentabilidad y el Cambio Clim&#225;tico</Materia>
+      <Materia>Sistema Nacional de Acceso a la Informaci&#243;n y Participaci&#243;n Ciudadana sobre Cambio Clim&#225;tico</Materia>
+      <Materia>Estrategia Financiera de Cambio Clim&#225;tico</Materia>
+      <Materia>Fondo de Protecci&#243;n Ambiental</Materia>
+      <Materia>Sistema de Evaluaci&#243;n de Impacto Ambiental</Materia>
+      <Materia>Registro de Emisi&#243;n y Transferencia de Contaminantes (RETC)</Materia>
+    </Materias>
+    <VIGENCIAS_VERSION_NORMA>
+      <VIGENCIA_VERSION_NORMA tipo_version="3" inicio_vigencia="2022-06-13"/>
+    </VIGENCIAS_VERSION_NORMA>
+    <NumeroFuente>43277</NumeroFuente>
+    <Resumenes>
+      <Resumen idioma="Espa&#241;ol">      La presente ley, establece un marco jur&#237;dico para hacer frente a los desaf&#237;os que presenta el cambio clim&#225;tico, con la finalidad de alcanzar y mantener la neutralidad de emisiones de gases de efecto invernadero al a&#241;o 2050.
+     Para alcanzar dicha meta de mitigaci&#243;n, la ley establece instrumentos de gesti&#243;n a nivel nacional, regional y local; determina la institucionalidad ambiental para el cambio clim&#225;tico, asignando funciones y responsabilidades espec&#237;ficas a cada uno de los &#243;rganos nacionales, regionales y colaboradores que la componen, siendo el Ministerio del Medio Ambiente la autoridad nacional en esta materia.
+     Adicionalmente, crea un Sistema Nacional de Acceso a la Informaci&#243;n y Participaci&#243;n Ciudadana sobre Cambio Clim&#225;tico que ser&#225; administrado y coordinado por el Ministerio del Medio Ambiente, y establece lineamientos y mecanismos financieros para enfrentar el cambio clim&#225;tico.
+     Por su parte, se indica que el Ministerio de Obras P&#250;blicas deber&#225; elaborar los Planes Estrat&#233;gicos de Recursos H&#237;dricos en Cuencas, con el fin de contribuir con la gesti&#243;n h&#237;drica, identificar las brechas h&#237;dricas de agua superficial y subterr&#225;nea, establecer el balance h&#237;drico y sus proyecciones. Cada cuenca del pa&#237;s deber&#225; contar con un Plan Estrat&#233;gico de Recursos H&#237;dricos, el cual ser&#225; p&#250;blico, deber&#225; revisarse cada cinco a&#241;os y actualizarse cada diez.
+     Finalmente, la ley efect&#250;a una serie de modificaciones a distintos cuerpos legales con el objeto de adecuar el ordenamiento jur&#237;dico vigente a esta nueva normativa.</Resumen>
+    </Resumenes>
+    <CategoriasNorma>
+      <CategoriaNorma>Ley Marco de Cambio Clim&#225;tico</CategoriaNorma>
+    </CategoriasNorma>
+    <Observaciones>
+      <Observacion>CVE 2142067</Observacion>
+    </Observaciones>
+    <Fuente>Diario Oficial</Fuente>
+  </Metadatos>
+  <Encabezado fechaVersion="2025-07-11" derogado="no derogado">
+    <Texto>LEY N&#218;M. 21.455
+      
+LEY MARCO DE CAMBIO CLIM&#193;TICO
+      
+     Teniendo presente que el H. Congreso Nacional ha dado su aprobaci&#243;n al siguiente
+      
+     Proyecto de ley:</Texto>
+  </Encabezado>
+  <Url>http://www.leychile.cl/Navegar?idNorma=1177286</Url>
+</Norma>

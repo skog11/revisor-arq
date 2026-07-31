@@ -1,7 +1,7 @@
-# PROGRESO — REVISOR ARQ
+﻿# PROGRESO — REVISOR ARQ
 
 > Documento vivo para continuidad entre sesiones de IA.
-> Última actualización: **2026-07-09**.
+> Última actualización: **2026-07-30**.
 > Leer junto con `PLAN-IMPLEMENTACION.md`, `CLAUDE.md` y `revision-critica-plan-evolucion.md`.
 
 ---
@@ -11,9 +11,18 @@
 **REVISOR ARQ** es una aplicación web de consulta normativa RAG para arquitectos y abogados en Chile. Permite hacer preguntas en lenguaje natural sobre normativa de urbanismo y construcción y recibe respuestas con citas verificables que referencian artículo y texto literal.
 
 **URL de producción**: https://revisor-arq.vercel.app
-**Repositorio**: `C:\00_CLAUDE CODE\REVISOR-ARQ\` (Git branch: `master`)
-**App Next.js**: `C:\00_CLAUDE CODE\REVISOR-ARQ\app\`
+**Repositorio**: `C:\00_CLAUDE CODE\00_REVISOR ARQ\` (Git branch: `master`)
+**App Next.js**: `C:\00_CLAUDE CODE\00_REVISOR ARQ\app\`
 **Último commit**: `8679134` — feat: features v2 — PWA, Playwright E2E, parse-doc, fix builds
+
+### Actualización operativa — 2026-07-30
+
+- **Corpus de producción actualizado y comprobado:** LGUC DFL-458 (332 chunks), OGUC DS-47 (1.040 chunks) y DDU 541, 542, 544, 545, 546, 547 y 548 (903 chunks en conjunto) quedaron vigentes con fecha de actualización 2026-07-30.
+- **Protección de respuestas implementada localmente:** el pipeline ahora retiene la respuesta hasta validar que cada artículo citado exista en las fuentes recuperadas y que toda cita textual provenga literalmente de un fragmento. Si falla, responde con una advertencia verificable en vez de inventar una conclusión.
+- **Caché preparada para versionado:** se añadió `context_version` a `query_cache` y una RPC que impide reutilizar respuestas de un corpus o reglas distintas. La migración ya fue aplicada en Supabase; las cinco entradas antiguas quedan aisladas como `legacy`.
+- **Recuperación reforzada:** al citar un artículo, la búsqueda prioriza los fragmentos exactos de normas obligatorias antes de sintetizar y validar.
+- **Verificación realizada:** `npm test -- --run` (88/88) y `npm run build` finalizaron correctamente.
+- **Publicación pendiente:** el proyecto Vercel está enlazado, pero la credencial local de Vercel venció. Antes de desplegar, ejecutar `vercel login` en `app/`, configurar `CORPUS_RELEASE_ID`, `REGLAS_RELEASE_ID` y `PROMPT_RELEASE_ID` en producción y publicar. No se realizó ningún despliegue parcial.
 
 ---
 

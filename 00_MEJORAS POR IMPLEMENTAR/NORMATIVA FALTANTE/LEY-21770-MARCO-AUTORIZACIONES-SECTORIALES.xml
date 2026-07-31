@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><Norma xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" fechaPromulgacion="" xmlns="http://www.leychile.cl/esquemas" normaId="1216930" esTratado="no tratado" fechaVersion="2025-09-29" SchemaVersion="1.0" derogado="no derogado" xsi:schemaLocation="http://www.leychile.cl/esquemas EsquemaIntercambioNorma-v1-0.xsd">
+  <Identificador fechaPublicacion="2025-09-29">
+    <TiposNumeros>
+      <TipoNumero>
+        <Tipo>Ley</Tipo>
+        <Numero>21770</Numero>
+      </TipoNumero>
+    </TiposNumeros>
+    <Organismos>
+      <Organismo>MINISTERIO DE ECONOM&#205;A, FOMENTO Y TURISMO</Organismo>
+    </Organismos>
+  </Identificador>
+  <Metadatos>
+    <TituloNorma>ESTABLECE UNA LEY MARCO DE AUTORIZACIONES SECTORIALES E INTRODUCE MODIFICACIONES A LOS CUERPOS LEGALES QUE INDICA</TituloNorma>
+    
+    <VIGENCIAS_VERSION_NORMA>
+      <VIGENCIA_VERSION_NORMA tipo_version="3" inicio_vigencia="2025-09-29"/>
+    </VIGENCIAS_VERSION_NORMA>
+    <NumeroFuente>44261</NumeroFuente>
+    <Resumenes>
+      <Resumen idioma="Espa&#241;ol">     La presente ley crea un marco general para ordenar, estandarizar y coordinar c&#243;mo los &#243;rganos de la Administraci&#243;n del Estado tramitan las autorizaciones necesarias para habilitar proyectos y actividades reguladas, con la idea de dar certeza a titulares y ciudadan&#237;a, facilitar la inversi&#243;n y elevar la transparencia, siempre considerando el riesgo de cada actividad y aplicando criterios de no discriminaci&#243;n, necesidad, proporcionalidad y costo-efectividad. En simult&#225;neo, establece una institucionalidad y herramientas tecnol&#243;gicas para modernizar la tramitaci&#243;n y el control de estos permisos.
+     La ley define conceptos clave como autorizaci&#243;n sectorial, proyecto, titular y t&#233;cnicas habilitantes alternativas, y crea el &#8220;Sistema para la Regulaci&#243;n y Evaluaci&#243;n Sectorial&#8221;, que re&#250;ne pol&#237;ticas, instituciones y normas para asegurar la correcta traducci&#243;n y mejora continua de la regulaci&#243;n. Entre las t&#233;cnicas habilitantes alternativas se expl&#237;citan el aviso y la declaraci&#243;n jurada: instrumentos que permiten iniciar actividades sin esperar un acto aprobatorio previo, bajo responsabilidad del titular y con posterior fiscalizaci&#243;n.
+     Clasifica las autorizaciones por tipolog&#237;as seg&#250;n su objeto, de administraci&#243;n o disposici&#243;n, de localizaci&#243;n, de proyecto, de funcionamiento, de profesional o servicio y otros, y en paralelo, ordena que los &#243;rganos sectoriales propongan y que la nueva Oficina determine la tipolog&#237;a aplicable a cada permiso mediante decreto, para alcanzar criterios homog&#233;neos en todo el pa&#237;s. Con ello se busca que tr&#225;mites similares se procesen de igual manera, evitando exigencias duplicadas o dispares.
+     Fija reglas m&#237;nimas de procedimiento para todas las autorizaciones: solicitudes digitales en formularios &#250;nicos, examen de admisibilidad formal cuando corresponde, pedidos de informaci&#243;n complementaria fundados y acotados, coordinaci&#243;n de informes entre servicios, y plazos m&#225;ximos para resolver que var&#237;an seg&#250;n la tipolog&#237;a del permiso. Si otro &#243;rgano no emite a tiempo un informe no vinculante, el servicio puede prescindir de &#233;l; y si el informe era vinculante, rigen reglas para presumirlo favorable o suspender fundadamente el c&#243;mputo. Tambi&#233;n reconoce el silencio administrativo, con efectos que pueden ser estimatorios o desestimatorios seg&#250;n el tipo de autorizaci&#243;n, y exige la notificaci&#243;n resoluci&#243;n a m&#225;s tardar al d&#237;a siguiente de dictadas. Estas reglas van de la mano con la responsabilidad administrativa de los servicios y sanciones a jefaturas por incumplir plazos.
+     Para reforzar la capacidad t&#233;cnica y tiempos de respuesta, permite que los &#243;rganos contraten, con l&#237;mites y bajo control p&#250;blico, profesionales o entidades t&#233;cnicas colaboradoras para tareas de apoyo como mediciones, verificaciones o certificaciones, y crear registros p&#250;blicos de esos colaboradores con requisitos de idoneidad, inhabilidades, fiscalizaci&#243;n y sanciones. La ley tipifica infracciones y fija multas, suspensiones o eliminaci&#243;n del registro, sin perjuicio de responsabilidades penales cuando haya falsedades en certificaciones o presentaciones. Adem&#225;s, exige reglamentos sectoriales para detallar funciones, requisitos y control de estos registros.
+     En institucionalidad, crea la Oficina de Autorizaciones Sectoriales e Inversi&#243;n, alojada en la Subsecretar&#237;a de Econom&#237;a, con funciones de coordinar a los &#243;rganos, monitorear tiempos y cumplimiento de reglas, proponer mejoras, administrar la plataforma digital &#250;nica, articular mesas regionales y apoyar iniciativas de inversi&#243;n. Junto a ello, establece un Comit&#233; de Autorizaciones Sectoriales e Inversi&#243;n, integrado por subsecretar&#237;as claves, que fija acciones de coordinaci&#243;n, seguimiento y medidas transversales, incluyendo una estrategia de modernizaci&#243;n. La Oficina act&#250;a como secretar&#237;a t&#233;cnica del Comit&#233; y puede sugerir metas de gesti&#243;n y estandarizaci&#243;n, sin invadir la evaluaci&#243;n t&#233;cnica propia de cada servicio.
+     Como columna tecnol&#243;gica, la ley crea el Sistema de Informaci&#243;n Unificado de Permisos Sectoriales (plataforma SUPER) para que toda la tramitaci&#243;n, notificaciones, certificados de silencio y publicidad activa se hagan en l&#237;nea, con interoperabilidad de expedientes entre servicios, trazabilidad por fecha y hora, formularios &#250;nicos, acceso p&#250;blico a informaci&#243;n no reservada y un canal reservado de denuncias para detectar cuellos de botella y malas pr&#225;cticas. La plataforma tendr&#225; reglamento y t&#233;rminos de uso, y la Oficina publicar&#225; informes peri&#243;dicos de desempe&#241;o para promover mejoras y eventuales medidas disciplinarias cuando se proceda.
+     La modernizaci&#243;n continua se convierte en obligaci&#243;n: al menos cada tres a&#241;os, los &#243;rganos deben diagnosticar sus permisos para simplificar, eliminar autorizaciones innecesarias, reemplazarlas por t&#233;cnicas alternativas cuando el riesgo lo permita y ajustar procedimientos a criterios de no discriminaci&#243;n, necesidad, proporcionalidad, evaluaci&#243;n de riesgo, costo-efectividad y simplicidad. La Oficina fija lineamientos, programa los diagn&#243;sticos y publica informes y recomendaciones; el Comit&#233; incorpora estas medidas a una estrategia de modernizaci&#243;n.
+     Como impulso a la inversi&#243;n, incorpora dos mecanismos. Primero, una tramitaci&#243;n &#8220;&#225;gil&#8221; para iniciativas estrat&#233;gicas que, tras un proceso anual de postulaci&#243;n y selecci&#243;n fundada, reduce a la mitad los plazos m&#225;ximos de sus autorizaciones sectoriales, con seguimiento de la Oficina y equilibrio regional; en municipalidades se habilita la solicitud de tramitaci&#243;n de urgencia. Segundo, crea un r&#233;gimen de estabilidad regulatoria para iniciativas con Resoluci&#243;n de Calificaci&#243;n Ambiental favorable, de modo que las reglas t&#233;cnicas aplicables a sus permisos no cambien durante la tramitaci&#243;n; y, si la evaluaci&#243;n ambiental a&#250;n est&#225; en curso, posibilita adherirse al r&#233;gimen con efectos condicionados a la RCA favorable. Todo ello se detalla mediante reglamento.
+     Finalmente, la ley introduce m&#250;ltiples adecuaciones en normas sectoriales para procedimientos alineales, metas de gesti&#243;n y figuras de apoyo t&#233;cnico con este nuevo marco, e incluye disposiciones transitorias sobre vigencia, elaboraci&#243;n de reglamentos y plazos para clasificar permisos por tipolog&#237;a, poner en marcha la Oficina y habilitar la plataforma digital. Entre otras, modifica la Ley de Delitos Econ&#243;micos para incorporar delitos asociados a falsedad en declaraciones y certificaciones, y ajusta leyes de sectores como salud, medio ambiente, agricultura, obras p&#250;blicas, urbanismo y otros para permitir registros de colaboradores t&#233;cnicos y aplicar reglas de silencio administrativo donde corresponda. Varias de estas medidas tienen vigencias diferentes y mandatos reglamentarios con plazos espec&#237;ficos.
+     Con todo, la Ley instala un est&#225;ndar procesal com&#250;n, una institucionalidad de coordinaci&#243;n y una plataforma &#250;nica para que los permisos sectoriales sean m&#225;s previsibles, proporcionales al riesgo y oportunos, al mismo tiempo que resguarda los objetos de protecci&#243;n de cada sector y busca destrabar inversi&#243;n con mecanismos espec&#237;ficos de priorizaci&#243;n y estabilidad.</Resumen>
+    </Resumenes>
+    <CategoriasNorma>
+      <CategoriaNorma>Ley de permisos sectoriales</CategoriaNorma>
+    </CategoriasNorma>
+    <Observaciones>
+      <Observacion>CVE 2704872</Observacion>
+    </Observaciones>
+    <Fuente>Diario Oficial</Fuente>
+  </Metadatos>
+  <Encabezado fechaVersion="2025-09-29" derogado="no derogado">
+    <Texto>LEY N&#218;M. 21.770
+
+ESTABLECE UNA LEY MARCO DE AUTORIZACIONES SECTORIALES E INTRODUCE MODIFICACIONES A LOS CUERPOS LEGALES QUE INDICA
+
+     Teniendo presente que el H. Congreso Nacional ha dado su aprobaci&#243;n al siguiente 
+
+     Proyecto de ley:
+
+     "LEY MARCO DE AUTORIZACIONES SECTORIALES
+     </Texto>
+  </Encabezado>
+  <Url>http://www.leychile.cl/Navegar?idNorma=1216930</Url>
+</Norma>
