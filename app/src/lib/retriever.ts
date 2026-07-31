@@ -33,7 +33,14 @@ function indiceJerarquia(jerarquia: string | null): number {
 
 // ─── Tipos de normas de alta jerarquía (Capa 1) ───────────────────────────────
 
-const TIPOS_ALTA_JERARQUIA = ["LGUC", "OGUC", "Ley", "DFL", "DL"];
+// OJO: "Ley" y "LEY" son dos valores distintos para el filtro `tipo = ANY(...)`
+// de match_chunks — la comparación es sensible a mayúsculas. 26 de las 27 leyes
+// del corpus están guardadas como tipo="LEY" (todo mayúscula); solo 1 quedó
+// como "Ley". Antes del 2026-07-26 esta lista solo traía "Ley", así que la
+// capa de alta jerarquía excluía silenciosamente casi todas las leyes del
+// corpus — incluida la Ley 19.300 completa. Se detectó al revisar por qué
+// una pregunta sobre Ley 19.300 nunca traía sus propios artículos como fuente.
+const TIPOS_ALTA_JERARQUIA = ["LGUC", "OGUC", "LEY", "Ley", "DFL", "DL"];
 
 // ─── Parámetros de recuperación ──────────────────────────────────────────────
 
@@ -157,7 +164,8 @@ async function buscarPorFTS(
     // websearch permite frases entre comillas y operadores AND/OR naturales
     const { data, error } = await sb
       .from("chunks")
-      .select("id, texto, metadatos, normas(tipo, numero, titulo, jerarquia_norm, dominio, etapas_proyecto, url_fuente, organo_emisor)")
+      .select("id, texto, metadatos, normas!inner(tipo, numero, titulo, jerarquia_norm, dominio, etapas_proyecto, url_fuente, organo_emisor, vigente)")
+      .eq("normas.vigente", true)
       .textSearch("texto", pregunta, { type: "websearch", config: "spanish" })
       .limit(count);
 
@@ -190,6 +198,61 @@ async function buscarPorFTS(
   }
 }
 
+/**
+ * When a question names both an article and a norm, retrieve exact evidence
+ * directly instead of relying exclusively on semantic ranking.
+ */
+async function recuperarReferenciaExacta(
+  sb: ReturnType<typeof getSupabaseServiceClient>,
+  pregunta: string
+): Promise<ChunkRecuperado[]> {
+  const articulo = pregunta.match(/\b(?:art[íi]culo|art\.)\s*([\d.]+)\s*[°º]?/i)?.[1]?.replace(/\.+$/, "");
+  const norma = pregunta.match(/\b(DS|LEY|DFL|DL)\s*(?:N[°º]\s*)?(\d+(?:\.\d+)*)/i);
+  if (!articulo || !norma) return [];
+
+  const { data: normas, error: normaError } = await sb
+    .from("normas")
+    .select("id, tipo, numero, titulo, url_fuente, jerarquia_norm, dominio, etapas_proyecto, organo_emisor")
+    .eq("tipo", norma[1].toUpperCase())
+    .eq("numero", norma[2].replace(/\./g, ""))
+    .eq("vigente", true)
+    .limit(4);
+  if (normaError || !normas?.length) return [];
+
+  const resultado: ChunkRecuperado[] = [];
+  for (const normaActual of normas) {
+    const respuestaChunks = await sb
+      .from("chunks")
+      .select("id, texto, metadatos")
+      .eq("norma_id", normaActual.id)
+      .in("metadatos->>articulo", [articulo, articulo + "."])
+      .limit(6);
+    if (respuestaChunks.error) continue;
+    const chunks = (respuestaChunks.data ?? []) as Array<{ id: string; texto: string; metadatos: unknown }>;
+    for (const chunk of chunks) {
+      const meta = (chunk.metadatos as Record<string, unknown>) ?? {};
+      if (String(meta.articulo ?? "").replace(/\.+$/, "") !== articulo) continue;
+      resultado.push({
+        id: chunk.id as string, texto: chunk.texto as string, similarity: 1.1,
+        referenciaExacta: true,
+        norma_tipo: normaActual.tipo as string, norma_numero: normaActual.numero as string,
+        norma_titulo: normaActual.titulo as string, articulo: (meta.articulo as string) ?? null,
+        jerarquia: (meta.jerarquia as string) ?? null, url_fuente: normaActual.url_fuente as string,
+        fecha_vigencia_desde: null, norma_dominio: (normaActual.dominio as string) ?? null,
+        norma_organo_emisor: (normaActual.organo_emisor as string) ?? null,
+        norma_jerarquia_norm: (normaActual.jerarquia_norm as string) ?? null,
+        norma_etapas_proyecto: Array.isArray(normaActual.etapas_proyecto) ? normaActual.etapas_proyecto as string[] : [],
+      });
+    }
+  }
+  return resultado;
+}
+
+function anteponerExactos(exactos: ChunkRecuperado[], resto: ChunkRecuperado[]): ChunkRecuperado[] {
+  const ids = new Set(exactos.map((chunk) => chunk.id));
+  return [...exactos, ...resto.filter((chunk) => !ids.has(chunk.id))].slice(0, MAX_CHUNKS);
+}
+
 // ─── Función principal exportada ─────────────────────────────────────────────
 
 /**
@@ -211,6 +274,7 @@ export async function recuperarPorCapas(
 ): Promise<ChunkRecuperado[]> {
   // Instanciar cliente Supabase una sola vez para ambas capas
   const sb = getSupabaseServiceClient();
+  const exactos = await recuperarReferenciaExacta(sb, pregunta);
 
   // Generar embedding HyDE: promedio de [query original] + [texto normativo hipotético]
   // Si Voyage AI está caído (401/503/timeout) → fallback BM25 puro.
@@ -221,7 +285,7 @@ export async function recuperarPorCapas(
     const msg = err instanceof Error ? err.message : String(err);
     console.warn("[retriever] Voyage AI no disponible — activando fallback BM25:", msg);
     // Fallback: búsqueda full-text sin embeddings. Calidad inferior pero funcional.
-    return buscarPorFTS(sb, pregunta, MAX_CHUNKS);
+    return anteponerExactos(exactos, await buscarPorFTS(sb, pregunta, MAX_CHUNKS));
   }
 
   // Ampliar counts para tener más candidatos pre-rerank
@@ -264,7 +328,7 @@ export async function recuperarPorCapas(
   const vistos = new Set<string>();
   const candidatos: ChunkRecuperado[] = [];
 
-  for (const chunk of [...capa1, ...capa2, ...capa3]) {
+  for (const chunk of [...exactos, ...capa1, ...capa2, ...capa3]) {
     if (!vistos.has(chunk.id)) {
       vistos.add(chunk.id);
       candidatos.push(chunk);
@@ -272,7 +336,7 @@ export async function recuperarPorCapas(
     if (candidatos.length >= CANDIDATOS_RERANK) break;
   }
 
-  if (candidatos.length === 0) return [];
+  if (candidatos.length === 0) return exactos;
 
   // ── Reranking con voyage-rerank-2 ─────────────────────────────────────────
   // Falla silencioso: si rerank no está disponible (cuota, timeout),
@@ -282,12 +346,13 @@ export async function recuperarPorCapas(
     const resultados = await rerankDocuments(pregunta, documentos, MAX_CHUNKS);
 
     // Reconstruir array en el orden devuelto por rerank
-    return resultados.map((r) => ({
+    const rerankeados = resultados.map((r) => ({
       ...candidatos[r.index],
       // Sobrescribir similarity con el rerank score para que el UI
       // muestre la relevancia real (0-1 normalizado)
       similarity: Math.round(r.relevanceScore * 1000) / 1000,
     }));
+    return anteponerExactos(exactos, rerankeados);
   } catch (err) {
     console.warn("[retriever] Rerank Voyage fallido — ordenando por jerarquía:", err instanceof Error ? err.message : err);
     // Fallback: ordenar por jerarquía + similarity original
@@ -297,6 +362,6 @@ export async function recuperarPorCapas(
       if (jA !== jB) return jA - jB;
       return b.similarity - a.similarity;
     });
-    return candidatos.slice(0, MAX_CHUNKS);
+    return anteponerExactos(exactos, candidatos);
   }
 }

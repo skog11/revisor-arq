@@ -33,6 +33,8 @@ export interface ChunkRecuperado {
   norma_organo_emisor: string | null;
   norma_jerarquia_norm: string | null;
   norma_etapas_proyecto: string[];
+  /** Recuperado por una referencia explícita (norma + artículo) escrita por la persona usuaria. */
+  referenciaExacta?: boolean;
 }
 
 export interface ContextoRAG {

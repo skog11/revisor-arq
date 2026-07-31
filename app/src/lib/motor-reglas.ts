@@ -63,6 +63,16 @@ export const REGLAS_INICIALES: ReglaGatillo[] = [
       "explícita (p. ej. proyecto aún no recepcionado).",
   },
   {
+    id: "conjunto-armonico-definicion",
+    descripcion: "Definición y régimen base del conjunto armónico.",
+    cuando: { co_ocurrencia: ["conjunto armonico"], excepciones: [] },
+    forzar_normas: ["LGUC", "OGUC", "DDU-010"],
+    efecto: "boost",
+    mensaje_experto:
+      "Para definir conjunto armónico, prioriza la LGUC, la OGUC y las circulares interpretativas recuperadas. " +
+      "Distingue la definición, los requisitos de acogimiento y sus efectos urbanísticos. No cites artículos que no estén presentes en las fuentes obligatorias.",
+  },
+  {
     id: "loteo-rural-art55",
     descripcion:
       "Restricciones del Art. 55 LGUC: prohibición de subdividir o construir fuera de los límites urbanos sin autorización SEREMI MINVU y SAG.",
@@ -183,7 +193,9 @@ export const REGLAS_INICIALES: ReglaGatillo[] = [
     descripcion:
       "Proyectos que superan los umbrales del Art. 10 Ley 19.300 deben ingresar al SEIA antes del permiso de edificación.",
     cuando: {
-      co_ocurrencia: ["impacto ambiental", "permiso"],
+      // La mención directa a SEIA debe activar el control aunque la consulta no
+      // use la expresión completa “impacto ambiental” ni “permiso”.
+      co_ocurrencia: ["seia"],
       excepciones: ["ya tiene rca", "con rca", "rca aprobada"],
     },
     forzar_normas: ["LEY-19300", "CGR-23683-2017", "CGR-E39766-2020", "CGR-E126162-2021"],
@@ -249,6 +261,20 @@ export const REGLAS_INICIALES: ReglaGatillo[] = [
       "requieren acuerdo de la asamblea de copropietarios (con quórum según el tipo de obra). " +
       "El administrador por sí solo no tiene atribuciones para autorizar obras en bienes comunes. " +
       "La respuesta debe distinguir entre bienes exclusivos y bienes comunes.",
+  },
+  {
+    id: "administrador-bien-comun",
+    descripcion:
+      "El administrador no puede autorizar unilateralmente una obra en un bien común.",
+    cuando: {
+      co_ocurrencia: ["administrador", "común"],
+      excepciones: ["bien exclusivo", "propiedad exclusiva"],
+    },
+    forzar_normas: ["LEY-21442"],
+    efecto: "requerir_revision",
+    mensaje_experto:
+      "Una obra sobre un bien común requiere revisar el acuerdo de la asamblea de copropietarios y el quórum aplicable. " +
+      "El administrador no puede reemplazar ese acuerdo por una decisión unilateral.",
   },
 
   // ── Reglas — obras en suelo con restricciones especiales ───────────────────

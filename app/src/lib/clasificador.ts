@@ -33,7 +33,11 @@ export type DominioPrimario =
   | "vialidad"
   | "electricidad"
   | "defensa"
-  | "bienes_nacionales";
+  | "bienes_nacionales"
+  // Transversal: procedimiento administrativo, transparencia, organica
+  // municipal y regional, consulta indigena, tributaria. Normas que
+  // aplican a cualquier proyecto sin ser de una materia tecnica.
+  | "administrativo";
 
 export interface QueryClassificada {
   tipo_proyecto: TipoProyecto;
@@ -86,7 +90,12 @@ etapa (uno de):
 
 dominios_detectados (lista ordenada, el primero es el dominio principal, uno o más de):
   "urbanismo" | "construccion" | "accesibilidad" | "copropiedad" | "medioambiente" |
-  "patrimonio" | "salud" | "aguas" | "vialidad" | "electricidad" | "defensa" | "bienes_nacionales"
+  "patrimonio" | "salud" | "aguas" | "vialidad" | "electricidad" | "defensa" | "bienes_nacionales" |
+  "administrativo"
+
+  Usa "administrativo" cuando la consulta trate de plazos, silencio administrativo, recursos
+  o reclamaciones, competencia de la DOM o de la SEREMI, acceso a información pública,
+  consulta indígena o materia tributaria asociada al proyecto.
 
 keywords_normativas: lista de términos normativos relevantes detectados en la consulta (pueden ser vacíos si no hay).
 
@@ -139,7 +148,8 @@ REGLAS PARA STANDALONE_QUERY:
 
 REGLAS PARA CLASIFICACIÓN:
 - tipo_proyecto: elige el más cercano.
-- dominios_detectados: lista ordenada, el primero es el principal. Dominios válidos: urbanismo, construccion, accesibilidad, copropiedad, medioambiente, patrimonio, salud, aguas, vialidad, electricidad, defensa, bienes_nacionales.
+- dominios_detectados: lista ordenada, el primero es el principal. Dominios válidos: urbanismo, construccion, accesibilidad, copropiedad, medioambiente, patrimonio, salud, aguas, vialidad, electricidad, defensa, bienes_nacionales, administrativo.
+  Usa "administrativo" para plazos y silencio administrativo, recursos y reclamaciones, competencia de la DOM o SEREMI, acceso a información pública, consulta indígena y materia tributaria del proyecto.
 - requiere_jerarquia: true si involucra conflicto o relación entre distintas normas.
 
 Responde SOLO con el JSON.`;

@@ -17,6 +17,36 @@ export interface ResultadoValidacion {
   notasAdicionales: string;
 }
 
+export interface CitaNormativaDetectada {
+  articulo: string;
+  tipo?: string;
+}
+
+/**
+ * Normaliza la clave de un artículo para comparar citas y metadatos del corpus.
+ * Las fuentes históricas alternan entre `5.1.1`, `5.1.1.` y `5.1.1º`; esas
+ * variaciones tipográficas no deben convertir una cita respaldada en un error.
+ */
+export function normalizarArticulo(articulo?: string | null): string {
+  return (articulo ?? "").replace(/[°º]/g, "").replace(/\.+$/, "").trim();
+}
+
+/** Extrae referencias que pueden solicitarse al corpus antes de invalidar un borrador. */
+export function extraerCitasNormativas(respuesta: string): CitaNormativaDetectada[] {
+  const regex = /\b(?:art[íi]culo|art\.)\s*([\d.]+[°º]?)(?:\s*(?:de(?:\s+la|\s+el)?|del)?\s*(LGUC|OGUC|DDU|LEY|DS|DFL|DL)\b)?/gi;
+  const citas = new Map<string, CitaNormativaDetectada>();
+  let match: RegExpExecArray | null;
+  while ((match = regex.exec(respuesta)) !== null) {
+    const articulo = normalizarArticulo(match[1]);
+    // Un punto de cierre tras la palabra “artículo” no es una cita. Exigir al
+    // menos un dígito evita bloquear respuestas por la secuencia “artículo.”.
+    if (!/\d/.test(articulo)) continue;
+    const tipo = match[2]?.toUpperCase();
+    citas.set(`${tipo ?? "sin-tipo"}:${articulo}`, { articulo, tipo });
+  }
+  return [...citas.values()];
+}
+
 // ─── validarConsistencia ──────────────────────────────────────────────────────
 
 export function validarConsistencia(
@@ -37,31 +67,64 @@ export function validarConsistencia(
     return { valida: false, motivo: "Falta disclaimer legal", advertencias: [], notasAdicionales: "" };
   }
 
-  // 3. Construir Set de artículos disponibles en los chunks recuperados
-  const articulosEnContexto = new Set<string>();
-  for (const chunk of chunks) {
-    if (chunk.articulo) {
-      // Normalizar: quitar signos de ordinales (° º) para comparar
-      const normalizado = chunk.articulo.replace(/[°º]/g, "").trim();
-      articulosEnContexto.add(normalizado);
-    }
-  }
-
-  // 4. Encontrar todos los artículos citados en la respuesta.
-  // El regex captura tanto "artículo 5.3.1" como "Art. 5.3.1" (abreviatura común en textos legales).
-  const articulosNoVerificados = new Set<string>();
+  // 3. Encontrar todos los artículos citados y, cuando se explicita, su norma.
+  // Un mismo número de artículo existe en múltiples cuerpos normativos: verificar
+  // solo el número permite atribuir erróneamente un artículo de OGUC a la LGUC.
+  const citasNoVerificadas = new Set<string>();
   const regexArticulos = /\b(?:art[íi]culo|art\.)\s*([\d.]+[°º]?)/gi;
   let match: RegExpExecArray | null;
 
   while ((match = regexArticulos.exec(respuesta)) !== null) {
-    const citado = match[1].replace(/[°º]/g, "").trim();
-    if (!articulosEnContexto.has(citado)) {
-      articulosNoVerificados.add(citado); // Set evita duplicados automáticamente
+    const citado = normalizarArticulo(match[1]);
+    // Evitar falsos positivos de puntuación (p. ej. “el artículo.”).
+    if (!/\d/.test(citado)) continue;
+    const textoPosterior = respuesta.slice(regexArticulos.lastIndex, regexArticulos.lastIndex + 48);
+    const normaMatch = textoPosterior.match(/^\s*(?:de(?:\s+la|\s+el)?|del)?\s*(LGUC|OGUC|DDU|LEY|DS|DFL|DL)\b/i);
+    const normaCitada = normaMatch?.[1]?.toUpperCase();
+    const existeEnContexto = chunks.some((chunk) => {
+      const articuloChunk = normalizarArticulo(chunk.articulo);
+      const tipoChunk = chunk.norma_tipo.toUpperCase();
+      const tipoCompatible = !normaCitada || tipoChunk === normaCitada ||
+        // "Ley General de Urbanismo y Construcciones" suele abreviarse como
+        // "Ley" en una cita formal, aunque su tipo de corpus sea LGUC.
+        (normaCitada === "LEY" && tipoChunk === "LGUC");
+      return articuloChunk === citado && tipoCompatible;
+    });
+
+    if (!existeEnContexto) {
+      citasNoVerificadas.add(normaCitada ? `${normaCitada} Art. ${citado}` : `Art. ${citado}`);
     }
   }
 
-  const advertencias = Array.from(articulosNoVerificados).map(
-    (art) => `Art. ${art} citado en la respuesta no está en el contexto recuperado — verificar en BCN`
+  // Las fuentes PDF alternan saltos de línea, guiones y comillas tipográficas.
+  // Se normaliza puntuación para no rechazar un literal correcto solo por formato.
+  const normalizarTexto = (texto: string) =>
+    texto
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^\p{L}\p{N}]+/gu, " ")
+      .replace(/\s+/g, " ")
+      .trim()
+      .toLowerCase();
+  const regexCitasTextuales = /["“]([^"”]{12,})["”]/g;
+  let citaTextual: RegExpExecArray | null;
+  while ((citaTextual = regexCitasTextuales.exec(respuesta)) !== null) {
+    // Una elipsis representa una omisión explícita: cada tramo debe existir en
+    // alguna fuente, sin exigir que estén unidos en el PDF.
+    const tramos = citaTextual[1]
+      .split(/(?:\.{3}|…)/)
+      .map(normalizarTexto)
+      .filter((tramo) => tramo.length >= 8);
+    const citaRespaldada = tramos.length > 0 && tramos.every((tramo) =>
+      chunks.some((chunk) => normalizarTexto(chunk.texto).includes(tramo))
+    );
+    if (!citaRespaldada) {
+      citasNoVerificadas.add(`Cita textual “${citaTextual[1].slice(0, 48)}”`);
+    }
+  }
+
+  const advertencias = Array.from(citasNoVerificadas).map(
+    (cita) => `${cita} citado en la respuesta no está respaldado por la misma norma y artículo recuperados — verificar en BCN`
   );
 
   // 5. Construir notasAdicionales
@@ -69,6 +132,10 @@ export function validarConsistencia(
     advertencias.length > 0
       ? `\n\n> 🔍 **Nota de verificación automática**: ${advertencias.length} artículo(s) citado(s) no pudieron verificarse en el corpus local. Confirma en BCN: www.bcn.cl`
       : "";
+
+  if (advertencias.length > 0) {
+    return { valida: false, motivo: `Citas no verificadas: ${Array.from(citasNoVerificadas).join(", ")}`, advertencias, notasAdicionales };
+  }
 
   return { valida: true, advertencias, notasAdicionales };
 }

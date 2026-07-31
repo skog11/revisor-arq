@@ -15,6 +15,14 @@ import type { Fuente } from "@/components/chat/mensaje";
 const SIMILARITY_THRESHOLD = 0.97; // muy estricto: solo queries casi idénticas
 const MAX_AGE_HOURS = 168;         // 7 días
 
+export function construirVersionContextoCache(versiones: { corpus?: string; reglas?: string; prompt?: string }): string {
+  return [`corpus:${versiones.corpus ?? "sin-version"}`, `reglas:${versiones.reglas ?? "sin-version"}`, `prompt:${versiones.prompt ?? "sin-version"}`].join("|");
+}
+
+function versionContextoActual(): string {
+  return construirVersionContextoCache({ corpus: process.env.CORPUS_RELEASE_ID, reglas: process.env.REGLAS_RELEASE_ID, prompt: process.env.PROMPT_RELEASE_ID });
+}
+
 export interface CacheHit {
   id: string;
   respuesta: string;
@@ -35,6 +43,7 @@ export async function buscarEnCache(
     const { data, error } = await sb.rpc("match_query_cache", {
       query_embedding: embedding,
       query_modo: modo,
+      query_context_version: versionContextoActual(),
       similarity_threshold: SIMILARITY_THRESHOLD,
       max_age_hours: MAX_AGE_HOURS,
     });
@@ -81,6 +90,7 @@ export function guardarEnCache(
       embedding,
       query_texto: queryTexto.slice(0, 500),
       modo,
+      context_version: versionContextoActual(),
       respuesta,
       fuentes,
     })
