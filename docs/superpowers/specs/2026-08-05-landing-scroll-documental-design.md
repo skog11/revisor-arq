@@ -45,6 +45,10 @@ cualquiera de ellos digan cosas distintas, manda este.
 | 6 | Menús duplicados | La ciudad es el menú; el dock sale del escritorio de la landing |
 | 7 | Dock | Se conserva el propio (`magnetic-dock`), sin el reflejo `.shine`; no se adopta Magic UI ni Vengence UI |
 | 8 | Header global | Se modifica: los cuatro enlaces actuales se reemplazan por el dock de siete destinos |
+| 9 | Titular del hero | El `h1` es `REVISOR ARQ`. La frase editorial se traslada al copy de la intro |
+| 10 | Secuencia de videos | Se construye con los PNG y un solo video piloto para validar el formato |
+| 11 | Zonas clicables | Siluetas reales derivadas del canal alfa, desde el inicio |
+| 12 | Correcciones menores | Aprobadas las tres: sitemap, huérfano, y `Mi cuenta` sin sesión |
 
 ## 3. Arquitectura de la página
 
@@ -174,12 +178,25 @@ buscando la posición de mínima diferencia y escribe las coordenadas reales en
 Especificación de entrega de los videos: `public/landing/district-videos/README.md`
 (WebM VP9 con alfa, 4-6 s, 24 o 30 fps, bucle perfecto, cámara y geometría fijas).
 
-### Pendiente abierto, no decidido
+### Zonas clicables por silueta
 
-Los hotspots son rectángulos. Con el canal alfa de cada recorte se puede generar la
-silueta real de la manzana y usarla como `clipPath`, de modo que el área clicable
-siga el contorno del edificio. Más fiel, más trabajo. Queda para decidir después de
-ver la primera versión funcionando.
+Las zonas clicables **no son rectángulos**. El mismo script que calcula los offsets
+extrae el canal alfa de cada recorte, lo vectoriza y emite una máscara SVG por
+manzana. El área clicable y el resaltado siguen el contorno del edificio.
+
+Requisitos de la máscara:
+
+- Se simplifica el contorno con tolerancia suficiente para no generar rutas de miles de puntos: el objetivo es fidelidad percibida, no exactitud geométrica.
+- Se emite una sola vez a `datos-ciudad.ts` como dato estático. No se calcula en el navegador.
+- El área clicable se implementa con `clip-path: path()` sobre el enlace, manteniéndolo como `<a>` real y enfocable.
+- Respaldo: si una silueta sale defectuosa, esa manzana cae a su caja rectangular sin romper el resto.
+
+### Secuencia de entrega de los videos
+
+La ciudad se construye completa con los PNG estáticos y la capa de video montada
+pero vacía. El usuario entrega **un solo WebM piloto** con el que se valida alfa,
+bucle, registro contra la base y peso, antes de generar los seis. Si el formato
+falla, se descubre tras un video y no tras seis.
 
 ## 6. Navegación
 
@@ -312,6 +329,23 @@ Requisitos de honestidad:
 - Estados de carga y error explícitos.
 - Enlace a `/archivo` como explicación completa de la cobertura.
 
+### Copy del hero y de la intro
+
+El `h1` de la landing es **`REVISOR ARQ`**. No se reemplaza por una frase editorial.
+
+La frase evocadora no se pierde: se traslada al **copy de la intro**, el que se lee
+sobre el vacío compositivo mientras los documentos aún cubren la pantalla. Queda un
+reparto limpio entre los dos momentos:
+
+| Momento | Texto | Función |
+|---|---|---|
+| Intro, bajo los documentos | *Antes de construir, hay que comprender.* | Atmósfera. Es el único texto en pantalla y no compite con nada. |
+| Hero, ya despejado | `h1` **REVISOR ARQ** + *Consulta normativa. Respuestas verificables.* | Identidad y promesa concreta, junto a la ciudad y sus destinos. |
+
+Se conservan la descripción y la línea de confianza que ya existen en
+`landing-modular.tsx:238-246`, incluida la declaración de que si no hay respaldo
+normativo verificable el sistema lo dice explícitamente.
+
 ### Cierre
 
 Titular: *Comprende el territorio antes de decidir.*
@@ -375,14 +409,13 @@ No se implementa ahora, pero la estructura debe recibirlo sin rehacer nada.
 - Encima va una capa SVG de luces —ventanas, farolas, resplandor por manzana— que permite **encender cada manzana por separado**. La manzana bajo el cursor se ilumina más que las otras: la noche pasa a ser el sistema de navegación, no decorado.
 - Segundo set de seis videos nocturnos, con iluminación real. Reemplazan la fuente del video sin tocar offsets ni hotspots.
 
-## 11. Hallazgos anotados fuera de alcance
+## 11. Correcciones menores aprobadas
 
-Detectados durante la auditoría. No se tocan en esta fase salvo instrucción.
+Detectadas durante la auditoría. Aprobadas para ejecutarse junto con esta fase.
 
-1. `/chat` y `/como-funciona` **no están en `sitemap.ts`**. `/chat` es la página central del producto y no está declarada para buscadores. Corrección de una línea; pendiente de confirmación del usuario.
-2. Hoy el dock manda a `/dashboard` haya o no sesión. Con `useSesion()` extraído se
-   resuelve así, salvo instrucción en contra: sin sesión, `Mi cuenta` apunta a
-   `/login?next=/dashboard` en vez de a `/dashboard`.
+1. **Sitemap.** `/chat` y `/como-funciona` se agregan a `sitemap.ts`. `/chat` es la página central del producto y hoy no está declarada para buscadores.
+2. **Huérfano.** Se elimina `public/landing/documents-v2/plano-base.png` (1.177 KB), que no aparece en la lista `DOCUMENTS` y no lo renderiza nadie. No hay pérdida: lo regenera `scripts/landing/generate-document-assets.mjs:153` a partir de `basePlanSvg()`. Nota: `public/landing/` y `scripts/landing/` están sin rastrear en git, así que el respaldo es el generador, no el historial.
+3. **Sesión.** Con `useSesion()` extraído, `Mi cuenta` apunta a `/login?next=/dashboard` cuando no hay sesión, en vez de mandar siempre a `/dashboard` como hoy.
 
 ## 12. Criterios de aceptación
 
@@ -393,12 +426,15 @@ Detectados durante la auditoría. No se tocan en esta fase salvo instrucción.
 5. Ningún elemento invisible recibe foco de teclado.
 6. Los seis videos aparecen registrados al pixel sobre la base, sin salto perceptible al entrar.
 7. Ningún video se descarga antes del primer hover.
-8. Con `prefers-reduced-motion` la página es completamente utilizable y no hay pin.
-9. Todas las rutas de la tabla de la sección 6 son alcanzables.
-10. No hay ningún enlace a `/corpus`, `/normativa` ni `/admin`.
-11. El footer con descargo aparece en `/`.
-12. No hay cifras normativas escritas a mano en el código de la landing.
-13. Si `/api/stats` devuelve cero, el bloque de cobertura no se muestra.
-14. Ninguna vista carga GSAP y Framer Motion a la vez.
-15. `npm run build` pasa y no hay errores de consola propios de la landing.
-16. `/` permanece intacta hasta la aprobación explícita del usuario.
+8. Las zonas clicables siguen el contorno de cada manzana, no una caja: el cursor no activa un destino estando sobre la calle o sobre el edificio vecino.
+9. Si una silueta falla, esa manzana cae a su caja rectangular y el resto sigue funcionando.
+10. El `h1` de la landing es `REVISOR ARQ`.
+11. Con `prefers-reduced-motion` la página es completamente utilizable y no hay pin.
+12. Todas las rutas de la tabla de la sección 6 son alcanzables.
+13. No hay ningún enlace a `/corpus`, `/normativa` ni `/admin`.
+14. El footer con descargo aparece en `/`.
+15. No hay cifras normativas escritas a mano en el código de la landing.
+16. Si `/api/stats` devuelve cero, el bloque de cobertura no se muestra.
+17. Ninguna vista carga GSAP y Framer Motion a la vez.
+18. `npm run build` pasa y no hay errores de consola propios de la landing.
+19. `/` permanece intacta hasta la aprobación explícita del usuario.
