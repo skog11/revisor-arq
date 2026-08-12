@@ -143,13 +143,25 @@ export const REGLAS_INICIALES: ReglaGatillo[] = [
       co_ocurrencia: ["borde costero"],
       excepciones: ["dentro del predio", "alejado del borde"],
     },
-    forzar_normas: ["LGUC"],
-    efecto: "requerir_revision",
+    // OJO: antes solo forzaba "LGUC" — traía 3 chunks genéricos (orden ascendente,
+    // artículos iniciales) que nunca mencionan concesión marítima. El corpus SÍ
+    // tiene la norma correcta (DFL 340 "Ley de Concesiones Marítimas", DS 9
+    // "Reglamento sobre Concesiones Marítimas" y DL 1939 "bienes del Estado",
+    // dominio bienes_nacionales), pero nunca se recuperaba porque el
+    // clasificador manda esta consulta a urbanismo/construccion y la regla no
+    // forzaba esas claves. Detectado 2026-07-31 vía eval
+    // 'trap-borde-costero-directemar' (frase esperada "concesión" ausente
+    // pese a 21 fuentes).
+    forzar_normas: ["LGUC", "DFL-340", "DS-9", "DL-1939"],
+    efecto: "bloquear_positiva",
     mensaje_experto:
       "Las construcciones o usos sobre bienes nacionales de uso público en el borde costero (playa, ribera del mar) " +
-      "requieren concesión marítima otorgada por la Armada de Chile (DIRECTEMAR), además del permiso de edificación. " +
+      "requieren CONCESIÓN MARÍTIMA otorgada por el Ministerio de Defensa Nacional / Subsecretaría para las Fuerzas " +
+      "Armadas, a través de la Dirección General del Territorio Marítimo y de Marina Mercante (DIRECTEMAR), conforme " +
+      "al DFL 340 (Ley de Concesiones Marítimas), su reglamento DS 9 y el DL 1939 (normas sobre bienes del Estado). " +
+      "El permiso de edificación municipal NO reemplaza ni exime de esta concesión: son trámites distintos y acumulativos. " +
       "El plan regulador comunal puede fijar restricciones adicionales en la franja costera. " +
-      "La respuesta no debe limitarse al permiso municipal.",
+      "La respuesta NO puede afirmar que basta con el permiso de edificación municipal.",
   },
 
   // ── Reglas — monumentos nacionales y zonas típicas ──────────────────────────
@@ -501,6 +513,30 @@ export const REGLAS_INICIALES: ReglaGatillo[] = [
       "Los tendidos de alta tensión establecen servidumbres de electroducto que impiden edificar en la faja de seguridad " +
       "definida en el DFL-4 (Ley Eléctrica). La empresa concesionaria y la SEC deben autorizar cualquier obra en esa franja. " +
       "La respuesta debe advertir sobre esta restricción y la necesidad de verificar la faja con la empresa distribuidora.",
+  },
+
+  // ── Regla: tipos de concesión eléctrica y derechos del concesionario ─────
+
+  {
+    id: "tipos-concesion-electrica",
+    descripcion:
+      "La tipología de concesiones eléctricas y los derechos que otorgan se definen en dos artículos distintos del DFL-4 " +
+      "(Art. 2° enumera los tipos; Art. 7° define el servicio público eléctrico ligado a la concesión de distribución y transmisión) " +
+      "— una respuesta que solo cite el Art. 2° queda incompleta.",
+    cuando: {
+      co_ocurrencia: ["tipos de concesión", "eléctric"],
+      excepciones: [],
+    },
+    forzar_normas: ["DFL-4"],
+    efecto: "requerir_revision",
+    mensaje_experto:
+      "El DFL-4 (Ley Eléctrica) distingue la tipología de concesiones en el Art. 2° (centrales hidráulicas, subestaciones, " +
+      "líneas de transporte, servicio público de distribución, permisos y servidumbres) y, de forma complementaria, en el " +
+      "Art. 7°, que define qué constituye 'servicio público eléctrico' — la categoría de la que derivan los derechos del " +
+      "concesionario de distribución y de transmisión (zonas de concesión, conexión de usuarios, límites de propiedad de " +
+      "las transmisoras). La respuesta DEBE incluir una sección de fundamento propia para el Art. 7° del DFL-4, no solo " +
+      "mencionarlo de forma indirecta o entre paréntesis: sin él, la explicación de los tipos de concesión y sus derechos " +
+      "queda incompleta.",
   },
 ];
 

@@ -275,12 +275,22 @@ Para cada nivel, indica el instrumento específico que aplica y si prevalece sob
 
 ## Fundamento por artículo
 Para cada artículo directamente necesario para resolver la consulta. No agregues artículos meramente contextuales.
+REGLA DE COBERTURA: si la consulta tiene varias partes (ej. "qué tipos de X reconoce la norma Y" + "qué derechos otorga"),
+cada parte necesita su propio artículo de respaldo — no basta con responder una parte y mencionar la otra solo entre paréntesis
+o de forma indirecta en la Conclusión. Revisa el contexto recuperado: si hay un artículo que define o enumera directamente
+uno de los elementos preguntados (un tipo, un derecho, una obligación) y no lo incluiste, agrégalo aquí con su propia sección
+y cita formal, aunque su relevancia te parezca secundaria frente a los demás.
+NO descartes un artículo solo porque una parte de su texto no se relacione con la consulta: los artículos largos suelen mezclar
+una definición relevante con incisos posteriores sobre otra materia (límites de propiedad, plazos, sanciones, etc.). Si el PRIMER
+tramo del artículo responde directamente a la consulta, inclúyelo igual, aunque el resto del texto recuperado sea irrelevante.
 ### [Norma] — Art. X
 > [Texto íntegro del artículo en bloque Markdown, copiado literalmente del contexto]
 **Modificaciones:** [instrumento que lo modificó] D.O. [fecha] — si aplica. Si no hay modificaciones conocidas: omitir esta línea.
 **Cita formal:** Art. X [Norma abreviada]
 
-REGLA: Nunca parafrasear el artículo — siempre transcribir el texto literal disponible en el contexto recuperado.
+REGLA: Nunca parafrasear el artículo — siempre transcribir el texto literal disponible en el contexto recuperado. Si el artículo
+mezcla contenido relevante con contenido ajeno a la consulta, transcribe el tramo relevante seguido de "(…)" y omite el resto —
+no es necesario copiar el artículo completo cuando parte de él es claramente ajeno a lo preguntado.
 
 ## Concordancias
 Lista de normas que deben leerse en conjunto, con indicación de cómo se relacionan entre ellas.

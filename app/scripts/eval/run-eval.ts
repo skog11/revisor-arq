@@ -147,10 +147,34 @@ async function evalCaso(caso: EvalCase, baseUrl: string, intentos = 3): Promise<
   const algunaAlternativaPresente = (frase: string) =>
     frase.split("|").some((alt) => respLower.includes(normalizarEspacios(alt.trim().toLowerCase())));
 
+  // Falso positivo detectado el 2026-07-31 (caso "trap-zona-tipica-cmn"): la
+  // frase prohibida "basta con el permiso de la dom" es un substring literal
+  // de la respuesta CORRECTA "No basta con el permiso de la DOM...". El
+  // matcher de frasesProhibidas hacía .includes() plano, así que la negación
+  // del modelo activaba el guardrail como si hubiera afirmado lo prohibido.
+  // Para prohibidas (y solo para prohibidas: las esperadas no sufren este
+  // problema) se descartan las ocurrencias inmediatamente precedidas por una
+  // negación ("no", "sin", "nunca", "jamás", "tampoco"). Si CUALQUIER
+  // ocurrencia aparece sin negar, igual cuenta como encontrada — no se busca
+  // reducir falsos positivos a costa de crear falsos negativos.
+  const NEGACIONES = /\b(no|sin|nunca|jamás|tampoco)\b[\s*_"'`.:,-]*$/;
+  const apareceSinNegar = (texto: string, alt: string) => {
+    let desde = 0;
+    let idx: number;
+    while ((idx = texto.indexOf(alt, desde)) !== -1) {
+      const antes = texto.slice(Math.max(0, idx - 20), idx);
+      if (!NEGACIONES.test(antes)) return true;
+      desde = idx + 1;
+    }
+    return false;
+  };
+  const algunaAlternativaProhibidaPresente = (frase: string) =>
+    frase.split("|").some((alt) => apareceSinNegar(respLower, normalizarEspacios(alt.trim().toLowerCase())));
+
   // ── Verificaciones ──
   const frasesEsperadasEncontradas = caso.frasesEsperadas.filter(algunaAlternativaPresente);
   const frasesEsperadasFaltantes = caso.frasesEsperadas.filter((f) => !algunaAlternativaPresente(f));
-  const frasesProhibidasEncontradas = (caso.frasesProhibidas ?? []).filter(algunaAlternativaPresente);
+  const frasesProhibidasEncontradas = (caso.frasesProhibidas ?? []).filter(algunaAlternativaProhibidaPresente);
 
   // Artículos citados: buscar patrones "Art. X", "artículo X", "Art X°",
   // y también listas del tipo "artículos 13° y 7°" o "Art. 5, 19 y 60" —
