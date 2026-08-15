@@ -115,9 +115,10 @@ export function Header() {
     return () => subscription.unsubscribe();
   }, []);
 
-  // La landing tiene su propia franja superior integrada a la maqueta:
-  // un header encima rompería la inmersión de la ciudad.
-  if (pathname === "/") return null;
+  // /landing-modular tiene su propio header integrado a la maqueta
+  // (dock magnetico como navegacion) -- un header encima romperia la
+  // inmersion. La landing clasica en "/" si usa el header estandar.
+  if (pathname === "/landing-modular") return null;
 
   return (
     <header

@@ -45,3 +45,8 @@ next-env.d.ts
 /scripts/eval/resultados/
 
 .vercel
+
+# playwright
+/playwright-report/
+/test-results/
+/tmp/

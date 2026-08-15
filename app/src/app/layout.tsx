@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Instrument_Serif, Inter, JetBrains_Mono } from "next/font/google";
+import { Barlow_Condensed, Instrument_Serif, Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -26,6 +26,12 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   weight: ["400", "500"],
   variable: "--font-jetbrains-mono",
+});
+
+const barlowCondensed = Barlow_Condensed({
+  subsets: ["latin"],
+  weight: ["600", "700"],
+  variable: "--font-barlow-condensed",
 });
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL ?? "https://revisor-arq.vercel.app";
@@ -80,6 +86,7 @@ export default function RootLayout({
           instrumentSerif.variable,
           inter.variable,
           jetbrainsMono.variable,
+          barlowCondensed.variable,
         )}
       >
         <ThemeProvider

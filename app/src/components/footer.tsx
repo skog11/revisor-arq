@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const LINKS = [
   { href: "/pricing",   label: "Precios" },
@@ -8,6 +11,10 @@ const LINKS = [
 ];
 
 export function Footer() {
+  const pathname = usePathname();
+
+  if (pathname === "/landing-modular") return null;
+
   return (
     <footer
       className="px-8 py-6"
@@ -34,7 +41,7 @@ export function Footer() {
           className="flex shrink-0 flex-wrap items-center gap-4 text-xs"
           style={{
             fontFamily: "var(--font-jetbrains-mono)",
-            color: "var(--ink-4)",
+            color: "var(--ink-3)",
             textTransform: "uppercase",
             letterSpacing: "1px",
           }}
@@ -48,7 +55,7 @@ export function Footer() {
               {label}
             </Link>
           ))}
-          <span style={{ color: "var(--ink-5)" }}>
+          <span style={{ color: "var(--ink-3)" }}>
             © {new Date().getFullYear()} Revisor ARQ
           </span>
         </nav>
