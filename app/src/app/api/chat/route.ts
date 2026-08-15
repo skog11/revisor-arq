@@ -43,7 +43,7 @@ import { type ContextoProyecto } from "@/components/chat/contexto-modal";
 import { obtenerRelacionesNormativas, formatearRelaciones } from "@/lib/grafo";
 import { aplicarReglas, formatearReglasActivas } from "@/lib/motor-reglas";
 import { detectarRestricciones, formatearRestricciones } from "@/lib/detector-conflictos";
-import { fetchChunksObligatorios, fetchChunksPorArticulos, mergearChunks } from "@/lib/fetcher-normas-obligatorias";
+import { fetchChunksObligatorios, fetchChunksPorArticulos, mergearChunks, fetchNormasDerogadas } from "@/lib/fetcher-normas-obligatorias";
 import { extraerHechos, formatearHechos } from "@/lib/extractor-hechos";
 import { extraerCitasNormativas, verificarCoherenciaRestrictiva } from "@/lib/validador";
 import { prepararRespuestaVerificada, RESPUESTA_NO_VERIFICABLE } from "@/lib/respuesta-verificada";
@@ -476,8 +476,9 @@ export async function POST(req: NextRequest) {
         };
         let respuestaCompleta = await generarRespuesta(systemPrompt, pregunta);
 
+        const normasDerogadas = await fetchNormasDerogadas().catch(() => []);
         send({ type: "etapa", etapa: "verificando" });
-        let entrega = prepararRespuestaVerificada(respuestaCompleta, chunks);
+        let entrega = prepararRespuestaVerificada(respuestaCompleta, chunks, normasDerogadas);
         // Reparación generalizada de evidencia: si el borrador cita un artículo
         // que no estaba en el top-k inicial, se busca ese artículo exacto antes
         // de pedir una nueva redacción. No depende de una materia o regla puntual.
@@ -486,7 +487,7 @@ export async function POST(req: NextRequest) {
           const evidenciaCitada = await fetchChunksPorArticulos(citas).catch(() => []);
           if (evidenciaCitada.length > 0) {
             chunks = mergearChunks(evidenciaCitada, chunks);
-            entrega = prepararRespuestaVerificada(respuestaCompleta, chunks);
+            entrega = prepararRespuestaVerificada(respuestaCompleta, chunks, normasDerogadas);
           }
         }
         // Un primer borrador puede mezclar artículos secundarios no recuperados.
@@ -499,7 +500,7 @@ export async function POST(req: NextRequest) {
             "Redacta una respuesta nueva usando exclusivamente las fuentes incluidas en el contexto. " +
             "No menciones artículos, incisos ni normas que no aparezcan allí. No uses comillas ni presentes texto como literal; parafrasea y cita solo el artículo y norma efectivamente recuperados. Incluye el aviso legal obligatorio.";
           respuestaCompleta = await generarRespuesta(instruccionCorreccion, pregunta);
-          entrega = prepararRespuestaVerificada(respuestaCompleta, chunks);
+          entrega = prepararRespuestaVerificada(respuestaCompleta, chunks, normasDerogadas);
           // La re-redacción puede introducir una nueva referencia secundaria.
           // Se realiza una segunda (y última) expansión de evidencia antes de decidir.
           if (!entrega.entregable) {
@@ -507,7 +508,7 @@ export async function POST(req: NextRequest) {
             const evidenciaCorreccion = await fetchChunksPorArticulos(citasCorreccion).catch(() => []);
             if (evidenciaCorreccion.length > 0) {
               chunks = mergearChunks(evidenciaCorreccion, chunks);
-              entrega = prepararRespuestaVerificada(respuestaCompleta, chunks);
+              entrega = prepararRespuestaVerificada(respuestaCompleta, chunks, normasDerogadas);
             }
           }
         }
@@ -536,7 +537,7 @@ export async function POST(req: NextRequest) {
               "No introduzcas otras normas, artículos, incisos ni citas textuales. Parafrasea con precisión, " +
               "menciona solo la norma y el artículo recuperados e incluye el aviso legal obligatorio.";
             respuestaCompleta = await generarRespuesta(instruccionExacta, pregunta);
-            entrega = prepararRespuestaVerificada(respuestaCompleta, referenciasExactas);
+            entrega = prepararRespuestaVerificada(respuestaCompleta, referenciasExactas, normasDerogadas);
           }
         }
         // Si incluso la redacción cerrada vuelve a traer citas accesorias, no se
@@ -547,7 +548,7 @@ export async function POST(req: NextRequest) {
           const respuestaMinima = construirRespuestaMinimaDeReferenciaExacta(referenciasExactas);
           if (respuestaMinima) {
             respuestaCompleta = respuestaMinima;
-            entrega = prepararRespuestaVerificada(respuestaCompleta, referenciasExactas);
+            entrega = prepararRespuestaVerificada(respuestaCompleta, referenciasExactas, normasDerogadas);
           }
         }
         // Para SEIA, una respuesta genérica de “sin respaldo” es menos segura
@@ -556,14 +557,14 @@ export async function POST(req: NextRequest) {
           const respuestaSEIA = construirRespuestaGuardrailSEIA(chunks, reglasActivas);
           if (respuestaSEIA) {
             respuestaCompleta = respuestaSEIA;
-            entrega = prepararRespuestaVerificada(respuestaCompleta, chunks);
+            entrega = prepararRespuestaVerificada(respuestaCompleta, chunks, normasDerogadas);
           }
         }
         if (!entrega.entregable) {
           const respuestaAreaVerde = construirRespuestaGuardrailAreaVerde(reglasActivas);
           if (respuestaAreaVerde) {
             respuestaCompleta = respuestaAreaVerde;
-            entrega = prepararRespuestaVerificada(respuestaCompleta, chunks);
+            entrega = prepararRespuestaVerificada(respuestaCompleta, chunks, normasDerogadas);
           }
         }
         const validacion = entrega.validacion;

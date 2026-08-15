@@ -1,5 +1,5 @@
 import type { ChunkRecuperado } from "./rag";
-import { validarConsistencia, type ResultadoValidacion } from "./validador";
+import { validarConsistencia, type ResultadoValidacion, type NormaDerogadaRef } from "./validador";
 
 const DISCLAIMER =
   "\n\n---\n⚠️ **Aviso legal**: Esta respuesta es orientativa y no constituye asesoría jurídica profesional. " +
@@ -16,15 +16,18 @@ export interface ResultadoRespuestaVerificada {
   validacion: ResultadoValidacion;
 }
 
-export function prepararRespuestaVerificada(respuestaCandidata: string, chunks: ChunkRecuperado[]): ResultadoRespuestaVerificada {
+export function prepararRespuestaVerificada(
+  respuestaCandidata: string,
+  chunks: ChunkRecuperado[],
+  normasDerogadas: NormaDerogadaRef[] = []
+): ResultadoRespuestaVerificada {
   let respuesta = respuestaCandidata;
-  let validacion = validarConsistencia(respuesta, chunks);
+  let validacion = validarConsistencia(respuesta, chunks, normasDerogadas);
 
   if (!validacion.valida && validacion.motivo === "Falta disclaimer legal") {
     respuesta += DISCLAIMER;
-    validacion = validarConsistencia(respuesta, chunks);
+    validacion = validarConsistencia(respuesta, chunks, normasDerogadas);
   }
-
   if (!validacion.valida) {
     return { entregable: false, respuesta: RESPUESTA_NO_VERIFICABLE, validacion };
   }

@@ -289,6 +289,28 @@ export const REGLAS_INICIALES: ReglaGatillo[] = [
       "El administrador no puede reemplazar ese acuerdo por una decisión unilateral.",
   },
 
+  {
+    id: "condominio-ley-vigente",
+    descripcion:
+      "Toda mención genérica a 'condominio' debe traer al contexto la Ley 21.442 (Copropiedad Inmobiliaria, " +
+      "vigente desde 2023), aunque la pregunta no la nombre. Sin esto, preguntas genéricas del tipo '¿qué es " +
+      "un condominio?' no recuperan ningún chunk de la ley de copropiedad y el modelo completa la definición " +
+      "con su conocimiento de entrenamiento, que todavía asocia 'condominio' con la Ley 19.537 — derogada por " +
+      "la 21.442 desde 2023 (la tabla `normas` la tiene con vigente=false). Bug detectado el 2026-08-12 en el caso de " +
+      "eval 'lguc-condominio': la respuesta abría citando 'Ley N° 19.537 y su reglamento' como marco vigente.",
+    cuando: {
+      co_ocurrencia: ["condominio"],
+      excepciones: [],
+    },
+    forzar_normas: ["LEY-21442"],
+    efecto: "boost",
+    mensaje_experto:
+      "La Ley N° 19.537 (antigua Ley de Copropiedad Inmobiliaria) fue DEROGADA por la Ley N° 21.442, vigente " +
+      "desde 2023. La respuesta NUNCA debe citar la Ley 19.537 como norma vigente ni como 'marco aplicable' — " +
+      "si el contexto recuperado no trae un artículo específico de la 21.442 que respalde una afirmación sobre " +
+      "el régimen de condominios, la respuesta debe decirlo explícitamente en vez de completar con la ley antigua.",
+  },
+
   // ── Reglas — obras en suelo con restricciones especiales ───────────────────
 
   {

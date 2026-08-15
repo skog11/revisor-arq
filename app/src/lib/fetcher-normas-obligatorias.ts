@@ -8,7 +8,7 @@
 
 import { getSupabaseServiceClient } from "./supabase";
 import type { ChunkRecuperado } from "./rag";
-import { normalizarArticulo, type CitaNormativaDetectada } from "./validador";
+import { normalizarArticulo, type CitaNormativaDetectada, type NormaDerogadaRef } from "./validador";
 
 /** Recupera la evidencia exacta de artículos que el borrador citó pero el RAG no trajo. */
 export async function fetchChunksPorArticulos(citas: CitaNormativaDetectada[]): Promise<ChunkRecuperado[]> {
@@ -178,4 +178,41 @@ export function mergearChunks(
   }));
   const resto = recuperados.filter((c) => !idsObligatorios.has(c.id));
   return [...obligatoriosConProcedencia, ...resto];
+}
+
+
+// --- Normas derogadas, para el chequeo de vigencia en el validador ---
+
+let cacheNormasDerogadas: { datos: NormaDerogadaRef[]; expiraEn: number } | null = null;
+const TTL_CACHE_NORMAS_DEROGADAS_MS = 5 * 60 * 1000;
+
+/**
+ * Trae tipo+numero de toda norma con vigente=false, para que el validador
+ * pueda detectar si la respuesta nombra una ley derogada como si fuera el
+ * marco vigente (ver detectarNormasDerogadasCitadas en validador.ts).
+ * Cacheada en memoria: esta lista cambia solo cuando se actualiza el corpus,
+ * no vale la pena una consulta a la BD en cada intento de la cascada de
+ * regeneracion del route de chat.
+ */
+export async function fetchNormasDerogadas(): Promise<NormaDerogadaRef[]> {
+  const ahora = Date.now();
+  if (cacheNormasDerogadas && cacheNormasDerogadas.expiraEn > ahora) {
+    return cacheNormasDerogadas.datos;
+  }
+
+  const sb = getSupabaseServiceClient();
+  const { data, error } = await sb
+    .from("normas")
+    .select("tipo, numero")
+    .eq("vigente", false);
+
+  if (error || !data) {
+    // Si falla la consulta, no se bloquea el flujo principal: se devuelve la
+    // cache vieja si existe, o una lista vacia (el chequeo simplemente no corre).
+    return cacheNormasDerogadas?.datos ?? [];
+  }
+
+  const normalizado = data.map((n) => ({ tipo: n.tipo as string, numero: n.numero as string }));
+  cacheNormasDerogadas = { datos: normalizado, expiraEn: ahora + TTL_CACHE_NORMAS_DEROGADAS_MS };
+  return normalizado;
 }

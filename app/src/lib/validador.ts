@@ -22,6 +22,53 @@ export interface CitaNormativaDetectada {
   tipo?: string;
 }
 
+/** Referencia minima a una norma derogada, tal como llega desde la tabla "normas" (vigente=false). */
+export interface NormaDerogadaRef {
+  tipo: string;
+  numero: string;
+}
+
+/** Deja solo digitos de un numero de norma, para comparar "19.537" con "19537" o "Ley N. 19.537". */
+function normalizarNumeroNorma(numero: string): string {
+  return numero.replace(/\D+/g, "");
+}
+
+/**
+ * Detecta menciones en la prosa (no en citas formales de articulo) a una ley,
+ * DFL, DS o DL que la tabla "normas" tiene marcada como derogada (vigente=false).
+ * Complementa la verificacion de articulos citados: una respuesta puede citar
+ * articulos que existen en el corpus recuperado y aun asi abrir con una frase
+ * como "conforme a la Ley N. 19.537" (derogada en 2023, reemplazada por la 21.442)
+ * porque esa mencion viene del conocimiento de entrenamiento del modelo, no del
+ * contexto recuperado: el filtro vigente = true de la recuperacion nunca habria
+ * traido esos chunks.
+ */
+export function detectarNormasDerogadasCitadas(
+  respuesta: string,
+  normasDerogadas: NormaDerogadaRef[]
+): string[] {
+  if (normasDerogadas.length === 0) return [];
+
+  const derogadasSet = new Set(
+    normasDerogadas.map((n) => `${n.tipo.toUpperCase()}:${normalizarNumeroNorma(n.numero)}`)
+  );
+
+  const regex = /\b(ley|dfl|ds|dl)\s*(?:n[°ºo]?\.?\s*)?(\d[\d.]*)\b/gi;
+  const encontradas = new Map<string, string>();
+  let match: RegExpExecArray | null;
+  while ((match = regex.exec(respuesta)) !== null) {
+    const tipo = match[1].toUpperCase();
+    const numero = normalizarNumeroNorma(match[2]);
+    if (!numero) continue;
+    const clave = `${tipo}:${numero}`;
+    if (derogadasSet.has(clave) && !encontradas.has(clave)) {
+      // Se conserva la grafia original de la respuesta para el mensaje de advertencia.
+      const tipoCapitalizado = `${match[1][0].toUpperCase()}${match[1].slice(1).toLowerCase()}`;
+      encontradas.set(clave, `${tipoCapitalizado} ${match[2]}`);
+    }
+  }
+  return [...encontradas.values()];
+}
 /**
  * Normaliza la clave de un artículo para comparar citas y metadatos del corpus.
  * Las fuentes históricas alternan entre `5.1.1`, `5.1.1.` y `5.1.1º`; esas
@@ -51,7 +98,8 @@ export function extraerCitasNormativas(respuesta: string): CitaNormativaDetectad
 
 export function validarConsistencia(
   respuesta: string,
-  chunks: ChunkRecuperado[]
+  chunks: ChunkRecuperado[],
+  normasDerogadas: NormaDerogadaRef[] = []
 ): ResultadoValidacion {
   // 1. Respuesta demasiado corta
   if (respuesta.trim().length < 50) {
@@ -127,14 +175,30 @@ export function validarConsistencia(
     (cita) => `${cita} citado en la respuesta no está respaldado por la misma norma y artículo recuperados — verificar en BCN`
   );
 
-  // 5. Construir notasAdicionales
+  // 5. Menciones en la prosa a una norma que la BD tiene marcada vigente=false.
+  // No exige cita formal de artículo: alcanza con nombrar la ley derogada como
+  // si fuera el marco vigente (ver detectarNormasDerogadasCitadas más arriba).
+  const normasDerogadasCitadas = detectarNormasDerogadasCitadas(respuesta, normasDerogadas);
+  const advertenciasNormasDerogadas = normasDerogadasCitadas.map(
+    (norma) => `${norma} está DEROGADA y no puede citarse como marco vigente — verifica la norma reemplazante en BCN`
+  );
+  advertencias.push(...advertenciasNormasDerogadas);
+
+  // 6. Construir notasAdicionales
   const notasAdicionales =
     advertencias.length > 0
-      ? `\n\n> 🔍 **Nota de verificación automática**: ${advertencias.length} artículo(s) citado(s) no pudieron verificarse en el corpus local. Confirma en BCN: www.bcn.cl`
+      ? `\n\n> 🔍 **Nota de verificación automática**: ${advertencias.length} observación(es) no pudieron verificarse en el corpus local. Confirma en BCN: www.bcn.cl`
       : "";
 
-  if (advertencias.length > 0) {
-    return { valida: false, motivo: `Citas no verificadas: ${Array.from(citasNoVerificadas).join(", ")}`, advertencias, notasAdicionales };
+  if (citasNoVerificadas.size > 0 || normasDerogadasCitadas.length > 0) {
+    const motivoPartes: string[] = [];
+    if (citasNoVerificadas.size > 0) {
+      motivoPartes.push(`Citas no verificadas: ${Array.from(citasNoVerificadas).join(", ")}`);
+    }
+    if (normasDerogadasCitadas.length > 0) {
+      motivoPartes.push(`Normas derogadas citadas como vigentes: ${normasDerogadasCitadas.join(", ")}`);
+    }
+    return { valida: false, motivo: motivoPartes.join(" | "), advertencias, notasAdicionales };
   }
 
   return { valida: true, advertencias, notasAdicionales };
