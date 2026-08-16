@@ -115,10 +115,7 @@ export function Header() {
     return () => subscription.unsubscribe();
   }, []);
 
-  // /landing-modular tiene su propio header integrado a la maqueta
-  // (dock magnetico como navegacion) -- un header encima romperia la
-  // inmersion. La landing clasica en "/" si usa el header estandar.
-  if (pathname === "/landing-modular") return null;
+
 
   return (
     <header
