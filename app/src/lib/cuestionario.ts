@@ -74,11 +74,14 @@ export function detectarCuestionario(
     };
   }
 
+  const yaHaResponduCuestionario = pregunta.includes("--- Información adicional proporcionada:");
+
   if (
     clasificacion.confianza === "baja" &&
     !tieneReferenciaNormativaExplicita(pregunta) &&
     !contextoProyecto?.zonaSuelo &&
-    !contextoProyecto?.destino
+    !contextoProyecto?.destino &&
+    !yaHaResponduCuestionario
   ) {
     return {
       titulo: "Necesito más información para responder con precisión",
