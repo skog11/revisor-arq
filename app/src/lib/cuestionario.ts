@@ -74,14 +74,17 @@ export function detectarCuestionario(
     };
   }
 
-  const yaHaResponduCuestionario = pregunta.includes("--- Información adicional proporcionada:");
+  // El frontend reenvía la consulta original con las respuestas del cuestionario
+  // debajo de este encabezado. Sin este corte, la consulta vuelve a clasificar
+  // como ambigua y el cuestionario se repite indefinidamente.
+  const yaRespondioCuestionario = /Informaci[oó]n adicional proporcionada\s*:/i.test(pregunta);
 
   if (
     clasificacion.confianza === "baja" &&
     !tieneReferenciaNormativaExplicita(pregunta) &&
     !contextoProyecto?.zonaSuelo &&
     !contextoProyecto?.destino &&
-    !yaHaResponduCuestionario
+    !yaRespondioCuestionario
   ) {
     return {
       titulo: "Necesito más información para responder con precisión",

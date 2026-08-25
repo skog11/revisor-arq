@@ -25,6 +25,20 @@ describe("detectarCuestionario", () => {
     ]);
   });
 
+  it("no vuelve a pedir contexto cuando la consulta ya trae las respuestas", () => {
+    // Mismo formato exacto que arma chat/page.tsx al reenviar el cuestionario.
+    const respuestas = [
+      "- ¿El predio está dentro o fuera del límite urbano?\n  → Urbano",
+      "- ¿Cuál es el destino principal de la edificación?\n  → Residencial",
+      "- ¿Qué aspecto específico necesita resolver?\n  → altura maxima",
+    ].join("\n");
+    const preguntaEnriquecida = `que es una rasante\n\n---\nInformación adicional proporcionada:\n${respuestas}`;
+
+    const resultado = detectarCuestionario(preguntaEnriquecida, { confianza: "baja" });
+
+    expect(resultado).toBeNull();
+  });
+
   it("prioriza el cuestionario de análisis cuando existe un documento adjunto", () => {
     const resultado = detectarCuestionario(
       "Analiza este CIP\n--- CONTEXTO DEL PROYECTO ---",
