@@ -46,7 +46,7 @@ const TIPOS_ALTA_JERARQUIA = ["LGUC", "OGUC", "LEY", "Ley", "DFL", "DL"];
 
 /** Chunks que se pasan al modelo (ventana de contexto final) */
 // 18 chunks (~5940 tokens) + system prompt (~1200) + respuesta (~1500) = ~8640 total
-// Compatible con DeepSeek/Gemini/Cerebras/OpenRouter. Groq (5to fallback) puede fallar por TPM.
+// Compatible con DeepSeek/Gemini/Mistral/OpenRouter. Groq (5to fallback) puede fallar por TPM.
 const MAX_CHUNKS = 18;
 
 /** Candidatos pre-rerank (mayor diversidad → mejor reranking) */

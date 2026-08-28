@@ -33,7 +33,6 @@
   "dependencies": {
     "@ai-sdk/google": "^3.0.80",
     "@base-ui/react": "^1.4.0",
-    "@google/generative-ai": "^0.24.1",
     "@react-pdf/renderer": "^4.5.1",
     "@sentry/nextjs": "^10.53.1",
     "@supabase/ssr": "^0.10.2",

@@ -10,7 +10,7 @@ Chat RAG con citas verificables sobre normativa chilena de urbanismo/construcci�
 | Frontend | Next.js 16 (App Router) + TypeScript + Tailwind + shadcn/ui + Framer Motion |
 | BD | Supabase Postgres + pgvector HNSW (cosine, 1024 dims) |
 | Embeddings | Voyage AI `voyage-law-2` |
-| Generación | Cerebras gpt-oss-120b (primario, gratis) + Gemini Flash / OpenRouter / Groq (fallbacks, gratis) |
+| Generación | Mistral (primario opcional, gratis) + Gemini Flash / OpenRouter / Groq (fallbacks, gratis) |
 | Deploy | Vercel (workflow en `.github/workflows/deploy.yml`) |
 
 ---
@@ -21,12 +21,12 @@ query → extractor-hechos → motor-reglas → Voyage HyDE embed
       → match_chunks_hybrid (50 candidatos) → rerank-2 (top 18)
       → mergear chunks obligatorios (reglas-gatillo)
       → detector-conflictos → compuerta normativa
-      → buildSystemPromptV2 → Cerebras gpt-oss-120b → verificarCoherencia → respuesta
+      → buildSystemPromptV2 → Mistral mistral-large-latest → verificarCoherencia → respuesta
   └─ Si falla: DeepSeek → Gemini Flash → OpenRouter → Groq  [todos gratuitos]
 ```
 **Libs clave en `app/src/lib/`:**
 - `gemini.ts` — orquesta la cadena de fallback LLM (todos gratuitos)
-- `cerebras.ts` — proveedor primario (gpt-oss-120b, gratuito, alto TPM)
+- `mistral.ts` — proveedor primario opcional (mistral-large-latest, gratuito sin tarjeta, ~1B tokens/mes)
 - `groq.ts` — último fallback (llama-3.3-70b, gratuito)
 - `voyage.ts` — embed queries + rerank-2
 - `hyde.ts` — HyDE (Hypothetical Document Embedding) para mejor recall
@@ -129,10 +129,10 @@ copropiedad 2 · patrimonio 2 · accesibilidad 1
 NEXT_PUBLIC_SUPABASE_URL
 NEXT_PUBLIC_SUPABASE_ANON_KEY
 SUPABASE_SERVICE_ROLE_KEY
-CEREBRAS_API_KEY               # Primario — gratuito (https://cloud.cerebras.ai) · gpt-oss-120b
+MISTRAL_API_KEY                # Primario opcional — gratuito sin tarjeta (https://console.mistral.ai) · mistral-large-latest
 DEEPSEEK_API_KEY               # Fallback opcional — pay-per-use (https://platform.deepseek.com) · deepseek-v4-flash
 GEMINI_API_KEY                 # Fallback — free tier 15 RPM, fast-fail en la cadena
-OPENROUTER_API_KEY             # Fallback — gratuito (https://openrouter.ai) · límite diario
+OPENROUTER_API_KEY             # Fallback — gratuito (https://openrouter.ai) · 2 modelos, límite diario
 GROQ_API_KEY                   # Último fallback — gratuito (https://console.groq.com) · 30 RPM
 VOYAGE_API_KEY
 ADMIN_SECRET
@@ -140,11 +140,24 @@ NEXT_PUBLIC_APP_URL
 ```
 > ⚠️ Política: **todos los LLM son gratuitos**. No usar planes de pago. Si un proveedor
 > introduce límites, buscar alternativa gratuita y actualizar la cadena.
+>
+> **2026-08-28 — Cerebras salió de la cadena.** Dejó de ser gratuito sin tarjeta el
+> 17/08/2026 (pasó a exigir método de pago para desbloquear créditos) y en producción
+> devolvía 402 Payment Required en cada llamada — con Cerebras como primario
+> incondicional, esto tumbó el chat por completo (los otros cuatro proveedores
+> también fallaban ese día por causas independientes: DeepSeek sin saldo, Gemini con
+> el SDK deprecado `@google/generative-ai` — migrado a `@ai-sdk/google` —, OpenRouter
+> con la API key corrupta en Vercel, y Groq con `llama-3.3-70b-versatile` deprecado
+> desde el 17/06/2026 — corregido a `openai/gpt-oss-120b`). Reemplazo gratuito:
+> Mistral (`lib/mistral.ts`), tier "Experiment" sin tarjeta (solo verificación
+> telefónica al registrarse), ~1B tokens/mes. Es opcional igual que DeepSeek: sin
+> `MISTRAL_API_KEY` la cadena lo salta sin error. `lib/cerebras.ts` se borró (sin
+> consumidores tras el cambio).
 
 ## Cadena de LLM (lib/gemini.ts)
 ```
-Cerebras gpt-oss-120b → DeepSeek deepseek-v4-flash* → Gemini 2.5 Flash (1 retry) → OpenRouter llama-3.3-70b:free → Groq llama-3.3-70b
-(*) Solo si DEEPSEEK_API_KEY está definida
+Mistral mistral-large-latest* → DeepSeek deepseek-v4-flash* → Gemini 2.5 Flash (1 retry) → OpenRouter (llama-3.3-70b:free → minimax-m3:free) → Groq openai/gpt-oss-120b
+(*) Solo si su API key respectiva está definida
 ```
 `MAX_CHUNKS = 18` · `CANDIDATOS_RERANK = 50` — retriever trae 50, rerank-2 selecciona top 18
 
@@ -183,7 +196,7 @@ cd app && npm run eval:prod                              # evaluaciones contra p
   proveedores LLM y la landing nueva están solo en local, sin desplegar
 - **Rumbo**: proyecto postulado a **Semilla Inicia CORFO 2026** (10 meses). Plan de evolución de 4 fases en `PLAN-IMPLEMENTACION.md`; fundamento en `revision-critica-plan-evolucion.md`
 - **Guías**: 7 ✅ — permiso edificación, LGUC vs OGUC, checklist residencial, cambio uso suelo
-- **LLM**: Cerebras `gpt-oss-120b` → DeepSeek `deepseek-v4-flash`* → Gemini fast-fail → OpenRouter → Groq
+- **LLM**: Mistral `mistral-large-latest`* → DeepSeek `deepseek-v4-flash`* → Gemini fast-fail → OpenRouter (2 modelos) → Groq `openai/gpt-oss-120b` (actualizado 2026-08-28, ver nota en "Variables de entorno")
 - **Retrieval**: 50 candidatos → rerank-2 top 18 · HyDE + multi-query + hybrid BM25+vector
 - **Corpus**: 420 normas · 22.494 chunks · 59 dictámenes CGR · dominios normalizados
 - **Motor-reglas**: **24 reglas-gatillo activas**
@@ -309,20 +322,38 @@ lectura integrada del Centro, seguida de una respuesta verificada y su entrada f
 → Análisis crítico que fundamenta el plan en `revision-critica-plan-evolucion.md`
 
 ## LLM — notas de proveedores gratuitos
-- **Cerebras**: sin RPM agresivo, hardware dedicado CS-3, gpt-oss-120b (120B params, ~3000 t/s)
+- **Mistral** (primario opcional): tier "Experiment" sin tarjeta (solo verificación
+  telefónica al registrarse en console.mistral.ai), ~1B tokens/mes, mistral-large-latest
+  (alias sin fecha fija, no un ID de modelo puntual — ver por qué abajo)
 - ⚠️ **Los catálogos de modelos cambian sin aviso y la cadena de respaldo lo disimula.**
   El 2026-07-25 se detectó que Cerebras devolvía 404 (`qwen-3-235b` salió del catálogo)
   y DeepSeek 400 (`deepseek-chat` dejó de ser nombre válido) — **en producción, desde
   hacía tiempo**. Todo caía a Gemini, y como cada consulta hace ~4 llamadas al LLM,
   las 15 RPM del free tier se agotaban a la tercera pregunta seguida. Síntoma visible:
-  respuestas de 50–70 s y luego timeouts. Verificar catálogo en
-  https://inference-docs.cerebras.ai/models/overview antes de asumir que un modelo vive.
-  ✅ **Hecho (2026-07-25)**: `/api/healthz` ahora llama `checkCerebrasHealth()` en
-  `lib/cerebras.ts` — un `GET /v1/models` a Cerebras (sin gastar tokens de generación)
-  que confirma que `MODEL_CEREBRAS` sigue en el catálogo. Si el proveedor primario
-  cae, `/api/healthz` responde `degraded` (503) con el detalle en `checks.llm_primario`,
-  en vez de tardar meses en notarse por la latencia. Falta desplegar.
-- **Gemini free**: 15 RPM rolling; usar como fallback con maxRetries=1 para fast-fail
-- **OpenRouter**: modelos `:free` sin costo, límite diario de tokens
-- **Groq**: 30 RPM free, llama-3.3-70b-versatile; último recurso
-- Política: nunca usar plan de pago en ningún proveedor LLM
+  respuestas de 50–70 s y luego timeouts.
+  **2026-08-28 — se repitió, esta vez con los cinco proveedores caídos a la vez**
+  (ver nota en "Variables de entorno" arriba). La causa raíz de fondo es la misma:
+  nadie corría tráfico real contra producción (`consultas` en Supabase no registraba
+  una sola respuesta exitosa desde el 2026-04-27, cuatro meses) y el eval local
+  (`npm run eval`) no expone fallos de facturación ni de claves — solo prueba que el
+  pipeline razona bien, no que las cuentas de los proveedores sigan activas.
+  `/api/healthz` (`checkMistralHealth()` en `lib/mistral.ts`) sigue siendo la pieza
+  que detectaría esto el mismo día — pero solo cubre al proveedor primario del
+  momento; no hay chequeo equivalente para OpenRouter/Groq/DeepSeek. Pendiente:
+  correr `/api/test-llm?secret=ADMIN_SECRET` periódicamente (o agregar los 4
+  proveedores restantes a `/api/healthz`) para no depender de que un usuario
+  reporte el chat roto.
+- **Gemini free**: 15 RPM rolling; usar como fallback con maxRetries=1 para fast-fail.
+  Vía `@ai-sdk/google` (no `@google/generative-ai`, deprecado por Google — ver
+  https://github.com/google-gemini/deprecated-generative-ai-js)
+- **OpenRouter**: modelos `:free` sin costo, límite diario de tokens. Prueba dos
+  modelos en orden (`llama-3.3-70b-instruct:free` → `minimax/minimax-m3:free`) antes
+  de ceder el paso a Groq — no protege contra un fallo de la API key en sí (401
+  "Missing Authentication header", visto en producción el 2026-08-28: la clave en
+  Vercel es inválida o está vacía, requiere revisión manual)
+- **Groq**: 30 RPM free, último recurso. Modelo vigente: `openai/gpt-oss-120b`
+  (`llama-3.3-70b-versatile` deprecado por Groq el 17/06/2026 para free/developer tier)
+- **Cerebras**: retirado de la cadena el 2026-08-28 — dejó de ser gratuito sin tarjeta.
+  Ver nota completa en "Variables de entorno" arriba. `lib/cerebras.ts` se borró.
+- Política: nunca usar plan de pago en ningún proveedor LLM (DeepSeek es la única
+  excepción tolerada, y solo porque es opcional: sin su API key la cadena lo salta)

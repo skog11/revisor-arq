@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
 import { streamDeepSeek } from "@/lib/deepseek";
-import { streamCerebras } from "@/lib/cerebras";
+import { streamMistral } from "@/lib/mistral";
+import { streamOpenRouter } from "@/lib/openrouter";
 import { streamGroq } from "@/lib/groq";
 import { generateGemini } from "@/lib/gemini";
 import { embedText, rerankDocuments } from "@/lib/voyage";
@@ -26,9 +27,10 @@ export async function GET(req: NextRequest) {
 
   // Test streaming providers
   for (const [nombre, gen] of [
-    ["deepseek", () => streamDeepSeek("Responde brevemente.", "Di solo: hola")],
-    ["cerebras",  () => streamCerebras("Responde brevemente.", "Di solo: hola")],
-    ["groq",      () => streamGroq("Responde brevemente.", "Di solo: hola")],
+    ["deepseek",   () => streamDeepSeek("Responde brevemente.", "Di solo: hola")],
+    ["mistral",    () => streamMistral("Responde brevemente.", "Di solo: hola")],
+    ["openrouter", () => streamOpenRouter("Responde brevemente.", "Di solo: hola")],
+    ["groq",       () => streamGroq("Responde brevemente.", "Di solo: hola")],
   ] as const) {
     try {
       let texto = "";
@@ -90,7 +92,7 @@ export async function GET(req: NextRequest) {
 
   // Mostrar env vars presentes (solo si tienen valor)
   resultados["env"] = [
-    "DEEPSEEK_API_KEY", "CEREBRAS_API_KEY", "GROQ_API_KEY",
+    "DEEPSEEK_API_KEY", "MISTRAL_API_KEY", "OPENROUTER_API_KEY", "GROQ_API_KEY",
     "GEMINI_API_KEY", "VOYAGE_API_KEY", "LLM_PRIMARY"
   ].map(k => `${k}=${process.env[k] ? "SET" : "MISSING"}`).join(", ");
 

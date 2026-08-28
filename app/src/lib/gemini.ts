@@ -1,8 +1,6 @@
-import {
-  GoogleGenerativeAI,
-  type GenerateContentStreamResult,
-} from "@google/generative-ai";
-import { streamCerebras } from "@/lib/cerebras";
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
+import { streamText, generateText, type LanguageModel } from "ai";
+import { streamMistral } from "@/lib/mistral";
 import { streamDeepSeek } from "@/lib/deepseek";
 import { streamOpenRouter } from "@/lib/openrouter";
 import { streamGroq } from "@/lib/groq";
@@ -12,9 +10,20 @@ export const MODEL_FLASH = "gemini-2.5-flash";
 export const MODEL_PRO = "gemini-2.5-pro";
 export const MODEL_NAME = MODEL_FLASH; // alias para backward compat
 
+/** Forma mínima que espera el consumidor en route.ts: stream de chunks con .text(). */
+export interface StreamGeminiResult {
+  stream: AsyncGenerator<{ text: () => string }, void, unknown>;
+}
+
 /**
  * Cadena de proveedores LLM:
- *   Cerebras (primario, gratis) → DeepSeek (si hay key) → Gemini Flash (1 retry) → OpenRouter → Groq
+ *   Mistral (primario, gratis si hay key) → DeepSeek (si hay key) → Gemini Flash
+ *   (1 retry) → OpenRouter (2 modelos, incluye MiniMax) → Groq
+ *
+ * 2026-08-28 — Cerebras salió de la cadena: dejó de ser gratuito sin tarjeta
+ * (ver mistral.ts). Mistral lo reemplaza como primario gratuito; a diferencia
+ * de Cerebras, es opcional — sin MISTRAL_API_KEY la cadena lo salta sin error,
+ * igual que ya hacía con DeepSeek.
  *
  * DeepSeek es pay-per-use pero muy barato y de alta calidad; se incluye automáticamente
  * si DEEPSEEK_API_KEY está definida (créditos iniciales o plan activo).
@@ -30,31 +39,24 @@ const RETRY_DELAY_MS = 10_000;
 const MAX_RETRIES_STREAM = 3;
 const STREAM_RETRY_DELAY_MS = 3_000; // 3s base — backoff: 3s, 6s, 12s
 
-function getClient() {
+function getApiKey(): string {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) throw new Error("Falta GEMINI_API_KEY");
-  return new GoogleGenerativeAI(apiKey);
+  return apiKey;
 }
 
 /**
- * Crea el modelo Gemini con un system instruction opcional.
- * Usar systemInstruction en lugar de concatenar al mensaje del usuario
- * permite que Gemini trate las instrucciones del sistema con mayor autoridad
- * y genere respuestas más precisas y consistentes.
+ * Modelo Gemini vía @ai-sdk/google — mismo SDK que ya usan extraer-parametros.ts,
+ * extraer-vacios.ts, extraer-cronologia.ts, detector-calculadoras.ts y parse-doc/route.ts.
+ * Reemplaza a @google/generative-ai (deprecado por Google, ver
+ * https://github.com/google-gemini/deprecated-generative-ai-js): ese paquete legacy
+ * dejó de recibir soporte y producía fallos de fetch genéricos e indiagnosticables
+ * ("[GoogleGenerativeAI Error]: Error fetching from ...") sin exponer el código de
+ * estado real, a diferencia del resto de proveedores de la cadena.
  */
-export function getGeminiModel(systemInstruction?: string, modelo?: string) {
-  const config: Parameters<ReturnType<typeof getClient>["getGenerativeModel"]>[0] = {
-    model: modelo ?? MODEL_NAME,
-    generationConfig: {
-      temperature: 0.15, // Reducido de 0.2 para más determinismo en respuestas legales
-      topP: 0.9,
-      maxOutputTokens: 8192, // Aumentado de 4096 para respuestas profundas
-    },
-  };
-  if (systemInstruction) {
-    config.systemInstruction = systemInstruction;
-  }
-  return getClient().getGenerativeModel(config);
+function getGeminiLanguageModel(modelo?: string): LanguageModel {
+  const google = createGoogleGenerativeAI({ apiKey: getApiKey() });
+  return google(modelo ?? MODEL_NAME);
 }
 
 function isRetryable(err: unknown): boolean {
@@ -102,14 +104,22 @@ async function* streamGeminiNative(
   modelo?: string,
   maxRetries = MAX_RETRIES_STREAM,
 ): AsyncGenerator<string, void, unknown> {
-  const model = getGeminiModel(systemPrompt, modelo);
+  const model = getGeminiLanguageModel(modelo);
   let lastErr: unknown;
 
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
-      const result = await model.generateContentStream(userMessage);
-      for await (const chunk of result.stream) {
-        yield chunk.text();
+      const result = streamText({
+        model,
+        system: systemPrompt,
+        prompt: userMessage,
+        temperature: 0.15, // Reducido de 0.2 para más determinismo en respuestas legales
+        topP: 0.9,
+        maxOutputTokens: 8192, // Aumentado de 4096 para respuestas profundas
+        maxRetries: 0, // el reintento con backoff lo maneja este loop, no el SDK
+      });
+      for await (const text of result.textStream) {
+        yield text;
       }
       return;
     } catch (err) {
@@ -127,10 +137,10 @@ async function* streamGeminiNative(
 
 /**
  * Construye la cadena de proveedores según LLM_PRIMARY.
- * - "cerebras" (default): Cerebras → DeepSeek* → Gemini (1 retry) → OpenRouter → Groq
- * - "gemini": Gemini (reintentos completos) → Cerebras → DeepSeek* → OpenRouter → Groq
+ * - default: Mistral* → DeepSeek* → Gemini (1 retry) → OpenRouter → Groq
+ * - "gemini": Gemini (reintentos completos) → Mistral* → DeepSeek* → OpenRouter → Groq
  *
- * (*) DeepSeek se incluye solo si DEEPSEEK_API_KEY está definida.
+ * (*) Mistral y DeepSeek se incluyen solo si su API key respectiva está definida.
  * Gemini en posición de fallback usa maxRetries=1 para fast-fail ante rate limit.
  */
 function buildProviderChain(
@@ -138,31 +148,32 @@ function buildProviderChain(
   userMessage: string,
   modelo?: string,
 ): Array<{ nombre: string; gen: () => AsyncGenerator<string, void, unknown> }> {
-  const primary = (process.env.LLM_PRIMARY ?? "cerebras").toLowerCase();
+  const primary = (process.env.LLM_PRIMARY ?? "mistral").toLowerCase();
   const geminiRetries = primary === "gemini" ? MAX_RETRIES_STREAM : 1;
   // Reserva amplia solo para informes profundos. El resto de las consultas
   // gana capacidad y estabilidad con un límite suficiente de 3k tokens.
   const presupuestoSalida = modelo === MODEL_PRO ? 8192 : 3072;
 
   const gemini     = { nombre: "Gemini",     gen: () => streamGeminiNative(systemPrompt, userMessage, modelo, geminiRetries) };
-  const cerebras   = { nombre: "Cerebras",   gen: () => streamCerebras(systemPrompt, userMessage, presupuestoSalida) };
+  const mistral    = { nombre: "Mistral",    gen: () => streamMistral(systemPrompt, userMessage, presupuestoSalida) };
   const deepseek   = { nombre: "DeepSeek",   gen: () => streamDeepSeek(systemPrompt, userMessage) };
   const openrouter = { nombre: "OpenRouter", gen: () => streamOpenRouter(systemPrompt, userMessage) };
   const groq       = { nombre: "Groq",       gen: () => streamGroq(systemPrompt, userMessage) };
   const omniroute  = { nombre: "OmniRoute",  gen: () => streamOmniRoute(systemPrompt, userMessage) };
 
-  // DeepSeek solo entra en la cadena si la API key está configurada
+  // Mistral y DeepSeek solo entran a la cadena si su clave está configurada
+  const hasMistral = !!process.env.MISTRAL_API_KEY;
   const hasDeepSeek = !!process.env.DEEPSEEK_API_KEY;
 
   if (primary === "gemini") {
     return [
       ...(tieneOmniRouteConfigurado() ? [omniroute] : []),
-      gemini, cerebras, ...(hasDeepSeek ? [deepseek] : []), openrouter, groq,
+      gemini, ...(hasMistral ? [mistral] : []), ...(hasDeepSeek ? [deepseek] : []), openrouter, groq,
     ];
   }
   return [
     ...(tieneOmniRouteConfigurado() ? [omniroute] : []),
-    cerebras, ...(hasDeepSeek ? [deepseek] : []), gemini, openrouter, groq,
+    ...(hasMistral ? [mistral] : []), ...(hasDeepSeek ? [deepseek] : []), gemini, openrouter, groq,
   ];
 }
 
@@ -177,7 +188,7 @@ export async function streamGemini(
   systemPrompt: string,
   userMessage: string,
   modelo?: string,
-): Promise<GenerateContentStreamResult> {
+): Promise<StreamGeminiResult> {
   const cadena = buildProviderChain(systemPrompt, userMessage, modelo);
 
   const streamAsync = (async function* () {
@@ -202,7 +213,7 @@ export async function streamGemini(
     throw new Error(friendlyError(lastErr));
   })();
 
-  return { stream: streamAsync } as unknown as GenerateContentStreamResult;
+  return { stream: streamAsync };
 }
 
 export async function generateGemini(
@@ -221,24 +232,22 @@ export async function generateGemini(
     maxRetries?: number;
   } = {},
 ): Promise<string> {
-  const model = opts.temperature !== undefined || opts.maxOutputTokens !== undefined
-    ? getClient().getGenerativeModel({
-        model: opts.modelo ?? MODEL_NAME,
-        systemInstruction: systemPrompt,
-        generationConfig: {
-          temperature: opts.temperature ?? 0.15,
-          topP: 0.9,
-          maxOutputTokens: opts.maxOutputTokens ?? 8192,
-        },
-      })
-    : getGeminiModel(systemPrompt, opts.modelo);
+  const model = getGeminiLanguageModel(opts.modelo);
   let lastErr: unknown;
   const retries = opts.maxRetries ?? MAX_RETRIES;
 
   for (let attempt = 0; attempt < retries; attempt++) {
     try {
-      const result = await model.generateContent(userMessage);
-      return result.response.text();
+      const result = await generateText({
+        model,
+        system: systemPrompt,
+        prompt: userMessage,
+        temperature: opts.temperature ?? 0.15,
+        topP: 0.9,
+        maxOutputTokens: opts.maxOutputTokens ?? 8192,
+        maxRetries: 0, // el reintento con backoff lo maneja este loop, no el SDK
+      });
+      return result.text;
     } catch (err) {
       lastErr = err;
       if (!isRetryable(err) || attempt === retries - 1) break;
