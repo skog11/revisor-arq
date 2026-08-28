@@ -1,6 +1,15 @@
 import Groq from "groq-sdk";
 
-export const MODEL_GROQ = "llama-3.3-70b-versatile";
+/**
+ * ⚠️ Groq deprecó llama-3.3-70b-versatile el 17/06/2026 (aplica a free/developer
+ * tier; solo enterprise con contrato de spend comprometido seguía con acceso).
+ * La API respondía 404 en cada llamada, disimulado por la cadena de fallback —
+ * mismo patrón que el incidente de Cerebras/DeepSeek del 2026-07-25 (ver
+ * cerebras.ts). Reemplazo recomendado por Groq: openai/gpt-oss-120b.
+ * Verificar catálogo vigente en https://console.groq.com/docs/models antes de
+ * asumir que este modelo sigue vivo.
+ */
+export const MODEL_GROQ = "openai/gpt-oss-120b";
 
 const MAX_RETRIES_STREAM = 3;
 const STREAM_RETRY_DELAY_MS = 4_000; // 4s base — backoff: 4s, 8s
