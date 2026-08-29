@@ -197,10 +197,18 @@ export async function streamGemini(
       const iter = gen();
       try {
         const first = await iter.next();
-        console.log(`[LLM] Usando ${nombre}`);
-        if (!first.done && first.value) {
-          yield { text: () => first.value as string };
+        if (first.done) {
+          // El proveedor no lanzó error, pero tampoco emitió ni un token
+          // (stream vacío — p.ej. un modelo :free devolviendo un completion
+          // filtrado o vacío sin marcarlo como error HTTP). Sin este chequeo
+          // la cadena lo daba por exitoso y devolvía una respuesta vacía en
+          // vez de probar el siguiente proveedor.
+          lastErr = new Error(`${nombre} no emitió contenido`);
+          console.error(`[LLM] ${nombre} devolvió una respuesta vacía, probando siguiente proveedor`);
+          continue;
         }
+        console.log(`[LLM] Usando ${nombre}`);
+        yield { text: () => first.value as string };
         for await (const text of iter) {
           yield { text: () => text };
         }
@@ -276,6 +284,15 @@ export async function generateWithFallback(
       let text = "";
       for await (const chunk of gen()) {
         text += chunk;
+      }
+      if (!text.trim()) {
+        // Mismo caso que en streamGemini: sin error pero sin contenido —
+        // no devolver un string vacío como si fuera una respuesta válida
+        // (rompía JSON.parse en clasificador.ts con "Unexpected end of
+        // JSON input"), probar el siguiente proveedor de la cadena.
+        lastErr = new Error(`${nombre} no emitió contenido`);
+        console.error(`[LLM:generate] ${nombre} devolvió una respuesta vacía, probando siguiente proveedor`);
+        continue;
       }
       console.log(`[LLM:generate] Usando ${nombre}`);
       return text;
