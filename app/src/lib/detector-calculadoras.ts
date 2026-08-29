@@ -1,6 +1,7 @@
 import { generateObject } from "ai";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { z } from "zod";
+import { MODEL_FLASH } from "@/lib/gemini";
 
 const google = createGoogleGenerativeAI({
   apiKey: process.env.GEMINI_API_KEY,
@@ -17,7 +18,7 @@ export const CalculadoraSchema = z.object({
 export async function detectarCalculadora(preguntaUsuario: string): Promise<"constructibilidad" | "estacionamientos" | null> {
   try {
     const { object } = await generateObject({
-      model: google("gemini-2.5-flash"),
+      model: google(MODEL_FLASH),
       schema: CalculadoraSchema,
       prompt: `Analiza la siguiente pregunta de un usuario sobre normativa urbana y determina si está consultando sobre cómo calcular o aplicar el "coeficiente de constructibilidad" (o superficie edificable) o el cálculo de "estacionamientos".
 Si se beneficiaría de tener una calculadora interactiva junto a la respuesta teórica, devuelve el tipo. De lo contrario, devuelve "ninguna".

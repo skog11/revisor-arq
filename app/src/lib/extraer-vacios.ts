@@ -1,6 +1,7 @@
 import { generateObject } from "ai";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { z } from "zod";
+import { MODEL_FLASH } from "@/lib/gemini";
 
 const google = createGoogleGenerativeAI({
   apiKey: process.env.GEMINI_API_KEY,
@@ -27,7 +28,7 @@ export async function extraerVacios(textoRespuesta: string): Promise<VaciosTabla
 
   try {
     const { object } = await generateObject({
-      model: google("gemini-2.5-flash"),
+      model: google(MODEL_FLASH),
       schema: VaciosSchema,
       prompt: `Analiza este informe de normativa urbana (modo profundo) y detecta explícitamente si se mencionan "vacíos normativos", "contradicciones", "áreas grises" o aspectos donde la LGUC/OGUC no son claras y requieren interpretación de Contraloría o DDU.
 Si no hay vacíos detectados, devuelve un array vacío.

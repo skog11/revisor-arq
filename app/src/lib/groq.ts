@@ -44,12 +44,21 @@ function jitter(baseMs: number): number {
  * Stream con Groq. Retorna AsyncIterableIterator<string> compatible con el consumer
  * que espera el patrón de GenerateContentStreamResult de Gemini.
  *
- * Groq es ultrarrápido pero tiene límite de 30 RPM en free tier.
- * Diseñado como fallback cuando Gemini falla por rate limit.
+ * Groq es ultrarrápido pero el free tier de openai/gpt-oss-120b tiene apenas
+ * 8.000 TPM (tokens por minuto, entrada+salida combinadas) — ver
+ * console.groq.com/docs/rate-limits. Una consulta típica de este proyecto ya
+ * usa ~7-8.6k tokens solo de entrada (18 chunks + system prompt, ver comentario
+ * de MAX_CHUNKS en retriever.ts), así que pedir 8192 de salida garantizaba un
+ * 413 "Request too large" — visto en producción el 2026-08-29 apenas Groq
+ * empezó a recibir tráfico real (antes moría con 404 por el modelo deprecado,
+ * así que este límite nunca se había puesto a prueba). Se reduce el
+ * presupuesto de salida al mínimo razonable para dejarle aire a la entrada.
+ * Diseñado como último fallback cuando el resto de la cadena falla.
  */
 export async function* streamGroq(
   systemPrompt: string,
   userMessage: string,
+  maxTokens = 1024,
 ): AsyncGenerator<string, void, unknown> {
   const client = getClient();
   let lastErr: unknown;
@@ -69,7 +78,7 @@ export async function* streamGroq(
           },
         ],
         temperature: 0.15,
-        max_tokens: 8192,
+        max_tokens: maxTokens,
         stream: true,
       });
 

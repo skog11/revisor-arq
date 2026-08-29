@@ -1,6 +1,7 @@
 import { generateObject } from "ai";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { z } from "zod";
+import { MODEL_FLASH } from "@/lib/gemini";
 
 const google = createGoogleGenerativeAI({
   apiKey: process.env.GEMINI_API_KEY,
@@ -26,7 +27,7 @@ export async function extraerCronologia(textoRespuesta: string): Promise<Cronolo
 
   try {
     const { object } = await generateObject({
-      model: google("gemini-2.5-flash"),
+      model: google(MODEL_FLASH),
       schema: CronologiaSchema,
       prompt: `Analiza este informe de normativa urbana y extrae la línea de tiempo o evolución normativa si es que se mencionan diferentes leyes, decretos o circulares a lo largo de los años.
 Si la respuesta no menciona una evolución temporal o modificaciones históricas, devuelve un array vacío.

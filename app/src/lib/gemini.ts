@@ -6,8 +6,15 @@ import { streamOpenRouter } from "@/lib/openrouter";
 import { streamGroq } from "@/lib/groq";
 import { streamOmniRoute, tieneOmniRouteConfigurado } from "@/lib/omniroute";
 
-export const MODEL_FLASH = "gemini-2.5-flash";
-export const MODEL_PRO = "gemini-2.5-pro";
+/**
+ * 2026-08-29 — gemini-2.5-flash/-pro dejaron de estar disponibles para API keys
+ * nuevas ("This model models/gemini-2.5-flash is no longer available to new
+ * users"), confirmado en producción con una GEMINI_API_KEY recién creada.
+ * Google recomienda gemini-3.6-flash como reemplazo directo (no existe
+ * gemini-3.6-pro ni 3.5-pro; el flagship Pro vigente es gemini-3.1-pro).
+ */
+export const MODEL_FLASH = "gemini-3.6-flash";
+export const MODEL_PRO = "gemini-3.1-pro";
 export const MODEL_NAME = MODEL_FLASH; // alias para backward compat
 
 /** Forma mínima que espera el consumidor en route.ts: stream de chunks con .text(). */

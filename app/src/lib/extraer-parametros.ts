@@ -1,6 +1,7 @@
 import { generateObject } from "ai";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { z } from "zod";
+import { MODEL_FLASH } from "@/lib/gemini";
 
 const google = createGoogleGenerativeAI({
   apiKey: process.env.GEMINI_API_KEY,
@@ -28,7 +29,7 @@ export async function extraerParametros(textoRespuesta: string): Promise<Paramet
 
   try {
     const { object } = await generateObject({
-      model: google("gemini-2.5-flash"),
+      model: google(MODEL_FLASH),
       schema: ParametrosSchema,
       prompt: `Analiza la siguiente respuesta sobre normativa urbana y extrae los parámetros cuantitativos o exigencias específicas.
 Si no hay parámetros técnicos claros (dimensiones, coeficientes, alturas, rasantes, exigencias de metraje, densidades), devuelve un array vacío.

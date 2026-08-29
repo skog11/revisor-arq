@@ -2,6 +2,7 @@ import pdf from "pdf-parse";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { generateText } from "ai";
 import { NextRequest } from "next/server";
+import { MODEL_FLASH } from "@/lib/gemini";
 
 const MAX_BYTES = 5 * 1024 * 1024; // 5 MB
 const MAX_CHARS = 8_000;
@@ -52,7 +53,7 @@ export async function POST(req: NextRequest) {
     const mediaType = IMAGE_TYPES[file.type];
     const google = createGoogleGenerativeAI({ apiKey: process.env.GEMINI_API_KEY });
     const { text } = await generateText({
-      model: google("gemini-2.5-flash"),
+      model: google(MODEL_FLASH),
       messages: [{
         role: "user",
         content: [
