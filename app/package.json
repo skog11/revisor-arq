@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "corpus:download": "tsx --env-file=.env.local scripts/download/download-all.ts",
     "corpus:import-bcn": "tsx --env-file=.env.local scripts/download/import-bcn-xml.ts",
     "corpus:cgr": "tsx --env-file=.env.local scripts/download/download-cgr.ts",
