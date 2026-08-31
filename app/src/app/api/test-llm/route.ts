@@ -1,5 +1,4 @@
 import { NextRequest } from "next/server";
-import { streamDeepSeek } from "@/lib/deepseek";
 import { streamMistral } from "@/lib/mistral";
 import { streamOpenRouter } from "@/lib/openrouter";
 import { streamGroq } from "@/lib/groq";
@@ -27,7 +26,6 @@ export async function GET(req: NextRequest) {
 
   // Test streaming providers
   for (const [nombre, gen] of [
-    ["deepseek",   () => streamDeepSeek("Responde brevemente.", "Di solo: hola")],
     ["mistral",    () => streamMistral("Responde brevemente.", "Di solo: hola")],
     ["openrouter", () => streamOpenRouter("Responde brevemente.", "Di solo: hola")],
     ["groq",       () => streamGroq("Responde brevemente.", "Di solo: hola")],
@@ -92,7 +90,7 @@ export async function GET(req: NextRequest) {
 
   // Mostrar env vars presentes (solo si tienen valor)
   resultados["env"] = [
-    "DEEPSEEK_API_KEY", "MISTRAL_API_KEY", "OPENROUTER_API_KEY", "GROQ_API_KEY",
+    "MISTRAL_API_KEY", "OPENROUTER_API_KEY", "GROQ_API_KEY",
     "GEMINI_API_KEY", "VOYAGE_API_KEY", "LLM_PRIMARY"
   ].map(k => `${k}=${process.env[k] ? "SET" : "MISSING"}`).join(", ");
 

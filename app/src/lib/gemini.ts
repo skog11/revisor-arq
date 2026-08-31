@@ -1,7 +1,6 @@
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { streamText, generateText, type LanguageModel } from "ai";
 import { streamMistral } from "@/lib/mistral";
-import { streamDeepSeek } from "@/lib/deepseek";
 import { streamOpenRouter } from "@/lib/openrouter";
 import { streamGroq } from "@/lib/groq";
 import { streamOmniRoute, tieneOmniRouteConfigurado } from "@/lib/omniroute";
@@ -24,16 +23,17 @@ export interface StreamGeminiResult {
 
 /**
  * Cadena de proveedores LLM:
- *   Mistral (primario, gratis si hay key) → DeepSeek (si hay key) → Gemini Flash
- *   (1 retry) → OpenRouter (2 modelos, incluye MiniMax) → Groq
+ *   Mistral (primario, gratis si hay key) → Gemini Flash (1 retry) →
+ *   OpenRouter (2 modelos, incluye MiniMax) → Groq
  *
  * 2026-08-28 — Cerebras salió de la cadena: dejó de ser gratuito sin tarjeta
  * (ver mistral.ts). Mistral lo reemplaza como primario gratuito; a diferencia
- * de Cerebras, es opcional — sin MISTRAL_API_KEY la cadena lo salta sin error,
- * igual que ya hacía con DeepSeek.
+ * de Cerebras, es opcional — sin MISTRAL_API_KEY la cadena lo salta sin error.
  *
- * DeepSeek es pay-per-use pero muy barato y de alta calidad; se incluye automáticamente
- * si DEEPSEEK_API_KEY está definida (créditos iniciales o plan activo).
+ * 2026-08-31 — DeepSeek salió de la cadena a pedido: era pay-per-use y se
+ * quedaba sin saldo en producción (402 Insufficient Balance) sin que nadie
+ * lo recargara. lib/deepseek.ts se borró (sin consumidores tras el cambio).
+ *
  * Gemini usa maxRetries=1 para fast-fail en rate limit del free tier (15 RPM).
  * Si LLM_PRIMARY=gemini, Gemini va al frente con reintentos completos.
  */
@@ -144,10 +144,10 @@ async function* streamGeminiNative(
 
 /**
  * Construye la cadena de proveedores según LLM_PRIMARY.
- * - default: Mistral* → DeepSeek* → Gemini (1 retry) → OpenRouter → Groq
- * - "gemini": Gemini (reintentos completos) → Mistral* → DeepSeek* → OpenRouter → Groq
+ * - default: Mistral* → Gemini (1 retry) → OpenRouter → Groq
+ * - "gemini": Gemini (reintentos completos) → Mistral* → OpenRouter → Groq
  *
- * (*) Mistral y DeepSeek se incluyen solo si su API key respectiva está definida.
+ * (*) Mistral se incluye solo si su API key está definida.
  * Gemini en posición de fallback usa maxRetries=1 para fast-fail ante rate limit.
  */
 function buildProviderChain(
@@ -163,29 +163,27 @@ function buildProviderChain(
 
   const gemini     = { nombre: "Gemini",     gen: () => streamGeminiNative(systemPrompt, userMessage, modelo, geminiRetries) };
   const mistral    = { nombre: "Mistral",    gen: () => streamMistral(systemPrompt, userMessage, presupuestoSalida) };
-  const deepseek   = { nombre: "DeepSeek",   gen: () => streamDeepSeek(systemPrompt, userMessage) };
   const openrouter = { nombre: "OpenRouter", gen: () => streamOpenRouter(systemPrompt, userMessage) };
   const groq       = { nombre: "Groq",       gen: () => streamGroq(systemPrompt, userMessage) };
   const omniroute  = { nombre: "OmniRoute",  gen: () => streamOmniRoute(systemPrompt, userMessage) };
 
-  // Mistral y DeepSeek solo entran a la cadena si su clave está configurada
+  // Mistral solo entra a la cadena si su clave está configurada
   const hasMistral = !!process.env.MISTRAL_API_KEY;
-  const hasDeepSeek = !!process.env.DEEPSEEK_API_KEY;
 
   if (primary === "gemini") {
     return [
       ...(tieneOmniRouteConfigurado() ? [omniroute] : []),
-      gemini, ...(hasMistral ? [mistral] : []), ...(hasDeepSeek ? [deepseek] : []), openrouter, groq,
+      gemini, ...(hasMistral ? [mistral] : []), openrouter, groq,
     ];
   }
   return [
     ...(tieneOmniRouteConfigurado() ? [omniroute] : []),
-    ...(hasMistral ? [mistral] : []), ...(hasDeepSeek ? [deepseek] : []), gemini, openrouter, groq,
+    ...(hasMistral ? [mistral] : []), gemini, openrouter, groq,
   ];
 }
 
 /**
- * Stream con cadena de fallback configurable vía LLM_PRIMARY (default: "deepseek").
+ * Stream con cadena de fallback configurable vía LLM_PRIMARY (default: "mistral").
  *
  * Cada proveedor se prueba intentando consumir el primer chunk. Si falla antes de emitir
  * cualquier token, se pasa al siguiente. Una vez comenzado el streaming, no hay fallback
