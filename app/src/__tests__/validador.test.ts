@@ -145,6 +145,27 @@ describe("validarConsistencia — verificación de artículos citados", () => {
     const r = validarConsistencia(RESPUESTA_VALIDA_ARQ, [chunk("5")]);
     expect(r.notasAdicionales).toContain("BCN");
   });
+
+  it("detecta el tipo de norma citado ANTES del artículo (formato '[DDU 440, Art. 3.2.2]')", () => {
+    const respuesta = `[DDU 440, Art. 3.2.2]: Aclara que el Plan Regulador Comunal puede fijar la altura en metros.
+
+---
+⚠️ **Aviso legal**: Consulta con un profesional habilitado.`;
+    // El chunk recuperado es OGUC, no DDU — la cita atribuye el artículo a la norma equivocada.
+    const r = validarConsistencia(respuesta, [chunk("3.2.2", "OGUC")]);
+    expect(r.valida).toBe(false);
+    expect(r.advertencias.some((a) => a.includes("DDU") && a.includes("3.2.2"))).toBe(true);
+  });
+
+  it("no genera advertencia cuando el tipo citado ANTES del artículo sí coincide con el chunk", () => {
+    const respuesta = `[OGUC DS-47, Art. 2.6.3]: Determina las rasantes y distanciamientos aplicables.
+
+---
+⚠️ **Aviso legal**: Consulta con un profesional habilitado.`;
+    const r = validarConsistencia(respuesta, [chunk("2.6.3", "OGUC")]);
+    expect(r.valida).toBe(true);
+    expect(r.advertencias).toHaveLength(0);
+  });
 });
 
 // ─── Normalización de ordinales ───────────────────────────────────────────────

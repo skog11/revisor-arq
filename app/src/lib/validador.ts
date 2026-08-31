@@ -128,7 +128,13 @@ export function validarConsistencia(
     if (!/\d/.test(citado)) continue;
     const textoPosterior = respuesta.slice(regexArticulos.lastIndex, regexArticulos.lastIndex + 48);
     const normaMatch = textoPosterior.match(/^\s*(?:de(?:\s+la|\s+el)?|del)?\s*(LGUC|OGUC|DDU|LEY|DS|DFL|DL)\b/i);
-    const normaCitada = normaMatch?.[1]?.toUpperCase();
+    // El sintetizador también cita con el tipo de norma ANTES del artículo,
+    // p.ej. "[DDU 440, Art. 3.2.2]" u "OGUC DS-47, Art. 2.6.3" — sin este chequeo
+    // hacia atrás, normaCitada quedaba siempre undefined en ese formato y
+    // tipoCompatible se evaluaba true sin importar el tipo real citado.
+    const textoAnterior = respuesta.slice(Math.max(0, match.index - 40), match.index);
+    const normaMatchAntes = textoAnterior.match(/(LGUC|OGUC|DDU|LEY|DS|DFL|DL)\b[^,]{0,24},?\s*$/i);
+    const normaCitada = (normaMatch?.[1] ?? normaMatchAntes?.[1])?.toUpperCase();
     const existeEnContexto = chunks.some((chunk) => {
       const articuloChunk = normalizarArticulo(chunk.articulo);
       const tipoChunk = chunk.norma_tipo.toUpperCase();
