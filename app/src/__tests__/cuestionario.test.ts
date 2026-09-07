@@ -25,6 +25,19 @@ describe("detectarCuestionario", () => {
     ]);
   });
 
+  it("no pide contexto cuando la baja confianza viene de un clasificador caído", () => {
+    // FALLBACK del clasificador trae confianza "baja" aunque la consulta sea
+    // clara: presentar una caída del servicio como "consulta ambigua" hacía
+    // aparecer el cuestionario en todas las consultas (visto el 2026-09-07,
+    // con la cadena de LLM sin cuota).
+    const resultado = detectarCuestionario(
+      "Analiza el régimen de subdivisión predial",
+      { confianza: "baja", clasificacion_fallida: true },
+    );
+
+    expect(resultado).toBeNull();
+  });
+
   it("no vuelve a pedir contexto cuando la consulta ya trae las respuestas", () => {
     // Mismo formato exacto que arma chat/page.tsx al reenviar el cuestionario.
     const respuestas = [

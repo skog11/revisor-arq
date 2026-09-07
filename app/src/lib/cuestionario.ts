@@ -2,6 +2,7 @@ import type { CuestionarioData } from "@/components/chat/cuestionario-card";
 
 type ClasificacionCuestionario = {
   confianza: string;
+  clasificacion_fallida?: boolean;
 };
 
 type ContextoCuestionario = {
@@ -81,6 +82,13 @@ export function detectarCuestionario(
 
   if (
     clasificacion.confianza === "baja" &&
+    // Cuando el clasificador no pudo ejecutarse (proveedor LLM caído) devuelve
+    // FALLBACK con confianza "baja", que no dice nada sobre la consulta. Sin
+    // este corte, una caída del servicio se le mostraba al usuario como "la
+    // consulta es ambigua" y el cuestionario aparecía en todas las consultas,
+    // por claras que fueran. La recuperación no depende del clasificador, así
+    // que conviene seguir adelante y responder.
+    !clasificacion.clasificacion_fallida &&
     !tieneReferenciaNormativaExplicita(pregunta) &&
     !contextoProyecto?.zonaSuelo &&
     !contextoProyecto?.destino &&

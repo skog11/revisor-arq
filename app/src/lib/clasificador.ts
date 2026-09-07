@@ -47,6 +47,14 @@ export interface QueryClassificada {
   requiere_jerarquia: boolean;
   confianza: "alta" | "media" | "baja";
   resumen_consulta: string;
+  /**
+   * true cuando el clasificador no pudo ejecutarse (proveedor LLM caído, JSON
+   * ilegible) y se devolvió FALLBACK. No es lo mismo que una clasificación real
+   * con confianza baja: la consulta puede ser perfectamente clara y ser el
+   * servicio el que falló. Quien consuma `confianza` debe mirar esta bandera
+   * antes de sacar conclusiones sobre la consulta del usuario.
+   */
+  clasificacion_fallida?: boolean;
 }
 
 export interface Message {
@@ -183,6 +191,7 @@ ${pregunta}`;
       clasificacion: {
         ...FALLBACK,
         resumen_consulta: pregunta.slice(0, 120),
+        clasificacion_fallida: true,
       }
     };
   }
