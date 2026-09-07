@@ -5,30 +5,81 @@
  * Los modelos con sufijo ":free" no tienen costo; los límites son por día, no por minuto.
  * Registrarse en https://openrouter.ai para obtener API key gratuita.
  *
- * Prueba dos modelos gratuitos en orden antes de ceder el paso al siguiente proveedor
- * de la cadena (Groq): si el primero falla por deprecación, límite diario agotado o
- * error puntual del modelo, reintenta con el segundo usando la misma clave de API
- * (el 401 "Missing Authentication header" visto en producción el 2026-08-28 era un
- * fallo de la clave misma, no del modelo — este reintento no lo resuelve, pero cubre
- * el caso — ya ocurrido antes con Cerebras/DeepSeek/Groq — de que un modelo puntual
- * salga del catálogo mientras la clave sigue válida).
- *
- * 2026-09-07 — meta-llama/llama-3.3-70b-instruct:free salió del catálogo gratuito
- * ("This model is unavailable for free. The paid version is available..."),
- * confirmado en producción. Se retira de la lista; minimax queda como único
- * modelo hasta encontrar un segundo :free vigente.
+ * ⚠️ El catálogo gratuito cambia sin aviso y una lista fija se muere sola: el
+ * 2026-09-07 cayeron los dos modelos que estaban hardcodeados con horas de
+ * diferencia (`meta-llama/llama-3.3-70b-instruct:free` primero y
+ * `minimax/minimax-m3:free` después, ambos con 404 "This model is unavailable
+ * for free. The paid version is available now"), dejando el eslabón entero
+ * inservible. Por eso los modelos ya no se hardcodean: se consultan al catálogo
+ * de OpenRouter en tiempo de ejecución y se filtran por precio 0, con la lista
+ * fija degradada a semilla de emergencia si el catálogo no responde.
  */
 
-const MODELOS_OPENROUTER = [
-  "minimax/minimax-m3:free", // 1M contexto, ver https://openrouter.ai/minimax/minimax-m3
+/** Semilla usada solo si el catálogo no responde. Puede estar obsoleta. */
+const MODELOS_SEMILLA = [
+  "meta-llama/llama-3.3-70b-instruct:free",
+  "minimax/minimax-m3:free",
 ];
 
-export const MODEL_OPENROUTER = MODELOS_OPENROUTER[0];
+/** Cuántos modelos gratuitos probar en orden antes de ceder el paso a Groq. */
+const MAX_MODELOS_A_PROBAR = 3;
+
+/** El catálogo se cachea por instancia de lambda para no pedirlo en cada consulta. */
+const TTL_CATALOGO_MS = 30 * 60 * 1000;
+let cacheModelos: { modelos: string[]; expira: number } | null = null;
+
+export const MODEL_OPENROUTER = MODELOS_SEMILLA[0];
 
 function getApiKey(): string {
   const key = process.env.OPENROUTER_API_KEY;
   if (!key) throw new Error("Falta OPENROUTER_API_KEY");
   return key;
+}
+
+interface ModeloCatalogo {
+  id?: string;
+  context_length?: number;
+  pricing?: { prompt?: string; completion?: string };
+}
+
+/** Un modelo es gratuito solo si cobra 0 tanto por entrada como por salida. */
+function esGratuito(modelo: ModeloCatalogo): boolean {
+  const prompt = Number(modelo.pricing?.prompt ?? "1");
+  const completion = Number(modelo.pricing?.completion ?? "1");
+  return Number.isFinite(prompt) && Number.isFinite(completion) && prompt === 0 && completion === 0;
+}
+
+/**
+ * Modelos gratuitos vigentes según el catálogo de OpenRouter, de mayor a menor
+ * ventana de contexto (las respuestas de este proyecto van con 18 fuentes).
+ * Ante cualquier fallo devuelve la semilla: es preferible intentar con una
+ * lista vieja que saltarse el proveedor entero.
+ */
+async function obtenerModelosGratuitos(): Promise<string[]> {
+  if (cacheModelos && cacheModelos.expira > Date.now()) return cacheModelos.modelos;
+
+  try {
+    const response = await fetch("https://openrouter.ai/api/v1/models", {
+      headers: { Accept: "application/json" },
+      signal: AbortSignal.timeout(8_000),
+    });
+    if (!response.ok) throw new Error(`catálogo ${response.status}`);
+
+    const { data } = (await response.json()) as { data?: ModeloCatalogo[] };
+    const modelos = (data ?? [])
+      .filter((m): m is ModeloCatalogo & { id: string } => Boolean(m.id) && esGratuito(m))
+      .sort((a, b) => (b.context_length ?? 0) - (a.context_length ?? 0))
+      .map((m) => m.id)
+      .slice(0, MAX_MODELOS_A_PROBAR);
+
+    if (modelos.length === 0) throw new Error("catálogo sin modelos gratuitos");
+
+    cacheModelos = { modelos, expira: Date.now() + TTL_CATALOGO_MS };
+    return modelos;
+  } catch (err) {
+    console.error("[OpenRouter] No se pudo leer el catálogo, usando semilla:", String(err).slice(0, 120));
+    return MODELOS_SEMILLA;
+  }
 }
 
 async function* streamOpenRouterModelo(
@@ -92,16 +143,17 @@ async function* streamOpenRouterModelo(
 
 /**
  * Stream con OpenRouter. Retorna AsyncGenerator<string> compatible
- * con la cadena de fallback en gemini.ts. Prueba cada modelo de
- * MODELOS_OPENROUTER en orden hasta que uno emita al menos un token.
+ * con la cadena de fallback en gemini.ts. Prueba en orden los modelos
+ * gratuitos vigentes hasta que uno emita al menos un token.
  */
 export async function* streamOpenRouter(
   systemPrompt: string,
   userMessage: string,
 ): AsyncGenerator<string, void, unknown> {
-  let lastErr: unknown;
+  const modelos = await obtenerModelosGratuitos();
+  let lastErr: unknown = new Error("OpenRouter: sin modelos gratuitos disponibles");
 
-  for (const modelo of MODELOS_OPENROUTER) {
+  for (const modelo of modelos) {
     const iter = streamOpenRouterModelo(modelo, systemPrompt, userMessage);
     try {
       const first = await iter.next();
@@ -118,4 +170,9 @@ export async function* streamOpenRouter(
   }
 
   throw lastErr;
+}
+
+/** Expuesto solo para tests: limpia la caché del catálogo. */
+export function _resetCacheModelos() {
+  cacheModelos = null;
 }

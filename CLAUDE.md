@@ -345,7 +345,12 @@ lectura integrada del Centro, seguida de una respuesta verificada y su entrada f
 ## LLM — notas de proveedores gratuitos
 - **Mistral** (primario opcional): tier "Experiment" sin tarjeta (solo verificación
   telefónica al registrarse en console.mistral.ai), ~1B tokens/mes, mistral-large-latest
-  (alias sin fecha fija, no un ID de modelo puntual — ver por qué abajo)
+  (alias sin fecha fija, no un ID de modelo puntual — ver por qué abajo).
+  ⚠️ **2026-09-07: `MISTRAL_API_KEY` no está configurada en Vercel** — en los logs de
+  producción la cadena nunca registra "Usando Mistral", la salta sin error. Es el
+  cuello de botella real: sin ella el peso cae en Gemini (20 requests/día en el free
+  tier, y cada consulta hace 6-8 llamadas → ~3 consultas diarias antes del 429) y
+  después en Groq recortado. Configurarla es la acción de mayor impacto pendiente.
 - ⚠️ **Los catálogos de modelos cambian sin aviso y la cadena de respaldo lo disimula.**
   El 2026-07-25 se detectó que Cerebras devolvía 404 (`qwen-3-235b` salió del catálogo)
   y DeepSeek 400 (`deepseek-chat` dejó de ser nombre válido) — **en producción, desde
@@ -377,15 +382,21 @@ lectura integrada del Centro, seguida de una respuesta verificada y su entrada f
   se conserva solo como marcador de "modo profundo" para el presupuesto de salida.
   No reintroducir un modelo Pro real sin antes conseguir una key de pago (fuera de
   política) o confirmar que Google abrió cuota gratuita para Pro.
-- **OpenRouter**: modelos `:free` sin costo, límite diario de tokens. Prueba modelos
-  en orden desde `MODELOS_OPENROUTER` en `lib/openrouter.ts` antes de ceder el paso a
-  Groq. `llama-3.3-70b-instruct:free` salió del catálogo gratuito el 2026-09-07
-  ("This model is unavailable for free") y se retiró de la lista; queda solo
-  `minimax/minimax-m3:free`. Tampoco protege contra un fallo de la API key en sí (401
-  "Missing Authentication header", visto en producción el 2026-08-28: la clave en
+- **OpenRouter**: modelos `:free` sin costo, límite diario de tokens. **Ya no hay lista
+  fija de modelos**: `lib/openrouter.ts` consulta `GET /api/v1/models` en tiempo de
+  ejecución, filtra por precio 0 en entrada *y* salida, ordena por ventana de contexto
+  y prueba los 3 primeros (caché de 30 min por lambda; lista semilla solo si el
+  catálogo no responde). El cambio salió del 2026-09-07: los dos modelos hardcodeados
+  murieron con horas de diferencia (`llama-3.3-70b-instruct:free` y luego
+  `minimax/minimax-m3:free`, ambos con 404 "This model is unavailable for free"),
+  dejando el eslabón entero inservible. Nada de esto protege contra un fallo de la API
+  key en sí (401 "Missing Authentication header", visto el 2026-08-28: la clave en
   Vercel es inválida o está vacía, requiere revisión manual)
 - **Groq**: 30 RPM free, último recurso. Modelo vigente: `openai/gpt-oss-120b`
-  (`llama-3.3-70b-versatile` deprecado por Groq el 17/06/2026 para free/developer tier)
+  (`llama-3.3-70b-versatile` deprecado por Groq el 17/06/2026 para free/developer tier).
+  Su límite real es 8.000 TPM (entrada + salida), y las 18 fuentes del retriever no
+  caben: recibe el prompt recortado por `lib/compactar-contexto.ts` (6 fuentes, 1.500
+  caracteres c/u). Sin ese recorte devolvía 413 "Request too large" en cada síntesis.
 - **Cerebras**: retirado de la cadena el 2026-08-28 — dejó de ser gratuito sin tarjeta.
   Ver nota completa en "Variables de entorno" arriba. `lib/cerebras.ts` se borró.
 - **DeepSeek**: retirado de la cadena el 2026-08-31 (pay-per-use, se quedaba sin

@@ -4,6 +4,7 @@ import { streamMistral } from "@/lib/mistral";
 import { streamOpenRouter } from "@/lib/openrouter";
 import { streamGroq } from "@/lib/groq";
 import { streamOmniRoute, tieneOmniRouteConfigurado } from "@/lib/omniroute";
+import { compactarPrompt } from "@/lib/compactar-contexto";
 
 /**
  * 2026-08-29 — gemini-2.5-flash/-pro dejaron de estar disponibles para API keys
@@ -59,6 +60,14 @@ const RETRY_DELAY_MS = 10_000;
 // Reintentos para streamGemini cuando es primario:
 const MAX_RETRIES_STREAM = 3;
 const STREAM_RETRY_DELAY_MS = 3_000; // 3s base — backoff: 3s, 6s, 12s
+
+/**
+ * Recorte del contexto para Groq: 8.000 TPM (entrada + salida) en el tier
+ * gratuito de openai/gpt-oss-120b. Con 6 fuentes de hasta 1.500 caracteres el
+ * bloque queda en ~2.300 tokens, dejando aire para las instrucciones del
+ * sintetizador y los 1.024 tokens de salida.
+ */
+const PRESUPUESTO_GROQ = { maxFuentes: 6, maxCaracteresPorFuente: 1500 };
 
 function getApiKey(): string {
   const apiKey = process.env.GEMINI_API_KEY;
@@ -183,7 +192,11 @@ function buildProviderChain(
   const gemini     = { nombre: "Gemini",     gen: () => streamGeminiNative(systemPrompt, userMessage, modelo, geminiRetries) };
   const mistral    = { nombre: "Mistral",    gen: () => streamMistral(systemPrompt, userMessage, presupuestoSalida) };
   const openrouter = { nombre: "OpenRouter", gen: () => streamOpenRouter(systemPrompt, userMessage) };
-  const groq       = { nombre: "Groq",       gen: () => streamGroq(systemPrompt, userMessage) };
+  // Groq recibe el contexto recortado: con 18 fuentes completas su tier
+  // gratuito responde 413 "Request too large" y el último eslabón de la cadena
+  // queda inservible justo cuando es el único que sigue en pie (ver
+  // compactar-contexto.ts).
+  const groq       = { nombre: "Groq",       gen: () => streamGroq(compactarPrompt(systemPrompt, PRESUPUESTO_GROQ), userMessage) };
   const omniroute  = { nombre: "OmniRoute",  gen: () => streamOmniRoute(systemPrompt, userMessage) };
 
   // Mistral solo entra a la cadena si su clave está configurada
