@@ -80,7 +80,13 @@ export function priorizarChunksObligatorios<T extends { orden: number; metadatos
  * Si no encuentra una norma, simplemente la omite (silencioso). Si una clave es
  * solo "LGUC" o "OGUC", trae los primeros chunks de esa norma sin filtrar.
  *
- * @param claves   Array de claves como ["DDU-161", "LGUC"]
+ * El formato "TIPO:ARTICULO" (ej. "OGUC:1.4.8") fuerza ese artículo puntual en
+ * vez de los primeros chunks por orden — para reglas que dependen de un
+ * artículo específico que no encabeza el documento (ver "TIPO" en el mismo
+ * formato admite además "-NUMERO", ej. "OGUC-DS-47:1.4.8", si hiciera falta
+ * desambiguar entre normas del mismo tipo).
+ *
+ * @param claves   Array de claves como ["DDU-161", "LGUC", "OGUC:1.4.8"]
  * @param porNorma Cuántos chunks traer por cada norma (default 3)
  */
 export async function fetchChunksObligatorios(
@@ -93,8 +99,9 @@ export async function fetchChunksObligatorios(
   const sb = getSupabaseServiceClient();
   const resultados: ChunkRecuperado[] = [];
 
-  for (const clave of claves) {
-    const [tipo, ...numeroParts] = clave.split("-");
+  for (const claveOriginal of claves) {
+    const [claveNorma, articuloForzado] = claveOriginal.split(":");
+    const [tipo, ...numeroParts] = claveNorma.split("-");
     const numero = numeroParts.join("-");
 
     let query = sb
@@ -127,6 +134,37 @@ export async function fetchChunksObligatorios(
     }
 
     const norma = normaData![0];
+
+    if (articuloForzado) {
+      const articulo = normalizarArticulo(articuloForzado);
+      const { data: chunksArt } = await sb
+        .from("chunks")
+        .select("id, texto, metadatos")
+        .eq("norma_id", norma.id)
+        .in("metadatos->>articulo", [articulo, `${articulo}.`]);
+      for (const c of (chunksArt ?? []).filter((chunk) =>
+        normalizarArticulo(((chunk.metadatos as Record<string, unknown>)?.articulo as string | undefined)) === articulo
+      )) {
+        const meta = (c.metadatos as Record<string, unknown>) ?? {};
+        resultados.push({
+          id: c.id as string,
+          texto: c.texto as string,
+          similarity: 1.0,
+          norma_tipo: norma.tipo as string,
+          norma_numero: norma.numero as string,
+          norma_titulo: norma.titulo as string,
+          articulo: (meta.articulo as string | null) ?? null,
+          jerarquia: (meta.jerarquia as string | null) ?? null,
+          url_fuente: norma.url_fuente as string,
+          fecha_vigencia_desde: null, norma_dominio: null,
+          norma_organo_emisor: null, norma_jerarquia_norm: null,
+          norma_etapas_proyecto: [],
+        });
+      }
+      // El artículo forzado ya cubre lo que esta clave debía aportar; no
+      // conviene sumarle además los primeros chunks genéricos de la norma.
+      continue;
+    }
 
     // Recuperar los primeros N chunks por orden
     const { data: chunks, error: chunksErr } = await sb

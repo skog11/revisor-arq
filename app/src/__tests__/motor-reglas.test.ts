@@ -24,3 +24,33 @@ describe("aplicarReglas — guardrails normativos", () => {
     );
   });
 });
+
+describe("aplicarReglas — redondeo de coeficientes y parámetros urbanísticos", () => {
+  it("activa la regla con el caso real de producción (decimal + casas + pregunta de redondeo)", () => {
+    // Visto en producción el 2026-09-07: el retrieval semántico (72% similitud,
+    // 11 fuentes) no trajo el Art. 1.4.8 OGUC porque la consulta nunca usa las
+    // palabras "redondeo" ni "fracción" — solo un número con decimales.
+    const pregunta =
+      "cuando hago el calculo de densidad para un terreno y este calculo me indica que caben 97,66 casas, " +
+      "esto implica que de acuerdo a la normativa vigente caben 97 o caben 98?";
+    expect(reglasActivasPara(pregunta)).toContain("redondeo-parametros-urbanisticos");
+  });
+
+  it("activa la regla con vocabulario explícito de redondeo, sin número decimal", () => {
+    expect(
+      reglasActivasPara("¿Cómo se redondea el coeficiente de constructibilidad en la OGUC?")
+    ).toContain("redondeo-parametros-urbanisticos");
+  });
+
+  it("no se activa con un número decimal que no acompaña unidades habitacionales", () => {
+    expect(
+      reglasActivasPara("El coeficiente de ocupación de suelo es 0,6, ¿qué significa?")
+    ).not.toContain("redondeo-parametros-urbanisticos");
+  });
+
+  it("no se activa con una consulta sin números ni vocabulario de redondeo", () => {
+    expect(reglasActivasPara("¿Qué es la densidad de ocupación?")).not.toContain(
+      "redondeo-parametros-urbanisticos"
+    );
+  });
+});

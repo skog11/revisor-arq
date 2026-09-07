@@ -27,8 +27,22 @@ export interface ReglaGatillo {
     co_ocurrencia: string[];
     /** Frases que excluyen la regla si aparecen (excepciones explícitas) */
     excepciones?: string[];
+    /**
+     * Patrón adicional que también debe cumplirse, evaluado contra la consulta
+     * SIN normalizar (conserva comas, puntos y dígitos). Existe para gatillos
+     * que dependen de una FORMA y no de una frase fija — p. ej. "un número con
+     * decimales seguido de casas/viviendas" no se puede expresar como término
+     * literal en `co_ocurrencia`, que solo hace matching de substring.
+     */
+    patron?: RegExp;
   };
-  /** Claves de norma a forzar como chunks obligatorios. Formato: "DDU-161", "LGUC", etc. */
+  /**
+   * Claves de norma a forzar como chunks obligatorios. Formato "TIPO-NUMERO"
+   * (ej. "DDU-161") o solo "TIPO" (ej. "LGUC", trae sus primeros chunks por
+   * orden). "TIPO:ARTICULO" (ej. "OGUC:1.4.8") fuerza un artículo puntual en
+   * vez de los primeros chunks de la norma — usar cuando la regla depende de
+   * un artículo específico que no necesariamente encabeza el documento.
+   */
   forzar_normas: string[];
   efecto: EfectoRegla;
   /** Mensaje breve que se inyecta al prompt del LLM */
@@ -236,6 +250,42 @@ export const REGLAS_INICIALES: ReglaGatillo[] = [
       "proyecto de arquitectura firmado por arquitecto habilitado, memoria de cálculo estructural (si aplica), " +
       "y cumplimiento de las normas vigentes a la fecha de la regularización o a la de construcción (Art. 167 OGUC). " +
       "La simple declaración del propietario no es suficiente.",
+  },
+
+  // ── Regla: redondeo de coeficientes y parámetros urbanísticos ──────────────
+
+  {
+    id: "redondeo-parametros-urbanisticos",
+    descripcion:
+      "El Art. 1.4.8 inciso 2° de la OGUC fija la regla de redondeo para cualquier coeficiente o " +
+      "parámetro urbanístico que resulte en una fracción: se aproxima al entero superior si la " +
+      "fracción es igual o mayor a 0,5.",
+    cuando: {
+      co_ocurrencia: [],
+      // Dos formas de llegar a esta pregunta: (a) un cálculo con decimales
+      // ("97,66 casas", "3,2 estacionamientos") preguntando por cuál entero
+      // aplica, o (b) vocabulario explícito de redondeo/aproximación.
+      // Caso canónico (2026-09-07): "...este calculo me indica que caben
+      // 97,66 casas, esto implica que ... caben 97 o caben 98?" — el
+      // retrieval semántico (72% similitud, 11 fuentes) no trajo el Art.
+      // 1.4.8 porque la consulta nunca usa las palabras "redondeo" ni
+      // "fracción"; el corpus SÍ tiene el artículo exacto (OGUC DS-47,
+      // Art. 1.4.8), pero forzar_normas: ["OGUC"] sin más habría traído los
+      // primeros chunks de la norma por orden (definiciones del Título 1,
+      // Capítulo 1) en vez del artículo correcto — de ahí el sufijo
+      // ":1.4.8" en forzar_normas.
+      patron: /\d+[.,]\d+\s*(casas?|viviendas?|unidades|departamentos|estacionamientos|habitantes)|\bredonde\w*|\baproxim\w*\s+(al\s+)?entero|entero\s+(superior|inferior)/i,
+    },
+    forzar_normas: ["OGUC:1.4.8"],
+    efecto: "boost",
+    mensaje_experto:
+      "El Art. 1.4.8 inciso 2° de la OGUC establece: \"Cuando de la aplicación de los coeficientes o " +
+      "parámetros de las normas urbanísticas del instrumento de planificación territorial, resulte una " +
+      "fracción igual o mayor que 0,5, éstos se aproximarán al entero superior\". Esta regla aplica a " +
+      "cualquier coeficiente o parámetro urbanístico (densidad, constructibilidad, estacionamientos, etc.), " +
+      "no solo a la densidad. Si la fracción es menor a 0,5, no hay regla expresa de redondeo hacia abajo " +
+      "en este artículo: se trunca al entero que ya se tiene, sin necesidad de aproximar. " +
+      "La respuesta debe citar este artículo textualmente antes de concluir cualquier otra cosa sobre redondeo.",
   },
 
   // ── Reglas — servidumbres y propiedades adyacentes ──────────────────────────
@@ -594,6 +644,10 @@ export function aplicarReglas(
     const terminos = regla.cuando.co_ocurrencia.map(normalizar);
     const todosPresentes = terminos.every((t) => preguntaNorm.includes(t));
     if (!todosPresentes) continue;
+
+    // Se evalúa contra la consulta original: normalizar() quita comas y puntos,
+    // que son justamente lo que distingue "97,66" (decimal) de "9766".
+    if (regla.cuando.patron && !regla.cuando.patron.test(pregunta)) continue;
 
     const excepciones = (regla.cuando.excepciones ?? []).map(normalizar);
     const alguniaExcepcion = excepciones.some((e) => preguntaNorm.includes(e));
