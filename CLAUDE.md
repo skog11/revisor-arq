@@ -130,7 +130,6 @@ NEXT_PUBLIC_SUPABASE_URL
 NEXT_PUBLIC_SUPABASE_ANON_KEY
 SUPABASE_SERVICE_ROLE_KEY
 MISTRAL_API_KEY                # Primario opcional — gratuito sin tarjeta (https://console.mistral.ai) · mistral-large-latest
-DEEPSEEK_API_KEY               # Fallback opcional — pay-per-use (https://platform.deepseek.com) · deepseek-v4-flash
 GEMINI_API_KEY                 # Fallback — free tier 15 RPM, fast-fail en la cadena
 OPENROUTER_API_KEY             # Fallback — gratuito (https://openrouter.ai) · 2 modelos, límite diario
 GROQ_API_KEY                   # Último fallback — gratuito (https://console.groq.com) · 30 RPM
@@ -153,11 +152,33 @@ NEXT_PUBLIC_APP_URL
 > telefónica al registrarse), ~1B tokens/mes. Es opcional igual que DeepSeek: sin
 > `MISTRAL_API_KEY` la cadena lo salta sin error. `lib/cerebras.ts` se borró (sin
 > consumidores tras el cambio).
+>
+> **2026-08-31 — DeepSeek salió de la cadena** (pay-per-use, se quedaba sin saldo
+> sin que nadie lo recargara). `lib/deepseek.ts` se borró. Cadena resultante:
+> Mistral* → Gemini → OpenRouter → Groq.
+>
+> **2026-09-07 — Producción corría un build que nunca pasó por GitHub.** El deploy
+> `dpl_GQhuXhqJiv94QSSaMmDMvQVeqSGS` ("fix: compactar contexto para fallback
+> cloud", commit `67d97505...`, actor `codex`) quedó como producción en
+> `revisor-arq.vercel.app` pero ese commit **no existe en `origin/master`** —
+> se desplegó directo a Vercel desde un checkout local, sin pasar por
+> `git push` ni por `.github/workflows/deploy.yml`. Ese build tenía el SDK de
+> Gemini deprecado (`@google/generative-ai`, revertido respecto al fix del
+> 2026-08-28) y un modelo de Groq nunca probado (`qwen/qwen3.8-27b`, causaba
+> 413 "Request too large"), lo que tumbó toda la cadena de fallback en
+> producción para consultas reales. `master` en GitHub sí tenía el código
+> correcto (`@ai-sdk/google`, `openai/gpt-oss-120b`) — nunca llegó a
+> desplegarse porque el deploy manual lo pisó después. Corregido reforzando
+> el deploy desde `master` para que vuelva a ser producción. **Regla:** nunca
+> desplegar a `revisor-arq.vercel.app` con `vercel --prod` desde un checkout
+> local fuera del pipeline de `deploy.yml` — cualquier cambio de código pasa
+> por un commit en `master` y el workflow de GitHub Actions.
 
 ## Cadena de LLM (lib/gemini.ts)
 ```
-Mistral mistral-large-latest* → DeepSeek deepseek-v4-flash* → Gemini 2.5 Flash (1 retry) → OpenRouter (llama-3.3-70b:free → minimax-m3:free) → Groq openai/gpt-oss-120b
-(*) Solo si su API key respectiva está definida
+Mistral mistral-large-latest* → Gemini gemini-3.6-flash (1 retry) → OpenRouter (llama-3.3-70b:free → minimax-m3:free) → Groq openai/gpt-oss-120b
+(*) Solo si su API key respectiva está definida. OmniRoute (lib/omniroute.ts) es un gateway
+opcional adicional al frente de la cadena, desactivado salvo que se defina OMNIROUTE_BASE_URL.
 ```
 `MAX_CHUNKS = 18` · `CANDIDATOS_RERANK = 50` — retriever trae 50, rerank-2 selecciona top 18
 
