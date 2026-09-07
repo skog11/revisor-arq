@@ -21,8 +21,14 @@ const MODELOS_SEMILLA = [
   "minimax/minimax-m3:free",
 ];
 
-/** Cuántos modelos gratuitos probar en orden antes de ceder el paso a Groq. */
-const MAX_MODELOS_A_PROBAR = 3;
+/**
+ * Cuántos modelos gratuitos probar en orden antes de ceder el paso a Groq.
+ * No alcanza con dos o tres: hay modelos que figuran como gratuitos en el
+ * catálogo pero rechazan la llamada igual (403 "is only available on agentic
+ * harnesses", visto el 2026-09-07 con los dos primeros de la lista ordenada por
+ * contexto), y no hay forma de distinguirlos antes de intentarlos.
+ */
+const MAX_MODELOS_A_PROBAR = 6;
 
 /** El catálogo se cachea por instancia de lambda para no pedirlo en cada consulta. */
 const TTL_CATALOGO_MS = 30 * 60 * 1000;

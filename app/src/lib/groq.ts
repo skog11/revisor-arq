@@ -51,14 +51,23 @@ function jitter(baseMs: number): number {
  * de MAX_CHUNKS en retriever.ts), así que pedir 8192 de salida garantizaba un
  * 413 "Request too large" — visto en producción el 2026-08-29 apenas Groq
  * empezó a recibir tráfico real (antes moría con 404 por el modelo deprecado,
- * así que este límite nunca se había puesto a prueba). Se reduce el
- * presupuesto de salida al mínimo razonable para dejarle aire a la entrada.
+ * así que este límite nunca se había puesto a prueba).
+ *
+ * 2026-09-07 — la entrada ahora llega recortada (compactar-contexto.ts), lo que
+ * dejó espacio para subir la salida, y hacía falta: gpt-oss-120b es un modelo
+ * de razonamiento y con `reasoning_effort` en su default ("medium") gastaba los
+ * 1.024 tokens razonando, cerrando el stream sin emitir un solo token de
+ * contenido. En los logs se veía como "Groq devolvió una respuesta vacía" justo
+ * después de arreglar el 413. Se baja el esfuerzo de razonamiento, se oculta su
+ * salida y se sube el presupuesto a 3.000 tokens, que con la entrada compactada
+ * sigue cómodo dentro de los 8.000 TPM.
+ *
  * Diseñado como último fallback cuando el resto de la cadena falla.
  */
 export async function* streamGroq(
   systemPrompt: string,
   userMessage: string,
-  maxTokens = 1024,
+  maxTokens = 3000,
 ): AsyncGenerator<string, void, unknown> {
   const client = getClient();
   let lastErr: unknown;
@@ -79,6 +88,9 @@ export async function* streamGroq(
         ],
         temperature: 0.15,
         max_tokens: maxTokens,
+        // Sin esto, el razonamiento se come el presupuesto y el stream cierra vacío.
+        reasoning_effort: "low",
+        reasoning_format: "hidden",
         stream: true,
       });
 
