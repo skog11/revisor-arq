@@ -366,11 +366,17 @@ lectura integrada del Centro, seguida de una respuesta verificada y su entrada f
   reporte el chat roto.
 - **Gemini free**: 15 RPM rolling; usar como fallback con maxRetries=1 para fast-fail.
   Vía `@ai-sdk/google` (no `@google/generative-ai`, deprecado por Google — ver
-  https://github.com/google-gemini/deprecated-generative-ai-js). Modo profundo usa
-  `MODEL_PRO` = `gemini-3.1-pro-preview` (el nombre corto `gemini-3.1-pro` **no
-  existe** — 404 confirmado en producción el 2026-09-07; su predecesor
-  `gemini-3-pro-preview` se retiró el 09/03/2026). Verificar siempre el sufijo
-  `-preview` en los IDs de la serie Pro antes de cambiar `MODEL_PRO` en `gemini.ts`.
+  https://github.com/google-gemini/deprecated-generative-ai-js). El nombre corto
+  `gemini-3.1-pro` **no existe** (404; el ID real es `gemini-3.1-pro-preview` — su
+  predecesor `gemini-3-pro-preview` se retiró el 09/03/2026), pero **la serie Pro
+  completa tiene cuota 0 en el tier gratuito de esta `GEMINI_API_KEY`**
+  ("Quota exceeded ... limit: 0, model: gemini-3.1-pro", confirmado en producción
+  el 2026-09-07) — no es un límite de RPM, es cero acceso permanente mientras la
+  key siga en el tier gratuito. `getGeminiLanguageModel()` en `gemini.ts` sustituye
+  cualquier pedido de `MODEL_PRO` por `MODEL_FLASH` al llamar a la API real; `MODEL_PRO`
+  se conserva solo como marcador de "modo profundo" para el presupuesto de salida.
+  No reintroducir un modelo Pro real sin antes conseguir una key de pago (fuera de
+  política) o confirmar que Google abrió cuota gratuita para Pro.
 - **OpenRouter**: modelos `:free` sin costo, límite diario de tokens. Prueba modelos
   en orden desde `MODELOS_OPENROUTER` en `lib/openrouter.ts` antes de ceder el paso a
   Groq. `llama-3.3-70b-instruct:free` salió del catálogo gratuito el 2026-09-07

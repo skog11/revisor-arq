@@ -15,10 +15,16 @@ import { streamOmniRoute, tieneOmniRouteConfigurado } from "@/lib/omniroute";
  * devuelve como 404 "is not found for API version v1beta, or is not supported
  * for generateContent" — el ID real del modelo Pro vigente es
  * "gemini-3.1-pro-preview" (gemini-3-pro-preview, su predecesor, se retiró el
- * 09/03/2026). Esto tumbaba todas las respuestas de modo profundo: Gemini
- * fallaba silenciosamente y la cadena caía a OpenRouter/Groq, que no seguían
- * el formato de cita exacto y el validador las bloqueaba con "Citas no
- * verificadas" pese a que el retrieval sí traía fuentes con buena similitud.
+ * 09/03/2026). Corregido el nombre, pero la causa de fondo era otra: la
+ * GEMINI_API_KEY de este proyecto tiene cuota 0 en el tier gratuito para
+ * *cualquier* modelo de la serie Pro ("Quota exceeded ... limit: 0, model:
+ * gemini-3.1-pro" — no es rate limit, es cero acceso permanente, confirmado
+ * en producción el mismo día tras corregir el nombre). La política del
+ * proyecto prohíbe usar plan de pago, así que MODEL_PRO no se puede invocar
+ * tal cual con esta key. getGeminiLanguageModel() lo sustituye por
+ * MODEL_FLASH al llamar a la API (ver comentario ahí) — MODEL_PRO se
+ * mantiene como el valor que route.ts pasa para modo profundo, solo para
+ * seguir dándole el presupuesto de salida más generoso en `presupuestoSalida`.
  */
 export const MODEL_FLASH = "gemini-3.6-flash";
 export const MODEL_PRO = "gemini-3.1-pro-preview";
@@ -71,7 +77,12 @@ function getApiKey(): string {
  */
 function getGeminiLanguageModel(modelo?: string): LanguageModel {
   const google = createGoogleGenerativeAI({ apiKey: getApiKey() });
-  return google(modelo ?? MODEL_NAME);
+  // MODEL_PRO no es invocable con esta API key (cuota 0 en el tier gratuito
+  // para toda la serie Pro, ver comentario junto a MODEL_PRO) — se sustituye
+  // por Flash en la llamada real a Google, aunque el resto del código lo siga
+  // tratando como "modo profundo" para el presupuesto de salida.
+  const modeloReal = modelo === MODEL_PRO ? MODEL_FLASH : (modelo ?? MODEL_NAME);
+  return google(modeloReal);
 }
 
 function isRetryable(err: unknown): boolean {
