@@ -176,7 +176,7 @@ NEXT_PUBLIC_APP_URL
 
 ## Cadena de LLM (lib/gemini.ts)
 ```
-Mistral mistral-large-latest* → Gemini gemini-3.6-flash (1 retry) → OpenRouter (llama-3.3-70b:free → minimax-m3:free) → Groq openai/gpt-oss-120b
+Mistral mistral-large-latest* → Gemini gemini-3.6-flash / gemini-3.1-pro-preview (modo profundo, 1 retry) → OpenRouter (minimax-m3:free) → Groq openai/gpt-oss-120b
 (*) Solo si su API key respectiva está definida. OmniRoute (lib/omniroute.ts) es un gateway
 opcional adicional al frente de la cadena, desactivado salvo que se defina OMNIROUTE_BASE_URL.
 ```
@@ -366,15 +366,22 @@ lectura integrada del Centro, seguida de una respuesta verificada y su entrada f
   reporte el chat roto.
 - **Gemini free**: 15 RPM rolling; usar como fallback con maxRetries=1 para fast-fail.
   Vía `@ai-sdk/google` (no `@google/generative-ai`, deprecado por Google — ver
-  https://github.com/google-gemini/deprecated-generative-ai-js)
-- **OpenRouter**: modelos `:free` sin costo, límite diario de tokens. Prueba dos
-  modelos en orden (`llama-3.3-70b-instruct:free` → `minimax/minimax-m3:free`) antes
-  de ceder el paso a Groq — no protege contra un fallo de la API key en sí (401
+  https://github.com/google-gemini/deprecated-generative-ai-js). Modo profundo usa
+  `MODEL_PRO` = `gemini-3.1-pro-preview` (el nombre corto `gemini-3.1-pro` **no
+  existe** — 404 confirmado en producción el 2026-09-07; su predecesor
+  `gemini-3-pro-preview` se retiró el 09/03/2026). Verificar siempre el sufijo
+  `-preview` en los IDs de la serie Pro antes de cambiar `MODEL_PRO` en `gemini.ts`.
+- **OpenRouter**: modelos `:free` sin costo, límite diario de tokens. Prueba modelos
+  en orden desde `MODELOS_OPENROUTER` en `lib/openrouter.ts` antes de ceder el paso a
+  Groq. `llama-3.3-70b-instruct:free` salió del catálogo gratuito el 2026-09-07
+  ("This model is unavailable for free") y se retiró de la lista; queda solo
+  `minimax/minimax-m3:free`. Tampoco protege contra un fallo de la API key en sí (401
   "Missing Authentication header", visto en producción el 2026-08-28: la clave en
   Vercel es inválida o está vacía, requiere revisión manual)
 - **Groq**: 30 RPM free, último recurso. Modelo vigente: `openai/gpt-oss-120b`
   (`llama-3.3-70b-versatile` deprecado por Groq el 17/06/2026 para free/developer tier)
 - **Cerebras**: retirado de la cadena el 2026-08-28 — dejó de ser gratuito sin tarjeta.
   Ver nota completa en "Variables de entorno" arriba. `lib/cerebras.ts` se borró.
-- Política: nunca usar plan de pago en ningún proveedor LLM (DeepSeek es la única
-  excepción tolerada, y solo porque es opcional: sin su API key la cadena lo salta)
+- **DeepSeek**: retirado de la cadena el 2026-08-31 (pay-per-use, se quedaba sin
+  saldo). `lib/deepseek.ts` se borró — ya no es una excepción tolerada.
+- Política: nunca usar plan de pago en ningún proveedor LLM de la cadena.

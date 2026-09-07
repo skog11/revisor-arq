@@ -1,7 +1,7 @@
 /**
  * openrouter.ts — Cliente OpenRouter (API OpenAI-compatible)
  *
- * Tercer proveedor en la cadena de fallback: Gemini → Cerebras → OpenRouter → Groq
+ * Penúltimo proveedor en la cadena de fallback: Mistral* → Gemini → OpenRouter → Groq
  * Los modelos con sufijo ":free" no tienen costo; los límites son por día, no por minuto.
  * Registrarse en https://openrouter.ai para obtener API key gratuita.
  *
@@ -12,10 +12,14 @@
  * fallo de la clave misma, no del modelo — este reintento no lo resuelve, pero cubre
  * el caso — ya ocurrido antes con Cerebras/DeepSeek/Groq — de que un modelo puntual
  * salga del catálogo mientras la clave sigue válida).
+ *
+ * 2026-09-07 — meta-llama/llama-3.3-70b-instruct:free salió del catálogo gratuito
+ * ("This model is unavailable for free. The paid version is available..."),
+ * confirmado en producción. Se retira de la lista; minimax queda como único
+ * modelo hasta encontrar un segundo :free vigente.
  */
 
 const MODELOS_OPENROUTER = [
-  "meta-llama/llama-3.3-70b-instruct:free",
   "minimax/minimax-m3:free", // 1M contexto, ver https://openrouter.ai/minimax/minimax-m3
 ];
 

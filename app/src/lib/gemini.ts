@@ -9,11 +9,19 @@ import { streamOmniRoute, tieneOmniRouteConfigurado } from "@/lib/omniroute";
  * 2026-08-29 — gemini-2.5-flash/-pro dejaron de estar disponibles para API keys
  * nuevas ("This model models/gemini-2.5-flash is no longer available to new
  * users"), confirmado en producción con una GEMINI_API_KEY recién creada.
- * Google recomienda gemini-3.6-flash como reemplazo directo (no existe
- * gemini-3.6-pro ni 3.5-pro; el flagship Pro vigente es gemini-3.1-pro).
+ * Google recomienda gemini-3.6-flash como reemplazo directo.
+ *
+ * 2026-09-07 — MODEL_PRO apuntaba a "gemini-3.1-pro" (sin sufijo), que la API
+ * devuelve como 404 "is not found for API version v1beta, or is not supported
+ * for generateContent" — el ID real del modelo Pro vigente es
+ * "gemini-3.1-pro-preview" (gemini-3-pro-preview, su predecesor, se retiró el
+ * 09/03/2026). Esto tumbaba todas las respuestas de modo profundo: Gemini
+ * fallaba silenciosamente y la cadena caía a OpenRouter/Groq, que no seguían
+ * el formato de cita exacto y el validador las bloqueaba con "Citas no
+ * verificadas" pese a que el retrieval sí traía fuentes con buena similitud.
  */
 export const MODEL_FLASH = "gemini-3.6-flash";
-export const MODEL_PRO = "gemini-3.1-pro";
+export const MODEL_PRO = "gemini-3.1-pro-preview";
 export const MODEL_NAME = MODEL_FLASH; // alias para backward compat
 
 /** Forma mínima que espera el consumidor en route.ts: stream de chunks con .text(). */
