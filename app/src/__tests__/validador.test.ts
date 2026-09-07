@@ -166,6 +166,31 @@ describe("validarConsistencia — verificación de artículos citados", () => {
     expect(r.valida).toBe(true);
     expect(r.advertencias).toHaveLength(0);
   });
+
+  it("no atribuye al artículo un tipo de norma que solo aparece en la prosa anterior", () => {
+    // Visto en producción (2026-09-07): la respuesta mencionaba la Ley 20.422 en
+    // la misma frase y el artículo 4.1.7 de la OGUC quedaba atribuido a "LEY",
+    // bloqueando una respuesta correcta con "Citas no verificadas: LEY Art. 4.1.7".
+    const respuesta = `Según la Ley 20.422 el Art. 4.1.7 detalla las exigencias de accesibilidad universal.
+
+---
+⚠️ **Aviso legal**: Consulta con un profesional habilitado.`;
+    const r = validarConsistencia(respuesta, [chunk("4.1.7", "OGUC")]);
+    expect(r.valida).toBe(true);
+    expect(r.advertencias).toHaveLength(0);
+  });
+
+  it("sigue detectando la cita formal con número de norma pegado al artículo", () => {
+    // "[LEY 20.422, Art. 4.1.7]" sí es una atribución explícita: el artículo es
+    // de la OGUC, no de la Ley 20.422, y debe bloquearse.
+    const respuesta = `[LEY 20.422, Art. 4.1.7]: exigencias de accesibilidad universal.
+
+---
+⚠️ **Aviso legal**: Consulta con un profesional habilitado.`;
+    const r = validarConsistencia(respuesta, [chunk("4.1.7", "OGUC")]);
+    expect(r.valida).toBe(false);
+    expect(r.advertencias.some((a) => a.includes("LEY") && a.includes("4.1.7"))).toBe(true);
+  });
 });
 
 // ─── Normalización de ordinales ───────────────────────────────────────────────

@@ -132,16 +132,31 @@ export function validarConsistencia(
     // p.ej. "[DDU 440, Art. 3.2.2]" u "OGUC DS-47, Art. 2.6.3" — sin este chequeo
     // hacia atrás, normaCitada quedaba siempre undefined en ese formato y
     // tipoCompatible se evaluaba true sin importar el tipo real citado.
+    //
+    // Solo cuenta como atribución lo que tiene forma de cita: el tipo de norma,
+    // su identificador opcional (440, DS-47, N° 20.422) y un separador. Si entre
+    // medio hay prosa, la mención es del párrafo y no del artículo — admitirla
+    // bloqueaba respuestas correctas ("Según la Ley 20.422 el Art. 4.1.7…" hacía
+    // que un artículo de la OGUC quedara atribuido a la Ley; visto en producción
+    // el 2026-09-07 como "Citas no verificadas: LEY Art. 4.1.7").
     const textoAnterior = respuesta.slice(Math.max(0, match.index - 40), match.index);
-    const normaMatchAntes = textoAnterior.match(/(LGUC|OGUC|DDU|LEY|DS|DFL|DL)\b[^,]{0,24},?\s*$/i);
+    const normaMatchAntes = textoAnterior.match(
+      /\b(LGUC|OGUC|DDU|LEY|DS|DFL|DL)\b(?:\s*(?:N[°º]?\.?|DS|DFL|DL)?\s*[\d-][\d.\-/]*)?[\s,;:.]*$/i
+    );
     const normaCitada = (normaMatch?.[1] ?? normaMatchAntes?.[1])?.toUpperCase();
     const existeEnContexto = chunks.some((chunk) => {
       const articuloChunk = normalizarArticulo(chunk.articulo);
       const tipoChunk = chunk.norma_tipo.toUpperCase();
+      const numeroChunk = (chunk.norma_numero ?? "").toUpperCase();
       const tipoCompatible = !normaCitada || tipoChunk === normaCitada ||
         // "Ley General de Urbanismo y Construcciones" suele abreviarse como
         // "Ley" en una cita formal, aunque su tipo de corpus sea LGUC.
-        (normaCitada === "LEY" && tipoChunk === "LGUC");
+        (normaCitada === "LEY" && tipoChunk === "LGUC") ||
+        // "DS 47" o "DFL 458" nombran el identificador de la norma, no su tipo
+        // de corpus: la OGUC es el DS-47 y la LGUC el DFL-458.
+        numeroChunk === normaCitada ||
+        numeroChunk.startsWith(`${normaCitada}-`) ||
+        numeroChunk.startsWith(`${normaCitada} `);
       return articuloChunk === citado && tipoCompatible;
     });
 
