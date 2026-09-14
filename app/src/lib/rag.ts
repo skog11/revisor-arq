@@ -501,7 +501,6 @@ export function detectarCruces(pregunta: string): CruceDetectado[] {
 
 /** Temas fuera del dominio de la app */
 const TEMAS_FUERA_DOMINIO = [
-  /impuesto|tributari|sri|sii/i,
   /receta|cocina|aliment/i,
   /medicina|enfermedad|tratamiento médico/i,
   /código civil|código penal|código laboral/i,
