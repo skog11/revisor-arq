@@ -136,8 +136,15 @@ export function construirContexto(chunks: ChunkRecuperado[]): ContextoRAG {
       ? ` | Etapas: ${c.norma_etapas_proyecto.join(", ")}`
       : "";
 
+    // OJO: la URL debe viajar en el contexto. Sin ella el modelo no tiene de
+    // donde sacar el enlace y lo inventa: en un informe real emitio
+    // bcn.cl/...idNorma=6365 para la Ley 17.235, cuyo idNorma es 28849, y
+    // idNorma=21160 para el DFL 458, que es 13560. Un informe firmado con
+    // enlaces a leyes equivocadas es peor que uno sin enlaces.
+    const urlLabel = c.url_fuente ? ` | URL: ${c.url_fuente}` : "";
+
     return [
-      `--- FUENTE [${i + 1}]: ${normaLabel}${artLabel}${jerarqLabel}${vigLabel}${dominioLabel}${emisorLabel}${jerarqNormLabel}${etapasLabel} ---`,
+      `--- FUENTE [${i + 1}]: ${normaLabel}${artLabel}${jerarqLabel}${vigLabel}${dominioLabel}${emisorLabel}${jerarqNormLabel}${etapasLabel}${urlLabel} ---`,
       c.texto,
       "---",
     ].join("\n");
@@ -195,7 +202,17 @@ REGLAS ABSOLUTAS — NO negociables:
 2. Si el contexto no contiene respaldo suficiente, dilo explícitamente: "No encontré respaldo normativo suficiente en la base de conocimiento para esta materia".
 3. Toda afirmación técnica o legal DEBE estar respaldada en una fuente del contexto (FUENTE [N]).
 4. Si detectas que la consulta puede activar otras áreas regulatorias (medioambiente, salud, patrimonio, etc.) que no están en el contexto, señálalo explícitamente como alerta de cruce.
-5. El disclaimer legal al final es OBLIGATORIO en toda respuesta.`;
+5. El disclaimer legal al final es OBLIGATORIO en toda respuesta.
+6. ENLACES: si citas la URL de una norma, cópiala EXACTAMENTE del campo "URL:" de la
+   FUENTE correspondiente. NUNCA construyas, adivines ni completes un enlace a BCN ni
+   un identificador idNorma. Si una fuente no trae URL, no inventes una: nombra la
+   norma y su artículo sin enlace.
+7. CIFRAS VIGENTES: el corpus contiene textos normativos, NO los decretos anuales que
+   fijan tasas de impuesto, montos exentos, valores de UF/UTM ni reajustes. NO afirmes
+   una tasa vigente, un monto exento actual ni un valor indexado, aunque aparezca algún
+   número en el contexto: los que hay suelen ser históricos y ya fueron reemplazados.
+   Explica la regla que sí consta en el texto y señala que la cifra aplicable debe
+   verificarse directamente con el organismo competente (SII, Ministerio de Hacienda).`;
 
   // ── MODO ARQUITECTO ───────────────────────────────────────────────────────────
   if (modo === "arquitecto") {

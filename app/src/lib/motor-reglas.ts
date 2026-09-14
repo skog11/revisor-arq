@@ -61,6 +61,33 @@ export interface ReglaActiva {
  */
 export const REGLAS_INICIALES: ReglaGatillo[] = [
   {
+    id: "sobretasa-sitio-no-edificado-art8",
+    descripcion:
+      "Sobretasa del 100% del Art. 8 de la Ley 17.235 sobre sitios no edificados, propiedades abandonadas y pozos lastreros en area urbana.",
+    cuando: {
+      // Sin co_ocurrencia: la disyuncion va en el patron, que exige a la vez
+      // una senal tributaria y una senal de suelo/urbana. every() sobre un
+      // arreglo vacio es true, asi que la activacion la decide el patron.
+      co_ocurrencia: [],
+      patron:
+        /(?=[\s\S]*(contribucion|aval[uú]o|impuesto territorial|\bsii\b|servicio de impuestos))(?=[\s\S]*(sitio|loteo|\blote|no edificad|sin edificar|sin construir|terreno|predio|pa[nñ]o|urban))/i,
+      excepciones: [],
+    },
+    forzar_normas: ["LEY-17235:8"],
+    efecto: "boost",
+    mensaje_experto:
+      "El Art. 8 de la Ley N 17.235 es el de mayor impacto economico en consultas sobre suelo y contribuciones, " +
+      "y suele quedar fuera del ranking semantico porque la pregunta rara vez usa la palabra sobretasa: los bienes " +
+      "raices no agricolas en AREA URBANA que sean sitios no edificados, propiedades abandonadas o pozos lastreros " +
+      "pagan una SOBRETASA DEL 100% sobre la tasa vigente. Si la consulta involucra retener, lotear o comercializar " +
+      "terrenos, cuantifica esta exposicion. Cita tambien sus limites, que constan en el mismo articulo: NO se aplica " +
+      "en areas de extension urbana o urbanizables segun el instrumento de planificacion territorial; NO se aplica a " +
+      "inmuebles fuera del area donde se prestan los servicios de agua potable y alcantarillado, acreditado por " +
+      "certificado de la concesionaria ante la municipalidad; y ante demolicion total por siniestro no imputable al " +
+      "propietario, solo se aplica transcurridos diez anos. No afirmes el porcentaje de la tasa base ni montos exentos: " +
+      "esos los fijan decretos anuales que no estan en el corpus.",
+  },
+  {
     id: "conjunto-armonico-recepcion",
     descripcion:
       "Improcedencia de acoger a conjunto armónico una obra con recepción definitiva (DDU 161 + Dictamen CGR 8518/2006).",
