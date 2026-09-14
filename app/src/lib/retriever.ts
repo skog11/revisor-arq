@@ -7,7 +7,7 @@
 
 import { ChunkRecuperado } from "./rag";
 import { PlanRecuperacion } from "./router";
-import { embedText, rerankDocuments } from "./voyage";
+import { rerankDocuments } from "./voyage";
 import { embedConHyDE } from "./hyde";
 import { recuperarMultiQuery } from "./multi-query";
 import { getSupabaseServiceClient } from "./supabase";
@@ -51,6 +51,20 @@ const MAX_CHUNKS = 18;
 
 /** Candidatos pre-rerank (mayor diversidad → mejor reranking) */
 const CANDIDATOS_RERANK = 50;
+
+/**
+ * Cupos minimos reservados en la ventana final para normas de rango legal o
+ * reglamentario superior (LGUC, OGUC, LEY, DFL, DL).
+ *
+ * El rerank ordena solo por relevancia textual, asi que nada impedia que los
+ * 18 chunks finales fueran circulares DDU -- que son el 44% del corpus y
+ * repiten mucho vocabulario de formulario. Una respuesta de REVISOR ARQ que
+ * cita solo circulares, sin la ley o el reglamento que las sustenta, es
+ * jerarquicamente debil aunque sea textualmente relevante. Esta cuota se
+ * aplica solo si hay candidatos de alta jerarquia disponibles: nunca rellena
+ * con material irrelevante ni desplaza referencias exactas.
+ */
+const MIN_ALTA_JERARQUIA = 5;
 
 // ─── Mapeo de resultados RPC → ChunkRecuperado ───────────────────────────────
 
@@ -166,7 +180,7 @@ async function buscarPorFTS(
       .from("chunks")
       .select("id, texto, metadatos, normas!inner(tipo, numero, titulo, jerarquia_norm, dominio, etapas_proyecto, url_fuente, organo_emisor, vigente)")
       .eq("normas.vigente", true)
-      .textSearch("texto", pregunta, { type: "websearch", config: "spanish" })
+      .textSearch("texto_tsv", pregunta, { type: "websearch", config: "spanish" })
       .limit(count);
 
     if (error || !data?.length) return [];
@@ -207,16 +221,37 @@ async function recuperarReferenciaExacta(
   pregunta: string
 ): Promise<ChunkRecuperado[]> {
   const articulo = pregunta.match(/\b(?:art[íi]culo|art\.)\s*([\d.]+)\s*[°º]?/i)?.[1]?.replace(/\.+$/, "");
-  const norma = pregunta.match(/\b(DS|LEY|DFL|DL)\s*(?:N[°º]\s*)?(\d+(?:\.\d+)*)/i);
-  if (!articulo || !norma) return [];
+  // Dos formas de nombrar una norma en lenguaje natural:
+  //  (a) tipo + numero:  "DS 47", "Ley N 19.300", "DL 824", "DDU 541"
+  //  (b) solo sigla:     "OGUC", "LGUC" -- no llevan numero en el habla comun.
+  // Hasta 2026-09 solo se reconocia (a) con tipos DS|LEY|DFL|DL, asi que el
+  // caso mas frecuente de la app ("articulo 2.1.17 de la OGUC") nunca activaba
+  // la recuperacion exacta y dependia por completo del ranking semantico.
+  // OGUC y LGUC tienen exactamente una norma vigente cada una en el corpus
+  // (OGUC=DS-47, LGUC=DFL-458), asi que filtrar solo por tipo es inequivoco.
+  const porSigla = pregunta.match(/\b(OGUC|LGUC)\b/i);
+  const porNumero = pregunta.match(/\b(DS|LEY|DFL|DL|DDU)\s*(?:N[\u00B0\u00BA]\s*)?[-\u2013]?\s*(\d+(?:\.\d+)*)/i);
+  if (!articulo || (!porSigla && !porNumero)) return [];
 
-  const { data: normas, error: normaError } = await sb
+  let consulta = sb
     .from("normas")
     .select("id, tipo, numero, titulo, url_fuente, jerarquia_norm, dominio, etapas_proyecto, organo_emisor")
-    .eq("tipo", norma[1].toUpperCase())
-    .eq("numero", norma[2].replace(/\./g, ""))
-    .eq("vigente", true)
-    .limit(4);
+    .eq("vigente", true);
+
+  if (porSigla) {
+    // La sigla manda: "articulo 2.1.17 de la OGUC (DS 47)" debe resolver a la
+    // OGUC, no al decreto supremo 47 suelto.
+    consulta = consulta.eq("tipo", porSigla[1].toUpperCase());
+  } else {
+    const tipo = porNumero![1].toUpperCase();
+    const crudo = porNumero![2].replace(/\./g, "");
+    // 8 circulares DDU estan guardadas con cero a la izquierda ("007"), asi
+    // que "DDU 7" debe poder alcanzarlas.
+    const variantes = Array.from(new Set([crudo, crudo.padStart(3, "0")]));
+    consulta = consulta.eq("tipo", tipo).in("numero", variantes);
+  }
+
+  const { data: normas, error: normaError } = await consulta.limit(4);
   if (normaError || !normas?.length) return [];
 
   const resultado: ChunkRecuperado[] = [];
@@ -246,6 +281,58 @@ async function recuperarReferenciaExacta(
     }
   }
   return resultado;
+}
+
+function esAltaJerarquia(chunk: ChunkRecuperado): boolean {
+  const tipo = (chunk.norma_tipo ?? "").toUpperCase();
+  return TIPOS_ALTA_JERARQUIA.some((t) => t.toUpperCase() === tipo);
+}
+
+/**
+ * Elige `cupos` chunks de una lista ya ordenada por relevancia, garantizando
+ * al menos `minAlta` de rango legal o reglamentario superior SI los hay.
+ *
+ * El rerank ordena por relevancia textual pura, asi que una consulta cuyo
+ * vecindario semantico esta copado por circulares DDU podia terminar con los
+ * 18 cupos llenos de circulares y sin la ley que las sustenta. Cuando falta
+ * cuota, se promueven chunks de alta jerarquia que quedaron mas abajo y se
+ * descartan los de menor relevancia que no son de alta jerarquia. El orden por
+ * relevancia se conserva; si no hay candidatos de alta jerarquia, no se
+ * rellena con nada.
+ *
+ * Exportada para testing unitario.
+ */
+export function seleccionarConCuota(
+  ordenados: ChunkRecuperado[],
+  cupos: number,
+  minAlta: number
+): ChunkRecuperado[] {
+  if (ordenados.length <= cupos) return ordenados;
+
+  const elegidos = new Set(ordenados.slice(0, cupos).map((c) => c.id));
+  let altas = ordenados.slice(0, cupos).filter(esAltaJerarquia).length;
+
+  for (const candidato of ordenados.slice(cupos)) {
+    if (altas >= minAlta) break;
+    if (!esAltaJerarquia(candidato)) continue;
+
+    // Sacar el peor (mas abajo en el ranking) que no sea de alta jerarquia.
+    let liberado = false;
+    for (let i = ordenados.length - 1; i >= 0; i--) {
+      const actual = ordenados[i];
+      if (elegidos.has(actual.id) && !esAltaJerarquia(actual)) {
+        elegidos.delete(actual.id);
+        liberado = true;
+        break;
+      }
+    }
+    if (!liberado) break; // ya son todos de alta jerarquia
+
+    elegidos.add(candidato.id);
+    altas++;
+  }
+
+  return ordenados.filter((c) => elegidos.has(c.id));
 }
 
 function anteponerExactos(exactos: ChunkRecuperado[], resto: ChunkRecuperado[]): ChunkRecuperado[] {
@@ -280,7 +367,7 @@ export async function recuperarPorCapas(
   // Si Voyage AI está caído (401/503/timeout) → fallback BM25 puro.
   let embedding: number[];
   try {
-    embedding = await embedConHyDE(pregunta);
+    embedding = await embedConHyDE(pregunta, plan.dominiosActivos);
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     console.warn("[retriever] Voyage AI no disponible — activando fallback BM25:", msg);
@@ -325,15 +412,40 @@ export async function recuperarPorCapas(
   );
 
   // ── Fusión: capa 1 (jerarquía alta) → capa 2 (amplia) → capa 3 (multi-query)
+  // Las referencias exactas entran siempre y primero: son evidencia pedida
+  // explicitamente por la persona usuaria, no un resultado de ranking.
   const vistos = new Set<string>();
   const candidatos: ChunkRecuperado[] = [];
+  const agregar = (chunk: ChunkRecuperado) => {
+    if (vistos.has(chunk.id) || candidatos.length >= CANDIDATOS_RERANK) return;
+    vistos.add(chunk.id);
+    candidatos.push(chunk);
+  };
 
-  for (const chunk of [...exactos, ...capa1, ...capa2, ...capa3]) {
-    if (!vistos.has(chunk.id)) {
-      vistos.add(chunk.id);
-      candidatos.push(chunk);
+  for (const chunk of exactos) agregar(chunk);
+
+  // Reparto round-robin entre las tres capas en vez de concatenarlas.
+  //
+  // Antes se recorria [capa1, capa2, capa3] en orden y se cortaba al llegar al
+  // tope: con 15 + 25 + 20 = 60 candidatos para 50 cupos, los 10 descartados
+  // salian siempre de la capa 3 (multi-query), la que reformula la pregunta de
+  // tres maneras para encontrar lo que la redaccion original no alcanza. Esa
+  // capa entregaba dos tercios de lo que producia. El rerank reordena todo
+  // igual, asi que lo unico que importa es QUE candidatos entran, no en que
+  // orden; turnandose, las tres capas quedan representadas.
+  const capas = [capa1, capa2, capa3];
+  const indices = capas.map(() => 0);
+  let quedanCapas = true;
+  while (quedanCapas && candidatos.length < CANDIDATOS_RERANK) {
+    quedanCapas = false;
+    for (let c = 0; c < capas.length; c++) {
+      const capa = capas[c];
+      if (indices[c] >= capa.length) continue;
+      agregar(capa[indices[c]]);
+      indices[c]++;
+      quedanCapas = true;
+      if (candidatos.length >= CANDIDATOS_RERANK) break;
     }
-    if (candidatos.length >= CANDIDATOS_RERANK) break;
   }
 
   if (candidatos.length === 0) return exactos;
@@ -343,16 +455,25 @@ export async function recuperarPorCapas(
   // se cae al fallback de ordenamiento por jerarquía + similitud.
   try {
     const documentos = candidatos.map((c) => c.texto);
-    const resultados = await rerankDocuments(pregunta, documentos, MAX_CHUNKS);
+    // Sin top_k: el rerank cobra por tokens de entrada, no por resultados
+    // devueltos, asi que pedir el orden completo no cuesta mas y permite
+    // aplicar la cuota de jerarquia sobre todo el pool en vez de sobre un
+    // recorte ya hecho.
+    const resultados = await rerankDocuments(pregunta, documentos);
 
     // Reconstruir array en el orden devuelto por rerank
     const rerankeados = resultados.map((r) => ({
       ...candidatos[r.index],
       // Sobrescribir similarity con el rerank score para que el UI
-      // muestre la relevancia real (0-1 normalizado)
+      // muestre la relevancia real (0-1 normalizado). `rerankeado` le avisa a
+      // calcularConfianza() que esta leyendo la escala del rerank y no la del
+      // coseno, que viven en rangos distintos.
       similarity: Math.round(r.relevanceScore * 1000) / 1000,
+      rerankeado: true,
     }));
-    return anteponerExactos(exactos, rerankeados);
+
+    const conCuota = seleccionarConCuota(rerankeados, MAX_CHUNKS, MIN_ALTA_JERARQUIA);
+    return anteponerExactos(exactos, conCuota);
   } catch (err) {
     console.warn("[retriever] Rerank Voyage fallido — ordenando por jerarquía:", err instanceof Error ? err.message : err);
     // Fallback: ordenar por jerarquía + similarity original

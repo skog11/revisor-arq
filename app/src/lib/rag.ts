@@ -35,6 +35,12 @@ export interface ChunkRecuperado {
   norma_etapas_proyecto: string[];
   /** Recuperado por una referencia explícita (norma + artículo) escrita por la persona usuaria. */
   referenciaExacta?: boolean;
+  /**
+   * true cuando `similarity` fue sobrescrita con el score de voyage rerank-2.
+   * Las dos escalas no son comparables (rerank ~0.45-0.80 vs coseno ~0.22-0.42),
+   * asi que calcularConfianza() necesita saber cual esta leyendo.
+   */
+  rerankeado?: boolean;
 }
 
 export interface ContextoRAG {
@@ -170,7 +176,9 @@ Considera estos dominios en tu respuesta. Si el contexto RAG no los cubre, señ�
       : "";
 
   const base = `Eres REVISOR ARQ, un asistente especializado en análisis normativo para proyectos en Chile.
-Tu base de conocimiento incluye principalmente normativa urbanística y de construcción (LGUC, OGUC, Circulares DDU del MINVU), pero debes estar atento a cruces con otras áreas regulatorias cuando la consulta lo requiera: medioambiente, salud, patrimonio, infraestructura, permisos sectoriales u otras materias que puedan incidir en un proyecto.
+Tu base de conocimiento es principalmente normativa urbanística y de construcción (LGUC, OGUC, Circulares DDU del MINVU), pero NO se limita a ella: también contiene normativa vigente de medioambiente (Ley N°19.300, Ley N°20.283), aguas (Código de Aguas), salud, vialidad, electricidad, patrimonio, copropiedad, bienes nacionales, procedimiento administrativo y tributación inmobiliaria (Ley N°17.235 sobre impuesto territorial, DL N°824 sobre renta, DL N°825 sobre IVA, DL N°3.475 sobre timbres y estampillas).
+
+No trates una consulta como ajena a tu ámbito solo porque no sea de urbanismo. Si la pregunta toca alguna de esas materias -- por ejemplo el efecto tributario de reclasificar un terreno, el avalúo fiscal o las contribuciones de bienes raíces -- respóndela con las fuentes que encuentres en el contexto. Reserva las alertas de cruce para las áreas que el contexto no alcanza a cubrir.
 
 IDIOMA Y REGISTRO:
 - Escribe siempre en español de Chile.
@@ -466,6 +474,21 @@ const DOMINIOS_CRUCE: Array<{
       /glaciar|campo de hielo/i,
     ],
   },
+  {
+    area: "Tributario inmobiliario",
+    emoji: "\u{1F4B0}",
+    organismo: "Servicio de Impuestos Internos (SII)",
+    norma_probable: "Ley 17.235 (Impuesto Territorial), DL 824 (Renta), DL 825 (IVA), DL 3.475 (Timbres)",
+    patrones: [
+      /\bsii\b|servicio de impuestos internos/i,
+      /aval[uú]o fiscal|reaval[uú]o|impuesto territorial/i,
+      /\bcontribuciones\b|bienes ra[ií]ces.*impuesto/i,
+      /mayor valor|ganancia de capital|enajenaci[oó]n de.*bien(es)? ra[ií](z|ces)/i,
+      /timbres y estampillas/i,
+      /iva.*(venta|inmueble|edificaci)|habitualidad/i,
+      /clasificaci[oó]n.*(agr[ií]cola|no agr[ií]cola)|cambio de clasificaci[oó]n.*(terreno|predio|suelo)/i,
+    ],
+  },
 ];
 
 /**
@@ -515,8 +538,10 @@ export function detectarFueraDominio(pregunta: string): string | null {
   for (const re of TEMAS_FUERA_DOMINIO) {
     if (re.test(pregunta)) {
       return (
-        "Esta consulta parece estar fuera del ámbito de REVISOR ARQ, que cubre exclusivamente " +
-        "normativa chilena de urbanismo y construcción (LGUC, OGUC, DDU). " +
+        "Esta consulta parece estar fuera del ámbito de REVISOR ARQ, que cubre normativa " +
+        "chilena aplicable a proyectos inmobiliarios: urbanismo y construcción (LGUC, OGUC, DDU), " +
+        "medioambiente, aguas, salud, vialidad, patrimonio, copropiedad, procedimiento " +
+        "administrativo y tributación inmobiliaria. " +
         "Por favor reformula tu pregunta en ese contexto."
       );
     }

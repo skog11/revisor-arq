@@ -50,6 +50,24 @@ export function routear(q: QueryClassificada): PlanRecuperacion {
   //    ejemplo), DOMINIO_A_NORMAS[dominio] seria undefined y el for de
   //    mas abajo reventaria la consulta entera. Se descartan los que no
   //    esten en el vocabulario y, si no queda ninguno, se usa el default.
+  // Si el clasificador no pudo ejecutarse (proveedor LLM caido, JSON ilegible)
+  // devuelve FALLBACK, cuyo dominios_detectados es ["construccion"]. Eso no es
+  // una deteccion: es la ausencia de una. Enrutar como "construccion" filtra a
+  // OGUC/DDU/DDU_ESPECIFICA/LGUC/DS y deja fuera LEY, DL y DFL, asi que una
+  // caida del clasificador convertia en silencio cualquier consulta
+  // (tributaria, ambiental, de aguas) en una consulta de construccion y la
+  // respuesta se armaba solo con circulares y decretos supremos.
+  // Ante un fallo no se filtra por tipo: decide la similitud, con la Capa 1 de
+  // alta jerarquia del retriever como red de seguridad.
+  if (q.clasificacion_fallida) {
+    return {
+      tiposNorma: [],   // [] => el retriever envia filter_tipos = null
+      matchCountPorCapa: [10, 10],
+      dominiosActivos: ["construccion"],
+      filtrarSoloVigentes: true,
+    };
+  }
+
   const detectados = (q.dominios_detectados ?? []).filter(
     (d): d is DominioPrimario => d in DOMINIO_A_NORMAS
   );
