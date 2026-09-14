@@ -35,6 +35,11 @@ const DOMINIO_A_NORMAS: Record<DominioPrimario, string[]> = {
   // dictamenes de Contraloria, que son la fuente de interpretacion
   // sobre competencia y procedimiento.
   administrativo:    ["LEY", "Ley", "DS", "CGR", "DDU"],
+  // Impuestos y tributos relacionados a inmuebles: contribuciones/avaluo
+  // fiscal (Ley 17.235, tipo LEY), IVA en venta de inmuebles (DL 825),
+  // mayor valor en enajenacion de bienes raices (DL 824), timbres y
+  // estampillas (DL 3.475). La mayoria de estas normas son tipo DL.
+  tributario:        ["LEY", "Ley", "DL", "DS"],
 };
 
 export function routear(q: QueryClassificada): PlanRecuperacion {

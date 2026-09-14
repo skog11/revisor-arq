@@ -35,9 +35,14 @@ export type DominioPrimario =
   | "defensa"
   | "bienes_nacionales"
   // Transversal: procedimiento administrativo, transparencia, organica
-  // municipal y regional, consulta indigena, tributaria. Normas que
-  // aplican a cualquier proyecto sin ser de una materia tecnica.
-  | "administrativo";
+  // municipal y regional, consulta indigena. Normas que aplican a
+  // cualquier proyecto sin ser de una materia tecnica.
+  | "administrativo"
+  // Impuestos y tributos relacionados a inmuebles: contribuciones/avaluo
+  // fiscal (Ley 17.235), IVA en venta de inmuebles (DL 825), mayor valor
+  // en enajenacion de bienes raices (DL 824), timbres y estampillas
+  // (DL 3.475). NO incluye materia tributaria general de empresas.
+  | "tributario";
 
 export interface QueryClassificada {
   tipo_proyecto: TipoProyecto;
@@ -99,11 +104,16 @@ etapa (uno de):
 dominios_detectados (lista ordenada, el primero es el dominio principal, uno o más de):
   "urbanismo" | "construccion" | "accesibilidad" | "copropiedad" | "medioambiente" |
   "patrimonio" | "salud" | "aguas" | "vialidad" | "electricidad" | "defensa" | "bienes_nacionales" |
-  "administrativo"
+  "administrativo" | "tributario"
 
   Usa "administrativo" cuando la consulta trate de plazos, silencio administrativo, recursos
-  o reclamaciones, competencia de la DOM o de la SEREMI, acceso a información pública,
-  consulta indígena o materia tributaria asociada al proyecto.
+  o reclamaciones, competencia de la DOM o de la SEREMI, acceso a información pública o
+  consulta indígena.
+  Usa "tributario" cuando la consulta trate de contribuciones, avaluó fiscal, reavaluó,
+  reclasificación de un terreno agrícola a urbano y su efecto tributario, IVA en venta de
+  inmuebles, mayor valor o ganancia de capital en la enajenación de un bien raíz, o impuesto
+  de timbres y estampillas en operaciones inmobiliarias -- en general, cualquier pregunta
+  sobre el SII o impuestos asociados a un terreno o inmueble.
 
 keywords_normativas: lista de términos normativos relevantes detectados en la consulta (pueden ser vacíos si no hay).
 
