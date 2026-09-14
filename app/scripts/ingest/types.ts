@@ -9,7 +9,8 @@ export type TipoNorma =
   | "DFL"      // Decretos con Fuerza de Ley (DFL 725, DFL 382, etc.)
   | "DL"       // Decretos Ley (DL 2695)
   | "DS"       // Decretos Supremos reglamentarios (DS-40, DS-594, etc.)
-  | "CGR";     // Dictámenes Contraloría General de la República (capa interpretativa)
+  | "CGR"      // Dictamenes Contraloria General de la Republica (capa interpretativa)
+  | "CIRC_SII"; // Circulares del Servicio de Impuestos Internos (criterio de fiscalizacion tributaria)
 
 export interface ParsedArticulo {
   numero: string;          // "116", "2.6.3", "3.1" (DDU sección)

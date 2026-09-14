@@ -39,7 +39,11 @@ const DOMINIO_A_NORMAS: Record<DominioPrimario, string[]> = {
   // fiscal (Ley 17.235, tipo LEY), IVA en venta de inmuebles (DL 825),
   // mayor valor en enajenacion de bienes raices (DL 824), timbres y
   // estampillas (DL 3.475). La mayoria de estas normas son tipo DL.
-  tributario:        ["LEY", "Ley", "DL", "DS"],
+  // CIRC_SII son las circulares del Servicio de Impuestos Internos: el criterio
+  // de fiscalizacion, que es donde se resuelve lo que la ley deja abierto (por
+  // ejemplo como se aplica la sobretasa del Art. 8 a sitios no edificados).
+  // Sin este tipo en la lista los chunks existen pero la Capa 2 nunca los pide.
+  tributario:        ["LEY", "Ley", "DL", "DS", "CIRC_SII"],
 };
 
 export function routear(q: QueryClassificada): PlanRecuperacion {

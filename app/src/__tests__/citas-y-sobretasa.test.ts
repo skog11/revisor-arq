@@ -43,6 +43,17 @@ describe("construirContexto - URL de la norma", () => {
     const { textoContexto } = construirContexto([chunk({ url_fuente: "" })]);
     expect(textoContexto).not.toContain("URL:");
   });
+
+  it("omite las URL de red interna de los dictamenes CGR", () => {
+    // 59 dictamenes CGR quedaron con direcciones tipo http://172.30.21.160/...
+    // que no resuelven fuera del organismo. Pasarlas seria cambiar un enlace
+    // inventado por uno roto.
+    const { textoContexto } = construirContexto([
+      chunk({ norma_tipo: "CGR", url_fuente: "http://172.30.21.160/8425/0/6CDD95CAB8" }),
+    ]);
+    expect(textoContexto).not.toContain("URL:");
+    expect(textoContexto).not.toContain("172.30");
+  });
 });
 
 describe("regla del Art. 8 - sobretasa de sitios no edificados", () => {

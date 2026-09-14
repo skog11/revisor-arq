@@ -141,7 +141,11 @@ export function construirContexto(chunks: ChunkRecuperado[]): ContextoRAG {
     // bcn.cl/...idNorma=6365 para la Ley 17.235, cuyo idNorma es 28849, y
     // idNorma=21160 para el DFL 458, que es 13560. Un informe firmado con
     // enlaces a leyes equivocadas es peor que uno sin enlaces.
-    const urlLabel = c.url_fuente ? ` | URL: ${c.url_fuente}` : "";
+    // Solo URLs publicas. 59 dictamenes CGR quedaron guardados con direcciones
+    // de red interna (http://172.30.21.160/...) que no resuelven fuera del
+    // organismo: pasarlas al modelo cambiaria un enlace inventado por uno roto.
+    const urlPublica = /^https?:\/\/(?!(?:\d{1,3}\.){3}\d{1,3}|localhost)/i.test(c.url_fuente ?? "");
+    const urlLabel = urlPublica ? ` | URL: ${c.url_fuente}` : "";
 
     return [
       `--- FUENTE [${i + 1}]: ${normaLabel}${artLabel}${jerarqLabel}${vigLabel}${dominioLabel}${emisorLabel}${jerarqNormLabel}${etapasLabel}${urlLabel} ---`,
